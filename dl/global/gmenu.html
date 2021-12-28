@@ -1,0 +1,40 @@
+﻿
+<h2><a href="Goods.php" style="color:black">Browse Products</a></h2>
+<div class="dropdown">
+    <button onclick="dropdown()" class="dropbtn" id="showType">Modules</button>
+    <div id="myDropdown" class="dropdown-content">
+        <p onclick="typeValue('module')">Modules</p>
+        <p onclick="typeValue('diggie')">Tools</p>
+        <p onclick="typeValue('art')">Art</p>
+    </div>
+</div>
+<ul id="moduleMenu" class="myMenu">
+    <li><p onclick="resetAll()" style="color:white" id="gen">General</p></li>
+    <li><p onclick="clinnation('charop')" style="color:black" id="charop">Classes</p></li>
+    <li><p onclick="clinnation('race')" style="color:black" id="race">Races</p></li>
+    <li><p onclick="clinnation('rule')" style="color:black" id="rule">Rules</p></li>
+    <li><p onclick="clinnation('adventure')" style="color:black" id="adventure">Adventures</p></li>
+    <li><p onclick="clinnation('lore')" style="color:black" id="lore">Lore</p></li>
+    <li><p onclick="clinnation('dms')" style="color:black" id="dms">DM Stuff</p></li>
+    <li>
+        <select id="sysDropdown" class="dropbtn small" onchange="newSys(this.value);">
+            <option value="0">Any System</option>
+            <option value="1">5eS</option>
+            <option value="2">5e</option>
+        </select>
+    </li>
+</ul>
+
+<ul id="diggieMenu" class="myMenu" style="display:none">
+    <li><p onclick="resetAll()" style="color:white" id="genTu">General</p></li>
+    <li><p onclick="clinnation('hmbrw')" style="color:black" id="hmbrw">Homebrewing</p></li>
+    <li><p onclick="clinnation('genr')" style="color:black" id="genr">Generator</p></li>
+    <li><p onclick="clinnation('indx')" style="color:black" id="indx">Index</p></li>
+</ul>
+
+<ul id="artMenu" class="myMenu" style="display:none">
+    <li><p onclick="resetAll()" style="color:white" id="genTri">General</p></li>
+    <li><p onclick="clinnation('vis')" style="color:black" id="vis">Visual</p></li>
+    <li><p onclick="clinnation('cart')" style="color:black" id="cart">Cartography</p></li>
+    <li><p onclick="clinnation('dun')" style="color:black" id="dun">Dungeons</p></li>
+</ul>

@@ -1,0 +1,9 @@
+﻿:root {
+    --wiki-color-albord: var(--ds-gold);
+    --doc-cgrey-color: var(--ds-gold);
+    --doc-stext-color: var(--ds-gold);
+    --doc-accent-color: var(--ds-gold);
+}
+.topBarLeft a:hover {
+    color: #efd05e;
+}

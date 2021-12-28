@@ -1,0 +1,22 @@
+﻿:root {
+    --wiki-color-albord: var(--ds-gold);
+    --wiki-color-a: var(--ds-gold);
+    --wiki-color-ahover: #efd05e;
+    --doc-cgrey-color: var(--ds-gold);
+    --doc-stext-color: var(--ds-gold);
+    --doc-accent-color: var(--ds-gold);
+    --doc-stracc-color: var(--ds-gold);
+    --doc-base-color: white;
+}
+.topBar {
+    border-bottom: 1px solid var(--ds-gold);
+}
+.wikisearchbar {
+    border-color: var(--ds-gold);
+}
+.wikiButton {
+    background-color: var(--wiki-color-a);
+}
+    .wikiButton:hover {
+        background-color: var(--wiki-color-ahover);
+    }

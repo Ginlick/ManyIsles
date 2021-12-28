@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="../Imgs/FaviconSpell.png">
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="spells.css">
+    <title>Spell Index</title>
+</head>
+<body>
+    <div class="content">
+
+        <div class="topnav" id="topnav">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <p style="float:left;padding:0;" class="home"><a href="/home.html" style="padding:12px 6px;float:left;">Many Isles</a><a href="/Code/Changelog.html" style="padding:12px 6px;float:right;" w3-include-html="/Code/CSS/v.html"></a></p>
+            <a href="javascript:void(0);" class="icon" onclick="shoBar()">
+                <i class="fa fa-bars"></i>
+            </a>
+            <a class="other account" href="/account/Account.html">Account</a>
+            <a class="other" href="/spells/SpellList.html">Create Spell List</a>
+            <p class="local">Spell Index</p>
+        </div>
+
+        <div class="col-r">
+            <div class="image-content">
+                <img src="/Imgs/SpellTab.png" alt="spellcaster" style="width:100%;" />
+            </div>
+            <div class="image-content2">
+                <img src="/Imgs/PopupSpells.png" alt="spellcaster" style="width: 100%;" />
+            </div>
+
+
+            <div class="sInfoBlock">
+                <div id="sName">Slashing Light</div>
+                <div id="sLevel" class="sText">Level 0 spell</div>
+                <div id="sSchool" class="sText">Evocation</div>
+                <div id="sElement" class="sText">High Magic</div>
+            </div>
+            <div class="sInfoBlock">
+                <div id="sCastingTime" class="sText">Casting Time: 1 action</div>
+                <div id="sRange" class="sText">Range: 120 feet</div>
+                <div id="sComponents" class="sText">Components: V, S</div>
+                <div id="sDuration" class="sText">Duration: Instantaneous</div>
+            </div>
+            <div class="sInfoBlock">
+                <div id="sClass" class="sText"> Bard, Cleric, Psion, Valkyrie, Wizard</div>
+            </div>
+            <div class="sInfoBlock">
+                <div id="sFullDesc" class="sText">
+                    You hurl a ray of light at a creature within range. Make a ranged attack roll. On a hit, the creature takes 1d10 radiant damage.<br />
+                    <br />
+                    This spell’s damage increases: 5th-2d10, 11th-3d10, 17th-4d10.
+                </div>
+            </div>
+
+            <div id="exclusiveNote" style="        width: 90%;
+        margin: auto;
+        display: none;
+        text-align: center;
+        color: red;
+        padding-top: 10px;
+        font-family: 'Arial'">Please note this is an exclusive spell; it will not automatically be added to your spell list when you <a href="SpellCreate.html" style="color:red">create</a> it.</div>
+
+        </div>
+
+
+        <div class="col-l">
+            <div id="search-tab">
+                <h1 class="title">Spell Index</h1>
+                <input type="text" class="spellSearch" id="spellSearch" placeholder="Search..." oninput="searchSpells()" />
+            </div>
+            <table id='theTable'>
+            </table>
+        </div>
+
+
+    </div>
+
+    <div class="bottomad-container">
+        <div class="bottomad">
+            <img src="/Imgs/Cards.png" alt="hi" />
+            <a href="/spells/SpellList.html">
+                create your own spell list!
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+<script src='Spells.js'></script>
+<script src="theTablebuilder.js">
+ </script>

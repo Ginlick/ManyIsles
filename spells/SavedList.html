@@ -1,0 +1,352 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/FaviconSpell.png">
+    <title>Spell List</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="spells.css">
+    <script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
+    <style>
+        .popupButton {
+            background-color: #cb57e0;
+            color: #d1121a;
+            transition: .2s ease;
+        }
+
+            .popupButton:hover {
+                background-color: #aa2bc1;
+                color: #b20d10;
+            }
+
+        #search-tab {
+            height: 120px;
+        }
+
+        .spellSearch.inTitle {
+            width: 85%;
+            float: left;
+        }
+
+        .popupButton.inTitle {
+            width: 15%;
+            height: 32px;
+            font-size: 19px;
+            display: inline-block;
+            float: left;
+            padding: 5px;
+        }
+
+        .scol-a {
+            background-color: #fffefd;
+            position: sticky;
+            top: 0;
+        }
+
+        .addtab-cont {
+            padding: 10px 10px 10px 0px;
+        }
+
+        .addtab {
+            background-color: #f0eeee;
+            color: #757575;
+            border-radius: 50px;
+            padding: 5.3px;
+            font-size: 17px;
+            font-family: Arial, Helvetica, sans-serif;
+            display: inline-block;
+            margin: 5px;
+            transition: .4s ease;
+        }
+
+            .addtab:hover {
+                background-color: #c9c9c9;
+            }
+
+        .modtab {
+            background-color: #dab8e0;
+            color: #4b4b4b;
+            border-radius: 50px;
+            padding: 4.8px;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 4px;
+            box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+            .modtab.prem {
+                background-color: #eec91b;
+                color: white;
+            }
+
+            .modtab.blu {
+                background-color: #3f8aba;
+                color: black;
+            }
+
+        #saveInfo {
+            font-style: italic;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 7px 0;
+        }
+
+        .sInfoBlock .popupButton {
+            display: inline-block;
+        }
+
+        .modContent h1 {
+            text-align: center;
+        }
+
+        .modContent input[type=text] {
+            width: 85%;
+            margin: auto;
+        }
+
+        .modContent {
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: none;
+            background-color: #fffefd;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+
+        <div class="topnav" id="topnav">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <p style="float:left;padding:0;" class="home"><a href="/Code/CodeMain.html" style="padding:12px 6px;float:left;">Many Isles</a><a href="/Code/Changelog.html" style="padding:12px 6px;float:right;" w3-include-html="/Code/CSS/v.html"></a></p>
+            <a href="javascript:void(0);" class="icon" onclick="shoBar()">
+                <i class="fa fa-bars"></i>
+            </a>
+            <a href="SpellList.html" class="icon" id="homm">
+                <i class="fas fa-home"></i>
+            </a>
+            <a class="other account" href="/account/Account.html">Account</a>
+            <a class="local" href="SpellList.html">Spell List</a>
+            <a class="other" href="/spells/SpellList.html">Create New</a>
+            <a class="other" href="/spells/SpellIndex.html">Spell Index</a>
+        </div>
+
+        <div class="col-r" id="Side">
+            <div class="sInfoBlock">
+                <p id="saveInfo">Saved Spell List</p>
+                <div style="width:271px;margin:auto;padding-bottom:8px">
+                    <button class="popupButton" onclick="saveSpellList();">Save</button>
+                    <button class="popupButton" onclick="downloadSpellList();">Download</button>
+                    <button class="popupButton" onclick="doPop();">Delete</button>
+                </div>
+            </div>
+            <div class="sInfoBlock">
+                <div id="sName">Slashing Light</div>
+                <div id="sLevel" class="sText">Level 0 spell</div>
+                <div id="sSchool" class="sText">Evocation</div>
+                <div id="sElement" class="sText">High Magic</div>
+            </div>
+            <div class="sInfoBlock">
+                <div id="sCastingTime" class="sText">Casting Time: 1 action</div>
+                <div id="sRange" class="sText">Range: 120 feet</div>
+                <div id="sComponents" class="sText">Components: V, S</div>
+                <div id="sDuration" class="sText">Duration: Instantaneous</div>
+            </div>
+            <div class="sInfoBlock">
+                <div id="sClass" class="sText"> Bard, Cleric, Psion, Valkyrie, Wizard</div>
+            </div>
+            <div class="sInfoBlock">
+                <div id="sFullDesc" class="sText">
+                    You hurl a ray of light at a creature within range. Make a ranged attack roll. On a hit, the creature takes 1d10 radiant damage.<br />
+                    <br />
+                    This spell’s damage increases: 5th-2d10, 11th-3d10, 17th-4d10.
+                </div>
+            </div>
+            <div style="width:93px;margin:auto;padding-top:8px;">
+                <button class="popupButton" onclick="removeSpell();" style="margin:auto;">Remove</button>
+            </div>
+            <div class="addtab-cont" id="AddTagsHerePlease"></div>
+        </div>
+
+        <div class="col-l">
+            <div class="scol-a">
+                <div class="addtab-cont">
+                    <div class="addtab" onclick="doPops('show')">Add Spell <i class="fas fa-angle-down"></i></div>
+                    <div class="addtab" onclick="doPops('show2')">Add Module <i class="fas fa-angle-down"></i></div>
+                </div>
+                <div class="addtab-cont" id="modtabCont" style="display:none;">
+                    <a href="/dl/View.php?id=6" target="_blank"><div class="modtab blu" id="Seas">Adventurer's Guide to the Seas</div></a>
+                    <a href="/dl/View.php?id=8" target="_blank"><div class="modtab prem" id="DarkSecrets">Handbook of Dark Secrets</div></a>
+                </div>
+                <div id="search-tab">
+
+                    <h1 id="titleSpells" class="title" onclick="clickedTitle()">Spell List</h1>
+                    <form id="listTitle" style=" display: none; width: 100%;">
+                        <input type="text" class="spellSearch inTitle" id="toBeNewTitle" placeholder="Visir's Sumptuous Spell List" />
+                        <button type="button" class="popupButton inTitle" onclick="submitTitle()">Submit</button>
+                    </form>
+
+                    <div id="spellNumTotal" style="font-family:'Arial';padding-bottom:5px;"><span id="spellNumber"></span> spells available</div>
+
+                    <input type="text" class="spellSearch" id="spellSearch" placeholder="Search..." oninput="searchSpells()" />
+                </div>
+            </div>
+            <table id='theTable'>
+            </table>
+        </div>
+    </div>
+
+        <div id="SignUp" class="modal" onclick="doPops('hide')">
+        </div>
+        <div id="modContent" class="modContent">
+            <img src="../Imgs/PopupSpells.png" alt="Hello There!" style="width:100%;margin:0;padding:0;display:inline-block" />
+            <h1> Add Spells </h1>
+            <p style="text-align:center; font-size:16px;padding: 0px 10px 0px 10px">Insert the <b>exact</b> name of any additional spell you wish to add to the list.</p>
+            <div class="container">
+                <input type="text" placeholder="Slashing Light" id="spellToAdd" list="spellSugg" required><br>
+                <datalist id="spellSugg"></datalist>
+                <p style="color:red;display:none;text-align:center; font-size:16px;width:100%" id="warner">This spell doesn't exist!</p>
+                <p style="color:green;display:none;text-align:center; font-size:16px;width:100%" id="adder">Done!</p>
+                <div style="width:100%;padding:5px 0px 20px 0px">
+                    <button class="popupButton" onclick="addSpell(spells)">Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="moduleContent" class="modContent">
+            <img src="../Imgs/PopupSpells.png" alt="Hello There!" style="width:100%;margin:0;padding:0;display:inline-block" />
+            <h1> Add Module </h1>
+            <p style="text-align:center; font-size:16px;padding: 0px 10px 0px 10px">Add the code given in a Many Isles module. This will not add any spells directly; you can select fitting ones under "Add Spell".</p>
+            <div class="container">
+                <input type="text" placeholder="2244" id="moduleToAdd" required><br>
+                <p style="color:red;display:none;text-align:center; font-size:16px;width:100%" id="mwarner">Module already added</p>
+                <p style="color:green;display:none;text-align:center; font-size:16px;width:100%" id="madder">Done!</p>
+                <div style="width:100%;padding:5px 0px 20px 0px">
+                    <button class="popupButton" onclick="addModuleSL(spells)">Add</button>
+                </div>
+            </div>
+        </div>
+
+    <div id="delContent" class="modContent">
+        <img src="../Imgs/PopupSpells.png" alt="Hello There!" style="width:100%;margin:0;padding:0;display:inline-block" />
+        <h1> Delete Spell List </h1>
+        <p style="text-align:center; font-size:16px;padding: 0px 10px 0px 10px">Are you sure?</p>
+        <div class="container">
+            <div style="width:100%;padding:5px 0px 20px 0px">
+                <button class="popupButton" onclick="deleteS();">Delete</button>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
+<script src='Spells.js'></script>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+<script src="theTablebuilder2.js"></script>
+<script>if (document.cookie.indexOf('spellLists') == -1) { window.location.href = "SetSLCook.php"; }
+    if (document.cookie.indexOf('loggedIn') == -1) { window.location.href = "/account/Account.html?error=notSignedIn"; }
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var sl = urlParams.get('sl');
+    if (sl == "") { window.location.href = "SetSLCook.php"; }
+    else {
+        if (sl == "a") { sl = "spellLists"; }
+        else { sl = "spell".concat(sl); }
+
+        var a = getCookie(sl);
+        a = a.replace(/\+/g, " ");
+        a = a.split(",");
+
+        correctTitle(a);
+        generateTableSL(table, spells, a);
+        let data = Object.keys(spells[0]);
+        generateTableHead(table, data);
+        insertSpellNum();
+
+
+        function correctTitle(a) {
+            document.getElementById("titleSpells").innerHTML = a[0];
+            a.splice(0, 1);
+            while (50 == 50) {
+                let lasta = a[a.length - 1];
+                if (lasta == "Seas" || lasta == "DarkSecrets") {
+                    document.getElementById(lasta).style.display = "inline-block"; document.getElementById("modtabCont").style.display = "block"; a.pop(); mods[lasta] = "t";
+                }
+                else { break; }
+            }
+        }
+
+        var started = false;
+        var firstDic = "";
+
+
+        function generateTableSL(table, list, a) {
+            for (let dic of list) {
+                let interrupt = true;
+                for (i = 0; i < a.length; i++) {
+                    if (a[i] == dic.id) { interrupt = false; break; }
+                }
+                if (interrupt == true) {
+                    if (dic.Note == "exclusive") {
+                        if (mods[dic.Source] == "t") { addToDatalist(dic.Name); continue; }
+                        else { continue; }
+                    }
+                    else { addToDatalist(dic.Name); continue; }
+                }
+                let row = table.insertRow();
+                if (started == false) { firstDic = dic; started = true }
+                row.onclick = function () { genSide(dic) };
+                for (kv in dic) {
+                    if (!kickColumns(kv)) {
+                        let cell = row.insertCell();
+                        let text = document.createTextNode(dic[kv]);
+                        cell.appendChild(text);
+                    }
+                }
+            }
+            genSide(firstDic);
+        }
+
+        function addModuleSL(list) {
+            let modToAdd = document.getElementById("moduleToAdd").value;
+            pizza = false;
+            if (modToAdd == 4251) { pizza = true; modToAdd = "Seas"; }
+            if (modToAdd == 6660) { pizza = true; modToAdd = "DarkSecrets"; }
+            if (pizza == false) {
+                document.getElementById("mwarner").style.display = "block";
+                document.getElementById("madder").style.display = "none";
+                document.getElementById("mwarner").innerHTML = "False Code!";
+            }
+            else if (document.getElementById(modToAdd).style.display == "inline-block") {
+                document.getElementById("mwarner").style.display = "block";
+                document.getElementById("madder").style.display = "none";
+                document.getElementById("mwarner").innerHTML = "Module already added";
+            }
+            else {
+                document.getElementById(modToAdd).style.display = "inline-block";
+                document.getElementById("modtabCont").style.display = "block";
+                document.getElementById("mwarner").style.display = "none";
+                document.getElementById("madder").style.display = "block";
+                document.getElementById("moduleToAdd").value = "";
+                mods[modToAdd] = "t";
+                for (let dic of list) {
+                    addToDatalist(dic.Name);
+                }
+                insertSpellNum();
+                unsave();
+            }
+        }
+
+        function doPop() {
+            document.getElementById("SignUp").style.display = "block";
+            document.getElementById("delContent").style.display = "block";
+        }
+        function deleteS() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var asl = urlParams.get('sl');
+            window.location.href = "DelList.php?which=".concat(asl);
+        }
+
+    } </script>

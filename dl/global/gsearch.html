@@ -1,0 +1,29 @@
+﻿<h2 class="phoneTitle"><a href="Goods.php" style="color:black" id="phoneTitle">Browse Modules</a></h2>
+<form action="Search.php" method="GET">
+    <input type="text" id="mySearch" name="query" placeholder="Search.." autocomplete="off" oninput="suggestNow();" onfocusout="killSugg();" onfocus="suggestNow();">
+    <div class="icon" onclick="shoBar()">
+        <i class="fas fa-plus"></i>
+    </div>
+    <input type="submit" class="searchButton" value="Search" />
+    <input type="text" id="type" name="type" style="display:none" value="module">
+    <input type="text" id="gsystem" name="gsystem" style="display:none" value="0">
+    <input type="text" id="Categories" name="category" style="display:none" onload="getVal(catValue)"><input type="submit" style="display:none">
+
+    <div class="suggestions" id="suggestions" style="display:none;">
+    </div>
+
+</form>
+<div class="tabs-cont">
+    <div id="charopt" class="tab" onclick="clinnation('charop')">Classes</div>
+    <div id="racet" class="tab" onclick="clinnation('race')">Races</div>
+    <div id="rulet" class="tab" onclick="clinnation('rule')">Rules</div>
+    <div id="adventuret" class="tab" onclick="clinnation('adventure')">Adventures</div>
+    <div id="loret" class="tab" onclick="clinnation('lore')">Lore</div>
+    <div id="dmst" class="tab" onclick="clinnation('dms')">DM Stuff</div>
+    <div id="hmbrwt" class="tab" onclick="clinnation('hmbrw')">Homebrewing</div>
+    <div id="genrt" class="tab" onclick="clinnation('genr')">Generator</div>
+    <div id="indxt" class="tab" onclick="clinnation('rule')">Index</div>
+    <div id="vist" class="tab" onclick="clinnation('vis')">Visual</div>
+    <div id="cartt" class="tab" onclick="clinnation('cart')">Cartography</div>
+    <div id="dunt" class="tab" onclick="clinnation('dun')">Dungeons</div>
+</div>

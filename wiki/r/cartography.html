@@ -1,0 +1,74 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/FaviconWiki.png">
+    <title>Cartography | Many Isles Wiki</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik-modimg.css">
+</head>
+<body>
+    <div class="content">
+        <div class="col-l" wiki-include-html="/wiki/col-l.html">
+        </div>
+        <div class="col-r">
+            <p class="topinfo"><a href="/wiki.html">Many Isles Wiki</a> - <a href="/wiki/r.html">Resources</a> - <a href="#">Cartography</a></p>
+            <h1>Cartography</h1>
+            <p>
+                An essential part of any true fantasy world is <i>what</i> it is. That is represented on maps; thus, we worldbuilders love maps.<br />
+                This article presents a number of geographical maps as resources for worldbuilders and writers; check out the <a href="political.html">Political Maps</a> article for further mapping.<br />
+                Note that all of these maps focus exclusively on Oshmondu, the material plane.
+            </p>
+            <h2>Geographical Maps</h2>
+            <div class="imgCont"><img src="/IndexImgs/VilLine.png" alt="oops" /><div class="overlay" onclick="doModal(3)"></div></div>
+            <div id="mod3" class="modal">
+                <span class="close" id="close3">&times;</span>
+                <img src="/wikimgs/6thgen Oshmondu.png">
+                <div>Oshmondu 6th Gen Blank</div>
+            </div>
+            <h3>6th Gen Blank</h3>
+            <p>
+                An early rendition of the brand-new 6th map generation.
+            </p>
+
+            <div class="imgCont"><img src="/Imgs/Osh.png" alt="oops" /><div class="overlay" onclick="doModal(1)"></div></div>
+            <div id="mod1" class="modal">
+                <span class="close" id="close1">&times;</span>
+                <img src="/Imgs/Oshmondu.png">
+                <div>Oshmondu 5th Gen Detailed, 65 OW</div>
+            </div>
+            <h3>5th Gen Detailed</h3>
+            <p>
+                Of the most recent fully developed generation map generation, it's a single world map - in incredible detail. It features all cities and important terrain of 65 OW.<br />
+                A notable disadvantage is that it does not feature island names.
+            </p>
+
+            <div class="imgCont"><img src="/Imgs/4thOver.JPG" alt="oops" /><div class="overlay" onclick="doModal(2)"></div></div>
+            <div id="mod2" class="modal">
+                <span class="close" id="close2">&times;</span>
+                <img src="/Imgs/4thOver.JPG">
+                <div>Oshmondu 4th Gen Overview, 65 OW</div>
+            </div>
+            <h3>4th Gen Overview</h3>
+            <p>
+                Many Isles 4th generation maps were constituted through a patchwork of detailed regional maps eventually resulting in the complete Overview map in 2018, which is still the face of the Many Isles today. It features island names as well as more precise information.
+            </p>
+
+            <h2 onclick="showBg(1); addHTML(1);">Distribution Maps <i class="fas fa-angle-down arrow" id="f1"></i></h2>
+            <p>World maps that show certain interesting elements of Oshmondu.</p>
+            <div class="hidhidCont" id="h1">
+                <div id="1" class="hidCont" wiki-load-html="cartography/1.html">
+                    Loading...
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <p style="display:none" id="showSide">s6</p>
+</body>
+</html>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="/Code/CSS/global.js"></script>
+<script src="/wiki/wik.js"></script>

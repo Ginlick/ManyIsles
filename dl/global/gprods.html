@@ -1,0 +1,49 @@
+﻿<div class="banner">
+    <picture>
+        <source srcset="/Imgs/BannerDL.png" media="(max-width: 1400px)">
+        <source srcset="/Imgs/BigBannerDL.png">
+        <img src="/Imgs/BigBannerDL.png" alt="Banner" style='width:100%;display:block'>
+    </picture>
+</div>
+
+<div class="dignav">
+    <div class="bottButtCon">
+        <a href="/home.html">Many Isles</a>
+        <a href="/account/Account.html">Account</a>
+        <p onclick="showSignIn('general')" id="signProposition">Sign In</p>
+        <p onclick="SignOut('general')" id="offProposition" style="display:none">Sign Out</p>
+    </div>
+</div>
+
+<div id="SignUp" class="modal" onclick="killAll()">
+</div>
+<div id="modContent" class="modCol" style="display:none;">
+    <div class="modContent">
+
+        <img src="/Imgs/PopupBar.png" alt="Hello There!" style="width:100%;margin:0;padding:0;display:inline-block" />
+        <h1 style="text-align:center" id="poptitle"> Sign In </h1>
+        <div class="popCon" id="popCon">
+            <p style="text-align:center;font-size:calc(0.5vw+12px);" id="signExpl">Sign in to download products directly.</p>
+            <form action='/account/SignDG.php' method="post" style="width:100%" id="SignInForm">
+                <div style="padding-left:24px;font-family:'Arial';">
+                    <label for="uname"><b>Username</b></label>
+                    <input type="text" placeholder="Hansfried Dragonslayer" name="uname" required><br>
+                </div>
+                <input type="text" id="returnTo" name="returnTo" value="Goods.php" style="display:none" />
+                <input type="text" id="returnId" name="returnId" value="Nope" style="display:none" />
+                <input type="text" id="returnQuery" name="returnQuery" value="Nope" style="display:none" />
+                <input type="text" id="returnCategory" name="returnCategory" value="Nope" style="display:none" />
+                <input type="text" id="returnType" name="returnType" value="m" style="display:none" />
+                <div style="padding-left:24px;padding-top:10px;padding-bottom:10px;font-family:'Arial';">
+                    <label for="psw"><b>Password</b></label>
+                    <input type="password" placeholder="uniquePassword22" name="psw" required><br>
+                </div>
+                <p style="text-align:center;color:red;display:none;" id="youFailedMaggot">Sign in failed.</p>
+                <div style="width:100%">
+                    <button class="popupButton" type="submit">Login</button>
+                </div>
+            </form>
+            <p style="text-align:center;">Don't have an account yet? <a href="/account/Account.html" style="color:red">Join us now!</a></p>
+        </div>
+    </div>
+</div>

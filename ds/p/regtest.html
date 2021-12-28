@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+
+    <h2>JavaScript String</h2>
+
+    <p>
+        The replace() method searches a string for a specified value, or a regular expression,
+        and returns a new string where the specified values are replaced.
+    </p>
+
+    <p id="demo">Mr Blue has a blue:; "hous[e" and; a blue car.</p>
+
+    <button onclick="myFunction()">Try it</button>
+
+    <script>
+        var reg = new RegExp("[-:;,\\[\"\']", 'g');
+        function myFunction() {
+            let str = document.getElementById("demo").innerHTML;
+            let res = str.replace(reg, "");
+            document.getElementById("demo").innerHTML = res;
+        }</script>
+
+</body>
+</html>

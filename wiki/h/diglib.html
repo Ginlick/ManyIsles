@@ -1,0 +1,64 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/FaviconWiki.png">
+    <title>Digital Library | Many Isles Wiki</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
+</head>
+<body>
+    <div class="content">
+        <div class="col-l" wiki-include-html="/wiki/col-l.html">
+        </div>
+        <div class="col-r">
+            <p class="topinfo"><a href="/wiki.html">Many Isles Wiki</a> - <a href="/wiki/h.html">How To</a> - <a href="#">Digital Library</a></p>
+            <img src="/IndexImgs/Prods.png" alt="oops" style="display:inline-block;width:20%;padding:10px;float:right;max-width:210px;border-radius:22px;" />
+            <h1>Digital Library</h1>
+            <p>
+                The core ideology of the Many Isles is creation, and many of the community's great works end in the digital library, a grand assortment of everything one might want.<br />
+                <a href="/dl/Goods.php" target="_blank">Digital Library</a> - <a href="Publishing.html">Publish my Own</a> - <a href="/ds/tiers.php" target="_blank">Purchase Tier</a>
+            </p>
+
+            <h2>Using the Digital Library</h2>
+            <img src="../media/Goods.jpg" alt="oops" style="display:inline-block;width:40%;padding:10px;float:right;max-width:330px" />
+            <p>
+                When you navigate to the library from our <a href="/Code/CodeMain.html" target="_blank">homepage</a> to the library (using the "Products" tab), you'll find yourself before the library's homepage.<br />
+                You'll notice two major divisions: the content block (on white background), where any content is displayed. Around it, you have a number of navigation tools to access and modify the content you see.
+            </p>
+            <h3>Navigation Tools</h3>
+            <p>
+                <b>Top Navigation.</b> Designed for quick access of the most essential things, it contains a link to the homepage, to your account page, and an easy way for you to sign our to gain access to your tiers and download premium content.<br />
+                <b>Category Search.</b> Input the type of product (module, tool, art...) you want to look for by clicking on the grey box, and which categories you'd like to precise your search, here.<br />
+                <b>Search Bar.</b> You can add some text here, which will further narrow down your search. To submit your search, press enter whilst this text box is selected.<br />
+                <b>Footer.</b> We give you some additional resources in the footer, for any other references you might want.
+            </p>
+            <h3 onclick="showBg(1);">Content Block <i class="fas fa-angle-down arrow" id="f1"></i></h3>
+            <p>This block's content changes depending on what you're looking at at the moment.</p>
+            <div class="hidhidCont" id="h1">
+                <div id="1" class="hiddenCont">
+                    <p>
+                        <b>Homepage.</b><br />
+                        Whilst on the homepage, we propose you a number of products. "New" are modules ranked by publishing date; "Popular" are those modules with most views; "Recommended" are the Pantheon's personal choice of modules; "Tools" are tools ranked by publishing date; and "Art" is art ranked by publishing date.<br /><br />
+                        <b>Search Page.</b><br />
+                        When you hit enter, you find a page before you with one or two groups of up to 20 hits. The first group consists of all products of the fitting type (eg. module), category and title according to your query. If you didn't input any text, this block doesn't appear. The second block consists of all products of fitting type and category.<br /><br />
+                        <b>Product Page.</b><br />
+                        A single product's page. On load, the category search column on the left is that of the product's type and categories. In the content, you see the product's name, its categories, its publisher (click on their name to see their partnership page), its <a href="diglib/tiers.html">tier</a>, and a description. Beneath, you can find more products by the same author, and suggestions based on the original's categories.<br /><br />
+                        <b>Partnership Page.</b><br />
+                        A <a href="partnerships.html">partnership</a> is the publishing entity in the Many Isles. You can see information about it, as well as their most viewed titles.
+                    </p>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <p style="display:none" id="showSide">s1</p>
+</body>
+</html>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="/Code/CSS/global.js"></script>
+<script src="/wiki/wik.js"></script>
+<script>window.location.replace("/docs/11/Digital_Library");</script>

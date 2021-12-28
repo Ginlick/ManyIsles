@@ -1,0 +1,69 @@
+﻿
+.credTable {
+    border-collapse: collapse;
+    width: 80%;
+    margin: auto;
+    text-align: left;
+    font-family: 'Montserrat', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+    .credTable.orders {
+        width: 95%;
+    }
+        .credTable.orders ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .credTable.orders li {
+            text-align: left;
+        }
+            .credTable.orders thead {
+            font-weight: bold;
+        }
+    .credTable tbody > tr > td, .credTable thead > tr > td {
+        border-bottom: 1px solid #ddd;
+        padding: 5px;
+        text-align: left;
+        font-family: 'Open Sans', Geneva, Verdana, sans-serif;
+        overflow: hidden;
+    }
+
+        .credTable tbody > tr > td > img {
+            width: 80%;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+    .credTable * {
+        font-size: 17px;
+    }
+    .credTable.prods tbody > tr > :nth-child(1) {
+        width: 22%;
+    }
+
+    .credTable.prods tbody > tr > :nth-child(2) {
+        width: 40%;
+    }
+
+    .credTable.prods tbody > tr > :nth-child(3) {
+        width: 20%;
+    }
+
+    .credTable.prods tbody > tr > :nth-child(4) {
+        width: 15%;
+    }
+
+    .credTable .homescreen {
+        margin: 0;
+    }
+
+    .credTable > tbody > tr > td > a, .credTable .fakelink {
+        color: #d1a720;
+        text-decoration: none;
+        font-family: inherit;
+    }
+
+
+        .credTable > tbody > tr > td > a:hover, .credTable .fakelink:hover {
+            color: #f0c026;
+        }

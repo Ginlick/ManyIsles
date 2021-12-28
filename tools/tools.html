@@ -1,0 +1,107 @@
+﻿
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/Favicon.png">
+    <title>Tools</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
+    <link rel="stylesheet" type="text/css" href="imgTabs.css">
+    <link rel="stylesheet" type="text/css" href="tools.css">
+    <style>
+        .spells {
+            color: #d10e04;
+            background-color: #cf7ac8;
+            transition: .2s ease;
+        }
+            .spells:hover {
+                background-color: #bc6eb6;
+                color: #d10e04;
+            }
+        .tools {
+            color: white;
+            background-color: #d1a720;
+            transition: .2s ease;
+        }
+
+            .tools:hover {
+                color: white;
+                background-color: #f0c026;
+                transition: .2s ease;
+            }
+
+    </style>
+</head>
+<body>
+    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;z-index:22;"></div>
+    <div class="flex-container">
+        <div class='left-col'>
+            <a href="/home.html"><h1 class="menutitle">Overview</h1></a>
+            <ul class="myMenu">
+                <li><a class="Bar" href="/home.html">Home</a></li>
+            </ul>
+            <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
+            <ul class="myMenu bottomFAQ">
+            </ul>
+
+        </div>
+
+        <div class='column'>
+            <h1>Many Isles Tools</h1>
+            <p>A collection of cool tools to enrich your projects.</p>
+
+            <div class="container other">
+                <div class="imgCont" load-image="/IndexImgs/Pen.png">
+                </div>
+                <div class="overlay">
+                    <div class="text">A cool public wiki where you can write whatever worldbuilding stuff you like.</div>
+                </div>
+                <div class='partinimg'>
+                    <a href='/fandom/home' class='button tools' target='_self' style="">Fandom</a>
+                </div>
+            </div>
+
+            <div class="container other">
+                <div class="imgCont" load-image="/Imgs/ManySpells.png">
+                </div>
+                <div class="overlay">
+                    <div class="text">The complete spell list for 5eS.</div>
+                </div>
+                <div class='partinimg'>
+                    <a href='/spells/SpellIndex.html' class='button spells' target='_self' style="">Spell Index</a>
+                </div>
+            </div>
+
+            <div class="container other">
+                <div class="imgCont" load-image="/IndexImgs/population.png">
+                </div>
+                <div class="overlay">
+                    <div class="text">A growth model for fantasy and real populations.</div>
+                </div>
+                <div class='partinimg'>
+                    <a href='population.html' class='button tools' target='_self' style="">Population</a>
+                </div>
+            </div>
+
+            <div class="container other">
+                <div class="imgCont" load-image="/IndexImgs/markdown.png">
+                </div>
+                <div class="overlay">
+                    <div class="text">A markdown editor to test fandom wiki entries before submitting them.</div>
+                </div>
+                <div class='partinimg'>
+                    <a href='markedit.php' class='button tools' target='_self' style="">Markdown</a>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</body>
+</html>
+<script src="/Code/CSS/global.js"></script>
+

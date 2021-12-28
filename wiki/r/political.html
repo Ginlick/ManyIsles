@@ -1,0 +1,49 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/FaviconWiki.png">
+    <title>Political Maps | Many Isles Wiki</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik-modimg.css">
+</head>
+<body>
+    <div class="content">
+        <div class="col-l" wiki-include-html="/wiki/col-l.html">
+        </div>
+        <div class="col-r">
+            <p class="topinfo"><a href="/wiki.html">Many Isles Wiki</a> - <a href="/wiki/r.html">Resources</a> - <a href="#">Political Maps</a></p>
+            <h1>Political Maps</h1>
+            <p>
+                An index of Oshmondian (the prime material plane) maps from the Celestial Wars to Maitreya.<br />
+                For other political maps, see child articles.
+            </p>
+            <h2 onclick="showBg(1);addHTML(1)"> Oshmondu through History <i class="fas fa-angle-down arrow" id="f1"></i></h2>
+            <p>A visual history of Many Isles state, through 40'000 years.</p>
+            <div class="imgCont"><img src="/wikimgs/political/425.JPG" alt="oops" /><div class="overlay" onclick="doModal(1)"></div></div>
+            <div id="mod1" class="modal">
+                <span class="close" id="close1">&times;</span>
+                <img src="/wikimgs/political/425.JPG">
+                <div>Oshmondu, 425 OW</div>
+            </div>
+            <h3>425 OW, Dwarven Domination</h3>
+            <p style=" min-height: 50px;">The Holy Dwarven Empire, with the help of its gods, had conquered most of Oshmondu, and most races were on the verge of extinction.</p>
+
+            <div class="hidhidCont" id="h1">
+                <div class="hidCont" id="1" wiki-load-html="political/1.html">
+                    Loading...
+                </div>
+            </div>
+
+            <h2>Further Maps</h2>
+            <p>An interested reader might want to look into maps more precise than these world-level political maps shown above. In such a case, research into specific domain's resources might yield good results.</p>
+        </div>
+    </div>
+    <p style="display:none" id="showSide">s6</p>
+</body>
+</html>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="/Code/CSS/global.js"></script>
+<script src="/wiki/wik.js"></script>

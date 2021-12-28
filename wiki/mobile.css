@@ -1,0 +1,55 @@
+﻿:root {
+    --wiki-fonts-h1: 90px;
+    --wiki-fonts-h2: 50px;
+    --wiki-fonts-h3: 42px;
+    --wiki-fonts-h3: 40px;
+    --wiki-fonts-larg: 28px;
+    --wiki-fonts-p: 22px;
+    --wiki-fonts-smaller: 18px;
+    --wiki-fonts-small: 20px;
+    --wiki-fonts-unresp-nav: 30px;
+}
+
+.fandomcoll, .coll {
+    position: absolute;
+    top: 0;
+    left: -110%;
+    transition: .3s ease-in-out;
+    width: 60%;
+    max-width: 60%;
+    z-index: 9;
+}
+.fandomcoll.visible, .coll.visible {
+    left: 0;
+}
+    .coll.visible {
+        box-shadow: 10px 10px 10px grey;
+    }
+.fandomrcoll, .colr {
+    width: 100%;
+}
+.col-r {
+    width: 100%;
+}
+.colrContent {
+    width: 100%;
+}
+
+.sidetab {
+    width: 50%;
+    max-width: 1000px;
+}
+.sideimg {
+    width: 40%;
+    max-width: 600px;
+}
+.domCont {
+    width: 22%;
+}
+.suggestions {
+    min-width: max(50%, 320px);
+}
+
+.showBGer {
+    display: inline-block;
+}

@@ -1,0 +1,163 @@
+﻿:root {
+    --doc-nvsel-color: var(--col-lightwite);
+    --doc-cgrey-color: var(--all-color-albord);
+    --doc-accent-color: #cfeaff;
+    --doc-stracc-color: var(--gen-color-bblue);
+    --doc-anav-color: var(--wiki-color-anav);
+    --doc-anaver-color: var(--wiki-color-anaver);
+    --doc-ahover-color: var( --wiki-color-ahover);
+    --wiki-color-beige: var(--doc-stracc-color);
+}
+body {
+    background-color: var(--doc-base-color);
+    background-image: none;
+    background-size: auto;
+}
+
+
+.modContent {
+    background-color: var(--doc-base-color);
+}
+.wikiButton {
+    background-color: var(--doc-ahover-color);
+    color: var(--doc-text-color);
+}
+
+    .wikiButton:hover {
+        background-color: #c0e6ff;
+        color: var(--doc-text-color);
+    }
+
+.content {
+    flex: 1 0 auto;
+    position: relative;
+}
+
+.coll {
+    width: calc(220px + 10%);
+    max-width: 280px;
+    padding: 10px;
+    position: sticky;
+    top: 60px;
+    background-color: var(--doc-base-color);
+}
+h1 .topinfo {
+    margin-left: 0;
+}
+
+.navLink {
+    display: block;
+    width: 100%;
+    padding: 5px 8px 5px 50px;
+    margin: 5px 0 0 0;
+    border-radius: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+    .navLink a, .navLink i {
+        font-size: var(--wiki-fonts-unresp-nav);
+        color: var(--doc-anav-color);
+    }
+    .navLink.purelink a {
+        display: inline-block;
+        width: 100%;
+    }
+    .navLink:hover {
+        background-color: var(--doc-anaver-color);
+    }
+    .navLink a:hover {
+        color: var(--doc-anav-color);
+    }
+    .navLink.selected {
+        background-color: var(--doc-nvsel-color);
+    }
+    .navLink.a0 {
+        display: none;
+    }
+    .navLink.a1 {
+        padding-left: 8px;
+    }
+        .navLink.a2 {
+            padding-left: 18px;
+        }
+    .navLink.a3 {
+        padding-left: 30px;
+    }
+    .navLink.a4 {
+        padding-left: 42px;
+    }
+
+.colr {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    padding: 20px 25px 120px 10px;
+    border-left: 1px solid var(--doc-cgrey-color);
+}
+
+.col-l, .col-r, input, select, textarea {
+    background-color: var(--doc-base-color);
+}
+
+.colrContent {
+    width: 83%;
+    padding-left: 10px;
+}
+
+.domCont h3 {
+    position: absolute;
+    bottom: 5px;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+    transition: .4s ease;
+    z-index: 6;
+    color: var(--gen-color-mellowite);
+    font-size: calc(15px + 1.2vw);
+    overflow: hidden;
+    word-wrap: break-word;
+}
+.domCont h3 {
+    font-size: calc(12px + 0.9vw);
+}
+.col-r table {
+    margin: 15px auto;
+}
+.col-r td, .col-r th {
+    padding: 5px;
+    border: 1px solid var(--doc-cgrey-color);
+    background-color: var(--doc-base-color);
+}
+.col-r thead th {
+    font-weight: bold;
+    background-color: var(--doc-cgrey-color);
+}
+@media only screen and (min-width:1600px) {
+        .domCont h3 {
+            font-size: 1.3vw;
+        }
+}
+
+@media only screen and (min-width:2200px) {
+        .domCont h3 {
+            font-size: 0.9vw;
+        }
+}
+
+.suggestions {
+    border-color: var(--doc-stracc-color);
+    background-color: var(--doc-base-color);
+}
+    .suggestions ul li {
+        border-color: var(--doc-stracc-color);
+    }
+
+    .footer .centerer {
+        width: 50%;
+        min-width: 200px;
+        text-align: center;
+        margin: auto;
+        font-size: var(--all-fonts-smal);
+        padding: 20px;
+    }

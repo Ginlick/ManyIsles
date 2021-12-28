@@ -1,0 +1,86 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/FaviconWiki.png">
+    <title>Spells | Many Isles Wiki</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
+</head>
+<body>
+    <div class="content">
+        <div class="col-l" wiki-include-html="/wiki/col-l.html">
+        </div>
+        <div class="col-r">
+            <p class="topinfo"><a href="/wiki.html">Many Isles Wiki</a> - <a href="/wiki/h.html">How To</a> - <a href="#">Spell Lists</a></p>
+            <img src="/Imgs/SunMagic.png" alt="oops" style="display:inline-block;width:20%;padding:10px;float:right;max-width:200px" />
+            <h1>Spell Lists</h1>
+            <p>
+                The Many Isles offers a <a href="/spells/SpellIndex.html" target="_blank">spell tool</a>, which allows you to search for 5eS spells, and generate your own spell lists.
+            </p>
+            <h3 onclick="showBg(1);">Find the Tool <i class="fas fa-angle-down arrow" id="f1"></i></h3>
+            <div class="hidhidCont" id="h1">
+                <p id="1" class="hiddenCont">
+                    Here's a <a href="/spells/SpellIndex.html" target="_blank">direct link</a> to the spell index page.<br />
+                    If you're looking for it from the website, you can easily find it on the homepage, labeled "Spell Index". You can also find it from your <a href="/accounts/SignedIn.php">account</a> page, if you've already saved some spell lists.
+                </p>
+            </div>
+            <h3 onclick="showBg(2);">Find Saved Spell Lists <i class="fas fa-angle-down arrow" id="f2"></i></h3>
+            <div class="hidhidCont" id="h2">
+                <p id="2" class="hiddenCont">
+                    Once you've saved a spell list, there's two places where you can find it. If you're in the spell tool, navigate to "<a href="/spells/SpellList.html">Create Spell List</a>" in the navigation bar, and find a table with all saved spell lists under "Saved Spell Lists". Alternatively, on your <a href="/account/SignedIn.php">account page</a>, there's a block called "Saved Spell Lists" in which you can find a similar table.
+                </p>
+            </div>
+            <h2 onclick="showBg(3); addHTML(3);">Using the Tool <i class="fas fa-angle-down arrow" id="f3"></i></h2>
+            <p>Anything you need to know about how to navigate and use the tool can be found here.</p>
+            <div class="hidhidCont" id="h3">
+                <div id="3" class="hiddenCont" wiki-load-html="spells/3.html">
+                    Loading...
+                </div>
+            </div>
+            <h2>Personalized Spell Lists</h2>
+            <p>The greatest feature of the spell tool is the option to create your own spell lists, adapted to your character's class, race, and piety, and freely edit the generated list. </p>
+            <h3 onclick="showBg(4);">Generate and Save <i class="fas fa-angle-down arrow" id="f4"></i></h3>
+            <div class="hidhidCont" id="h4">
+                <p id="4" class="hiddenCont">
+                    As you navigate to "<a href="/spells/SpellList.html">Create Spell List</a>" in the tool, you'll find a form with three columns: one for each 5eS class, each race that unlocks racial spells, and each piety that unlocks spells. Select the options which your character fits, and click "Submit" to generate a spell list!<br />
+                    Mythical spells are level 10-12 spells that are introduced in the <a href="/dl/View.php?id=41">Epic Characters</a> module, and are intended for epic tier play. If you don't use this, checking "Remove Mythical Spells" will not include them when you generate a spell list.<br /><br />
+                    Once you've generated a spell list, you'll notice a difference to the spell index: the additional buttons on the top right. By clicking "Save", the spell list as is will be saved in the next free slot. You need to be signed in to save spell lists, and you have only five slots.<br />
+                    After saving, you can access the list as shown <span class="fakelink" onclick="showBg(2)">above</span>.
+                </p>
+            </div>
+            <h3 onclick="showBg(5);addHTML(5)">Modify <i class="fas fa-angle-down arrow" id="f5"></i></h3>
+            <div class="hidhidCont" id="h5">
+                <div id="5" class="hiddenCont" wiki-load-html="spells/5.html">
+                    Loading...
+                </div>
+            </div>
+            <h2>Further Questions</h2>
+            <p>The spell tool has a few odd quirks, and we hope that any unanswered questions you still have can be satisfied with the FAQ below.</p>
+            <h3 onclick="showBg(6);">What are Mythical Spells? <i class="fas fa-angle-down arrow" id="f6"></i></h3>
+            <div class="hidhidCont" id="h6">
+                <p id="6" class="hiddenCont">
+                    Mythical spells are level 10-12 spells that were introduced in the <a href="/dl/View.php?id=41">Epic Characters</a> module, and are intended for epic tier play. That means characters beyond level 20 unlock them, and they are of truly mythical power - if not of gods, then easily that of demigods.
+                </p>
+            </div>
+            <h3 onclick="showBg(7);">What is this Spell Classification? <i class="fas fa-angle-down arrow" id="f7"></i></h3>
+            <div class="hidhidCont" id="h7">
+                <p id="7" class="hiddenCont">
+                    Adventurers used to 5e might notice odd schools of magic for certain spells. Teleportation? Abjuration (Interdiction)? And what are those odd elements noted in pink?<br /><br />
+                    <b>Schools and Colleges</b><br />
+                    In <span class="fakelink">5eS</span>, wizard academies and other students of the magical arts with human origins or cultural ties classify spells according to schools of magic. Certain schools have further sub-specifications, called colleges, which are noted in brackets after the school's name.<br /><br />
+                    <b>Ele'Sillian Element</b><br />
+                    An older classification method for magic is the Ele'Sillian Element method, the one adopted by ancient elves. Instead of a study of movements necessary for mortals to weave certain kinds of magic, it is based on the spells themselves, and which elemental powers they call upon. The less pure an element is (the purest being High Magic, and the least pure being a mix of two elements), the less powerful a spell is. However, many spells did not fit into this system, and it is therefore often regarded as an useless relic of the past.
+                </p>
+            </div>
+        </div>
+    </div>
+    <p style="display:none" id="showSide">s1</p>
+</body>
+</html>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="/Code/CSS/global.js"></script>
+<script src="/wiki/wik.js"></script>
+<script>window.location.replace("/docs/36/Spell_Index");</script>
+

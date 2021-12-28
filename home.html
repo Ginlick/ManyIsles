@@ -1,0 +1,249 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="Imgs/Favicon.png">
+    <title>Many Isles</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/GGM.css">
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
+    <link rel="stylesheet" type="text/css" href="/tools/imgTabs.css">
+    <style>
+
+        .contCont {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .container {
+            flex: none;
+        }
+        .wiki {
+            color: #5c4f95;
+            background-color: #fffefd;
+            transition: .3s ease;
+            cursor: pointer;
+        }
+
+            .wiki:hover {
+                color: #497d8a;
+                background-color: #ecebe9;
+            }
+
+        .ds {
+            color: white;
+            background-color: #d1a720;
+            transition: .2s ease;
+            cursor: pointer;
+            border: 1px solid white;
+        }
+
+            .ds:hover {
+                color: white;
+                background-color: #f0c026;
+                transition: .2s ease;
+                cursor: pointer;
+            }
+
+            .ds.noline {
+                border: none;
+            }
+        .fandom {
+            color: black;
+            background-color: #9edae3;
+            transition: .3s ease;
+        }
+
+            .fandom:hover {
+                color: #2a2a2a;
+                background-color: #8ec5cd;
+            }
+        .mystral {
+            color: var(--col-whitet);
+            background-color: #7c9ca6;
+        }
+            .mystral:hover {
+                color: var(--col-whitet);
+                background-color: #cae5fe;
+            }
+        .FeS {
+            color: #FFFAFF;
+            background-color: #ee51e1;
+        }
+
+            .FeS:hover {
+                color: #FFFAFF;
+                background-color: #ff6ef3;
+            }
+    </style>
+</head>
+<body>
+
+    <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl="true"></div>
+
+    <div class="contentBlock">
+
+        <div class="banner">
+            <picture>
+                <source srcset="/Imgs/Banner.png" media="(max-width: 1400px)">
+                <source srcset="/BigBanner.png">
+                <img src="/BigBanner.png" alt="Banner" style='width:100%;display:block'>
+            </picture>
+        </div>
+
+        <h1 style="
+        color: RGB(130,0,0);
+        font-size: 4em;
+        margin-bottom: 0.1vw">
+            Many Isles
+        </h1>
+        <div style="width:80%;background-color:RGB(149,96,50);height:3px;margin:auto;"></div>
+        <div style="text-align:center;margin:0px 0.3vw 3vw;font-size:2vw">
+            <p style="color: rgb(76, 54, 47);font-size: var(--all-fonts-larg);">
+                A homebrew hub with lore, cool rules, and epic tools.<br />
+                Find tons of great content by the best of creators under Products, and create an account to become an Adventurer and gain tons of benefits!
+            </p>
+        </div>
+        <div class="contCont">
+            <div class="container">
+                <!-- products-link -->
+                <div class="imgCont" load-image="/Imgs/Prods.png">
+                </div>
+                <div class="overlay">
+                    <div class="text">A gallery full of jewels from the Many Isles. What we're all about!</div>
+                </div>
+                <div class='partinimg'><a href='/dl/Goods' class='button' target='_self'>Products</a></div>
+            </div>
+
+            <div class="container">
+                <!-- introduction-link -->
+
+                <div class="imgCont" load-image="/Imgs/tools.png">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">Awesome community-created wikis.</div>
+                </div>
+                <div class='partinimg'><a href='/fandom/home' class='button fandom' target='_self'>Fandom</a></div>
+
+            </div>
+
+            <div class="container">
+                <!-- accounts-link -->
+
+                <div class="imgCont" load-image="../Imgs/Acc.png">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">Your account. Be an adventurer of the Many Isles!</div>
+                </div>
+                <div class='partinimg'><a href='/account/Account' class='button' target='_self'>Account</a></div>
+
+            </div>
+
+            <div class="container">
+                <div class="imgCont" load-image="/IndexImgs/squMyst.png">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">Easily create notebooks for campaigns and worldbuilding.</div>
+                </div>
+
+                <div class='partinimg'><a href='/mystral/hub' class='button mystral' target='_self'>Notes</a></div>
+
+            </div>
+            <div class="container">
+                <!-- ds-link -->
+
+                <div class="imgCont" load-image="/Imgs/DS.png">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">A cool digital store where you can buy physical products.</div>
+                </div>
+
+                <div class='partinimg'><a href='/ds/store' class='button ds' target='_self'>Store</a></div>
+
+            </div>
+
+            <div class="container">
+                <div class="imgCont" load-image="/Imgs/5eSlogo.png" style="background-color:black;">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">A variant D&D system.</div>
+                </div>
+                <div class='partinimg'><a href='/5eS/1/home' class='button FeS' target='_self'>5eS Rulebook</a></div>
+
+            </div>
+
+            <div class="container">
+                <!-- tools-link -->
+
+                <div class="imgCont" load-image="/IndexImgs/Gear.png">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">A ton of extra tools for the adventurer!</div>
+                </div>
+
+                <div class='partinimg'>
+                    <a href='/tools/tools' class='button ' target='_self'>Tools</a>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div>
+            <img src="/Imgs/Bar2.png" alt="RedBar" class='separator'>
+        </div>
+
+
+        <h2>Join Us</h2>
+
+        <div class="contCont">
+            <div class='container'>
+
+                <div class="imgCont" load-image="/Imgs/disct.png">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">Join our discord server and become part of the growing community!</div>
+                </div>
+
+                <div class='partinimg'><a href='https://discord.gg/XTQnR7mS3D' class='button' target='_blank'>Join!</a></div>
+
+            </div>
+
+
+            <div class='container'>
+
+                <div class="imgCont" load-image="/Imgs/Reddit.png">
+                </div>
+
+                <div class="overlay">
+                    <div class="text">Find us on reddit!</div>
+                </div>
+
+                <div class='partinimg'><a href='https://www.reddit.com/r/ManyIsles/' class='button' target='_blank'>Join!</a></div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="/Code/CSS/global.js"></script>
+<script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var show = urlParams.get('show');
+
+    onload= function hey() {
+        if (!localStorage["alertdisplayed"]) {
+            createPopup("d:gen;txt:Welcome to the Many Isles!;b:1;bTxt:take a tour;bHref:/docs/32/Welcome;dur:22000");
+            localStorage["alertdisplayed"] = true;
+
+        }
+    }
+</script>

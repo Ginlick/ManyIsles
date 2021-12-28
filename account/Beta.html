@@ -1,0 +1,158 @@
+﻿<script>if (document.cookie.indexOf('loggedIn') == -1) {
+        window.location.href = "Account.html?error=notSignedIn";
+    }</script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="../Imgs/Favicon.png">
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/GGM.css">
+    <title>Account</title>
+    <style>
+
+        h1 {
+            font-size: 2.6vw
+        }
+
+        h2 {
+            font-size: 2vw;
+        }
+
+        .contentBlock p {
+            font-size: 1.6vw;
+            text-align: center;
+            padding: 0 1% 0 1%;
+        }
+
+        .hoveringBoio {
+            width: 44%;
+            height: 36vw;
+            margin: 3%;
+            float: left;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+            .hoveringBoio p {
+                font-size: 1vw
+            }
+
+        .imgInBoio {
+            display: block;
+            width: 95%;
+            margin: auto;
+            border-radius: 5px;
+        }
+
+            .imgInBoio:hover {
+                filter: brightness(50%);
+                transition: .5s ease;
+            }
+
+        .overlay {
+            z-index: 1;
+            display: block;
+            opacity: 1;
+            height: 100%;
+            width: 100%;
+            border-radius: 16.5%;
+            transition: .5s ease;
+            background-color: #000000;
+        }
+
+        .hoveringBoio:hover .overlay {
+            opacity: 0.75;
+        }
+
+        .mednav {
+            overflow: hidden;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            font-size: 1.5vw;
+        }
+
+        .mednav a {
+            font-family: 'Arial';
+            display: inline;
+            margin: 0;
+            color: #d10e04;
+            float: left;
+            color: black;
+            text-align: center;
+            padding: 0.6vw 2vw;
+            text-decoration: none;
+            color: black;
+        }
+
+            .mednav a:hover {
+                color: white;
+            }
+    </style>
+</head>
+<body>
+    <div style="flex: 1 0 auto;">
+
+        <div w3-include-html="/Code/CSS/GTopnav.html"></div>
+
+        <div class="contentBlock" style="margin-top:5vw;">
+
+            <div class="banner" style="position:static">
+                <picture>
+                    <source srcset="/Imgs/Banner.png" media="(max-width: 1400px)">
+                    <source srcset="../BigBanner.png">
+                    <img src="../BigBanner.png" alt="Banner" style='width:100%;display:block'>
+                </picture>
+
+                <div style='width:100%; background-color:#ff0000;display:block'>
+                    <ul class="mednav">
+                        <li style="display:inline;float:left;color:white"> <a href="SignedIn.php" style='text-align:left'>Account</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <h1>Beta Gallery</h1>
+            <p>
+                We're constantly creating new stuff, and we try not to throw unrefined goods at users. That's where you can help us! This is a gallery of to-be products (some premium ones, as well), which we entrust upon you to try out and give feedback on. We depend on you, adventurer!<br />
+                Also feel free to give us feedback and improvement proposals on already published products!
+            </p>
+
+            <div class="hoveringBoio">
+                <h2>Grand Guide of the Many Isles</h2>
+                <a href="https://docs.google.com/document/d/1HUHMKxL06dNpdgNtsY_S5m25r3_-GAdUnGmQmPEV08Q/edit?usp=sharing" target="_blank"><img class="imgInBoio" src="../Imgs/BetaImgs/IslesGuide.png" alt="hello there!" /></a>
+                <p>Currently work in progress, this guide is destined to become a core piece of the Many Isles, with tons of lore and mechanics. What can you add, correct, or help?</p>
+            </div>
+
+            <div class="hoveringBoio">
+                <h2>Handbook of Magic Items</h2>
+                <a href="https://homebrewery.naturalcrit.com/share/-YimdYX6k" target="_blank"><img class="imgInBoio" src="../Imgs/BetaImgs/MagIt.png" alt="hello there!" /></a>
+                <p>The Handbook of Magic Items is a collection of, well, magic items. We're currently expanding it and checking the balance of the various items. Feel free to comment or propose some of your own!</p>
+            </div>
+
+            <div class="hoveringBoio">
+                <h2>Handbook of Many Herbs</h2>
+                <a href="https://homebrewery.naturalcrit.com/share/o7xz0eWCu" target="_blank"><img class="imgInBoio" src="../Imgs/BetaImgs/ManyHerbs.jpg" alt="hello there!" /></a>
+                <p>The Handbook of Many Herbs is a reference of plants, mushrooms, herbs that adventurers and their enemies can find in the wilds of Oshmondu. See anything wrong, or want to expand?</p>
+            </div>
+
+            <div class="hoveringBoio">
+                <h2>Handbook of Mystical Materials</h2>
+                <a href="https://homebrewery.naturalcrit.com/share/8DAYAf3qH" target="_blank"><img class="imgInBoio" src="../Imgs/BetaImgs/Mats.png" alt="hello there!" /></a>
+                <p>We're working on a collection of materials usable for players and DMs alike. It comes complete with basic crafting rules and two chapters on raw and worked materials. See anything wrong, or want to expand?</p>
+            </div>
+
+            <div>
+                <img src="../Imgs/Bar2.png" alt="RedBar" class='separator'>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+<script src="/Code/CSS/global.js"></script>

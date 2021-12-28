@@ -1,0 +1,78 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/FaviconWiki.png">
+    <title>Aspects | Many Isles Wiki</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
+    <style>
+        .domCont {
+            width: 28.333%;
+            margin: 2.5%;
+            box-sizing: border-box;
+            float: left;
+            border: 0.6vw solid RGB(149,96,50);
+            border-radius: 4px;
+            position: relative;
+        }
+
+            .domCont img {
+                width: 100%;
+                display: block;
+            }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            transition: .4s ease;
+            background-color: #000000;
+        }
+
+        .domCont:hover .overlay {
+            opacity: 0.5;
+        }
+
+        .domCont h3 {
+            position: absolute;
+            bottom: 5px;
+            width: 100%;
+            text-align: center;
+            transition: .4s ease;
+            text-shadow: -1px 0 1px white, 0 1px 1px white, 1px 0 1px white, 0 -1px 1px white;
+            z-index: 6;
+            color: black;
+            font-size: calc(16px + 1.4vw);
+        }
+
+        @media only screen and (max-width:1145px) {
+            .domCont h3 {
+                font-size: 2.5vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="col-l" wiki-include-html="/wiki/col-l.html">
+        </div>
+        <div class="col-r">
+            <p class="topinfo"><a href="/wiki.html">Many Isles Wiki</a> - <a href="/wiki/a.html">Administration</a> - <a href="/wiki/a/aspects.html">Aspects</a> - <a href="#">Homeland</a></p>
+            <h1>Aspect of Homeland</h1>
+            <p>
+                Homeland (the Many Isles website) is an aspect of the Many Isles Hub, and under direct Pantheon control.
+            </p>
+        </div>
+    </div>
+    <p style="display:none" id="showSide">s3</p>
+    <p style="display:none" id="showSide2">s5</p>
+</body>
+</html>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="/Code/CSS/global.js"></script>
+<script src="/wiki/wik.js"></script>

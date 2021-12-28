@@ -1,0 +1,111 @@
+﻿:root {
+    --doc-accent-color: #aeaeae;
+    --doc-base-color: var(--col-baseblack);
+    --doc-nvsel-color: var(--doc-accent-color);
+    --doc-cgrey-color: var(--doc-accent-color);
+    --doc-stracc-color: var(--doc-accent-color);
+    --doc-text-color: var(--col-whitet);
+    --doc-stext-color: var(--doc-accent-color);
+    --doc-anav-color: var(--col-whitet);
+    --doc-anaver-color: #383b43;
+    --wiki-color-a: #9ab6bf;
+    --wiki-color-ahover: #7c9ca6;
+    --wiki-color-buttback: var(--doc-stext-color);
+    --wiki-color-buttback-hover: var(--doc-ahover-color);
+    --wiki-color-quote: #808080;
+    --wiki-color-lgrey: var(--doc-text-color);
+    --wiki-color-anaver: #808080;
+    --wiki-color-beige: var(--wiki-color-a);
+}
+
+body {
+    background-image: url(/Imgs/metal.jpg);
+    background-color: var(--doc-accent-color);
+    color: var(--doc-text-color);
+}
+select, input, textarea {
+    color: var(--doc-text-color);
+}
+
+.topBar {
+    border-bottom: 1px solid var(--doc-accent-color);
+}
+
+.center {
+    text-align: center;
+}
+.colr {
+    border-left: none;
+}
+
+/*artTabs*/
+.artContainer {
+    padding: 9px;
+    position: relative;
+    display: inline-block;
+    margin: 3vw auto 0;
+    width: calc(250px + 2vw);
+    max-width: 280px;
+}
+
+.incontainer {
+    padding: 7px;
+    transition: 0.3s;
+    border-radius: 5px;
+}
+
+    .incontainer:hover {
+        cursor: pointer;
+        background-color: var(--doc-anaver-color);
+    }
+
+.imagCont {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 5px;
+    position: relative;
+}
+
+    .imagCont:after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+    }
+
+    .imagCont .artSquare {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+.artSquare img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.titling {
+    white-space: nowrap;
+    overflow: hidden;
+    padding-top: 30px;
+}
+
+
+hr.solid {
+    height: 0px;
+    border: none;
+    border-bottom: 1px solid #bbb;
+    color: #bbb;
+    width: 12%;
+}
+
+.wikiButton.homescreen {
+    border-radius: 0;
+    margin: 20px 0 0;
+    padding: 7px;
+    width: 100%;
+}

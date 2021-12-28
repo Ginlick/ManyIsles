@@ -1,0 +1,171 @@
+﻿body {
+    background-image: none;
+    background-color: white;
+}
+* {
+    box-sizing: border-box;
+}
+h1 {
+    font-size: calc(17px + 2.2vw);
+    text-align:center;
+}
+h2 {
+    font-size: calc(16px + 1.8vw);
+    text-align: center;
+}
+h3 {
+    font-size: calc(15px + 1.7vw);
+    text-align: center;
+}
+p {
+    font-size: calc(12px + .5vw);
+    text-align: center;
+}
+
+#myMenu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .Bar {
+        padding: .9vw .8vw;
+        font-size: 1.4vw;
+        text-decoration: none;
+        text-align:left;
+        color: black;
+        display: block;
+        margin:0;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+
+        .Bar:hover {
+           color: #8f0404;
+        }
+        .Bar.line {
+            padding-bottom: 0.5vw;
+            border-bottom: 1.3px solid #ddd;
+        }
+.left-col {
+    width: 20%;
+    flex-grow: 1;
+    display: inline-block;
+    float: left
+}
+.column {
+    width: 80%;
+    flex-grow: 1 1;
+    float: right;
+    padding: 16px;
+    display:none;
+}
+
+.flex-container {
+    display: flex;
+    align-items: stretch;
+    min-height: 100%;
+}
+accButton {
+    padding: 10px;
+    display: block;
+    background-color: red;
+    border-radius: 4px;
+    font-weight: bold;
+    color: white;
+    font-size: calc(12px + .5vw);
+    border: 0px;
+    margin:auto;
+}
+.accButton:hover {
+    background-color: #d40000;
+    color: white;
+}
+
+.infoContain {
+    width:50%;
+    padding:5px;
+    display:inline-block;
+    float:left;
+}
+.infoContain p {
+    text-align:center;
+}
+.modContent {
+    display:block;
+}
+.container {
+    width: 80%;
+    margin-left: 10%;
+}
+
+input[type=text], input[type=password], input[type=email], select {
+    padding: .7vw 1%;
+    margin: 8px 0;
+    font-size: calc(12px + .5vw);
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    width: 100%;
+}
+select {
+    font-size: calc(10px + .4vw);
+}
+.coolInfo {
+    display: block;
+    margin: auto;
+    list-style-type: none;
+    font-size: calc(13px + 1.2vw);
+    text-align: center;
+    line-height: 1.8;
+    padding: 0;
+}
+.icon {
+    display:none;
+}
+.inputErr {
+    font-size: calc(9px + .3vw);
+    color: red;
+    text-align:left;
+    margin:0;
+    padding-left:.4vw;
+    display:none;
+}
+.spelly {
+    background-color: #cb57e0;
+    color: #d10e04;
+}
+    .spelly:hover {
+        background-color: #aa2bc1;
+    }
+#SLoptions {
+    width: 50%;
+    margin: auto;
+    margin-bottom: 4vw;
+    margin-top: 4vw;
+    border-collapse: collapse;
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: calc(13px + .6vw);
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+    #Sloptions thead tr {
+        background-color: #e4e4e3;
+    }
+
+    #SLoptions tr:nth-child(even) {
+        background-color: #e4e4e3;
+    }
+
+    #SLoptions th, #SLoptions td {
+        padding: 8px;
+    }
+
+    #SLoptions a {
+        color: black;
+    }
+
+        #SLoptions a:hover {
+            color: #666666;
+        }

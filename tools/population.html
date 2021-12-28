@@ -1,0 +1,582 @@
+﻿
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/Favicon.png">
+    <title>Population Model | Tools</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
+    <link rel="stylesheet" type="text/css" href="tools.css">
+    <style>
+        .container {
+            margin-bottom: 50px;
+        }
+
+        .partContainer {
+            border-bottom: 1px solid #c2bea9;
+            margin: 10px 5px;
+        }
+
+            .partContainer h4 {
+                margin: 0;
+            }
+
+        .biomePair select {
+            width: 30%;
+            border-radius: 10px;
+            background-color: palegreen;
+        }
+
+        .biomePair input {
+            width: 30%;
+            margin-left: 5px;
+        }
+
+        .addSome {
+            font-size: 2vw;
+            padding: 5px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+            .addSome :hover {
+                color: gray;
+            }
+
+        .contentblock #theformula {
+            font-size: .9vw;
+        }
+    </style>
+</head>
+<body>
+    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;z-index:1;"></div>
+    <div style="flex: 1 0 auto;z-index:0;position:relative;">
+
+        <div class="flex-container" style="">
+            <div class='left-col'>
+                <a href="tools.html"><h1 class="menutitle">Population Calculator</h1></a>
+                <ul class="myMenu">
+                    <li><a class="Bar" href="tools.html">Tools Overview</a></li>
+                </ul>
+                <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
+                <ul class="myMenu bottomFAQ">
+                    <li><a class="Bar" href="/wiki/p/population.html" target="_blank">About this tool</a></li>
+                    <li><a class="Bar" href="/wiki/r/cartography.html" target="_blank">Many Isles Climate Map</a></li>
+                </ul>
+
+            </div>
+
+            <div class='column'>
+
+                <div class="contentblock" id="autoBlock"  style="display:none;">
+                    <h2>Automatic Input</h2>
+                    <p>Model populations easily.</p>
+                    <div class="checkoutBox spec">
+                        <button class="checkout" onclick="switchit('manualBlock');document.getElementById('autoBlock').style.display = 'none';">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Manual</span>
+                        </button>
+                    </div>
+                    <form>
+                        <div class="container">
+                            <div class="partContainer">
+                                <h4>Determine Land (biome/surface km<sup>2</sup>)</h4>
+                                <div id="gimmeBabes">
+                                </div>
+
+                                <div class="addSome" onclick="addSome(1); plotIt();">
+                                    <i class="fa fa-plus"></i>
+                                </div>
+                                <div class="addSome" onclick="addSome(0); plotIt();">
+                                    <i class="fa fa-minus"></i>
+                                </div>
+
+                            </div>
+
+                            <label for="startPop"><i class="fa fa-user"></i>  <b>P<sub>0</sub></b> (initial population)</label>
+                            <input type="text" name="startPop" id="startPop" value="100" oninput="plotIt()">
+                            <p id="startPopErr" class="inputErr">Incorrect Format</p>
+
+                            <label for="aA"><i class="fa fa-user-times"></i> <b>a</b> (competition, 2.2 > x > 0, the larger, the easier)</label>
+                            <input type="text" name="aA" id="aA" value=".5" oninput="plotIt()">
+                            <p id="mAErr" class="inputErr">Incorrect Format</p>
+
+                            <label for="T0A"><i class="fa fa-cog"></i> <b>T<sub>0</sub></b> (initial technology, 1 > x > 0, the larger, the more advanced)</label>
+                            <input type="text" name="T0A" id="T0A" value=".3" oninput="plotIt()">
+                            <p id="T0AErr" class="inputErr">Incorrect Format</p>
+
+                            <!--<input type="text" name="k3" id="k3" value="0.0063" oninput="plotIt()">-->
+
+                            <select id="whichFunctionA" oninput="plotIt()">
+                                <option value="base">Oshmondu Model (base)</option>
+                                <option value="rw">Non-Oshmondian populations</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="contentblock" id="manualBlock" style="display:none;">
+                    <h2>Manual Input</h2>
+                    <p>Input the values manually.</p>
+                    <div class="checkoutBox spec">
+                        <button class="checkout" onclick="switchit('autoBlock');document.getElementById('manualBlock').style.display = 'none';">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Automatic</span>
+                        </button>
+                    </div>
+                    <form>
+
+                        <div class="container">
+                            <label for="Pmax"><i class="fa fa-users"></i> <b>Pmax</b>  (population maximum)</label>
+                            <input type="text" class="Pmax" id="Pmax" value="2000" oninput="plotIt()">
+                            <p id="PmaxErr" class="inputErr">Incorrect Format</p>
+
+                            <label for="P0"><i class="fa fa-user"></i>  <b>P<sub>0</sub></b> (initial population)</label>
+                            <input type="text" name="P0" id="P0" value="100" oninput="plotIt()">
+                            <p id="P0Err" class="inputErr">Incorrect Format</p>
+
+                            <label for="a"><i class="fa fa-user-times"></i> <b>a</b> (competition, 2.2 > x > 0, the larger, the easier)</label>
+                            <input type="text" name="a" id="a" value=".5" oninput="plotIt()">
+                            <p id="mErr" class="inputErr">Incorrect Format</p>
+
+                            <label for="b"><i class="fa fa-tree"></i> <b>b</b> (ease of cultivation, -.1 > x > 0, the larger, the easier)</label>
+                            <input type="text" name="b" id="b" value="-0.1" oninput="plotIt()">
+                            <p id="eErr" class="inputErr">Incorrect Format</p>
+
+                            <label for="T0"><i class="fa fa-cog"></i> <b>T<sub>0</sub></b> (initial technology, 1 > x > 0, the larger, the more advanced)</label>
+                            <input type="text" name="T0" id="T0" value=".3" oninput="plotIt()">
+                            <p id="T0Err" class="inputErr">Incorrect Format</p>
+
+                            <select name="whichFunction" id="whichFunction" oninput="plotIt()">
+                                <option value="base">Oshmondu Model (base)</option>
+                                <option value="rw">Non-Oshmondian populations</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="contentblock" id="rootContent">
+                    <h3>Population</h3>
+                    <p id="coolText"></p>
+                    <div id="root"></div>
+                </div>
+                <div class="contentblock">
+                    <h3>Technology</h3>
+                    <div id="tech"></div>
+                </div>
+                <div class="contentblock">
+                    <h3>Formula `P(x)`</h3>
+                    <p id="theformula"></p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+</html>
+<script src="/Code/CSS/global.js"></script>
+<script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/function-plot/dist/function-plot.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=AM_CHTML"></script>
+
+
+<script>
+    //functionality
+    var biomesArray = [
+        {
+            "Biome": "Continental plainland",
+            "c": 67,
+            "b": -0.1
+        },
+        {
+            "Biome": "Caverealm, Central",
+            "c": 52,
+            "b": -0.04
+        },
+        {
+            "Biome": "Equatorial, mainland",
+            "c": 47,
+            "b": -0.08
+        },
+        {
+            "Biome": "Fjell, Equatorial",
+            "c": 41,
+            "b": -0.07
+        },
+        {
+            "Biome": "Caverealm, Gschondrian",
+            "c": 41,
+            "b": -0.034
+        },
+        {
+            "Biome": "Equatorial, coastal",
+            "c": 38,
+            "b": -0.075
+        },
+        {
+            "Biome": "Caverealm, polar",
+            "c": 37,
+            "b": -0.029
+        },
+        {
+            "Biome": "Archaen plainland",
+            "c": 36,
+            "b": -0.069
+        },
+        {
+            "Biome": "Tundra",
+            "c": 35,
+            "b": -0.064
+        },
+        {
+            "Biome": "Fjell, northern",
+            "c": 31,
+            "b": -0.058
+        },
+        {
+            "Biome": "Tropical",
+            "c": 23,
+            "b": -0.073
+        },
+        {
+            "Biome": "Northern",
+            "c": 21,
+            "b": -0.051
+        },
+        {
+            "Biome": "Swamp, Continental",
+            "c": 15,
+            "b": -0.06
+        },
+        {
+            "Biome": "Swamp, Northern",
+            "c": 11,
+            "b": -0.05
+        },
+        {
+            "Biome": "Mountains, Equatorial",
+            "c": 6,
+            "b": -0.062
+        },
+        {
+            "Biome": "Mountains, northern",
+            "c": 3,
+            "b": -0.053
+        },
+        {
+            "Biome": "Desert",
+            "c": 2,
+            "b": -0.041
+        },
+        {
+            "Biome": "Polar, surface",
+            "c": 0,
+            "b": 0
+        },
+        {
+            "Biome": "Water",
+            "c": 0,
+            "b": 0
+        }
+    ];
+
+    var fantasyBiomes = [
+        {
+            "Biome": "Continental plainland",
+            "c": 222,
+            "b": -0.1
+        },
+        {
+            "Biome": "Caverealm, Central",
+            "c": 172,
+            "b": -0.04
+        },
+        {
+            "Biome": "Equatorial, mainland",
+            "c": 154,
+            "b": -0.08
+        },
+        {
+            "Biome": "Fjell, Equatorial",
+            "c": 136,
+            "b": -0.07
+        },
+        {
+            "Biome": "Caverealm, Gschondrian",
+            "c": 134,
+            "b": -0.034
+        },
+        {
+            "Biome": "Equatorial, coastal",
+            "c": 124,
+            "b": -0.075
+        },
+        {
+            "Biome": "Caverealm, polar",
+            "c": 123,
+            "b": -0.029
+        },
+        {
+            "Biome": "Archaen plainland",
+            "c": 119,
+            "b": -0.069
+        },
+        {
+            "Biome": "Tundra",
+            "c": 114,
+            "b": -0.064
+        },
+        {
+            "Biome": "Fjell, northern",
+            "c": 101,
+            "b": -0.058
+        },
+        {
+            "Biome": "Tropical",
+            "c": 76,
+            "b": -0.073
+        },
+        {
+            "Biome": "Northern",
+            "c": 68,
+            "b": -0.051
+        },
+        {
+            "Biome": "Swamp, Continental",
+            "c": 48,
+            "b": -0.06
+        },
+        {
+            "Biome": "Swamp, Northern",
+            "c": 36,
+            "b": -0.05
+        },
+        {
+            "Biome": "Mountains, Equatorial",
+            "c": 18,
+            "b": -0.062
+        },
+        {
+            "Biome": "Mountains, northern",
+            "c": 8,
+            "b": -0.053
+        },
+        {
+            "Biome": "Desert",
+            "c": 5,
+            "b": -0.041
+        },
+        {
+            "Biome": "Polar, surface",
+            "c": 0,
+            "b": 0
+        },
+        {
+            "Biome": "Water",
+            "c": 0,
+            "b": 0
+        }
+    ];
+
+    var biomeNodeAt = 0;
+    function addSome(how) {
+        if (how == 1) {
+            var biomePair = document.createElement("div");
+            biomePair.setAttribute("class", "biomePair");
+            var biomes = document.createElement("select");
+            biomes.setAttribute("oninput", "plotIt();");
+            for (let element of biomesArray) {
+                let newOption = document.createElement("option");
+                newOption.setAttribute("value", element.Biome);
+                newOption.innerHTML = element.Biome;
+                biomes.appendChild(newOption);
+            }
+            var surface = document.createElement("input");
+            surface.setAttribute("type", "text");
+            surface.setAttribute("value", 100);
+            surface.setAttribute("oninput", "plotIt();");
+
+            biomePair.appendChild(biomes);
+            biomePair.appendChild(surface);
+            document.getElementById("gimmeBabes").appendChild(biomePair);
+            biomeNodeAt++;
+        }
+        else {
+            let babes = document.getElementById("gimmeBabes");
+            babes.removeChild(babes.lastChild);
+        }
+    }
+    addSome(1);
+
+    var whichMethod = "autoBlock";
+    function switchit(which) {
+        localStorage["model_block"] = which;
+        document.getElementById(which).style.display = "block";
+        whichMethod = which;
+        plotIt();
+    }
+    if (localStorage.getItem("model_block") !== null) {
+        switchit(localStorage["model_block"]);
+    }
+    else {
+        switchit("autoBlock");
+    }
+
+
+
+    //actual stuff
+
+    function Technology(T0) {
+        return T0 + "/(" + T0 + "+(1-" + T0 + ")" + Math.E + "^(-0.0009x))";
+    }
+    function newTech(T0, Pmax, P0, a, b) {
+        //return "(" + T0 + "/ (" + T0 + " + ( 1 -" + T0 + ")*(" + Math.E + " ^( -0.00000008*x*(" + Pmax + "/((1+((" + Pmax + "-" + P0 + ")/" + P0 + "))*" + Math.E + "^(0.000000005*" + a + "*" + b + "*x)) )))))";
+        let m = "(-0.99999999 ^ ((" + Pmax + "/((1+((" + Pmax + "-" + P0 + ")/" + P0 + "))*" + Math.E + "^(0.0000004*" + a + "*" + b + "*x))) - 999879768) + 22000 )";
+        return "(" + T0 + "/ (" + T0 + " + ( 1 -" + T0 + ")*(" + Math.E + " ^( -0.000004*x*" + m + ")) ) )";
+    }
+    function rwTech(T0, P0) {
+        let m = "(-0.99999995 ^(" + P0 + "+76334300) + 0.022)";
+        return "(("+ m + "* x) + " + T0 + ")";
+    }
+    function mTech() {
+        return "( -0.99999995 ^(x+73777600) + 0.025)";
+    }
+
+    function plotIt() {
+        document.getElementById("root").innerHTML = "";
+        document.getElementById("tech").innerHTML = "";
+        document.getElementById("coolText").innerHTML = "";
+
+        function getTech(whichFunction) {
+            if (whichFunction == "rw") {
+                return rwTech(T0, P0);
+            }
+            else {
+                return newTech(T0, Pmax, P0, a, b);
+            }
+        }
+
+        if (whichMethod == "autoBlock") {
+            var whichFunction = document.getElementById("whichFunctionA").value;
+            var Pmax = 0;
+            var b = 0;
+            var S = 0;
+            let Parent = document.getElementById("gimmeBabes").childNodes;
+            if (whichFunction == "rw") {
+                var currentBiomes = biomesArray;
+            }
+            else {
+                var currentBiomes = fantasyBiomes;
+            }
+            for (let biomePair of Parent) {
+                if (biomePair.childNodes[0] == undefined) { continue; }
+                S = S + parseInt(biomePair.childNodes[1].value);
+            }
+            for (let biomePair of Parent) {
+                if (biomePair.childNodes[0] == undefined) { continue; }
+                for (let object of currentBiomes) {
+                    if (object.Biome == biomePair.childNodes[0].value) {
+                        var cVal = object.c;
+                        var bVal = object.b;
+                        break;
+                    }
+                }
+                let surface = biomePair.childNodes[1].value;
+                Pmax = Pmax + (surface * cVal);
+                //alert(b);
+                if (b == 0) { b = (bVal * (surface / S)); }
+                else { b = b + (bVal * (surface / S));}
+            }
+            var P0 = document.getElementById("startPop").value;
+            var a = document.getElementById("aA").value;
+            var T0 = document.getElementById("T0A").value;
+            document.getElementById("coolText").innerHTML = "P<sub>max</sub> = "+Pmax;
+
+        }
+        else {
+            var Pmax = document.getElementById("Pmax").value;
+            var P0 = document.getElementById("P0").value;
+            var b = document.getElementById("b").value;
+            var a = document.getElementById("a").value;
+            var T0 = document.getElementById("T0").value;
+            var whichFunction = document.getElementById("whichFunction").value;
+        }
+
+        var Pmin = P0 / T0;
+        var currentFunction = "(" + Pmax + "  " + getTech(whichFunction) + " ) / (1 + ((" + Pmax + "-" + Pmin + ")/" + Pmin + ")*(" + Math.E + " ^ ( " + getTech(whichFunction) + "*" + a + " * " + b + "* x )))";
+        if (whichFunction == "rw") {
+            var techDomain = [T0 - 0.05, T0 * 1 + 3];
+            var techDomainX = [0, 500];
+
+            if (P0 < Pmax * T0) {
+                var popDomain = [P0, Pmax * T0];
+            }
+            else if (P0 == Pmax * T0) {
+                var popDomain = [P0, 2 * P0];
+            }
+            else {
+                var popDomain = [Pmax * T0, P0];
+            }
+        }
+        else {
+            var techDomainX = [0, 2000];
+            if (T0 - 0.05 < 1) { var techDomain = [T0 - 0.05, 1]; }
+            else { var techDomain = [1, T0]; }
+
+            var popDomain = [0, Pmax]; 
+        }
+
+
+        let contentsBounds = document.getElementById("rootContent").getBoundingClientRect();
+        let width = 800;
+        let height = 300;
+        let ratio = contentsBounds.width / width;
+        width *= ratio;
+        ratio = contentsBounds.height / height;
+        height *= ratio;
+        height = height - 30;
+
+        functionPlot({
+            target: "#root",
+            width,
+            height,
+            yAxis: {
+                domain: popDomain, label: "population"
+            },
+            xAxis: { domain: [0, 1000], label: "time" },
+            grid: true,
+            data: [
+                {
+                    fn: currentFunction,
+                    graphType: 'polyline'
+                }
+            ]
+        });
+
+        functionPlot({
+            target: "#tech",
+            width,
+            height,
+            yAxis: { domain: techDomain, label: "technology" },
+            xAxis: { domain: techDomainX, label: "time" },
+            grid: true,
+            data: [
+                {
+                    fn: getTech(whichFunction),
+                    graphType: 'polyline'
+                }
+            ]
+        });
+        document.getElementById("theformula").innerHTML = "`" + currentFunction + "`";
+        MathJax.Hub.Typeset();
+    }
+
+    plotIt();
+</script>
+
+

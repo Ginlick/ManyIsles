@@ -1,0 +1,134 @@
+﻿
+h2 {
+    padding: 40px 0 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.inputCont {
+    width: 80%;
+    margin: 10px auto;
+    text-align: left;
+}
+
+    .inputCont label {
+        text-align: left;
+        font-size: calc(14px + .1vw);
+    }
+
+        .inputCont label span {
+            color: #a21414;
+        }
+
+.inputErr {
+    display: block;
+    opacity: 0;
+    transition: .2s;
+    min-height: 10px;
+}
+
+    .inputErr.info {
+        color: #737373;
+    }
+
+    .inputErr.warnInfo {
+        opacity: 1;
+        color: #a21414;
+        text-align: center;
+    }
+
+span.roundInfo {
+    border: 1px solid #8dceff;
+    color: #8dceff !important;
+    border-radius: 50px;
+    font-size: calc(9px + .1vw);
+    padding: 5px;
+    margin: 0 6px;
+    display: inline-block;
+}
+
+input, textarea, select {
+    padding: .5vw 1%;
+    margin: 4px 0;
+    font-size: calc(15px + .2vw);
+    font-family: "Open sans", sans-serif;
+}
+
+.warning {
+    font-size: min(calc(9px + .3vw), 15px);
+    color: #a21414;
+}
+
+    .warning.red {
+        color: #ff6767;
+    }
+
+#specColCont {
+    border-bottom: 1px solid #ddd;
+}
+
+.specCol {
+    width: 94%;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid #ddd;
+}
+
+.leftSpecCol {
+    flex-grow: 1;
+    flex-basis: 30%;
+    border-right: 1px solid #ddd;
+}
+
+.rightSpecCol {
+    flex-grow: 3;
+}
+
+    .rightSpecCol .buttCon {
+        width: 100%;
+        padding: 10px;
+        text-align: right;
+        border-bottom: 1px solid #ddd;
+    }
+
+        .rightSpecCol .buttCon .checkout {
+            margin: 0;
+        }
+
+    .rightSpecCol h3 {
+        font-size: calc(17px + .2vw);
+        padding: 15px 0 0;
+        margin: 0;
+    }
+
+.addSome {
+    font-size: 2vw;
+    padding: 5px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+    .addSome :hover {
+        color: #d1a720;
+    }
+
+.stockCont {
+    width: 80%;
+    margin: auto;
+}
+
+button.checkout.delete {
+    background-color: #343434;
+    margin: 42px auto 100px;
+}
+
+    button.checkout.delete:hover {
+        background-color: #5b5b5b;
+    }
+
+div.delCont {
+    border: 1px solid black;
+    border-radius: 20px;
+    width: 90%;
+    margin: 100px auto auto;
+}

@@ -1,0 +1,93 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/Imgs/FaviconWiki.png">
+    <title>Population Model | Many Isles Wiki</title>
+    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+    <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
+</head>
+<body>
+    <div class="content">
+        <div class="fandomcoll external">
+            <div class="col-l" wiki-include-html="/wiki/col-l.html">
+            </div>
+            <div class="col-l">
+                <h2>Contributors</h2>
+                <p>Elder God Ginlic</p>
+            </div>
+            <div class="col-l">
+                <h2>Sources</h2>
+                <p><a href="https://docs.google.com/document/d/10HcwdlrE_3qmuphY5DqZeDy3Rf-hVKtnUBcz10FKtXY/edit?usp=sharing" target="_blank">Mathematical Exploration</a>.</p>
+            </div>
+        </div>
+        <div class="col-r">
+            <p class="topinfo"><a href="/wiki.html">Many Isles Wiki</a> - <a href="/wiki/p.html">Projects</a> - <a href="#">Population Model</a></p>
+            <h1>Population Model<span class="typeTab yes"><i class="fas fa-check"></i> Completed</span></h1>
+            <img src="/IndexImgs/population.png" alt="oops" style="display:block;width:20%;float:right;" />
+            <p>
+                A beautifully massive logistic function that models a population in the Many Isles or even the real world. What's better? <br />
+                <a href="/tools/population.html" target="_blank">To the model</a>
+            </p>
+            <h3 onclick="showBg(1);">Project History <i class="fas fa-angle-down arrow" id="f1"></i></h3>
+            <div class="hidhidCont" id="h1">
+                <p id="1" class="hiddenCont">
+                    This project was done by Elder God Ginlic as a Mathematical Exploration for the IB. He is part of the Many Isles Pantheon and from the start on designed the model so it could easily be integrated into this website's tools and made available to the community. Find the investigation <a href="https://docs.google.com/document/d/10HcwdlrE_3qmuphY5DqZeDy3Rf-hVKtnUBcz10FKtXY/edit?usp=sharing" target="_blank">here</a>; it explains the work process of developing the various aspects of the model and explains its intricacies as well as its limitations.
+                </p>
+            </div>
+            <h2 onclick="showBg(2);">How to Use <i class="fas fa-angle-down arrow" id="f2"></i></h2>
+            <div class="hidhidCont" id="h2">
+                <div id="2" class="hiddenCont">
+                    <p>
+                        This model takes a number of input variables to predict how the population will develop. You can set these using two input methods: automatic and manual.
+                    </p>
+                    <h3>Automatic Input</h3>
+                    <p>
+                        We recommend using this.<br />
+                        <b>Determine Land.</b> Click on the plus to add a node, on the minus to remove one. On the left selector, you can choose this node's land type; use the <a href="/wiki/r/cartography.html" target="_blank">climate map</a> for reference. The second selector takes how much of that land, in km<sup>2</sup>, is available.<br />
+                        <b>P<sub>0</sub>.</b> This is the population's number at the start of the model, measured in people.<br />
+                        <b>a.</b> Competition is used to see how external influences, such as the need of waging war or to compete against other races for the same resources, affects development speed.<br />
+                        <b>T<sub>0</sub>.</b> The initial technology available to the population. This modifies the speed of development as well as the maximal population that can live on the land at a certain time. It increases over time. See the FAQ below for more information.<br />
+                        <b>Model type.</b> We actually have two models: one for the Many Isles called Oshmondu Model, which is closer to good, and one for the real world called Non-Oshmondian. Have fun playing around with that one's attempts at showing realistic population growth. Note that T<sub>0</sub> can be greater than 1 in the real world model.
+                    </p>
+                    <h3>Manual Input</h3>
+                    <p>
+                        If you can't be bothered with biome nodes or otherwise want more control over the variables.<br />
+                        <b>P<sub>max</sub>.</b> Set the maximal population the land can sustain when technology reaches the maximum, 1.<br />
+                        <b>P<sub>0</sub>.</b> This is the population's number at the start of the model, measured in people.<br />
+                        <b>a.</b> Competition is used to see how external influences, such as the need of waging war or to compete against other races for the same resources, affects development speed.<br />
+                        <b>b.</b> Ease of cultivation in this case works very similarly to competition. It judges how easily the available land can be cultivated, and affects growth rate. It has to be negative so the function is placed correctly on the graph.<br />
+                        <b>T<sub>0</sub>.</b> The initial technology available to the population. This modifies the speed of development as well as the maximal population that can live on the land at a certain time. It increases over time. See the FAQ below for more information.<br />
+                        <b>Model type.</b> We actually have two models: one for the Many Isles called Oshmondu Model, which is closer to good, and one for the real world called Non-Oshmondian.  Note that T<sub>0</sub> can be greater than 1 in the real world model.
+                    </p>
+                    <h3>Result Tabs</h3>
+                    <p>
+                        When you input the various values, three result tabs are modified. They show various aspects of the model.<br />
+                        <b>Population.</b> This graph shows the actual model. The bottom axis denotes time in years, the vertical the current population. The line simply shows population numbers. Hover your cursor on the graph to see specific points' values.<br />
+                        <b>Technology.</b> The technology model that lies within our population model; it shows how technology develops based on its own simplified population function. Depending on the model type, it'll show logistic or a linear growth.<br />
+                        <b>Formula P(x).</b> The actual model used to make the population graph above. Look at your own risk. For explanation, see the <a href="https://docs.google.com/document/d/10HcwdlrE_3qmuphY5DqZeDy3Rf-hVKtnUBcz10FKtXY/edit?usp=sharing" target="_blank">investigation</a>.
+                    </p>
+                </div>
+            </div>
+            <h2>FAQ</h2>
+            <h3>How to include changing land area, introduction of new technology, or immigration/emigration?</h3>
+            <p>Our model cannot take variables that alter it after its beginning. If your population suffers any changes at one point, then you stop the model there. Say, you have a population that develops normally, but suddenly receives new technology after 50 years. Well, model the population as normal for the first fifty years, then create a new model with starting population determined by the old one to see how the new technology affects the group.</p>
+            <h3>How does technology work?</h3>
+            <p>
+                The model takes initial technology, T<sub>0</sub>, to look how the population's technology will develop and affect the total number. Technology affects both the maximal population and the speed of population development. The speed of technological development is determined by miniP, a simplified logistic function that estimates the population growth. Because this simplified model does not take technology into account, it can lead to errors, notably if the initial population is much greater than the technology that can support it. For more information, see the <a href="https://docs.google.com/document/d/10HcwdlrE_3qmuphY5DqZeDy3Rf-hVKtnUBcz10FKtXY/edit?usp=sharing" target="_blank">investigation</a>.<br />
+                Note that in the Oshmondian model, the maximal technology which can be reached is 1, because of historical precedent. In the real-world model, technology is unlimited and essentially allows infinite growth.
+            </p>
+            <h3>What's saturated/logistic growth?</h3>
+            <p>There are two ways for a population to increase. Because the model is based on a logistic function, when a population is much smaller than the maximal demographic density the land can support, it rises exponentially until it approaches that maximum. The graph looks s-shaped. When it is at that maximum, however, it demonstrates saturated growth: as technology slowly develops, the population rises. This growth resembles a line.</p>
+            <h3>Why does the model exceed P<sub>max</sub>?</h3>
+            <p>In the Non-Oshmondian model, there is no cap on technology because we don't have a historically greatest technology level. This means that with time (or if you start with it), technology will get greater than one and accordingly the maximally sustainable population will also exceed what it was set as. For more information, see the technology question above.</p>
+        </div>
+        </div>
+    <p style="display:none" id="showSide">sp</p>
+</body>
+</html>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="/Code/CSS/global.js"></script>
+<script src="/wiki/wik.js"></script>
+
