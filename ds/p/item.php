@@ -37,14 +37,12 @@ if ($artId != 0) {
 
 
 
-    //only backup, if old format is used 
+    //only backup, if old format is used
     if (strpos($artPrice, ",")) {
         $priceArray = explode( ",", $artPrice);
         $artPrice = $priceArray[0];
     }
-
-    require_once("../g/parseSpecs.php");
-    $artSpecsArray = parseSpecs($artSpecs);
+    $artSpecsArray = json_decode($artSpecs, true);
 }
 else {
 //set all defaults
@@ -178,7 +176,7 @@ echo '
         </tbody>
     </table>';
 
-//stock 
+//stock
 echo "<div class='stockCont' id='hStock'><h2>Update Stock</h2>";
 
 $stockStatus = 0;
@@ -205,7 +203,7 @@ echo '    <div class="checkoutCont" style="margin: 80px 0 40px">
     </div></div>
 </form>';
 
-//status  
+//status
 echo "<div class='stockCont' id='hStatus'><h2>Change Status</h2>";
 
 echo "
@@ -230,7 +228,7 @@ else {
 }
 ?>
 
-            <form action="subItem.php" method="POST" id="subItemForm"  onsubmit="submitForm();">
+            <form action="subItem.php" method="POST" id="subItemForm"  onsubmit="return submitForm();">
             <h1>Item Setup</h1>
             <label class="switch">
                 <input type="checkbox" onchange="differComplic(this);" id="neatChecker"  <?php if ($artId != 0)  {echo "checked";}  ?>>
@@ -736,30 +734,7 @@ if ($artStatus == "deleted"){
         return Object.keys(object).map((key) => [key, options[key]].join(glue)).join(separator);
     }
     function submitForm() {
-        var subSpecsArray = specsArray;
-        var finalSpecsArray = "";
-        var reg = new RegExp("[-:;,\\[\"\']", 'g');
-        for (let x in subSpecsArray) {
-            for (let y in subSpecsArray[x]["options"]) {
-                let options = subSpecsArray[x]["options"][y];
-                if (options["name"] == undefined) { options["name"] = "Select "+y; }
-                options["name"] = options["name"].replace(reg, "");
-                console.log(options["price"]);
-                if (options["price"] !== undefined) { options["price"] = String(options["price"]).replace("-", "min"); } else {options["price"] = "0"}
-                console.log(options["price"]);
-                options = Object.keys(options).map((key) => [key, options[key]].join("-")).join(",");
-                subSpecsArray[x]["options"][y] = options;
-
-            }
-            subSpecsArray[x]["options"] = subSpecsArray[x]["options"].join("[");
-            subSpecsArray[x] = Object.keys(subSpecsArray[x]).map((key) => [key, subSpecsArray[x][key]].join(":")).join(";");
-        }
-        for (let value in subSpecsArray) {
-            finalSpecsArray += subSpecsArray[value] + "]";
-        }
-        finalSpecsArray = finalSpecsArray.substring(0, finalSpecsArray.length - 2);
-        console.log(finalSpecsArray);
-        document.getElementById("specifications").value = finalSpecsArray;
+        document.getElementById("specifications").value = JSON.stringify(specsArray);
         return true;
     }
 
@@ -777,5 +752,3 @@ if ($artStatus == "deleted"){
     differComplic(document.getElementById("neatChecker"));
 
 </script>
-
-

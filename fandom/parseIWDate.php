@@ -100,14 +100,13 @@ function getArtImage($sideImg, $banner, $NSFW = 0, $info = null) {
 }
 
 function banner($banner, $info = null){
-    if ($banner == "default" OR $banner == "/wikimgs/banners/default"){
+    if ($banner == "default" OR $banner == "/wikimgs/banners/default" OR $banner == "current"){
         $banner = "fandom.png";
-        if ($info == null){global $info;}
-        if (isset($info) AND $info != null) {
+        if ($info != null) {
             $banner = $info->defaultBanner;
         }
     }
- 
+
     if (!str_contains($banner, "/")){
         return "/wikimgs/banners/".$banner;
     }

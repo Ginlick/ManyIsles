@@ -65,8 +65,7 @@ if (!empty($artViewImgs)) {
     $artImgsArray = array_merge($artImgsArray, $nArtImgsArray);
 }
 
-require_once("g/parseSpecs.php");
-$artSpecsArray = parseSpecs($artSpecs);
+$artSpecsArray = json_decode($artSpecs, true);
 
 require($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
 $Parsedown = new Parsedown();

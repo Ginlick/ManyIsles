@@ -95,7 +95,7 @@ class parse {
                 }
                 if ($pageStatus != "suspended" && $pageStatus != "outstanding"){
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                    $fullChildLine .= " <div class='domCont'><a href='".artUrl($this->baseLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
+                    $fullChildLine .= " <div class='domCont'><a href='".artUrl($this->artRootLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
                 }
             }
         }
@@ -130,7 +130,7 @@ class parse {
                 }
                 if ($pageStatus != "suspended"){
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                    $toInsertThumb = " <div class='domCont'><a href='".artUrl($this->baseLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
+                    $toInsertThumb = " <div class='domCont'><a href='".artUrl($this->artRootLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
                     $body = substr_replace($body, $toInsertThumb, strpos($body, "[wiki:art".$childPage."]"), 0);
                 }
             }
@@ -172,7 +172,7 @@ class parse {
                                 $pageImg = $row["banner"];
                                 $thumbImg = $row["sidetabImg"];
                                 if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                                $toInsertThumb = $this->createThumbTab(artUrl($this->baseLink, $childPage, $pageName), $pageImg, $pageName);
+                                $toInsertThumb = $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
                                 $body = substr_replace($body, $toInsertThumb, strpos($body, "[wiki:$sortName".$age."]"), 0);
                                 $body = str_replace("[wiki:$sortName".$age."]", "", $body);
                                 if (str_contains($body, "[wiki:$sortName")){return $this->addRecents($body, $sort);}
@@ -187,7 +187,7 @@ class parse {
                         $pageImg = $row["banner"];
                         $thumbImg = $row["sidetabImg"];
                         if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                        $fullRow.= $this->createThumbTab(artUrl($this->baseLink, $childPage, $pageName), $pageImg, $pageName);
+                        $fullRow.= $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
                         $counter++;
                     }
                 }
@@ -220,12 +220,12 @@ class parse {
                 while ($row = $firstrow->fetch_assoc()) {
                     $childPage = $row["id"];
                     if (getWiki($childPage) != $this->parentWiki OR $row["status"] != "active") {continue;}
-    
+
                     $pageName = $row["shortName"];
                     $pageImg = $row["banner"];
                     $thumbImg = $row["sidetabImg"];
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                    $fullLine .= $this->createThumbTab(artUrl($this->baseLink, $childPage, $pageName), $pageImg, $pageName);
+                    $fullLine .= $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
 
                     $counter++;
                     if ($counter > 8){break;}
@@ -250,7 +250,7 @@ class parse {
             else {$img = [];}
 
             if (!isset($img["class"]) OR !checkRegger("basic", $img["class"])){$img["class"] = "sideimg";}
-            if (!isset($img["caption"]) OR !checkRegger("cleanText", $img["caption"])){$img["caption"] = "";} 
+            if (!isset($img["caption"]) OR !checkRegger("cleanText", $img["caption"])){$img["caption"] = "";}
             if (!isset($img["src"]) OR !checkRegger("cleanText", $img["src"])){$img["src"] = "";}
             if (!isset($img["style"]) OR !checkRegger("cleanText", $img["style"])){$img["style"] = "";}
             $caption = $this->bodyParser(txtUnparse($img["caption"], 0), 0, $this->database);

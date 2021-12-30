@@ -41,11 +41,10 @@ function makeArtTab($row, $itemNumArray = [], $showNoStock = false){
                     if ($row["stock"] - $itemNumArray[$articleId] <=0 AND $row["digital"] == 0){
                         $hasStock = false;
                     } else {$hasStock = true;}
-                } 
+                }
                 else {$hasStock = true;}
                 if ($row["stock"]==0 ) {$hasStock = false;}
                 if ($row["status"]=="paused" ) {$canBuy = false;}
-                require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/parseSpecs.php");
                 $titling = $row["name"];
                 $thumbnail = clearImgUrl($row["image"]);
                 $link = linki($row["id"], $row["link"], $row["shortname"]);
@@ -57,7 +56,7 @@ function makeArtTab($row, $itemNumArray = [], $showNoStock = false){
                 else {
                     if ($row["specifications"] == ""){if ($row["minPrice"] > $price) { $price = $row["minPrice"];}$humPrice = makeHuman($price);}
                     else {
-                        $specsArray = parseSpecs($row["specifications"]);
+                        $specsArray = json_decode($row["specifications"], true);
                         foreach ($specsArray as $specArray){
                             $price += intval($specArray["options"][0]["price"]);
                         }

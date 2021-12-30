@@ -7,7 +7,6 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/ds/keys/ds-actcode.php');
 if (!isset($mycode) OR $mycode != $ds_actcode){echo "invalid certification";exit();}
 
 require_once("g/countries.php");
-require_once("g/parseSpecs.php");
 if (!class_exists("loopBasket")){require_once("g/loopBasket.php");}
 
 $query = "SELECT * FROM dsclearing WHERE id = $clid";
@@ -143,7 +142,7 @@ $sellerPaymentInfo["paid"] = $sellerPaymentInfo["paid"] + $toSeller;
 
 $sellerPaymentInfo["items"][] = detailsLine($prodname, $item["prodSpecs"]);
 if ($row["digital"] == 0){$sellerPaymentInfo["digital"] = 0;}
-        
+
 $artShipping = $row["shipping"];
 $shippingCost = $item["specShipping"];
 if ($artShipping != ""){
@@ -159,7 +158,7 @@ if ($artShipping != ""){
             }
         }
         else if (strlen($key) == 2){
-        //single country 
+        //single country
             if ($key==$country){
                 $shippingCost = $value;
                 break;
@@ -172,7 +171,7 @@ $sellerPaymentInfo["shipping"] += $shippingCost;
 $sellerPaymentInfo["amount"] += $ordiprice + $shippingCost;
 $sellerPayment[$sellerId] = $sellerPaymentInfo;
 
-//generate email line  
+//generate email line
 $currentLine = str_replace("COOLPRICE", makeHuman($ordiprice), $itemLine);
 $currentLine = str_replace("COOLTITLE", $prodname, $currentLine);
 $currentLine = str_replace("COOLIMAGE", $prodimg, $currentLine);
@@ -186,7 +185,7 @@ $currentLine = str_replace("COOLADDINFO", $coolAddInfo, $currentLine);
 
 $fullLine = $fullLine.$currentLine;
 
-//update stock info 
+//update stock info
 if ($row["digital"] == 0){
     $query = "UPDATE dsprods SET stock = stock - ".$item["quant"]." WHERE id = $prodId";
     $conn->query($query);
@@ -196,10 +195,10 @@ if ($row["digital"] == 0){
 $sellerPayment["Royalty"] = $sellerPaymentRoyalty;
 
 if ($basketed->pureDigit == false) {
-    $bigMail = str_replace("COOLINFOTEXT", "Your payment has been received and we will shortly send your items by postal service. This mail is your receipt.", $bigMail);       
+    $bigMail = str_replace("COOLINFOTEXT", "Your payment has been received and we will shortly send your items by postal service. This mail is your receipt.", $bigMail);
 }
 else {
-    $bigMail = str_replace("COOLINFOTEXT", "Your payment has been received and the changes effectuated. This mail is your receipt.", $bigMail);       
+    $bigMail = str_replace("COOLINFOTEXT", "Your payment has been received and the changes effectuated. This mail is your receipt.", $bigMail);
 }
 $bigMail = str_replace("PRODLINESTUDD", $fullLine, $bigMail);
 $bigMail = str_replace("COOLCLID", $clid, $bigMail);
@@ -225,13 +224,13 @@ mail ($customer_email, "Order #$clid Cleared", $bigMail, $headers);
 foreach ($purchase as $x => $value) {
     if ($value == "") {continue;}
     if (stripos($value, "[")) {
-        $shortitem = substr($value, 0, strpos($value, "["));       
+        $shortitem = substr($value, 0, strpos($value, "["));
     }
     else if (stripos($value, "-")) {
-        $shortitem = substr($value, 0, strpos($value, "-"));       
+        $shortitem = substr($value, 0, strpos($value, "-"));
     }
     else if (stripos($value, "(")) {
-        $shortitem = substr($value, 0, strpos($value, "("));       
+        $shortitem = substr($value, 0, strpos($value, "("));
     }
     else {$shortitem = $value;}
 
@@ -277,7 +276,7 @@ foreach ($purchase as $x => $value) {
     }
 }
 
-//pay partners 
+//pay partners
 print_r($sellerPayment);
 
 foreach ($sellerPayment as $partner => $partnerArray) {
@@ -336,4 +335,3 @@ $conn->query($query);
 
 
 ?>
-
