@@ -580,7 +580,7 @@ GREATSTUFF;
                 <h2>Sign Out</h2>
                 <p>Sign out of your account.</p>
                 <div style="width:20%;margin:auto;">
-                    <div class="popupButton" style="margin-top:3vw;" onclick="SignOut('friendly')">Sign Out</div>
+                    <div class="popupButton" style="margin-top:3vw;" onclick="signOut('friendly')">Sign Out</div>
                 </div>
             </div>
 
@@ -917,16 +917,6 @@ function getCookie(name) {
     }
     return null;
 }
-function SignOut(yeah) {
-    document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "loggedP=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellLists=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellb=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellc=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spelld=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spelle=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    if (yeah == "friendly") { window.location.href = "Account.html?error=signIn"; }
-    else if (yeah == "baddie") { window.location.href = "Account.html?error=notSignedIn"; }
-}
+
 
 </script>

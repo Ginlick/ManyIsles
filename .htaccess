@@ -1,8 +1,8 @@
 RewriteEngine on
 
 RewriteRule  ^fandom/.*/([0-9]+)/.*   fandom/f.php?id=$1&%{QUERY_STRING} [NC,L]
-RewriteRule  ^([^/]*)/wsettings  fandom/wsettings.php?domain=$1&%{QUERY_STRING} 
-RewriteRule  ^([^/]*)/edit$ fandom/edit.php?domain=$1&%{QUERY_STRING} 
+RewriteRule  ^([^/]*)/wsettings  fandom/wsettings.php?domain=$1&%{QUERY_STRING}
+RewriteRule  ^([^/]*)/edit$ fandom/edit.php?domain=$1&%{QUERY_STRING}
 RewriteRule  ^docs/([0-9]+)/.*   docs/doc.php?id=$1 [NC,L]
 RewriteRule  ^5eS/([0-9]+)/.*   5eS/rule.php?id=$1 [NC,L]
 RewriteRule  ^mystral/([0-9]+)/.*$  mystral/note.php?id=$1&%{QUERY_STRING} [L]
@@ -10,7 +10,7 @@ RewriteRule  ^mystral/([0-9]+)/.*$  mystral/note.php?id=$1&%{QUERY_STRING} [L]
 RewriteRule  "ds/store" "ds/home.php" [L]
 RewriteRule  ^ds/([0-9]+)/.*   ds/item.php?id=$1 [NC,L]
 RewriteRule  "dl/home" "dl/Goods.php" [L]
-
+RewriteRule  ^dl/item/([0-9]+)/.*   dl/item.php?id=$1 [NC,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}\.html -f

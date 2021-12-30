@@ -1,5 +1,12 @@
 ﻿<?php
 
+$return = "/account/SignedIn";$buttcon = "To Account";
+if (isset($_COOKIE["seeker"])){
+  $return = $_COOKIE["seeker"];
+  $buttcon = "continue";
+  setcookie("seeker", "", time() - 2200);
+}
+
 if (preg_match("/[A-Za-z0-9 ]{2,}/", $_POST['uname'])!=1){$redirect = "uname";}
 else if (preg_match("/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/", $_POST['email'])!=1){$redirect = "email";}
 else if (preg_match("/[A-Za-z0-9]{1,}/", $_POST['psw'])!=1){$redirect = "psw";}
@@ -157,11 +164,8 @@ $headers .= "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 $message =  str_replace("massiveTreeofLife", $conCode, $message);
 
-
-$location = "SignedIn.php";
-$buttcon = "To Account";
 if (isset($_POST['wanttoPublish']) AND $_POST['wanttoPublish'] =="1"){
-    $location = "SignedIn.php?show=notConfirmed";
+    $return = "SignedIn.php?show=notConfirmed";
     $buttcon = "Start Publishing";
 }
 
@@ -206,7 +210,7 @@ if (isset($_POST["goTo"])){
 
 ?></p>
 
- <div ><a class="popupButton" style="width:30%;" href="<?php echo $location; ?> "><?php echo $buttcon; ?></a></div>
+ <div ><a class="popupButton" style="width:30%;" href="<?php echo $return; ?> "><?php echo $buttcon; ?></a></div>
 </div>
 
 </body>

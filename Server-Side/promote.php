@@ -5,6 +5,7 @@ class adventurer {
     public $user;
     public $title = "Adventurer";
     public $uname = "Hansfried";
+    public $cpsw = "";
     public $tier = 0;
     public $signedIn = false;
 
@@ -26,7 +27,7 @@ class adventurer {
         $this->conn = $conn;
         $this->user = $user;
 
-        $query = "SELECT title, tier, uname FROM accountsTable WHERE id = $user";
+        $query = "SELECT title, tier, uname, password FROM accountsTable WHERE id = $user";
         if ($result = $this->conn->query($query)) {
             if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -34,12 +35,20 @@ class adventurer {
                     $this->title = $row["title"];
                     $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
                     $this->uname = $row["uname"];
+                    $this->cpsw = $row["password"];
                 }
             }
         }
         $this->fullName = $this->title." ".$this->uname;
     }
 
+    function check() {
+      if ($this->signedIn){
+        require($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
+        return checkNudePsw($this->cpsw);
+      }
+      return true;
+    }
     function promote($title){
         if (preg_match("/[0-9]*/", $title)) {
             foreach ($this->titleArr as $key => $tier){

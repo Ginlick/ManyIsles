@@ -1,7 +1,7 @@
 <?php
 if(!isset($_COOKIE["loggedIn"])){echo "<script>window.location.replace('/account/Account.html?error=notSignedIn');</script>"; exit();}
 if(!isset($_COOKIE["loggedP"])){echo "<script>window.location.replace('/account/Account.html?error=notSignedIn');</script>"; exit();}
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+if (!isset($conn)){require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");}
 
 $uid = $_COOKIE["loggedIn"];
 if (preg_match("/^[0-9]+$/", $uid)!=1) {setcookie("loggedIn", "", time() -3600, "/");header("Location: /account/Account.html?error=notSignedIn");exit();}

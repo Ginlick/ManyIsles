@@ -283,3 +283,22 @@ function getCookie(cname) {
     return "";
 }
 
+//account
+function signOut(yeah = null) {
+    document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "loggedP=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "spellLists=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "spellb=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "spellc=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "spelld=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "spelle=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    if (yeah == "friendly") { window.location.href = "/account/Account?error=signIn"; }
+    else if (yeah == "baddie") { window.location.href = "/account/Account?error=notSignedIn";}
+    else {window.location.reload(true);}
+}
+function seekMaker(returner) {
+  if (returner == "dl"){returner = "/dl/home";}
+  else if (returner == "ds"){returner = "/ds/store";}
+  else if (returner == "publish"){returner = "/ds/Publish";}
+  document.cookie='seeker='+returner;
+}

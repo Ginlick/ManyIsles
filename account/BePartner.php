@@ -23,7 +23,7 @@ $id = $_COOKIE["loggedIn"];
   if ($name == "") {setcookie("loggedIn", "", time() -3600, "/");header("Location: Account.html");exit();}
 
   $getMailRow = "SELECT email FROM accountsTable WHERE id =".$id;
-  $mailresult =  $conn->query($getMailRow);   
+  $mailresult =  $conn->query($getMailRow);
   $mail ="";
   while ($row = $mailresult->fetch_row()) {$mail = sprintf ("%s", $row[0]);}
 
@@ -31,7 +31,6 @@ $id = $_COOKIE["loggedIn"];
   $mailresult =  $conn->query($getMailRow);
   $conf ="";
   while ($row = $mailresult->fetch_row()) {$conf = $row[0];}
-  if ($conf == ""){header("Location: SignedIn.php?show=notConfirmed");exit();}
 
 
 $query = 'SELECT * FROM partners WHERE account = "'.$name.'"';
@@ -73,7 +72,6 @@ header("Location: PubProd.php");exit();
     <div w3-include-html="/Code/CSS/GTopnav.html"></div>
 
     <div class="contentBlock" style="margin-top:5vw;">
-
         <div class="banner" style="position:static">
             <picture>
                 <source srcset="/Imgs/BannerDL.png" media="(max-width: 1400px)">
@@ -87,6 +85,20 @@ header("Location: PubProd.php");exit();
             <li> <a href="SignedIn.php">&lt Back</a></li>
         </ul>
     </div>
+    <?php
+          if ($conf == ""){
+            echo "<h1>Confirm Email</h1>
+            <div><img src='/Imgs/Recruit.png' alt:'Oopsie!' style='width:96%;display:block;margin:auto'></div>
+            <p>Quickly confirm your email to become a trader!<br></p>
+            <button class='popupButton'><a href=''resendConfirm.php?id=41'<fas ></a></button>
+            </div></div>
+            ";
+
+
+            exit();
+          }
+
+    ?>
 
 <h1>Let's make you a Trader!</h1>
 <div><img src='../Imgs/Ranks/HighMerchant.png' alt:'Oopsie!' style='width:96%;display:block;margin:auto'></div>
