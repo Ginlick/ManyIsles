@@ -1,5 +1,4 @@
 ﻿<?php
-require_once($_SERVER['DOCUMENT_ROOT']."/wiki/expressions.php");
 
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -26,54 +25,22 @@ NABSDAI;
 if(!isset($_FILES["file"])){exit();}
 
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
-$gen = new gen("act", 0, 0, false, "mystral");
+$gen = new gen("act", 0, 0, false, "mystral", ["notArticle"=>true]);
 if ($gen->power < 3 OR !$gen->domainSpecs["canImage"]){exit();}
 
 $file = $_FILES['file'];
-$fileTitle =  substr(preg_replace($regArray["basic"], "", $_FILES['file']["name"]), 0, 50); if ($fileTitle == ""){$fileTitle = "Image";}
-$fileName = $gen->user."_".generateRandomString(22);
-$fileType = strtolower(pathinfo($_FILES["file"]["name"],PATHINFO_EXTENSION));
-$fullFileName = $fileName.".".$fileType;
-$realpath = realpath("uploadImage.php");
-$realpath = dirname($realpath);
-$realpath = dirname($realpath);
-$realpath = $realpath."/wikimgs/myst/".$fullFileName;
-$uploadOk = 1;
-
-$target_file = $realpath;
-
-$check = getimagesize($_FILES["file"]["tmp_name"]);
-if($check !== false) {
-    $uploadOk = 1;
-} else {
-    echo "File is not an image.";
-    $uploadOk = 0;
+$firstName = basename($file["name"]);
+if ($fileTitle = $gen->files->new($file, generateRandomString(22), "221")) {
+  if ($gen->files->check($file, "mystimg")){
+    if ($placed = $gen->files->add($file["tmp_name"], $fileTitle)) {
+      $query = "INSERT INTO images (title, name, size, user) VALUES ('$firstName', '$placed', ".$_FILES["file"]["size"].", $gen->user)";
+      $gen->dbconn->query($query);
+      $insert = str_replace("IMAGESRC", $gen->files->clearmage($placed), $imageStencil);
+      $insert = str_replace("IMAGENAME", $firstName, $insert);
+      echo $insert;
+    }
+  }
 }
-if (file_exists($target_file)) {
-    $uploadOk = 0;
-}
-if ($_FILES["file"]["size"] > 2000000) {
-    echo "Sorry, your file is too large.";
-    $uploadOk = 0;
-}
-if($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg") {
-    echo "Sorry, only JPG, JPEG, PNG files are allowed.";
-    $uploadOk = 0;
-}
-
-if ($uploadOk == 0) {
-    echo "Sorry, your image was not uploaded.";
-    exit();
-} else {
-    $query = "INSERT INTO images (title, name, size, user) VALUES ('$fileTitle', '$fullFileName', ".$_FILES["file"]["size"].", $gen->user)";
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-        $gen->dbconn->query($query);
-        $insert = str_replace("IMAGESRC", "/wikimgs/myst/".$fullFileName, $imageStencil);
-        $insert = str_replace("IMAGENAME", $fileTitle, $insert);        
-        echo $insert;
-    }        
-}
-
 
 
 ?>

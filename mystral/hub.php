@@ -92,7 +92,7 @@ BARRR;
         }
         .tierblock p {
             margin: 5px 0 10px;
-            font-size: min(1vw, 15px);           
+            font-size: min(1vw, 15px);
         }
         .tierblock ul {
             padding-left:18px;
@@ -108,7 +108,7 @@ BARRR;
 }
 .tierblock.subscribed {
     border-color: var(--ds-gold);
-    
+
 }
 .tierblock.subscribed .homescreen {
     background-color: var(--ds-gold) !important;
@@ -235,7 +235,7 @@ h1 {
 }
 
 .imageContainer:hover .sidenav .trans {
-  right: 10px; 
+  right: 10px;
 }
 .filterBar {
     margin: 0 auto 30px;
@@ -331,7 +331,7 @@ h1 {
                     if ($firstrow->num_rows != 0){
                         while ($row = $firstrow->fetch_assoc()) {
                             $insert = str_replace("IMAGESRC2", $row["name"], $imageStencil);
-                            $insert = str_replace("IMAGESRC", "/wikimgs/myst/".$row["name"], $insert);
+                            $insert = str_replace("IMAGESRC", $gen->files->clearmage($row["name"], "/wikimgs/myst/"), $insert);
                             $insert = str_replace("IMAGENAME", $row["title"], $insert);
                             $allimgs .= $insert;
                         }
@@ -348,11 +348,11 @@ h1 {
                 <form onsubmit="return actRename();">
                     <input type="text" placeholder="Image Name" id="imgSInput" pattern="[A-Za-z0-9. ]{2,}"></input>
                     <input type="text" id="imgIdNput" style="display:none"></input>
-                    <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>       
+                    <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>
                     <div class="bottButtCon">
                         <button class="wikiButton">Rename</button>
                     </div>
-                </form>   
+                </form>
             </div>
         </div>
     </div>
@@ -378,7 +378,7 @@ h1 {
         var tab = document.getElementById(which);
         var naver = document.getElementById("sid" + which);
         if (tab != null){tab.style.display = "block";}
-        if (naver != null){naver.classList.add("selected");}        
+        if (naver != null){naver.classList.add("selected");}
     }
     var urlParams = new URLSearchParams(window.location.search);
     var view = urlParams.get("view");
@@ -427,6 +427,7 @@ function readURL(input) {
     formData.append("file", input.files[0]);
     xhttp.onreadystatechange = async function () {
         if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
             $('.allImages').prepend(this.responseText);
             removeUpload();
             createPopup("d:poet;txt:Image uploaded");

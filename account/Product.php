@@ -44,7 +44,7 @@ if (!$writingNew){
       $proSubgenre = $row["subgenre"];
       $proKeywords = $row["categories"];
       $proSupport = $row["support"];
-      $proLink = $dl->clearmage($row["link"]);
+      $proLink = $dl->clearfile($row["link"], $proGenre, true);
       $proTier = $row["tier"];
       $proStatus = $row["status"];
       $prodPop = $row["popularity"];
