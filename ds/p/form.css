@@ -36,14 +36,18 @@ h2 {
         text-align: center;
     }
 
-span.roundInfo {
+.roundInfo {
     border: 1px solid #8dceff;
-    color: #8dceff !important;
+    color: #8dceff;
     border-radius: 50px;
     font-size: calc(9px + .1vw);
     padding: 5px;
     margin: 0 6px;
     display: inline-block;
+}
+.roundInfo.gold {
+  color: var(--ds-gold);
+  border-color:  var(--ds-gold);
 }
 
 input, textarea, select {

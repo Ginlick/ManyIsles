@@ -183,7 +183,6 @@ class loopBasket {
                                 $chunks = array_chunk(preg_split('/(:|-)/', $stringDico), 2);
                                 $assocDico = array_combine(array_column($chunks, 0), array_column($chunks, 1));
                             }
-
                             //check quantity / stock
                             if (isset($assocDico["quant"])){
                                 $quantOption = intval($assocDico["quant"]);

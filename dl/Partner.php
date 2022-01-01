@@ -68,7 +68,8 @@ $dl->partInfo($pId);
                         <p>
                             p#<?php echo $pId; ?> (<?php echo $dl->pType; ?>)<br>
                             Joined <?php echo $dl->pRegDate; ?><br>
-                            Library Publications: <?php echo $dl->totalPub; ?>
+                            Library Publications: <?php echo $dl->totalPub; ?><br>
+                            <?php if($dl->partDS) { echo "View on the <a href='/ds/p/partner?id=$pId' target='_blank'>digital store</a>"; }?>
                         </p>
                     </div>
                     <div class="overtail normal">

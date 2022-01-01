@@ -4,8 +4,8 @@ session_start();
 echo $_SESSION["basket"];
 
 
-session_destroy();
-/*
+/*session_destroy();
+
 $value = "3(Aasdutst''as Nes/256)";
 
 

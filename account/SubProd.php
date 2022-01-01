@@ -16,6 +16,7 @@ $genre = 1;
 $gsystem = 0;
 $support = 0;
 $external = 0;
+$tier = 0;
 $image = false; $file = false;$placedI = false; $placedF = false;
 
 $pname = substr(preg_replace("/[^A-Za-z0-9\&\'\- ]/", "", $_POST['pname']), 0, 60);
@@ -27,6 +28,7 @@ $gsystem = substr(preg_replace("/[^0-9]/","",  $_POST['gamesys']), 0, 2);
 $keywords = substr(preg_replace("/[^A-Za-z0-9\&\'\-, ]/", "", $_POST['keywords']), 0, 60);
 $support = substr(preg_replace("/[^0-1]/", "", $_POST['supportProd']), 0, 1);
 $format = substr(preg_replace("/[^A-Za-z0-9\'\- ]/", "", $_POST['format']), 0, 60);
+$tier = substr(preg_replace("/[^0-9]/", "", $_POST['tier']), 0, 2);
 $placedF = substr(str_replace('"', '', $_POST['link']), 0, 500);
 if(isset($_POST['external']) AND $_POST['external']=="on"){$external = 1;}
 
@@ -54,6 +56,12 @@ else {
 if (isset($_FILES["file"])) {
   $file = $_FILES["file"];
 }
+else {
+  $external = 1;
+}
+if ($dl->ppower < 1 OR $tier > 3){
+  $tier = 0;
+}
 
 //act
 
@@ -68,10 +76,12 @@ if ($image){
   }
 }
 if ($file){
+  $external = 1;
   if ($realpath = $filing->new($file, $prodId, "462")) {
     $filetype = "dlPdf";if ($genre == 3){$filetype = "dlArt";}
     if ($filing->check($file, $filetype)){
       $placedF = $filing->add($file["tmp_name"], $realpath);
+      $external = 0;
     }
     if (!$placedF){
       echo "fileFail";
@@ -79,7 +89,7 @@ if ($file){
   }
 }
 
-
+if($external == 1){echo "external";}
 
 $more = [];
 if ($format != ""){
@@ -93,11 +103,11 @@ $more = json_encode($more);
 
 if ($writingNew) {
   $baseCommand = 'INSERT INTO products (name, shortName, image, partner, genre, subgenre, categories, tier, description, link, support, more) VALUES
-   ("'.$pname.'", "'.$spname.'","'.$placedI.'", "'.$dl->partId.'", "'.$genre.'","'.$subgenre.'", "'.$keywords.'", 0,"'.$jacob.'", "'.$placedF.'", "'.$support.'", \''.$more.'\')';
+   ("'.$pname.'", "'.$spname.'","'.$placedI.'", "'.$dl->partId.'", "'.$genre.'","'.$subgenre.'", "'.$keywords.'","'.$tier.'","'.$jacob.'", "'.$placedF.'", "'.$support.'", \''.$more.'\')';
 }
 else {
   $baseCommand = 'UPDATE products SET
-  name =  "'.$pname.'", shortName = "'.$spname.'", genre = "'.$genre.'", subgenre = "'.$subgenre.'", categories = "'.$keywords.'", tier = 0, description = "'.$jacob.'", support = "'.$support.'", more = \''.$more.'\' ';
+  name =  "'.$pname.'", shortName = "'.$spname.'", genre = "'.$genre.'", subgenre = "'.$subgenre.'", categories = "'.$keywords.'", tier = "'.$tier.'", description = "'.$jacob.'", support = "'.$support.'", more = \''.$more.'\' ';
   if ($placedI){
     $baseCommand .= ', image = "'.$placedI.'" ';
   }

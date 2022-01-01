@@ -84,7 +84,7 @@ $overlay = str_replace("ACCESSMODENAME", $access, $overlay);
 $checkoutPair = str_replace("ACCESSMODENAME", $access, $checkoutPair);
 if ($canPeruse){
  if ($access == "Download"){
-   $checkoutPair = str_replace("BUTTWO", " <a href='LEADMETO' target='_blank'><button class='checkout'> <i class='fas fa-arrow-up'></i> Open in Browser</button></a>",   $checkoutPair);
+   $checkoutPair = str_replace("BUTTWO", " <a href='".$dl->fileclear($artLink, $artGenre, true)."' target='_blank'><button class='checkout'> <i class='fas fa-arrow-up'></i> Open in Browser</button></a>",   $checkoutPair);
    $overlay = replaceBusiness($overlay, "fas fa-arrow-down", "/Server-Side/downStuff.php?name=".urlencode($artShortName)."&dlid=".$artId."&dl=".$dl->fileclear($artLink, $artGenre), "download='' target='_blank'");
    $checkoutPair = replaceBusiness($checkoutPair, "fas fa-arrow-down", "/Server-Side/downStuff.php?name=".urlencode($artShortName)."&dlid=".$artId."&dl=".$dl->fileclear($artLink, $artGenre), "download='' target='_blank'");
  }
@@ -243,7 +243,7 @@ $dl->dlconn->query($query);
               if ( $artPartner != "Pantheon" and $artPartner != "Traveler"){
                 $results = $dl->results(["partner"=>$artPartnerId, "method"=>"RAND()"], "row", 9, [$artId]);
                 if ($results != "Hmmm... there aren't many great results."){
-                  echo "<a href='partner?id=".$artPartnerId."'><h2 >More by This Partner</h2></a>";
+                  echo "<a href='/dl/partner?id=".$artPartnerId."'><h2 >More by This Partner</h2></a>";
                   echo "<div class='itemRow single'>";
                   echo $results;
                   echo "</div>";

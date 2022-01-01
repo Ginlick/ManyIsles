@@ -86,7 +86,7 @@ require_once("g/sideBasket.php");
                 <h1>Purchase Tier</h1>
                 <p>click to select</p>
             <div class="tierCont">
-                <div class="tierblock" id="0" onclick="selectTier('0');">
+                <div class="tierblock" id="0" onclick="selectTier(0);">
                     <h2>Tier 1</h2>
                     <p class="titlename"><i>Imperial Soldier</i></p>
                     <div class="img"><img src="/Imgs/Ranks/single/ImperialSoldier.png"/></div>
@@ -99,7 +99,7 @@ require_once("g/sideBasket.php");
 
                     </ul>
                 </div>
-                <div class="tierblock" id="1" onclick="selectTier('1');">
+                <div class="tierblock" id="1" onclick="selectTier(1);">
                     <h2>Tier 2</h2>
                     <p class="titlename"><i>Grand Wizard</i></p>
                     <div class="img"><img src="/Imgs/Ranks/single/GrandWizard.png"/></div>
@@ -110,7 +110,7 @@ require_once("g/sideBasket.php");
                         <li>Support the Many Isles! :)</li>
                     </ul>
                 </div>
-                <div class="tierblock" id="2" onclick="selectTier('2');">
+                <div class="tierblock" id="2" onclick="selectTier(2);">
                     <h2>Tier 3</h2>
                     <p class="titlename"><i>Legendar</i></p>
                     <div class="img" style="width:50%;"><img src="/Imgs/Ranks/single/Legendar.png"/></div>
@@ -157,7 +157,7 @@ require_once("g/sideBasket.php");
 var urlParams = new URLSearchParams(window.location.search);
 var sel = parseInt(urlParams.get('i'));
 var selectedTier = 0;
-if (0 < sel < 3){
+if (sel.typeof == "int" && 0 < sel < 3){
     selectedTier = sel;
 }
 

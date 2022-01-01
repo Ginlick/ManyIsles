@@ -1,5 +1,6 @@
 ﻿<?php
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/transactions.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/makeHuman.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
 $dl = new dlengine();
@@ -314,7 +315,7 @@ $creditBody = <<<EPICCOOL
                 <table class="theTable">
                     <thead>
                         <tr>
-                            <td>Transactions</td><td>Source</td><td>Amount</td><td>Date</td>
+                            <td>Description</td><td>Source</td><td>Amount</td><td>Date</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -327,49 +328,36 @@ $creditBody = <<<EPICCOOL
 EPICCOOL;
 
 $creditBar = "";
-$query = "SELECT * FROM global_credit WHERE id = $id";
-$hasCredit = false;
-$totalCredit = 0;
-if ($result = $moneyconn->query($query)){
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()){
-            $reference = $row["reference"];
-            $totalCredit = $row["credit"];
-            $hasCredit = true;
-        }
-        $totalCredit = makeHuman($totalCredit);
-        $query = "SELECT * FROM transfers_$reference ORDER BY reg_date DESC LIMIT 0, 122";
-        if ($result = $moneyconn->query($query)){
-            $count = 0;
-            while ($row = $result->fetch_assoc()){
-                $count++;
-                if ($count == 100){break;}
-                $motive = $row["motive"];
-                $source = $row["source"];
-                $amount = $row["amount"];
-                $artRegdate = $row["reg_date"];
-                $amount = makeHuman($amount);
-                $date_array = date_parse($artRegdate);
-                $artPubdate = $date_array["day"].".".$date_array["month"].".".$date_array["year"]." ".$date_array["hour"].":".$date_array["minute"];
+$hasCredit = true;
+$userCredit = new transaction($moneyconn, $id);
 
-                $newLine = "<tr><td>$motive</td> <td>$source</td> <td>".$amount."</td> <td>".$artPubdate."</td></tr> COOLLINESHERE";
-                $creditBody = str_replace("COOLLINESHERE", $newLine, $creditBody);
-            }
-            $creditBody = str_replace("COOLLINESHERE", "", $creditBody);
-            $creditBody = str_replace("CURRENTTOTAL", $totalCredit, $creditBody);
-        }
+$query = "SELECT * FROM transfers_$userCredit->reference ORDER BY reg_date DESC LIMIT 0, 122";
+if ($result = $moneyconn->query($query)){
+    $count = 0;
+    while ($row = $result->fetch_assoc()){
+        $count++;
+        if ($count == 100){break;}
+        $motive = $row["motive"];
+        $source = $row["source"];
+        $amount = $row["amount"];
+        $artRegdate = $row["reg_date"];
+        $amount = makeHuman($amount);
+        $date_array = date_parse($artRegdate);
+        $artPubdate = $date_array["day"].".".$date_array["month"].".".$date_array["year"]." ".$date_array["hour"].":".$date_array["minute"];
+
+        $newLine = "<tr><td>$motive</td> <td>$source</td> <td>".$amount."</td> <td>".$artPubdate."</td></tr> COOLLINESHERE";
+        $creditBody = str_replace("COOLLINESHERE", $newLine, $creditBody);
+    }
+    $creditBody = str_replace("COOLLINESHERE", "", $creditBody);
+    $creditBody = str_replace("CURRENTTOTAL", makeHuman($userCredit->total_credit), $creditBody);
+}
 
 
 $creditBar = <<<MEGA
     <li onclick='clinnation("Credit")'> <p id='CreditBar' class="Bar line">Many Isles Credit</p></li>
 MEGA;
-    }
-    else {
-$creditBar = <<<MEGA
-    <li> <a class="Bar line" href="/ds/credit.php">Many Isles Credit</a></li>
-MEGA;
-    }
-}
+
+
 if ($ordersExist){
     $creditBar = str_replace(" line", "", $creditBar);
 }

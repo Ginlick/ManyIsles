@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
 $dl = new dlengine();
@@ -44,7 +44,7 @@ if (!$writingNew){
       $proSubgenre = $row["subgenre"];
       $proKeywords = $row["categories"];
       $proSupport = $row["support"];
-      $proLink = $dl->clearfile($row["link"], $proGenre, true);
+      $proLink = $dl->fileclear($row["link"], $proGenre, true);
       $proTier = $row["tier"];
       $proStatus = $row["status"];
       $prodPop = $row["popularity"];
@@ -242,11 +242,28 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
               <input type ="text" name="format"  placeholder="PDF" value="<?php echo $proFormat; ?>" />
               <p class="inputErr info" default="The product's format."></p>
           </div>
+
+          <div class="inputCont" <?php if ($dl->ppower < 1) {echo "style='display:none'";} ?>>
+              <label for="tier">Tier <span class="roundInfo gold">Premium Extension</span></label>
+              <select name="tier" name="tier">
+                <?php
+                  $text =  '
+                    <option value="0">Free</option>
+                    <option value="1">Tier 1 (Imperial Soldier)</option>
+                    <option value="2">Tier 2 (Grand Wizard)</option>
+                    <option value="3">Tier 3 (Legendar)</option>
+                          ';
+                    $text = str_replace('value="'.$proTier.'"', 'value="'.$proTier.'" selected', $text);
+                    echo $text;
+                 ?>
+              </select>
+          </div>
         </div>
-        <div class="contentBlock" style="min-height: 200px">
+
+          <div class="contentBlock" style="min-height: 200px">
           <h3>File</h3>
           <div class="inputCont checker" id="externalizer">
-              <input type="checkbox"  name="external" id="externalized" onchange="toggleExternal(this.checked)" <?php if ($proExternal == 1){echo "checked";} ?> />
+              <input type="checkbox"  name="external" id="externalized" onchange="updateFiler()" <?php if ($proExternal == 1){echo "checked";} ?> />
               <label for="external">External File</label>
           </div>
 
@@ -274,7 +291,6 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
           <?php
             if ($writingNew){ $proLink = "Not yet uploaded"; }
               echo "<p>Current File: <a href='$proLink' target='_link' id='thisfile'>$proLink</a></p>";
-
            ?>
         </div>
 
@@ -419,10 +435,6 @@ function typValue(value) {
   subgenre = "";
   updateFiler();
 }
-function toggleExternal(value) {
-  external = value;
-  updateFiler();
-}
 
 function catValue(clicked) {
     if (subgenre.includes(clicked)){
@@ -472,6 +484,16 @@ function sendForm(form) {
           else {
             createPopup("d:poet;txt:Error. Could not submit data.");
           }
+
+          if (this.responseText.includes("external")){
+            document.getElementById("externalized").checked = true;
+            updateFiler();
+          }
+          else {
+            document.getElementById("externalized").checked = false;
+            updateFiler();
+          }
+
           $('.file-uploading-content').hide();
           $('.nowSubmitButton').show();
         }

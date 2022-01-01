@@ -65,11 +65,11 @@ class dlengine {
       $this->partDesc = $row["jacob"];
       $this->pUsId = $row["user"];
       $this->ppower = 0;
-      if ($row["type"]=="prem"){$this->ppower = 1;}
+      if ($row["type"]!= ""){$this->ppower = $row["type"];}
       $regDate = $row["reg_date"];
 
       $this->pType = "Companionship";
-      if ($row["type"] == "prem"){$this->pType = "Full Partnership";}
+      if ($this->ppower == 1){$this->pType = "Full Partnership";}
       $date_array = date_parse($regDate);
       $this->pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
 

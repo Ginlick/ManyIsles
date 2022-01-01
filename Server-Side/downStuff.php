@@ -10,7 +10,7 @@ if (isset($_GET["dlid"])){
   $dlconn->query($query);
 }
 if (isset($_GET["name"])){
-  $basename = $_GET["name"];
+  $basename = urldecode($_GET["name"]);
 }
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/fileManager.php");
