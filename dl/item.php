@@ -85,8 +85,8 @@ $checkoutPair = str_replace("ACCESSMODENAME", $access, $checkoutPair);
 if ($canPeruse){
  if ($access == "Download"){
    $checkoutPair = str_replace("BUTTWO", " <a href='LEADMETO' target='_blank'><button class='checkout'> <i class='fas fa-arrow-up'></i> Open in Browser</button></a>",   $checkoutPair);
-   $overlay = replaceBusiness($overlay, "fas fa-arrow-down", $dl->fileclear($artLink, $artGenre), "download");
-   $checkoutPair = replaceBusiness($checkoutPair, "fas fa-arrow-down", $dl->fileclear($artLink, $artGenre), "download");
+   $overlay = replaceBusiness($overlay, "fas fa-arrow-down", "/Server-Side/downStuff.php?name=".urlencode($artShortName)."&dlid=".$artId."&dl=".$dl->fileclear($artLink, $artGenre), "download='' target='_blank'");
+   $checkoutPair = replaceBusiness($checkoutPair, "fas fa-arrow-down", "/Server-Side/downStuff.php?name=".urlencode($artShortName)."&dlid=".$artId."&dl=".$dl->fileclear($artLink, $artGenre), "download='' target='_blank'");
  }
  else {
    $checkoutPair = str_replace("BUTTWO", "",   $checkoutPair);

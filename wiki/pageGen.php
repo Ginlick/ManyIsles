@@ -35,9 +35,10 @@ class gen {
         $this->page = $page;
         $this->mode = $mode;
 
-        $fillIt = false; $igRev = false;
+        $fillIt = false; $igRev = false;$notArticle = false;
         if (isset($moreSpecs["fillIt"])){$fillIt = $moreSpecs["fillIt"];}
         if (isset($moreSpecs["igRev"])){$igRev = $moreSpecs["igRev"];}
+        if (isset($moreSpecs["notArticle"])){$notArticle = $moreSpecs["notArticle"];}
 
         require_once($_SERVER['DOCUMENT_ROOT']."/wiki/domInfo.php");
         equipDom($this, $domain);
@@ -163,6 +164,7 @@ class gen {
 
         //mystral limits
         if ($this->domain == "mystral"){
+          if (!$notArticle){
             $query = "SELECT a.id
             FROM $this->database a
             LEFT OUTER JOIN $this->database b
@@ -189,6 +191,7 @@ class gen {
                     $this->canedit = false; $this->ediProblem = "No Space";
                 }
             }
+          }
         }
 
         //interrupt
@@ -243,6 +246,10 @@ class gen {
                 $this->delButton = '<button class="wikiButton" onclick="nospace()">Delete</button></a>';
             }
         }
+
+        require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/fileManager.php");
+        $this->files = new fileEngine($this->user);
+
         //remove when mostly done
         if ($this->article->parentWiki != $this->parentWiki){
             $query = "UPDATE $this->database SET parentWiki = $this->parentWiki WHERE id = $this->page AND v = ".$this->article->version;

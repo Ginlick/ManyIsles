@@ -4,7 +4,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/wiki/expressions.php");
 if (!isset($_POST['name'])){exit();} else {if (!checkRegger("cleanText", $_POST["name"])){exit();}}
 if (!isset($_POST['value'])){exit();} else {if (!checkRegger("cleanText", $_POST["value"])){exit();}}
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
-$gen = new gen("act", 0, 0, false, "mystral");
+$gen = new gen("act", 0, 0, false, "mystral", ["notArticle"=>true]);
 if ($gen->power < 3){exit();}
 
 $name = $_POST['name'];

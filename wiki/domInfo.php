@@ -61,11 +61,11 @@ function equipDom($gen, $domain = "fandom"){
         $gen->domainName = "Docs";
         $gen->domainLogo = 'Many Isles <a href="/docs/1/home"><span class="fakelink docsLogo">Docs</span></a>';
         $gen->defaultBanner = "manyisles.png";
-        $gen->cateoptions =  json_decode('[{"name":"Guide","value":"Guide"},{"name":"Documentation","value":"Documentation"},{"name":"Manual","value":"Manual"}]', true); 
+        $gen->cateoptions =  json_decode('[{"name":"Guide","value":"Guide"},{"name":"Documentation","value":"Documentation"},{"name":"Manual","value":"Manual"}]', true);
         $gen->defaultGenre = "Guide";
         $gen->artRootLink = "/docs/";
         $gen->baseLink = "/docs/";
-    
+
         $gen->styles = ["Docs"];
         $gen->defaultStyle = "Docs";
     }
@@ -121,7 +121,7 @@ function equipDom($gen, $domain = "fandom"){
         $gen->styles = ["Mystral", "Fandom", "5eS", "Docs"];
         $gen->defaultStyle = "Mystral";
         $gen->mystData = [
-            "notebooks" => 2, "articles" => 222, "pages" => 999, "images" => 5, "fullSpace" => 10000001
+            "notebooks" => 2, "articles" => 222, "pages" => 999, "images" => 22, "fullSpace" => 10000001
         ];
 
         require_once($_SERVER['DOCUMENT_ROOT']."/ds/subs/subHandler.php");
@@ -140,7 +140,7 @@ function equipDom($gen, $domain = "fandom"){
             }
             else {
                 $gen->mystData = [
-                    "notebooks" => 10, "articles" => 222, "pages" => 2222, "images" => 50, "fullSpace" => 100000001 
+                    "notebooks" => 10, "articles" => 222, "pages" => 2222, "images" => 50, "fullSpace" => 100000001
                 ];
                 $gen->defaultBanner = "mystral1.png";
             }

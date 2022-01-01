@@ -420,19 +420,29 @@ class dlengine {
           $image = "/IndexImgs/".$image;
         }
       }
-      $image = "http://25.36.111.17:8080".$image;
       if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
         $image = "https://media.manyisles.ch".$image;
       }
+      else {
+        $image = "http://25.36.111.17:8080".$image;
+      }
       return $image;
     }
-    function fileclear($file, $genre) {
+    function fileclear($file, $genre, $direct = false) {
       if (!str_contains($file, "/")){
         if ($genre == 1){
           $file = "/dl/Friiz/".$file;
         }
         else if ($genre == 3){
           $file = "/dl/Art/".$file;
+        }
+      }
+      if ($direct AND preg_match("/^\/.*$/", $file)){
+        if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
+          $file = "https://media.manyisles.ch".$file;
+        }
+        else {
+          $file = "http://25.36.111.17:8080".$file;
         }
       }
       return $file;
