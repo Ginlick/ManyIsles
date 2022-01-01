@@ -8,6 +8,7 @@ class adventurer {
     public $cpsw = "";
     public $tier = 0;
     public $signedIn = false;
+    public $emailConf = false;
 
     public $titleArr = [
             "Adventurer" => 0, "Poet" => 0, "Trader" => 0, "Journeyman" => 0,
@@ -27,7 +28,7 @@ class adventurer {
         $this->conn = $conn;
         $this->user = $user;
 
-        $query = "SELECT title, tier, uname, password FROM accountsTable WHERE id = $user";
+        $query = "SELECT title, tier, uname, password, emailConfirmed FROM accountsTable WHERE id = $user";
         if ($result = $this->conn->query($query)) {
             if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -36,14 +37,15 @@ class adventurer {
                     $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
                     $this->uname = $row["uname"];
                     $this->cpsw = $row["password"];
+                    if ($row["emailConfirmed"]==1){$this->emailConfirmed = true;}
                 }
             }
         }
         $this->fullName = $this->title." ".$this->uname;
     }
 
-    function check() {
-      if ($this->signedIn){
+    function check($mod = true) {
+      if ($this->signedIn OR $mod){
         require($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
         return checkNudePsw($this->cpsw);
       }

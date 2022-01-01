@@ -33,17 +33,11 @@ if ($firstrow = $conn->query($query)) {
         if ($artStatus == "deleted"){header("Location: /ds/store?why=itemDeleted");exit();}
     }
 }
-$query = "SELECT name, account FROM partners WHERE id = $artPublisherId";
+$query = "SELECT name, user FROM partners WHERE id = $artPublisherId";
 if ($firstrow = $conn->query($query)) {
     while ($row = $firstrow->fetch_assoc()){
         $artPublisher = $row["name"];
-        $artPublisherAccName= $row["account"];
-    }
-}
-$query ='SELECT id FROM accountsTable WHERE uname = "'.$artPublisherAccName.'"';
-if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()){
-        $artPublisherAccId= $row["id"];
+        $artPublisherAccId= $row["user"];
     }
 }
 

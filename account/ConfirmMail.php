@@ -54,7 +54,7 @@ if (isset($_COOKIE["seeker"])){
 
 
 <h1><?php if ($success){echo " Email Confirmed" ; } else {echo "Email not Confirmed"; } ?></h1>
-<div style="width:80%;margin:10px auto 10px auto;"><img src="<?php if ($success){echo "/Imgs/Recruit.png" ; } else {echo "/Imgs/Oops.png"; } ?>" alt="accountBanner" style='width:100%;'></div>
+<div class="bannerI"><img src="<?php if ($success){echo "/Imgs/Recruit.png" ; } else {echo "/Imgs/Oops.png"; } ?>" alt="accountBanner" style='width:100%;'></div>
 
 <?php if ($success){ echo "
 <p>You're free to sail the Many Isles!<br><br>Note that some pages might not update immediately; you can always reload them.</p>

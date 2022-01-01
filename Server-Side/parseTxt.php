@@ -10,6 +10,9 @@ if (!function_exists ("txtParse")) {
             $txt = str_replace(",", '%comma%', $txt);
             $txt = str_replace("[", '%sqbrak_left%', $txt);
             $txt = str_replace("]", '%sqbrak_right%', $txt);
+            if ($level > 2){
+              $txt = str_replace("'", '', $txt);
+            }
         }
         return $txt;
     }

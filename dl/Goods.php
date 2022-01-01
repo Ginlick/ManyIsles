@@ -1,9 +1,7 @@
 ﻿<?php
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once("global/engine.php");
-
-$dl = new dlengine($conn);
+$dl = new dlengine();
 
 ?>
 <!DOCTYPE html>
@@ -11,7 +9,6 @@ $dl = new dlengine($conn);
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8" />
-    <link rel="icon" href="../Imgs/Favicon.png">
     <title>Digital Library</title>
     <?php echo $dl->styles(); ?>
 </head>

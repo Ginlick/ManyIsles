@@ -1,11 +1,6 @@
 ﻿<?php
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
-if(!isset($_COOKIE["loggedIn"])){header("Location: /account/Account.html?error=notSignedIn");exit();}
-if(!isset($_COOKIE["loggedP"])){header("Location: /account/Account.html?error=notSignedIn");exit();}
-
-
 if (isset($_COOKIE["admin"])){$admin = true;}else {$admin = false;}
-$redirect = "../home.php";
+$redirect = "/account/BePartner";
 require_once("security.php");
 
 require_once("../g/ordStatus.php");
@@ -50,12 +45,12 @@ require_once("../g/alertStock.php");
             <div class='left-col'>
                 <a href="../home.php"><h1 class="menutitle">Partnership</h1></a>
                 <ul class="myMenu">
-                    <li><a class="Bar" href="/account/SignedIn.php"><i class="fas fa-arrow-left"></i> Account</a></li>
                     <li><a class="Bar" href="/account/Publish.php"><i class="fas fa-arrow-left"></i> Partnership Overview</a></li>
-                    <li><a class="Bar" href="../home.php"><i class="fas fa-arrow-left"></i> Browse Store</a></li>
                 </ul>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
+                    <li><a class="Bar" href="../home.php">Browse Store</a></li>
+                    <li><a class="Bar" href="/account/SignedIn.php">Account</a></li>
                     <li><a class="Bar" href="partner.php?id=<?php echo $pId; ?>"></i> View Public Page</a></li>
                     <li><a class="Bar" href="/docs/18/Digital_Store_Extension" target="_blank">DS Publishing</a></li>
                     <li><a class="Bar" href="/docs/19/Publishing_Obligations">DS Publishing Conditions</a></li>
@@ -98,7 +93,7 @@ require_once("../g/alertStock.php");
 
                                 $date_array = date_parse($ordRegdate);
                                 $ordPubdate = $date_array["day"].".".$date_array["month"].".".$date_array["year"]." ".$date_array["hour"].":".$date_array["minute"];
-                            
+
                                 echo "<tr>";
                                 echo '<td>#'.$ordClid."-".$ordUd.'</td>';
                                 echo '<td>'.$ordItems.'</td>';
@@ -113,7 +108,7 @@ require_once("../g/alertStock.php");
                             echo "</tbody></table>";
                         }
                     }
-  
+
                 ?>
                 <h2 id="hPublications">Publications</h2>
                     <?php
@@ -174,7 +169,7 @@ require_once("../g/alertStock.php");
 
                                 $date_array = date_parse($ordRegdate);
                                 $ordPubdate = $date_array["day"].".".$date_array["month"].".".$date_array["year"]." ".$date_array["hour"].":".$date_array["minute"];
-                            
+
                                 echo "<tr>";
                                 echo '<td>#'.$ordClid."-".$ordUd.'</td>';
                                 echo '<td>'.$ordItems.'</td>';
@@ -192,7 +187,7 @@ require_once("../g/alertStock.php");
                             echo "<p>No processed orders yet.</p>";
                         }
                     }
-  
+
                 ?>
 
             </div>
@@ -217,5 +212,3 @@ else if (why =="activated"){
     createPopup("d:dsp;txt:Digital Store extension activated!");
 }
 </script>
-
-

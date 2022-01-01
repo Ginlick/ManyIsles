@@ -1,8 +1,5 @@
 ﻿<?php
 if (isset($_GET["id"])) {if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:hub.php");exit();} else $artId =  $_GET["id"];} else { $artId = 0; }
-if(!isset($_COOKIE["loggedIn"])){header("Location:../home.php");exit();}
-if(!isset($_COOKIE["loggedP"])){header("Location: ../home.php");exit();}
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 
 $redirect = "../home.php";
 require_once("security.php");
@@ -11,8 +8,8 @@ require_once("security.php");
 if ($artId != 0) {
     $query = "SELECT * FROM dsprods WHERE id = $artId";
     if ($toprow = $conn->query($query)) {
+      if (mysqli_num_rows($toprow) == 0) {header("Location: hub.php");exit();}
         while ($row = $toprow->fetch_assoc()) {
-            if (mysqli_num_rows($firstrow) == 0) {header("Location: hub.php");exit();}
             $artName = $row["name"];
             $artShortname = $row["shortname"];
             $artPublisherId = $row["sellerId"];
@@ -160,65 +157,65 @@ echo  <<<"COOLCONT"
 COOLCONT;
 }
 else if ($artId != 0) {
-echo '
-    <table class="credTable prods">
-        <thead><tr><td></td><td>Name</td><td>Base Price</td><td>Views</td><td>Stock</td><td>Status</td></tr></thead>
-        <tbody>';
-                    echo "<tr>";
-                    echo '<td><img src="'.clearImgUrl($artThumbnail).'" alt="thumbnail" /></td>';
-                    echo '<td><a href="../'.$artId."/".str_replace(" ", "_", $artName).'" target="_blank">'.$artName.'</a></td>';
-                    echo '<td>'.makeHuman($artPrice).'</td>';
-                    echo '<td>'.$artPopularity.'</td>';
-                    echo '<td>'.alertStock($artStock).'</td>';
-                    echo '<td>'.prodStatSpan($artStatus).'</td>';
-                    echo "</tr>";
-echo '
-        </tbody>
-    </table>';
+  echo '
+      <table class="credTable prods">
+          <thead><tr><td></td><td>Name</td><td>Base Price</td><td>Views</td><td>Stock</td><td>Status</td></tr></thead>
+          <tbody>';
+                      echo "<tr>";
+                      echo '<td><img src="'.clearImgUrl($artThumbnail).'" alt="thumbnail" /></td>';
+                      echo '<td><a href="../'.$artId."/".str_replace(" ", "_", $artName).'" target="_blank">'.$artName.'</a></td>';
+                      echo '<td>'.makeHuman($artPrice).'</td>';
+                      echo '<td>'.$artPopularity.'</td>';
+                      echo '<td>'.alertStock($artStock).'</td>';
+                      echo '<td>'.prodStatSpan($artStatus).'</td>';
+                      echo "</tr>";
+  echo '
+          </tbody>
+      </table>';
 
-//stock
-echo "<div class='stockCont' id='hStock'><h2>Update Stock</h2>";
+  //stock
+  echo "<div class='stockCont' id='hStock'><h2>Update Stock</h2>";
 
-$stockStatus = 0;
-$stockStatus = alertStock($artStock);
-if ($stockStatus == 0){
-    echo "<p style='color:red;'>This item's stock is running low!</p>";
-}
+  $stockStatus = 0;
+  $stockStatus = alertStock($artStock);
+  if ($stockStatus == 0){
+      echo "<p style='color:red;'>This item's stock is running low!</p>";
+  }
 
-echo "
-<form action='newStock.php' method='POST'>
-<div class='inputCont'>
-    <label for='newStock'>Stock <span>*</span></label>
-    <input type='number' name='newStock' placeholder='22' oninput=\"checkSyntax(this, '[^0-9]', 0)\" onchange=\"checkSyntax(this, '[^0-9]', 1)\" value='$artStock' required />
-    <p class='inputErr'></p>
+  echo "
+  <form action='newStock.php' method='POST'>
+  <div class='inputCont'>
+      <label for='newStock'>Stock <span>*</span></label>
+      <input type='number' name='newStock' placeholder='22' oninput=\"checkSyntax(this, '[^0-9]', 0)\" onchange=\"checkSyntax(this, '[^0-9]', 1)\" value='$artStock' required />
+      <p class='inputErr'></p>
 
-</div>
-   <input type='number' name='artId' style='display:none;' value='$artId' required />
-";
-echo '    <div class="checkoutCont" style="margin: 80px 0 40px">
-        <button type="submit" class="checkout">
-            <i class="fas fa-arrow-right"></i>
-            <span>Update</span>
-        </button>
-    </div></div>
-</form>';
+  </div>
+     <input type='number' name='artId' style='display:none;' value='$artId' required />
+  ";
+  echo '    <div class="checkoutCont" style="margin: 80px 0 40px">
+          <button type="submit" class="checkout">
+              <i class="fas fa-arrow-right"></i>
+              <span>Update</span>
+          </button>
+      </div></div>
+  </form>';
 
-//status
-echo "<div class='stockCont' id='hStatus'><h2>Change Status</h2>";
+  //status
+  echo "<div class='stockCont' id='hStatus'><h2>Change Status</h2>";
 
-echo "
-<form action='changeStatus.php?r=item.php%3Fid=$artId%26why=sStatus' method='POST'>
-<input name='$artId' type='text' value='on' style='display:none' />
+  echo "
+  <form action='changeStatus.php?r=item.php%3Fid=$artId%26why=sStatus' method='POST'>
+  <input name='$artId' type='text' value='on' style='display:none' />
 
-<p>Currently ".prodStatSpan($artStatus)."</p>";
+  <p>Currently ".prodStatSpan($artStatus)."</p>";
 
-echo '    <div class="checkoutCont" style="margin: 40px 0 100px">
-        <button type="submit" class="checkout">
-            <i class="fas fa-arrow-right"></i>
-            <span>Toggle</span>
-        </button>
-    </div></div>
-</form>';
+  echo '    <div class="checkoutCont" style="margin: 40px 0 100px">
+          <button type="submit" class="checkout">
+              <i class="fas fa-arrow-right"></i>
+              <span>Toggle</span>
+          </button>
+      </div></div>
+  </form>';
 
 }
 
@@ -301,7 +298,7 @@ $specTemplate = <<<BIGTEMPLE
         <div class="leftSpecCol">
             <div class="inputCont">
                 <label>Name <span>*</span></label>
-                <input type="text" value="SPECNAME" placeholder="Color" autocomplete="off"  onchange="updateSpecs(specNumHerePls, 'name', this); " required />
+                <input type="text" value="SPECNAME" placeholder="Color" autocomplete="off"  onchange="updateSpecs(specNumHerePls, 'name', this); " />
                 <p class="inputErr info" default="What the dropdown list should be called."></p>
             </div>
             <div class="inputCont">
@@ -333,7 +330,7 @@ $optionTemplate = <<<BIGTEMPLE
                     <h3>Option 1</h3>
                     <div class="inputCont">
                         <label>Label <span>*</span></label>
-                        <input type="text" value="OPTIONNAME" tracker-optionName="name" placeholder="Red" onchange="updateSpecs(specNumHerePls, 'options', this);" required />
+                        <input type="text" value="OPTIONNAME" tracker-optionName="name" placeholder="Red" onchange="updateSpecs(specNumHerePls, 'options', this);" />
                         <p class="inputErr info" default="This option's label."></p>
                     </div>
                     <div class="inputCont">
@@ -510,7 +507,7 @@ if ($artStatus == "deleted"){
         <div class="leftSpecCol">
             <div class="inputCont">
                 <label>Name <span>*</span></label>
-                <input type="text" placeholder="Color" autocomplete="off" onchange="updateSpecs(specNumHerePls, 'name', this); " required />
+                <input type="text" placeholder="Color" autocomplete="off" onchange="updateSpecs(specNumHerePls, 'name', this); " />
                 <p class="inputErr info" default="What the dropdown list should be called."></p>
             </div>
             <div class="inputCont">
@@ -531,7 +528,7 @@ if ($artStatus == "deleted"){
                     <h3>Option 1</h3>
                     <div class="inputCont">
                         <label>Label <span>*</span></label>
-                        <input type="text" tracker-optionName="name" placeholder="Red" onchange="updateSpecs(specNumHerePls, 'options', this);" required />
+                        <input type="text" tracker-optionName="name" placeholder="Red" onchange="updateSpecs(specNumHerePls, 'options', this);" />
                         <p class="inputErr info" default="This option's label."></p>
                     </div>
                     <div class="inputCont">

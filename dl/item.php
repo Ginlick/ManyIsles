@@ -4,7 +4,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
 require_once("global/engine.php");
 $dl = new dlengine($conn);
-if (!$dl->user->check()){exit();$dl->go("home");}
+if (!$dl->user->check()){exit();$dl->go("home", "dl");}
 $parse= new Parsedown;
 
 $digital = false;
@@ -25,10 +25,12 @@ if ($firstrow = $dl->dlconn->query($query)) {
         $artDetails = json_decode($row["more"], true);
         $artGsystem = 0;
         $artRegDate = $row["reg_date"];
+        $artStatus = $row["status"];
     }
 }
-if ($artName==""){$dl->go("home?i=baditem");}
-else if ($dl->partners[$artPartnerId]!="active"){$dl->go("home?i=badpartner");}
+if ($artName==""){$dl->go("home?i=baditem", "dl");}
+else if ($dl->partners[$artPartnerId]!="active"){$dl->go("home?i=badpartner", "dl");}
+else if ($artStatus != "active" AND $artStatus != "paused"){$dl->go("home?i=baditem", "dl");}
 $canPeruse = true;
 if ($artTier > $dl->user->tier){$canPeruse = false;}
 $tierMsg = "Tier $artTier"; if ($artTier == 0){$tierMsg = "Free";}
@@ -42,6 +44,9 @@ if ($firstrow = $dl->conn->query($query)) {
         $artPartner = $row["name"];
     }
 }
+$isPartner = false;
+
+if ($dl->partner(false)) {if ($dl->partId == $artPartnerId){$isPartner = true;}}
 
 //access ways
 $access = "Download";
@@ -112,73 +117,7 @@ $dl->dlconn->query($query);
     <?php echo $dl->styles(); ?>
 </head>
 <style>
-.crumbs {
-  padding-top: 50px;
-}
-.imageShower {
-  width: 40%;
-}
-.mySlides {display: block;}
-.mySlides img {
-  object-fit: cover;
-  width: 100%;
-}
-.column, .overtail {
-  text-align: center;
-}
-.overtail p {font-family: "Open Sans";}
-.overtail.support {
-  padding: 5px 0 15px;
-}
-label {  display: inline-block;width:100%;text-align: left;}
-.checkout {
-  background-color: #8f0404;
-  color: #d5d5d5;
-}
-.checkout:hover {
-  background-color: #bb1414;
-}
-.checkoutBox {
-  margin: 20px auto;
-}
-.supportGroup {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.supportGroup .checkout {
-  min-width: 150px;
-  margin: 0 0 0 5px;
-}
 
-
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    transition: .5s ease;
-    background-color: #000000;
-}
-.squareCont:hover .overlay {
-    opacity: 0.75;
-}
-.overlay a {
-  display: flex;
-  height: 100%;width:100%;
-  color: white;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 50px;
-  font-weight: bold;
-}
-.overlay a span {display: block;font-size: 60px;}
-.iShipping {
-  font-size: var(--all-fonts-base);
-}
 </style>
 <body>
   <?php
@@ -235,7 +174,7 @@ label {  display: inline-block;width:100%;text-align: left;}
                         <p>
                             By <?php echo '<a href="/dl/partner?id='.$artPartnerId.'">'.$dl->parsePartName($artPartner).'</a>'; ?><br />
                             Published <?php echo $artPubdate; ?> <br>
-                            <?php echo $artDetails["format"] ?>
+                            <?php if (isset($artDetails["format"] )) {echo $artDetails["format"]; } ?>
                         </p>
                         <?php
                           if ($canPeruse){
@@ -267,7 +206,19 @@ label {  display: inline-block;width:100%;text-align: left;}
                     }
                     ?>
                     <div class="overtail">
-                      <?php echo $checkoutPair; ?>
+                      <?php echo $checkoutPair;
+                      if ($isPartner) {
+                        echo '
+                        <a href="/account/Product?id'.$artId.'" >
+                           <button class="checkout">
+                               <i class="fas fa-arrow-right"></i> Edit
+                           </button>
+                         </a>';
+                      }
+                      if ($artStatus == "paused"){
+                        echo '<p class="warning blue">this product is paused and cannot currently be found in the library</p>';
+                      }
+                       ?>
                     </div>
 
                     <div>

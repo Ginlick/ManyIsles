@@ -5,30 +5,9 @@ $pId = $_GET["id"];
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once("global/engine.php");
 $dl = new dlengine($conn);
+$dl->partInfo($pId);
 
-$query = "SELECT * FROM partners WHERE id = $pId";
-if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $name = $row["name"];
-      $image = $row["image"];
-      $jacob = $row["jacob"];
-      $status = $row["status"];
-      $regDate = $row["reg_date"];
-      $type = $row["type"];
-    }
-}
-$pType = "Companionship";
-if ($type == "prem"){$pType = "Full Partnership";}
-$date_array = date_parse($regDate);
-$pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
 
-$totalPub = 0;
-$query = "SELECT COUNT(IF (partner = $pId, 1, NULL)) FROM products";
-if ($firstrow = $dl->dlconn->query($query)){
-  while ($row = $firstrow->fetch_row()) {
-    $totalPub = $row[0];
-  }
-}
 
 ?>
 <!DOCTYPE html>
@@ -38,7 +17,7 @@ if ($firstrow = $dl->dlconn->query($query)){
     <meta charset="UTF-8" />
     <link rel="icon" href="../Imgs/Favicon.png">
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
-    <title><?php echo $name ?> | Digital Library</title>
+    <title><?php echo $dl->partName ?> | Digital Library</title>
     <?php echo $dl->styles(); ?>
 </head>
 <style>
@@ -73,34 +52,34 @@ if ($firstrow = $dl->dlconn->query($query)){
         <div class='column'>
           <section class="pInfoBlock">
             <?php echo $dl->giveAccTab(); ?>
-            <div class="crumbs"><a href="/dl/home">Digital Library</a> - <a href="/docs/4/Partnership%20Program" target="_blank">Partners</a> - <?php echo $name; ?></div>
+            <div class="crumbs"><a href="/dl/home">Digital Library</a> - <a href="/docs/4/Partnership%20Program" target="_blank">Partners</a> - <?php echo $dl->partName; ?></div>
             <div class="flexer">
                 <section class="imageShower">
                     <div class="squareCont">
                         <div class="square">
-                                <img src="/dl/PartIm/<?php echo $image; ?>">
+                                <img src="<?php echo $dl->clearmage($dl->partImage); ?>">
                         </div>
                     </div>
                 </section>
 
                 <section class="rightOvertails">
                     <div class="overtail">
-                        <h1><?php echo $name; ?></h1>
+                        <h1><?php echo $dl->partName; ?></h1>
                         <p>
-                            Joined <?php echo $pRegDate; ?><br>
-                            Id: p#<?php echo $pId; ?><br>
-                            Library Publications: <?php echo $totalPub; ?>
+                            p#<?php echo $pId; ?> (<?php echo $dl->pType; ?>)<br>
+                            Joined <?php echo $dl->pRegDate; ?><br>
+                            Library Publications: <?php echo $dl->totalPub; ?>
                         </p>
                     </div>
                     <div class="overtail normal">
                         <p>
-                            <?php echo $jacob;  ?>
+                            <?php echo $dl->partDesc;  ?>
                         </p>
                     </div>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-facebook"></a>
-                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $name; ?>'s stuff on the Many Isles!&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-reddit"></a>
-                    <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $name; ?>'s stuff on the Many Isles!%0A&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
-                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&media=<?php echo $image; ?>&description=Check out <?php echo $name; ?>'s stuff on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
+                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-reddit"></a>
+                    <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!%0A&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
+                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&media=<?php echo $image; ?>&description=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
                 </section>
 
 

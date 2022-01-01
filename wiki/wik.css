@@ -1125,3 +1125,19 @@ h1 {
     width: 100%;
     justify-content: center;
 }
+.note {
+    background-color: var(--doc-stracc-color);
+    width: 40%;
+    max-width: 650px;
+    min-width: min(300px, 100%);
+    float: right;
+    padding: 5px;
+}
+
+    .note.wide {
+        width: 100%;
+        max-width: 100%;
+    }
+        .note.left {
+            float: left;
+        }

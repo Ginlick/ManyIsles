@@ -1,4 +1,4 @@
-﻿body, p, li, label {
+﻿body, li, label {
     text-align: left;
     font-family: "Open Sans";
 }
@@ -105,7 +105,7 @@ button, .button, button a {
     color: #d5d5d5;
     border: none;
     border-radius: 5px;
-    padding: 5px;
+    padding: 6px 10px;
     text-align: center;
     transition: .3s ease;
     font-weight: normal;
@@ -296,7 +296,7 @@ select {
     font-size: var(--all-fonts-base);
     padding: 5px;
 }
-.menuCont input[type=text] {
+.menuCont input[type=text], textarea {
     font-size: var(--all-fonts-base);
     padding: 5px;
     border-radius: 5px;
@@ -411,3 +411,71 @@ select {
             .showBGer {
               display: none;
             }
+/*item*/
+.crumbs {
+  padding-top: 50px;
+}
+.imageShower {
+  width: 40%;
+}
+.mySlides {display: block;}
+.mySlides img {
+  object-fit: cover;
+  width: 100%;
+}
+.column, .overtail {
+  text-align: center;
+}
+.overtail p {font-family: "Open Sans";}
+.overtail.support {
+  padding: 5px 0 15px;
+}
+label {  display: inline-block;width:100%;text-align: left;}
+.checkout {
+  background-color: #8f0404;
+  color: #d5d5d5;
+}
+.checkout:hover {
+  background-color: #bb1414;
+}
+.checkoutBox {
+  margin: 20px auto;
+}
+.supportGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.supportGroup .checkout {
+  min-width: 150px;
+  margin: 0 0 0 5px;
+}
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    transition: .5s ease;
+    background-color: #000000;
+}
+.squareCont:hover .overlay {
+    opacity: 0.75;
+}
+.overlay a, .overlay.content {
+  display: flex;
+  height: 100%;width:100%;
+  color: white;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--all-fonts-h1);
+  font-weight: bold;
+}
+.overlay a span {display: block;font-size: 60px;}
+.iShipping {
+  font-size: var(--all-fonts-base);
+}

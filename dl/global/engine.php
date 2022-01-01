@@ -37,7 +37,11 @@ class dlengine {
     public $typeNames = [1=>"Modules", 2=>"Tools", 3=> "Art", 4=> "Audio"];
 
 
-    function __construct($conn, $dlconn = null){
+    function __construct($conn = null, $dlconn = null){
+        if ($conn == null) {
+            global $conn;
+            require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+        }
         $this->conn = $conn;
         if ($dlconn == null) {
             require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dl.php");
@@ -46,13 +50,77 @@ class dlengine {
         require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
         $key = 0; if (isset($_COOKIE["loggedIn"])){$key = $_COOKIE["loggedIn"];}
         $this->user = new adventurer($this->conn, $key);
-
         $query = "SELECT id, status FROM partners";
         if ($max = $this->conn->query($query)) {
           while ($row = $max->fetch_assoc()){
             $this->partners[$row["id"]] = $row["status"];
           }
         }
+    }
+    function equipPart($row) {
+      $this->partId = $row["id"];
+      $this->partName = $row["name"];
+      $this->partImage = $row["image"];
+      $this->partStat = $row["status"];
+      $this->partDesc = $row["jacob"];
+      $this->pUsId = $row["user"];
+      $this->ppower = 0;
+      if ($row["type"]=="prem"){$this->ppower = 1;}
+      $regDate = $row["reg_date"];
+
+      $this->pType = "Companionship";
+      if ($row["type"] == "prem"){$this->pType = "Full Partnership";}
+      $date_array = date_parse($regDate);
+      $this->pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
+
+      $this->partDS = false;
+      $query = 'SELECT acceptCodes FROM partners_ds WHERE id = '.$this->partId;
+      if ($result = $this->conn->query($query)){
+          if (mysqli_num_rows($result) != 0) {
+              $this->partDS = true;
+          }
+      }
+
+      $this->totalPub = 0;
+      $this->totalPrems = 0;
+      $query = "SELECT COUNT(IF (partner = $this->partId AND status != 'deleted', 1, NULL)) FROM products";
+      if ($firstrow = $this->dlconn->query($query)){
+        while ($row = $firstrow->fetch_row()) {
+          $this->totalPub = $row[0];
+        }
+      }
+    }
+    function partner($full = "stan") {
+      if (!$this->user->signedIn){$this->go("Account", "p");}
+      $query = "SELECT * FROM partners WHERE user = ".$this->user->user;
+      if ($max = $this->conn->query($query)) {
+        while ($row = $max->fetch_assoc()){
+          $this->equipPart($row);
+          if ($full){
+            if ($this->user->emailConfirmed AND $this->partStat != "deleted") {
+              if ($full == "ds"){
+                if (!$this->partDS){
+                  $this->go("activate", "ds");
+                }
+              }
+              return true;
+            }
+          }
+          return true;
+        }
+      }
+      if ($full) {
+        $this->go("BePartner", "p");
+      }
+      return false;
+    }
+    function partInfo($pId) {
+      $query = "SELECT * FROM partners WHERE id = $pId";
+      if ($max = $this->conn->query($query)) {
+        while ($row = $max->fetch_assoc()){
+          $this->equipPart($row);
+        }
+      }
     }
 
     //page generating
@@ -167,6 +235,9 @@ class dlengine {
         MEGAMMAMAM;
         return $menu;
     }
+    function giveFooter() {
+      return '<div w3-include-html="/ds/g/GFooter.html" w3-create-newEl="true"></div>';
+    }
 
     //action
     function prodTab($titling, $image, $link, $premium = false) {
@@ -219,7 +290,7 @@ class dlengine {
       if ($action == "row"){$resulter = "";}
 
       $query = "";
-      $genre = 1;
+      $genre = 0;
       $subgenre = "";
       $gsystem = 0;
       $method = "id";
@@ -235,15 +306,16 @@ class dlengine {
       }
       $regcate = $regcate.".+$";
 
-      $requ = 'SELECT * FROM products WHERE genre = '.$genre.' AND (name LIKE "%'.$query.'%" OR categories LIKE "%'.$query.'%") AND subgenre REGEXP "'.$regcate.'"';
+      $requ = 'SELECT * FROM products WHERE (name LIKE "%'.$query.'%" OR categories LIKE "%'.$query.'%") AND subgenre REGEXP "'.$regcate.'"';
       if (isset($queries["partner"])){$requ .= " AND partner = ".$queries["partner"];}
+      if ($genre != 0){$requ .= " AND genre = ".$genre;}
       $requ .=  ' ORDER BY '.$method.' DESC LIMIT 222';
-
       if ($result = $this->dlconn->query($requ)){
         if (mysqli_num_rows($result) > 0){
           $nicetotal = 0;
           while ($row = $result->fetch_assoc()){
             if ($nicetotal >= $max){break;}
+            if ($row["status"]!="active"){continue;}
             $id = $row["id"];
             if (in_array($id, $skipper)){continue;}
             $name = $row["name"];
@@ -275,6 +347,7 @@ class dlengine {
     function prodItemR($row) {
       $partner = $row["partner"];
       if (!isset($this->partners[$partner]) OR $this->partners[$partner]!="active") {return "";}
+      if ($row["status"]!="active"){return "";}
       $titling = $row["name"];
       if($row["shortName"] != ""){$titling = $row["shortName"];}
       $image = $this->clearmage($row["image"]);
@@ -285,22 +358,35 @@ class dlengine {
     }
 
 
-    function styles() {
-      return <<<MAGDA
+    function styles($dom = "dl") {
+      $return = <<<MAGDA
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/Imgs/Favicon.png">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
         <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
         <link rel="stylesheet" type="text/css" href="/dl/global/dl3.css">
       MAGDA;
+      if ($dom == "p"){
+        $return .= '<link rel="stylesheet" type="text/css" href="/ds/p/form.css">';
+        $return .= '<link rel="stylesheet" type="text/css" href="/account/g/GGMdl2.css">';
+      }
+      return $return;
     }
-    function scripts() {
-      return <<<MAGDA
+    function scripts($dom = "dl") {
+      $return = <<<MAGDA
         <script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
         <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
         <script src="/Code/CSS/global.js"></script>
-        <script src="/dl/global/dl3.js"></script>
       MAGDA;
+      if ($dom == "dl"){
+        $return .= '<script src="/dl/global/dl3.js"></script>';
+      }
+      else if ($dom == "p"){
+        $return .= '<script src="/ds/p/form.js"></script>';
+      }
+      return $return;
     }
     function baseVars($genre = 1, $subgenre = "[]", $gsystem = 0) {
       return <<<MAGDA
@@ -311,12 +397,32 @@ class dlengine {
       </script>
       MAGDA;
     }
+
+    function checkOwner(int $prodId, int $partId = null) {
+      if ($partId==null){$partId = $this->partId;}
+      $query = "SELECT partner FROM products WHERE id = $prodId";
+      if ($toprow = $this->dlconn->query($query)) {
+          while ($row = $toprow->fetch_assoc()) {
+              if ($row["partner"]==$partId){return true;}
+          }
+      }
+      return false;
+    }
     function url($id, $name) {
       return "/dl/item/".$id."/".substr(urlencode(str_replace(" ", "_", $name)), 0, 50);
     }
-    function clearmage($image) {
+    function clearmage($image, $type = "indeximg") {
       if (!str_contains($image, "/")){
-        $image = "/IndexImgs/".$image;
+        if ($type == "pimg"){
+          $image = "/dl/PartIm/".$image;
+        }
+        else {
+          $image = "/IndexImgs/".$image;
+        }
+      }
+      $image = "http://25.36.111.17:8080".$image;
+      if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
+        $image = "https://media.manyisles.ch".$image;
       }
       return $image;
     }
@@ -336,8 +442,11 @@ class dlengine {
       else if ($name == "Pantheon"){$name = "the Pantheon";}
       return $name;
     }
-    function go($place) {
-      echo "<script>window.location.replace('/dl/$place');</script>";
+    function go($place, $dom = "dl") {
+      if ($dom == "p"){$dom = "/account/";}
+      else if ($dom == "dl"){$dom = "/dl/";}
+      else if ($dom == "ds"){$dom = "/ds/p/";}
+      echo "<script>window.location.replace('$dom$place');</script>";
       exit;
     }
 }

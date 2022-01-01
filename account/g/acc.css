@@ -44,7 +44,7 @@
     width: 80%;
     flex-grow: 1 1;
     float: right;
-    padding: 16px;
+    padding: 16px 16px 100px;
     display:none;
 }
 
