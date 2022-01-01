@@ -2,7 +2,6 @@
 //requires inbasket, $conn
 
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/makeHuman.php");
-require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/parseSpecs.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/countries.php");
 
 class loopBasket {
@@ -45,7 +44,7 @@ class loopBasket {
                 $newPrice = $itemDetails["price"] - floor(($itemDetails["price"] * intval($amount)) / 1000);
             }
             if ($newPrice > $itemDetails["price"]){$newPrice = $itemDetails["price"];}
-            
+
             $deduc = $itemDetails["price"] - $newPrice;
             if ($itemDetails["price"] - ($deduc + $currentDeduc) < $itemDetails["minPrice"]){$deduc = $itemDetails["price"] - $itemDetails["minPrice"] -$currentDeduc;}
             return $deduc;
@@ -126,7 +125,7 @@ class loopBasket {
                     $shortitem = substr($value, 0, strpos($value, "["));
                 }
                 else if (stripos($value, "-")) {
-                    $shortitem = substr($value, 0, strpos($value, "-"));       
+                    $shortitem = substr($value, 0, strpos($value, "-"));
                 }
                 else if (stripos($value, "(")) {
                     $shortitem  = substr($value, 0, strpos($value, "("));
@@ -168,7 +167,7 @@ class loopBasket {
                         $coolProdSpecs = [];
                         $quantOption = 1;
                         if (stripos($value, "[")) {
-                            $specsArray = parseSpecs($row["specifications"]);
+                            $specsArray = json_decode($row["specifications"], true);
 
                             if (stripos($row["price"], ",")) {
                                 $priceOptions = explode(",", $row["price"]);
@@ -194,7 +193,7 @@ class loopBasket {
                                 if ($row["digital"]== 0 ){
                                     $artMaxAmount = $row["maxAmount"];
                                     $actualMaxAmount = $row["stock"] - $this->itemNumArray[$shortitem];
-                                    if ($artMaxAmount < $actualMaxAmount AND $artMaxAmount != 0){$actualMaxAmount = $artMaxAmount;} 
+                                    if ($artMaxAmount < $actualMaxAmount AND $artMaxAmount != 0){$actualMaxAmount = $artMaxAmount;}
                                     if ($actualMaxAmount > 99) {$actualMaxAmount = 99;}
                                     if ($quantOption > $actualMaxAmount){$quantOption = $actualMaxAmount;}
                                     else if ($quantOption < 1){$quantOption = 1;}
@@ -372,7 +371,7 @@ class loopBasket {
                 else {
                     $this->difficultShippingItems[$itemDetails["row"]["id"]] = 0;
                 }
-            }                                       
+            }
         }
     }
 }

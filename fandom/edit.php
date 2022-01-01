@@ -28,7 +28,7 @@ else {
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 $gen = new gen("edit", $page, $parentWiki, $writingNew, $domain);
 $conn = $gen->conn;
-if ($gen->article->name == ""){ echo "<script>window.location.replace('"; if ($this->writingNew) {echo $this->parentWiki."/home"; } else { echo $this->article->page."/".parse2Url($this->article->shortName);} echo "');</script>";}
+if (!$gen->writingNew AND $gen->article->name == ""){ echo "<script>window.location.replace('".$gen->article->page."/".parse2Url($gen->article->shortName)."');</script>";}
 
 
 ?>
@@ -72,7 +72,7 @@ if ($gen->article->name == ""){ echo "<script>window.location.replace('"; if ($t
     ?>
     <div class="content">
         <div class="fandomcoll">
-            
+
                <?php
                     echo $gen->giveEditInfo();
 
@@ -84,7 +84,7 @@ if ($gen->article->name == ""){ echo "<script>window.location.replace('"; if ($t
                     echo $gen->giveOutstans();
 
                 ?>
-           
+
         </div>
         <div class="fandomrcoll">
             <?php
@@ -100,5 +100,3 @@ if ($gen->article->name == ""){ echo "<script>window.location.replace('"; if ($t
     echo $gen->giveScripts();
     echo $gen->giveEditScript();
 ?>
-
-

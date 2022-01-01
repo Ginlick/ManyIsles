@@ -191,7 +191,7 @@ class gen {
             }
         }
 
-        //interrupt 
+        //interrupt
         if ($this->mode == "edit" OR $this->mode == "act"){
             if (($this->article->revertees AND !$igRev) OR (!$this->canedit AND $this->ediProblem != "Reverted")){echo "<script>window.location.replace('$this->homelink?i=cantedit');</script>";exit();}
         }
@@ -220,9 +220,9 @@ class gen {
         $this->wriButton = '<a  href="'.$this->writeLink.'" ><button class="wikiButton">Write</button></a>';
         $this->repButton = '<a href="/fandom/report.php?id='.$this->page.'&v='.$this->article->version.'" class="wikiButton">Report</a>';
         $this->compButton = '<a href="/fandom/incomplete.php?v='.$this->article->version.'&name='.$this->page.'&d='.$incD.'&dom='.$this->domainnum.'" class="wikiButton">'.$nowText.'</a>';
-        $this->revButtons = '<a href="/fandom/revert.php?dir=0&id='.$this->page.'&dom='.$this->domainnum.'" class="wikiButton">Revert</a>';
-        if ($this->article->revertees){$this->revButtons .= '<a href="/fandom/revert.php?dir=1&id='.$this->page.'&dom='.$this->domainnum.'" class="wikiButton">Evolve</a>';
-                                $this->revButtons .= '<a href="/fandom/revert.php?dir=2&id='.$this->page.'&dom='.$this->domainnum.'" class="wikiButton">Age</a>';
+        $this->revButtons = '<a href="/fandom/revert.php?dir=0&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'" class="wikiButton">Revert</a>';
+        if ($this->article->revertees){$this->revButtons .= '<a href="/fandom/revert.php?dir=1&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'" class="wikiButton">Evolve</a>';
+                                $this->revButtons .= '<a href="/fandom/revert.php?dir=2&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'" class="wikiButton">Age</a>';
         }
         $this->filButton = "";
         $this->delButton = "";
@@ -235,12 +235,12 @@ class gen {
             }
             else {
                 $this->ediButton = '<button class="wikiButton" onclick="nospace()">Edit</button></a>';
-                $this->wriButton = '<button class="wikiButton" onclick="nospace()">Write</button></a>';            
-                $this->repButton = '<button class="wikiButton" onclick="nospace()">Report</button></a>';            
-                $this->compButton = '<button class="wikiButton" onclick="nospace()">'.$nowText.'</button></a>';          
-                $this->revButtons = '<button class="wikiButton" onclick="nospace()">Revert</button></a>';          
-                $this->filButton = '<button class="wikiButton" onclick="nospace()">Filicide</button></a>';          
-                $this->delButton = '<button class="wikiButton" onclick="nospace()">Delete</button></a>'; 
+                $this->wriButton = '<button class="wikiButton" onclick="nospace()">Write</button></a>';
+                $this->repButton = '<button class="wikiButton" onclick="nospace()">Report</button></a>';
+                $this->compButton = '<button class="wikiButton" onclick="nospace()">'.$nowText.'</button></a>';
+                $this->revButtons = '<button class="wikiButton" onclick="nospace()">Revert</button></a>';
+                $this->filButton = '<button class="wikiButton" onclick="nospace()">Filicide</button></a>';
+                $this->delButton = '<button class="wikiButton" onclick="nospace()">Delete</button></a>';
             }
         }
         //remove when mostly done
@@ -263,7 +263,7 @@ class gen {
         }
         if ($this->article->NSFW == 2 AND !isset($_COOKIE["clearNSFW"])){
             $this->prude = true;
-        } 
+        }
         $query = "UPDATE pages SET pop = pop + 1 WHERE id = $this->page AND v = ".$this->article->version;
         $this->dbconn->query($query);
 
@@ -351,7 +351,7 @@ class gen {
                 },
                 3 : {
                     "baseURL" : "/mystral/"
-                } 
+                }
             }
         </script>
         ';
@@ -458,7 +458,7 @@ class gen {
                     <p id="authCont">';
             if ($comp){ $counter = 0; foreach($authorsArr as $author) {if ($counter != 0){$main .= ", ";} $counter++;$main .= "<span style='position:relative'>$author</span>"; } $main .="</p>"; }
             else {$main.= $this->article->authors;}
-            $main .='    </div> '; 
+            $main .='    </div> ';
             return $main;
         }
         return "";
@@ -505,7 +505,7 @@ MAIN;
                     <a href="'.$this->artRootLink.$this->parentWiki.'/home"><button id="submitButton" class="wikiButton" >Home</button></a>
                 </div>
         </div>';
-        return $main;              
+        return $main;
     }
     function giveWSetHomer() {
         if ($this->domain == "mystral"){
@@ -581,7 +581,7 @@ MAIN;
                 }
                 else {
                     $rootChildren = $rootChildren.", ".$currentLink ;
-                } 
+                }
             }
         }
         if ($rootChildren == "") {$rootChildren = "None as of yet. <a href='".$this->writeLink."'>write one</a>";}
@@ -623,7 +623,7 @@ MAIN;
                 <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch'.$this->artLink.'" target="_blank" class="fa fa-facebook"></a>
                 <a href="http://www.reddit.com/submit?title=Read up on '.$this->article->shortName.' lore on the Many Isles!&url=https://manyisles.ch'.$this->artLink.'" target="_blank" class="fa fa-reddit"></a>
                 <a href="https://twitter.com/intent/tweet?text=Read up on '.$this->article->shortName.' lore on the Many Isles!%0A&url=https://manyisles.ch'. $this->artLink.'&hashtags=manyisles,lore" target="_blank" class="fa fa-twitter"></a>';
-                if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="fa fa-pinterest"></a> '; } 
+                if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="fa fa-pinterest"></a> '; }
                $main .= ' <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://manyisles.ch/'.$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
             </div>
         </div>';
@@ -707,7 +707,7 @@ NABSDAI;
 
     function giveREdit($modifier = 2) {
         $main =' <div class="col-r">
-            <img src="'.banner($this->article->banner).'" alt="oops" class="topBanner" />
+            <img src="'.banner($this->article->banner, $this).'" alt="oops" class="topBanner" />
             <p class="topinfo"><a href="'.$this->homelink.'">'.$this->domainName.'</a> - <a href="'.$this->artRootLink.$this->parentWiki."/home".'">'.$this->wikiName.'</a> - <a href="#">';
         if ($this->writingNew) {$main .= "Write"; } else {$main .= "Edit"; }
             $main .='</a> </p>
@@ -734,7 +734,7 @@ NABSDAI;
                     <p id="currentCategs" class="topinfo" style="padding-top:5px;"></p>
                     <input type="text" id="viewRoot3" placeholder="Add Categories"  oninput="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');" autocomplete="off" onfocus="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');this.value=\'\';"></input>
                     <div class="suggestions" style=""></div>
-                    <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->page.'"/>                         
+                    <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->page.'"/>
                 </div>';
         }
             $main .= '
@@ -864,7 +864,7 @@ NABSDAI;
                                 <span class="slider"></span>
                             </label> automatically link this word. more info</div>';
                         }
-                      $main .= '   <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>       
+                      $main .= '   <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>
                         </div>
                     </div>
                 </div>
@@ -875,10 +875,10 @@ NABSDAI;
                         <div style="padding:0 10% 5%;">
                             <input type="text" placeholder="Category Name" id="categInput" pattern="[A-Za-z0-9\',():\- ]{2,}"></input>
                             <p style="color:green;display:none;text-align:center;" id="madder">Done!</p>
-                            <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>       
+                            <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>
                             <div class="bottButtCon" style="display: table">
                                 <button class="wikiButton" onclick="createCategory(document.getElementById(\'categInput\').value);">Create</button>
-                            </div>        
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -889,8 +889,8 @@ NABSDAI;
                             <input type="checkbox" checked id="artFinderLocal">
                             <label for="artFinderLocal"> Only in this wiki</label><br>
                             <input type="text" placeholder="Find '.ucwords($this->pagename).'" id="viewRoot4"  oninput="offerSuggestions(this, \'findSuggestions\', 0, \'wikthumb\');" onfocus="offerSuggestions(this, \'findSuggestions\', 0, \'wikthumb\');" autocomplete="off"></input>
-                            <div class="suggestions" style="width:50%;z-index:5;"></div>     
-                            <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>       
+                            <div class="suggestions" style="width:50%;z-index:5;"></div>
+                            <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>
                         </div>
                     </div>
                 </div>
@@ -908,14 +908,14 @@ NABSDAI;
                             <select id="insImgClass">
                                 <option value="sideimg">Side Image</option>
                                 <option value="sideimg medium">Larger Side Image</option>
-                                <option value="sideimg lanscape">Landscape Side Image</option>
+                                <option value="sideimg landscape">Landscape Side Image</option>
                                 <option value="sideimg gallery">Gallery Image</option>
                             </select>
                             <input type="text" placeholder="Direct link to image" id="insImgSrc" />
                             <input type="text" placeholder="Caption (optional)" id="insImgCap"  />
                             <input type="text" placeholder="Style (css, optional)" id="insImgStyle"  />
-                            <button class="wikiButton" style="margin: 30px auto 20px" onclick="insertImage();">Insert</button>     
-                            <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>       
+                            <button class="wikiButton" style="margin: 30px auto 20px" onclick="insertImage();">Insert</button>
+                            <p><span class="typeTab tiny" onclick="removePops()">esc</span> close</p>
                         </div>
                     </div>
                 </div>';
@@ -925,7 +925,7 @@ NABSDAI;
         $main = '        <div class="col-r" style="margin-bottom:50px;">
             <input type="text" class="wikisearchbar" placeholder="Search '.$this->wikiName.' '.$this->groupName.'..." id="viewRoot1"  oninput="offerSuggestions(this, \'findSuggestions\', 1);" onfocus="offerSuggestions(this, \'findSuggestions\', 1);" autocomplete="off"></input>
             <div class="suggestions" style="transform: translate(0, 35px);"></div>
- 
+
             <img src="'.banner($this->article->banner).'" alt="banner" class="topBanner" />';
 
         function root($gen) {
@@ -1023,7 +1023,7 @@ NABSDAI;
             }
             return $main."</div>";
         }
-        
+
         foreach ($parts as $part){
             $main .= call_user_func($part, $this);
         }
@@ -1112,11 +1112,11 @@ NABSDAI;
         else {
             $basetext = "<h1>Error - Cannot Edit</h1><p>Sorry, you are forbidden of editing for this reason: $this->ediProblem.<br>Contact the Pantheon if you feel this is wrong.</p>";
         }
-     
+
         $main = '
         <div id="mod" class="modCol">
             <div class="modContent" >
-                <img src="/Imgs/PopPoet.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block " /> 
+                <img src="/Imgs/PopPoet.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block " />
                 '.$basetext.'
             </div>
         </div>';
@@ -1125,9 +1125,9 @@ NABSDAI;
     function giveRDocArticle() {
         $page = $this->page;$dontEcho = true;$branch = $this->domain;
         include($_SERVER['DOCUMENT_ROOT']."/fandom/getRoot.php");
-        $main = ' 
+        $main = '
             <div class="colrContent">
-                <div class="topinfo">'.$fullLine.'</div>                    
+                <div class="topinfo">'.$fullLine.'</div>
                 <h1>'.$this->article->name.'<span class="roundInfo title">'.$this->article->cate.'</span>
                 <div class="topinfo">'.$this->article->nicedate;
         if ($this->power > 2) {$main .= ', v'.$this->article->version; }
@@ -1191,11 +1191,11 @@ NABSDAI;
             else {$title = "<h1>Manage Subscriptions</h1><p>Your subscription gives you access to awesome features.<br>Manage your plan from the <a href='/ds/subs/hub' target='_blank'>hub</a>.</p>";
                 for ($i = $this->premPower; $i > 0; $i--){
                     $subs = str_replace("SUBSCRIBABLE".$i, "subscribed", $subs);
-                    $subs = str_replace("SUB".$i."BUTTON", '<button class="wikiButton homescreen"><i class="fas fa-check"></i><span> Subscribed</span></button>', $subs);                    
+                    $subs = str_replace("SUB".$i."BUTTON", '<button class="wikiButton homescreen"><i class="fas fa-check"></i><span> Subscribed</span></button>', $subs);
                 }
             }
-            $subs = str_replace("SUB1BUTTON", $sub1button, $subs);                    
-            $subs = str_replace("SUB2BUTTON", $sub2button, $subs);                    
+            $subs = str_replace("SUB1BUTTON", $sub1button, $subs);
+            $subs = str_replace("SUB2BUTTON", $sub2button, $subs);
             return $title.$subs;
         }
     }
@@ -1249,7 +1249,7 @@ NABSDAI;
             }
             var autoLinks = '.json_encode($this->autoLinkArr).';
             var newWiki = ';
-             if (isset($_GET["new"])) {$main.= "true";} else {$main .= "false";} 
+             if (isset($_GET["new"])) {$main.= "true";} else {$main .= "false";}
 
             $main .= '; var sourceJSON = \''. $this->article->sources.'\';
             if (sourceJSON != "" && sourceJSON != \'""\'){
@@ -1313,7 +1313,7 @@ NABSDAI;
             }
             $main .= '</script>';
 
-        return $main;        
+        return $main;
     }
     function giveArtScript() {
         $main ='
@@ -1337,7 +1337,7 @@ NABSDAI;
         addJSON(sourceJSON);
 
         </script>';
-        return $main;       
+        return $main;
     }
     function giveDocScript() {
         $main = '
@@ -1423,8 +1423,8 @@ NABSDAI;
         genreNode.setAttribute("value", "");
         let cateNode = document.createElement("OPTION");
         cateNode.setAttribute("value", "");';
-        if (!$genre) { $main .= 'genreNode.setAttribute("selected", "selected");';} 
-        if (!$categories) { $main .= 'cateNode.setAttribute("selected", "selected");';} 
+        if (!$genre) { $main .= 'genreNode.setAttribute("selected", "selected");';}
+        if (!$categories) { $main .= 'cateNode.setAttribute("selected", "selected");';}
 
         $main .= 'genreNode.innerHTML = "any";
         document.getElementById("genre").appendChild(genreNode);

@@ -33,17 +33,11 @@ if ($firstrow = $conn->query($query)) {
         if ($artStatus == "deleted"){header("Location: /ds/store?why=itemDeleted");exit();}
     }
 }
-$query = "SELECT name, account FROM partners WHERE id = $artPublisherId";
+$query = "SELECT name, user FROM partners WHERE id = $artPublisherId";
 if ($firstrow = $conn->query($query)) {
     while ($row = $firstrow->fetch_assoc()){
         $artPublisher = $row["name"];
-        $artPublisherAccName= $row["account"];
-    }
-}
-$query ='SELECT id FROM accountsTable WHERE uname = "'.$artPublisherAccName.'"';
-if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()){
-        $artPublisherAccId= $row["id"];
+        $artPublisherAccId= $row["user"];
     }
 }
 
@@ -65,8 +59,7 @@ if (!empty($artViewImgs)) {
     $artImgsArray = array_merge($artImgsArray, $nArtImgsArray);
 }
 
-require_once("g/parseSpecs.php");
-$artSpecsArray = parseSpecs($artSpecs);
+$artSpecsArray = json_decode($artSpecs, true);
 
 require($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
 $Parsedown = new Parsedown();
@@ -170,264 +163,7 @@ else {
     <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
-    <style>
-        .flexer {
-            display: flex;
-            flex-direction: row;
-        }
-
-        section.imageShower {
-            width: 45%;
-            padding: 20px;
-        }
-
-        .squareCont {
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-            .squareCont:after {
-                content: "";
-                display: block;
-                padding-bottom: 100%;
-            }
-
-            .squareCont .square {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-        .square img {
-            height: 100%;
-            object-fit: contain;
-            border-radius: 0px;
-        }
-
-        section.rightOvertails {
-            width: 55%;
-            padding: 10px;
-        }
-
-        .overtail {
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            margin: 10px;
-            font-family: 'Montserrat', sans-serif;
-            padding-bottom: 10px;
-        }
-
-            .overtail h1 {
-                text-align: left;
-                margin: 0;
-            }
-
-            .overtail p {
-                text-align: left;
-                font-family: 'Montserrat', sans-serif;
-            }
-
-            .overtail em {
-                font-style: normal;
-            }
-
-            .overtail.iPrice {
-                padding: 22px 8px;
-                font-size: min(calc(14px + .4vw), 22px);
-                font-family: 'Montserrat', sans-serif;
-                font-weight: bold;
-                color: #f0c026;
-            }
-            p.iShipping {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 13px;
-            }
-            p.iShipping .fakelink {
-                float: right;
-            }
-            p.iShipping.green {
-                color: #2a7d14;
-            }
-            p.iShipping.red {
-                color: #cf2715;
-            }
-            p.iShipping.orange {
-                color: #e38e15;
-            }
-            .overtail.iOvertails h5 {
-                font-family: 'Montserrat', sans-serif;
-                padding-top: 15px;
-                margin: 0;
-                font-size: min(calc(12px + .3vw), 16px);
-                font-weight: normal;
-            }
-
-            .overtail select, .overtail input {
-                font-family: 'Montserrat', sans-serif;
-                font-size: min(calc(12px + .3vw), 16px);
-                padding: 10px 5px;
-            }
-
-                .overtail input[type=number] {
-                    width: 30%;
-                }
-
-            .overtail ul {
-                list-style-type: none;
-                font-family: Arial, Helvetica, sans-serif;
-            }
-            .overtail ul li {
-                text-align: left;
-
-            }
-
-        ul.specs {
-            list-style-type: none;
-            padding: 0;
-            
-        }
-        ul.specs li {
-            width: 50%;
-            display: inline-block;
-            text-align: left;
-        }
-        section.details {
-            color: #505050;
-            font-family: 'Open Sans', sans-serif;
-            margin: 80px 20px 100px 20px;
-        }
-
-        .details .specList {
-            list-style-type: none;
-            text-align: left;
-            column-count: 2;
-            padding: 0;
-        }
-
-        .details p, .details h2, .details li {
-            text-align: left;
-        }
-
-        .specList b {
-            color: black;
-        }
-
-        .iOvertails .fas {
-            color: #9f9f9f;
-        }
-        .fa {
-            padding: 5px 10px;
-            font-size:min(calc(17px + .3vw), 22px);
-        }
-
-        .hoverinfo {
-            font-family: 'Montserrat', sans-serif;
-            width: 200px;
-            transform: translate(46%, 0);
-        }
-
-        .checkoutBox {
-            margin: 0 auto 10px;
-        }
-        button.checkout {
-            margin-top: 10px;
-        }
-
-        /* Hide the images by default */
-        .mySlides {
-            display: none;
-            height:100%;
-            width:100%;
-        }
-
-        /* Next & previous buttons */
-        .prev, .next {
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            width: auto;
-            margin-top: -22px;
-            padding: 16px;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            transition: 0.6s ease;
-            border-radius: 0 3px 3px 0;
-            user-select: none;
-            background-color: rgba(255,255,255,0.4);
-            color: black;
-        }
-
-        .prev {
-            left: 0;
-        }
-
-        /* Position the "next button" to the right */
-        .next {
-            right: 0;
-            border-radius: 3px 0 0 3px;
-        }
-
-            /* On hover, add a black background color with a little bit see-through */
-            .prev:hover, .next:hover {
-                background-color: rgba(0,0,0,0.8);
-            }
-
-
-        /* Number text (1/3 etc) */
-        .numbertext {
-            color: #f2f2f2;
-            font-size: 12px;
-            padding: 8px 12px;
-            position: absolute;
-            top: 0;
-        }
-        .fade {
-            -webkit-animation-name: fade;
-            -webkit-animation-duration: 0.7s;
-            animation-name: fade;
-            animation-duration: 0.7s;
-        }
-
-        @-webkit-keyframes fade {
-            from {
-                opacity: .4
-            }
-
-            to {
-                opacity: 1
-            }
-        }
-
-        @keyframes fade {
-            from {
-                opacity: .4
-            }
-
-            to {
-                opacity: 1
-            }
-        }
-    p.warning {
-        font-size: min(calc(9px + .3vw), 15px);
-        color: #7b7b7b;
-        text-align: center;
-        font-family: "Arial", sans-serif;
-    }
-    .warning.brown {
-        color:#602525;
-    }
-    .warning.red {
-        color:red;
-    }
-    .warning.blue {
-        color: var(--ds-status-blue);
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
 </head>
 <body>
     <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;z-index:22;"></div>
@@ -490,7 +226,7 @@ else {
                         <h1><?php echo $artName; ?></h1>
                         <em><?php echo $artKind; ?></em>
                         <p>
-                            By <?php echo '<a href="/ds/p/partner.php?id='.$artPublisherId.'" target="_blank">'.$artPublisher.'</a>'; ?><br />
+                            By <?php echo '<a href="/ds/p/partner?id='.$artPublisherId.'" target="_blank">'.$artPublisher.'</a>'; ?><br />
                             Published <?php echo $artPubdate; ?>
                         </p>
 <?php
@@ -518,7 +254,7 @@ else {
         }
     }
 ?>
-                        
+
                     </div>
                     <div class="overtail iPrice">
                         $<span id="price"><?php echo makeHuman($artPrice); ?></span>
@@ -563,7 +299,7 @@ else {
 }
 echo "</div>";
 
-//external sources 
+//external sources
 if ($artOSources != ""){
     $chunks = array_chunk(preg_split('/(;|,)/', $artOSources), 2);
     if (count(array_column($chunks, 0)) == count(array_column($chunks, 1))) {
@@ -575,7 +311,7 @@ if ($artOSources != ""){
         echo $selectBlock.'</ul></div>';
     }
 }
-                 
+
 
 ?>
                     <div class="overtail" style="display:flex;justify-content:center;">

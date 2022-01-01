@@ -12,6 +12,9 @@ $regArray = [
     "basicList" => "/^([A-Za-z0-9 ]+(,|))+$/",
     "number" => "/^(-|)[0-9]+$/"
 ];
+$regArrayR = [
+    "basic" => "/[^A-Za-z0-9]/",
+];
 
 function checkRegger($regex, $toCheck) {
     global $accentedCharacters, $regArray;
@@ -25,6 +28,11 @@ function checkRegger($regex, $toCheck) {
     else {
         return false;
     }
+}
+
+function purate($input, $regex = "basic") {
+  global $regArrayR;
+  return preg_replace($regArrayR[$regex], "", $input);
 }
 
 function jsReg($regex) {
@@ -74,7 +82,7 @@ function normalizeChars($toCheck) {
         'т'=>'t', 'ט'=>'t', 'ŧ'=>'t', 'ת'=>'t', 'ť'=>'t', 'ţ'=>'t', 'Ţ'=>'t', 'Т'=>'t', 'ț'=>'t', 'Ŧ'=>'t', 'Ť'=>'t', '™'=>'tm',
         'ū'=>'u', 'у'=>'u', 'Ũ'=>'u', 'ũ'=>'u', 'Ư'=>'u', 'ư'=>'u', 'Ū'=>'u', 'Ǔ'=>'u', 'ų'=>'u', 'Ų'=>'u', 'ŭ'=>'u', 'Ŭ'=>'u', 'Ů'=>'u', 'ů'=>'u', 'ű'=>'u', 'Ű'=>'u', 'Ǖ'=>'u', 'ǔ'=>'u', 'Ǜ'=>'u', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'У'=>'u', 'ǚ'=>'u', 'ǜ'=>'u', 'Ǚ'=>'u', 'Ǘ'=>'u', 'ǖ'=>'u', 'ǘ'=>'u', 'ü'=>'ue',
         'в'=>'v', 'ו'=>'v', 'В'=>'v',
-        'ש'=>'w', 'ŵ'=>'w', 'Ŵ'=>'w',       
+        'ש'=>'w', 'ŵ'=>'w', 'Ŵ'=>'w',
         'ы'=>'y', 'ŷ'=>'y', 'ý'=>'y', 'ÿ'=>'y', 'Ÿ'=>'y', 'Ŷ'=>'y',
         'Ы'=>'y', 'ž'=>'z', 'З'=>'z', 'з'=>'z', 'ź'=>'z', 'ז'=>'z', 'ż'=>'z', 'ſ'=>'z', 'Ж'=>'zh', 'ж'=>'zh'
     );

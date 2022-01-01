@@ -2,7 +2,7 @@
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/expressions.php");
 
 if (!isset($_POST['branch'])){$branch = "fandom";} else {if (!checkRegger("wikiName", $_POST["branch"])){header("Location:/fandom/home");exit();} else {$branch = $_POST["branch"];}}
-//base information 
+//base information
 if ($branch == "docs"){
     $redirect = "/docs/1/home";
 }
@@ -22,7 +22,7 @@ if (!isset($_POST['cate'])){$_POST['cate'] = "";} else {if (preg_match("/[^A-Za-
 if (!isset($_POST['banner'])){$_POST['banner'] = "current";} else {if (preg_match('["<>]', $_POST['banner'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['NSFW'])){$_POST['NSFW'] = 0;} else {if (preg_match("/[^0-9]/", $_POST['NSFW'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['timeStart'])){$_POST['timeStart'] = "";}
-if (!isset($_POST['timeEnd'])){$_POST['timeEnd'] = "";} 
+if (!isset($_POST['timeEnd'])){$_POST['timeEnd'] = "";}
 if (!isset($_POST['queryTags'])){$_POST['queryTags'] = "";} else {if (!checkRegger("basicList", $_POST["queryTags"])){header("Location:$redirect");exit();}}
 if (!isset($_POST['importance'])){$_POST['importance'] = 0;} else {if (preg_match("/^[0-9]*$/", $_POST['importance'])!=1){header("Location:$redirect");exit();}}
 if (!isset($_POST['sidetabTitle'])){$_POST['sidetabTitle'] = "";}
@@ -129,14 +129,14 @@ if ($gen->domain == "docs" OR $gen->domain == "5eS") {
     $query = "DELETE FROM $gen->database WHERE v < $smolV AND id = $id";
     $gen->dbconn->query($query);
 }
-if ($gen->domain == "fandom" AND $gen->power == 1){  
+if ($gen->domain == "fandom" AND $gen->power == 1){
     require($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
     $adventurer = new adventurer($gen->conn, $gen->user);
     $adventurer->promote("Poet");
 }
 
 
-//NSFW 
+//NSFW
 if ($_POST["NSFW"] > 2 OR $_POST["NSFW"] < 0) {
     $NSFW = 0;
 }
@@ -215,7 +215,7 @@ $query = str_replace("artparentWiki", $gen->parentWiki, $query);
 //echo $query;exit();
 
 if ($gen->dbconn->query($query)){
-        header("Location:".$gen->artRootLink.$id."/".parse2Url($_POST['shortName'])."?v=$version");
+        header("Location:".$gen->artRootLink.$id."/".parse2Url($_POST['shortName']));
 }
 else {
     echo "Error.";

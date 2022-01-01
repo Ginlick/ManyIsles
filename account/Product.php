@@ -1,239 +1,331 @@
 ﻿<?php
 
-if(!isset( $_GET['id'])){header("Location: Publish.php");exit();}
-if (preg_match("/^[0-9]{1,}$/", $_GET['id'])!=1){header("Location: Publish.php");exit();}
-if (preg_match("/^[a-z]{1}$/", $_GET['t'])!=1){header("Location: Publish.php");exit();}
-if(!isset($_COOKIE["loggedIn"])){header("Location: Account.html?error=notSignedIn");exit();}
-if(!isset($_COOKIE["loggedP"])){header("Location: Account.html?error=notSignedIn");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
+$dl = new dlengine();
+$dl->partner();
 
-$servername = "localhost:3306";
-$username = "aufregendetage";
-$password = "vavache8810titigre";
-$dbname = "manyisle_accounts";
-
-if ($_SERVER['REMOTE_ADDR']=="::1"){
-$servername = "localhost";
-$username = "aufregendetage";
-$password = "vavache8810titigre";
-$dbname = "accounts";
+$prodId = 0;
+$writingNew = true;
+if (isset($_GET['id']) AND $_GET['id'] != 0){
+  $prodId = substr(preg_replace("/[^0-9]/", "", $_GET['id']), 0, 20);
+  if ($dl->checkOwner($prodId, $dl->partId)) {
+    $writingNew = false;
+  }
+  else {
+    $prodId = 0;
+  }
 }
 
+$proName = "";
+$proSName = "";
+$proDesc = "";
+$proGenre = 1;
+$proSubgenre = "";
+$proKeywords = "";
+$proSupport = 1;
+$proFormat = "";
+$proLink = "";
+$proTier = 0;
+$proExternal = 0;
+$proGsystem = 0;
+$prodPop = 0; $prodDl = 0;
+$proStatus = "active";
+$proImg = "/IndexImgs/GMTips.png";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-$id = $_COOKIE["loggedIn"];
-$type = $_GET["t"];
-if ($type == "m"){$longtype = "module";}
-else if ($type == "d"){$longtype = "tool";}
-else if ($type == "a"){$longtype = "art";}
-$uname = "";
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $title = $row["email"];
-      $curpsw = $row["password"];
+if (!$writingNew){
+  $query = "SELECT * FROM products WHERE id = $prodId";
+  if ($toprow = $dl->dlconn->query($query)) {
+    while ($row = $toprow->fetch_assoc()) {
+      $proName = $row["name"];
+      $proSName = $row["shortName"];
+      $proImg = $dl->clearmage($row["image"]);
+      $proDesc = $row["description"];
+      $proGenre = $row["genre"];
+      $proSubgenre = $row["subgenre"];
+      $proKeywords = $row["categories"];
+      $proSupport = $row["support"];
+      $proLink = $dl->clearmage($row["link"]);
+      $proTier = $row["tier"];
+      $proStatus = $row["status"];
+      $prodPop = $row["popularity"];
+      $prodDl = $row["downloads"];
+      $more = json_decode($row["more"], true);
+      if(isset($more["indirect"]) AND $more["indirect"] == 1){$proExternal = 1;}
+      if(isset($more["gsystem"])){$proGsystem = $more["gsystem"];}
+      if(isset($more["format"])){$proFormat = $more["format"];}
     }
-    }
- $cpsw = openssl_decrypt ( $_COOKIE["loggedP"], "aes-256-ctr", "Ga22Y/", 0, "12gah589ds8efj5a");
-  if (password_verify($cpsw, $curpsw)!=1){header("Location: Account.html?error=notSignedIn");setcookie("loggedP", "", time() -3600, "/");setcookie("loggedIn", "", time() -3600, "/");exit();}
-
-$query = "SELECT * FROM partners WHERE account = '".$uname."'";
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_row()) {
-      $pid = $row[0];
-      $pname = $row[1];
-      $pimage = $row[2];
-      $pjacob = $row[5];
-      $status = $row[6];
-    }
-    }
-
-if ($status != "active"){header("Location: BePartner.php");exit();}
-
-
-$query = 'SELECT * FROM products WHERE id = '.$_GET['id'];
-if ($type == "d"){$query = str_replace("products", "diggies", $query);}
-if ($type == "a"){$query = str_replace("products", "art", $query);}
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_row()) {
-      $rname = $row[1];
-      $rimage = $row[2];
-      $rpartner = $row[3];
-      $rtype = $row[4];
-      $rjacob = $row[6];
-      $rlink = $row[7];
-    }
-    }
-
-if ($rpartner != $pname){header("Location: Publish.php");}
+  }
+}
+if ($proStatus=="deleted"){$dl->go("Publish", "p");}
 
 
 ?>
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/Favicon.png">
-    <title>Product | Partnership</title>
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="g/GGMdl.css">
+    <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
+    <?php echo $dl->styles("p"); ?>
+    <title>Product Publishing | Partnership</title>
+<style>
+.fieldCont {
+  width:60%;
+  display:inline-block;
+  text-align:left;
+  padding:9px;
+  height: 250px;
+}
+.field input, input[type=checkbox] {
+  width: auto;
+  margin: 10px 20px;
+  display:
+}
+.checker{
+  text-align: center;
+  padding: 10px 0;
+}
+.checker label {
+  width: auto;
+}
+.field .input {
+  width: 100%;
+  display: block;
+}
+</style>
 </head>
 <body>
-<script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
+  <?php
+      echo $dl->giveGlobs();
+  ?>
 
-    <div style="flex: 1 0 auto;">
-
-    <div w3-include-html="/Code/CSS/GTopnav.html"></div>
-
-    <div class="contentBlock" style="margin-top:5vw;">
-
-        <div class="banner" style="position:static">
-            <picture>
-                <source srcset="/Imgs/BannerDL.png" media="(max-width: 1400px)">
-                <source srcset="/Imgs/BigBannerDL.png">
-                <img src="/Imgs/BigBannerDL.png" alt="Banner" style='width:100%;display:block'>
-            </picture>
-        </div>
-
-<div class="mednav">
-        <ul>
-            <li> <a href="Publish.php">&lt Back</a></li>
-        </ul>
-    </div>
-<h1><?php echo $rname?>, by <?php echo $pname?></h1>
-
-    <p>Edit everything about this <?php echo $longtype; ?> here. <a href="/dl/View.php?id=<?php echo $_GET['id']; ?>&t=<?php echo $type; ?>" target="_blank">View Page</a>
-
-<div><img src="../Imgs/Bar2.png" alt:"Bar" style='display:block;width:100%'></div>
-
-<form  action = "RenameR.php" method="POST" enctype="multipart/form-data" class="stanForm hide">
-        <div class="container">
-            <img src="/IndexImgs/<?php echo $rimage; ?>" alt="Create!" class="linkim file-upload-image">
-
-            <input type="file" onchange="readURL2(this);" id="image" name = "image" accept=".png, .jpg"/>
-            <label for="image">
-                <div class="overlay">
-                <span><i class="fas fa-arrow-up"></i></span>
-                <div class="text">.png or .jpg<br>max 250kb</div>
-                 </div>
-            </label>
-        </div>
-<h2 style="text-align:left" id="rTitle"><?php echo $rname; ?></h2>
-<input id="rtInput" type ="text" name="nname" value="<?php echo $rname; ?>"  class="sideText" />
-<p style="text-align:left" id="rJacob"><?php echo $rjacob; ?></p>
-<input id="rjInput" type ="text" name="njacob" value="<?php echo $rjacob; ?>"   class="sideText" />
-<input type ="text" display="none" name="rId" style="display:none" value="<?php echo $_GET['id']; ?>">
-<input type ="text" display="none" name="rType" style="display:none" value="<?php echo $type; ?>">
-<p style="color:green;display:none" id="npInfo">Done!</p>
- <input type="submit"  class="popupButton" ></input>
-</form>
-<div style="width:100%; height:1px;display:inline-block"></div>
-<p >Please be aware that if you wish to update the product's thumbnail, it will take a short while to complete the change.</p>
-</div>
-
-    <div class="contentBlock" style="padding-bottom:3vw;">
-
-<h2>Update File</h1>
-
-<form  action = "NewFileR.php" method="POST" enctype="multipart/form-data" class="stanForm">
-    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <div class="file-upload">
-      <div class="image-upload-wrap">
-        <input class="file-upload-input" type='file' onchange="readURL(this);" name="file" id="file-upload-input" accept="application/pdf" />
-        <div class="drag-text">
-          <p>Drag and drop a file, or click to upload (max 30mb)</p>
-        </div>
+  <div class="flex-container">
+      <div class='left-col'>
+          <h1 class="menutitle">Partnership</h1>
+          <ul class="myMenu">
+              <li><a class="Bar" href="Publish"><i class="fas fa-arrow-left"></i> Main Page</a></li>
+          </ul>
+          <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
+          <ul class="myMenu bottomFAQ">
+            <li><a class="Bar" href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a></li>
+            <li><a class="Bar" href="/docs/62/Support_Payments" target="_blank">Support Payments</a></li>
+            <li><a class="Bar" href="/docs/14/Publishing_Guide" target="_blank">Publishing Guidelines</a></li>
+            <li><a class="Bar" href="/docs/60/Publishing_Terms" target="_blank">Publishing Terms</a></li>
+            <li><a class="Bar" href="/docs/4/Partnerships" target="_blank">Partnership Program</a></li>
+          </ul>
       </div>
-      <div class="file-upload-content">
-        <p class="image-title">Uploaded File</p>
-        <div class="image-title-wrap">
-          <button type="button" onclick="removeUpload()" class="remove-image">Remove </button>
-        </div>
-      </div>
-    </div>
-    <input id="linkInput" type ="text" name="link" placeholder="<?php echo $rlink; ?>"  class="sideText" style="display:none;margin:0.3vw auto 1.4vw auto" />
 
-            <input type="text" name="rId" value="<?php echo $_GET["id"]; ?>" style="display:none" />
-            <input type="text" name="rType" value="<?php echo $type; ?>" style="display:none" />
-        <p style="color:red;display:none" id="fInfo">Upload Failed</p>
-     <input type="submit"  class="popupButton" style="width:8vw;margin:0 auto 2vw;" id="apui"></input>
-</form>
-   </div>
+      <div class='column'>
+        <?php
+        echo $dl->giveAccTab();
+         ?>
 
+      <?php
+        if (!$writingNew) {
+          echo " <h1>Edit Product</h1>
+          <p>Your awesome product. <a href='".$dl->url($prodId, $proSName)."' target='_blank'>View in library</a><br>
+          Total Views: $prodPop<br>
+          Total Downloads: $prodDl
+          </p>";
+        }
+        else {
+          echo "<h1>Publish a Product</h1>";
+        }
 
+       ?>
 
-    <div class="contentBlock" style="padding-bottom:3vw;">
-<h2>Statistics</h2>
-<p>Sorry, we're still working on this. Check back in a later version of the Many Isles to find out how your product is doing!</p>
-</div>
-
-<div class="contentBlock">
-<h2>Delete Product</h2>
-<p>You can delete your product here. All information about it will be lost, forever.</p>
- <button class="popupButton" style="background:#363636;" onclick="document.getElementById('backDel').style.display='block';document.getElementById('conDel').style.display='block'">Delete</button></div>
-</div>
-
-
-        <div id="backDel" class="modal" onclick="removePops('backDel', 'conDel')">
-        </div>
-        <div id="conDel" class="modCol">
-            <div class="modContent"  style="background:black;">
-                <img src="/Imgs/PopTrade.png" alt="Hello There!" style="width: 100%; display: inline-block " />
-                    <h1 style="color:grey"> Delete Product </h1>
-                    <p style="color:grey">Please confirm the deletion of your great work. This deletion is permanent and irreversible, and all files and information is immediately deleted.</p>
-                    <form action="DelProd.php" method="get">
-                        <input type="password" name="psw" placeholder="uniquePassword22" style="width:80%;margin: 10px auto 10px auto"/>
-                        <input type="text" name="id" value="<?php echo $_GET["id"]; ?>" style="display:none" />
-                        <input type="text" name="type" value="<?php echo $type; ?>" style="display:none" />
-                        <p id="delWrongPsw" style="color:red;display:none">Incorrect Password.</p>
-                        <button class="popupButton" type="submit">OK</button>
-                    </form>
+      <form onsubmit="sendForm(this);return false;"  action = "SubProd.php" method="POST" enctype="multipart/form-data" class="stanForm">
+        <div class="contentBlock">
+          <h3>Main Info</h3>
+          <section class="duel">
+            <section class="imageShower">
+              <div class="squareCont">
+                  <div class="square">
+                    <div class="mySlides fade">
+                        <img src="<?php echo $proImg; ?>" class="file-upload-image">
+                    </div>
+                  </div>
+                  <div class="overlay content">
+                      <span class="viewOverlay"><i class="fas fa-arrow-up"></i></span>
+                      .png or .jpg<br>max 250kb
+                      <input type="file" onchange="readURL2(this);" id="image" value="null" name = "image" accept=".png, .jpg"/>
+                  </div>
+              </div>
+            </section>
+            <div class="inputCont sideText">
+              <div class="inputCont">
+                  <label for="pname">Title <span>*</span> </label>
+                  <input type ="text" name="pname"  placeholder="A Great Creation" value="<?php echo $proName; ?>" required />
+                  <p class="inputErr info" default="The name of your product."></p>
+              </div>
+              <div class="inputCont">
+                  <label for="pname">Short Title <span>*</span> </label>
+                  <input type ="text" name="spname"  placeholder="A Creation" value="<?php echo $proSName; ?>" required />
+                  <p class="inputErr info" default="A shorter title, used on thumbnails and suchlike."></p>
+              </div>
             </div>
+          </section>
+          <div class="inputCont">
+              <label for="pname">Description <span>*</span> <a href="/wiki/h/fandom/markdown.html" target="_blank"><span class="roundInfo">Takes Markdown</span></a></label>
+              <textarea rows="6" name="description"  placeholder="Use this great creation to create new [monsters](https://monsters.com)." required><?php echo $proDesc; ?></textarea>
+              <p class="inputErr info" default="A nice, vivid description of your product. Max 220 words."></p>
+          </div>
         </div>
+        <div class="contentBlock">
+          <h3>Meta</h3>
+          <div style="width:40%;float:left; text-align: left;"
+              <label for="genre">Choose a type:</label>
+              <select id="genre" name="genre" onchange="typValue(this.value)">
+                <?php
+                  $text =  '
+                  <option value="1">Module</option>
+                  <option value="2">Tool</option>
+                  <option value="3">Art</option>
+                          ';
+                    $text = str_replace('value="'.$proGenre.'"', 'value="'.$proGenre.'" selected', $text);
+                    echo $text;
+                 ?>
+              </select>
+          </div>
+          <div class="fieldCont" style="">
+              <div id="field1" class="field">
+                <span class="input"><input type="checkbox" onclick = "catValue('c');" subg="c">classes</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('r');" subg="r">races</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('u');" subg="u">rules</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('a');" subg="a">adventures</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('l');" subg="l">lore</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('d');" subg="d">DM stuff</input></span>
+              </div>
+              <div id="field2" style="display:none;" class="field">
+                <span class="input"><input type="checkbox" onclick = "catValue('h');" subg="h">homebrewing</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('r');" subg="r">generator</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('i');" subg="i">index/list</input></span>
+              </div>
+              <div id="field3" style="display:none;" class="field">
+                <span class="input"><input type="checkbox" onclick = "catValue('v');" subg="v">visual</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('m');" subg="m">cartography</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('n');" subg="n">dungeons</input></span>
+              </div>
+          </div>
+          <input type="text" style="display:none" id="subgenre" name="subgenre" value="<?php echo $proSubgenre; ?>"/>
+
+          <div class="inputCont" id="mSpecificMeta">
+              <label for="pname">Game System</label>
+              <select id="gamesys" name="gamesys">
+                <option value="0">Any / Other</option>
+                <option value="2">5e</option>
+                <option value="1">5eS</option>
+              </select>
+          </div>
+        </div>
+        <div class="contentBlock">
+          <h3>Further Specifications</h3>
+          <div class="inputCont">
+              <label for="keywords">Search Keywords</label>
+              <input type ="text" name="keywords"  placeholder="monsters,magic,forest" value="<?php echo $proKeywords; ?>" />
+              <p class="inputErr info" default="Additional keywords (besides the title) for searches."></p>
+          </div>
+          <div class="inputCont">
+              <label for="supportProd">Suggest and Receive Support Payments. <a href='/docs/62/Support_Payments' target='_blank'>More info</a></label>
+              <select id="supportProd" name="supportProd">
+                <?php
+                  $text =  '
+                  <option value="1">On</option>
+                  <option value="0">Off</option>
+                          ';
+                    $text = str_replace('value="'.$proSupport.'"', 'value="'.$proSupport.'" selected', $text);
+                    echo $text;
+                 ?>
+              </select>
+              <p class="inputErr info" default="Turn off for lower-effort products."></p>
+          </div>
+          <div class="inputCont">
+              <label for="format">Product Format</label>
+              <input type ="text" name="format"  placeholder="PDF" value="<?php echo $proFormat; ?>" />
+              <p class="inputErr info" default="The product's format."></p>
+          </div>
+        </div>
+        <div class="contentBlock" style="min-height: 200px">
+          <h3>File</h3>
+          <div class="inputCont checker" id="externalizer">
+              <input type="checkbox"  name="external" id="externalized" onchange="toggleExternal(this.checked)" <?php if ($proExternal == 1){echo "checked";} ?> />
+              <label for="external">External File</label>
+          </div>
+
+          <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+          <div class="file-upload">
+            <div class="image-upload-wrap">
+              <input type="hidden" name="MAX_FILE_SIZE" value="35000000" />
+              <input class="file-upload-input" type='file' onchange="readURL(this);" name="file" id="file-upload-input" accept="application/pdf" />
+              <div class="drag-text">
+                <p>Drag and drop a file, or click to upload (max 30 MB)</p>
+              </div>
+            </div>
+            <div class="file-upload-content">
+              <p class="image-title">Uploaded File</p>
+              <div class="image-title-wrap">
+                <button type="button" onclick="removeUpload()" class="remove-image">Remove </button>
+              </div>
+            </div>
+          </div>
+          <div class="inputCont" id="linkInput" style="display:none">
+              <label for="link">Product Link <span>*</span> </label>
+              <input type ="text" name="link"  placeholder="https://mysite/files/product.pdf" value="<?php echo $proLink; ?>" id="proLink" />
+              <p class="inputErr info" default="A direct url to the product. <a href='/docs/28/Hosting%20Images%20Online' target='_blank'>More info</a>"></p>
+          </div>
+          <?php
+            if ($writingNew){ $proLink = "Not yet uploaded"; }
+              echo "<p>Current File: <a href='$proLink' target='_link' id='thisfile'>$proLink</a></p>";
+
+           ?>
+        </div>
+
+        <input type="text" name="prodId" style="display: none" value="<?php echo $prodId; ?>" />
+        <div class="file-uploading-content" style="display:none;">
+          <p><i class="fas fa-spinner fa-spin"></i> Uploading</p>
+        </div>
+        <button class="nowSubmitButton"><i class="fas fa-arrow-right"></i> Submit</button>
+      </form>
+
+
+          <div class="contentBlock"<?php if ($writingNew){ echo "style='display:none'"; } ?> >
+            <h1>Manage Product Status</h1>
+            <p><b>Active</b> products are normally visible in the digital library, <b>paused</b> ones aren't.
+              <br>Current status: <span class="statusinfo"><?php echo $proStatus; ?></span>
+            </p>
+            <button onclick="toggleStatus()"><i class="fas fa-arrow-right"></i> Toggle Status</button>
+            <h3>Delete</h3>
+            <p>Alternatively, you can permanently delete this product.<br><b>This is a single-click action.</b></p>
+            <a href="DelProd?id=<?php echo $prodId; ?>"><button><i class="fas fa-trash"></i> Delete</button></a>
+          </div>
+
+  </div>
+</div>
+<?php
+echo $dl->giveFooter();
+?>
 </body>
 </html>
-<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<?php
+  echo $dl->scripts("p");
+ ?>
 <script>
-    function includeHTML() {
-        var z, i, elmnt, file, xhttp;
-        z = document.getElementsByTagName("*");
-        for (i = 0; i < z.length; i++) {
-            elmnt = z[i];
-            file = elmnt.getAttribute("w3-include-html");
-            if (file) {
-                xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState == 4) {
-                        if (this.status == 200) { elmnt.innerHTML = this.responseText; }
-                        if (this.status == 404) { elmnt.innerHTML = "Page not found."; }
-                        elmnt.removeAttribute("w3-include-html");
-                        includeHTML();
-                    }
-                }
-                xhttp.open("GET", file, true);
-                xhttp.send();
-                return;
-            }
-        }
-    }
-    includeHTML();
-    document.getElementById("rTitle").onclick = function() { document.getElementById("rTitle").style.display="none";document.getElementById("rtInput").style.display="block";};
-    document.getElementById("rJacob").onclick = function() { document.getElementById("rJacob").style.display="none";document.getElementById("rjInput").style.display="block";};
+var genre = 1;
+var subgenre = "";
+var external =  false;
+
 function readURL2(input) {
   if (input.files && input.files[0]) {
+
     var reader = new FileReader();
+
     reader.onload = function(e) {
+
       $('.file-upload-image').attr('src', e.target.result);
+
     };
+
     reader.readAsDataURL(input.files[0]);
+
   }
-}
-function removePops(back, con) {
-    document.getElementById(back).style.display = "none";
-    document.getElementById(con).style.display = "none";
 }
 function readURL(input) {
   if (input.files && input.files[0]) {
@@ -266,57 +358,157 @@ $('.image-upload-wrap').bind('dragover', function () {
     $('.image-upload-wrap').bind('dragleave', function () {
         $('.image-upload-wrap').removeClass('image-dropping');
 });
-
-var urlParams = new URLSearchParams(window.location.search);
-var why = urlParams.get('why');
-if (why == "delFail"){
-document.getElementById("delWrongPsw").style.display = "block";
-document.getElementById('backDel').style.display='block';
-document.getElementById('conDel').style.display='block';
-}
-else if (why=="present"){
-    document.getElementById("npInfo").style.display = "block";
-    document.getElementById("npInfo").style.color = "red";
-    document.getElementById("npInfo").innerHTML = "Title already exists";
-}
-else if (why=="duplicate"){
-    document.getElementById("npInfo").style.display = "block";
-    document.getElementById("npInfo").style.color = "red";
-    document.getElementById("npInfo").innerHTML = "Image Name already Present";
-}
-else if (why=="badImage"){
-    document.getElementById("npInfo").style.display = "block";
-    document.getElementById("npInfo").style.color = "red";
-    document.getElementById("npInfo").innerHTML = "Image too large, or not an image.";
-}
-else if (why=="npSuccess"){
-    document.getElementById("npInfo").style.display = "block";
-}
-else if (why=="ffail"){
-    document.getElementById("fInfo").style.display = "block";
-}
-else if (why=="fbadtitle"){
-    document.getElementById("fInfo").style.display = "block";
-    document.getElementById("fInfo").innerHTML = "Transfer of uploaded file failed.";
-}
-else if (why=="fsuccess"){
+function imagePrompt() {
     document.getElementById("fInfo").style.display = "block";
     document.getElementById("fInfo").style.color = "green";
-    document.getElementById("fInfo").innerHTML = "Done!";
+    document.getElementById("fInfo").innerHTML = "Uploading... <br> do not close this tab!";
 }
-    var type = "<?php echo $type; ?>";
-    if (type == "m"){
-        $('.file-upload').show();
-        document.getElementById("file-upload-input").setAttribute("accept", "application/pdf");
-        document.getElementById("linkInput").style.display="none";
+var urlParams = new URLSearchParams(window.location.search);
+var why = urlParams.get('i');
+if (why == "delfail"){
+  createPopup("d:pub;txt:Error deleting your product.");
+}
+
+
+function updateFiler() {
+  external = document.getElementById("externalized").checked;
+  genre= document.getElementById("genre").value;
+  subgenre= document.getElementById("subgenre").value;
+
+  if (!external && (genre == 1 || genre == 3)) {
+    $('.file-upload').show();
+    document.getElementById("file-upload-input").setAttribute("accept", "application/pdf");
+    document.getElementById("linkInput").style.display="none";
+    removeUpload();
+  }
+  else {
+    $('.file-upload').hide();
+    document.getElementById("linkInput").style.display="inline-block";
+    removeUpload();
+  }
+  if (genre == 0){
+      document.getElementById("mSpecificMeta").style.display="block";
+  }
+  else {
+      document.getElementById("mSpecificMeta").style.display="none";
+  }
+  if (genre != 2) {
+    $("#externalizer").show();
+  }
+  else {
+    $("#externalizer").hide();
+  }
+
+  $(".field").hide();
+  $("#field"+genre).show();
+  $("#field"+genre+">span>input").prop("checked", false);
+
+  for (let option of document.getElementById("field"+genre).children){
+    if (subgenre.includes(option.firstElementChild.getAttribute("subg"))){
+      option.firstElementChild.checked = true;
     }
-    else if (type == "d"){
-        $('.file-upload').hide();
-        document.getElementById("linkInput").style.display="inline-block";
+    else {
+      option.checked = false;
     }
-    else if (type == "a"){
-        $('.file-upload').show();
-        document.getElementById("file-upload-input").setAttribute("accept", ".png, .jpg");
-        document.getElementById("linkInput").style.display="none";
+  }
+}
+updateFiler();
+
+function typValue(value) {
+  document.getElementById('subgenre').value="";
+  subgenre = "";
+  updateFiler();
+}
+function toggleExternal(value) {
+  external = value;
+  updateFiler();
+}
+
+function catValue(clicked) {
+    if (subgenre.includes(clicked)){
+        subgenre = subgenre.replace(clicked, "");
+        document.getElementById('subgenre').value = subgenre;
     }
+    else {
+        subgenre = subgenre.concat(clicked);
+        document.getElementById('subgenre').value = subgenre;
+    }
+}
+
+function sendForm(form) {
+    var fileName = "unknown";
+    if (document.getElementById("file-upload-input").files.length != 0){
+      fileName = document.getElementById("file-upload-input").files[0].name;
+    }
+    else {
+      fileName = document.getElementById("proLink").value;
+    }
+
+    $('.nowSubmitButton').hide();
+    $('.file-uploading-content').show();
+    $('#uploaded-image-title').html("Uploading files");
+
+    getFile = encodeURI("SubProd.php");
+    var xhttp = new XMLHttpRequest();
+    var formData = new FormData(form);
+    xhttp.onreadystatechange = async function () {
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+
+          if (this.responseText.includes("fileFail")) {
+            createPopup("d:pub;txt:Error uploading file.");
+          }
+          else if (this.responseText.includes("too large")) {
+            createPopup("d:pub;txt:Error. Image too large.");
+          }
+          else if (this.responseText.includes("imgFail")) {
+            createPopup("d:pub;txt:Error uploading image.");
+          }
+          else if (this.responseText.includes("success")){
+            <?php if ($writingNew) {echo "location.reload();"; } ?>
+            createPopup("d:pub;txt:Product updated.");
+            document.getElementById("thisfile").innerHTML = fileName;
+          }
+          else {
+            createPopup("d:poet;txt:Error. Could not submit data.");
+          }
+          $('.file-uploading-content').hide();
+          $('.nowSubmitButton').show();
+        }
+        else if (this.readyState == 4) {
+          $('.file-uploading-content').hide();
+          $('.nowSubmitButton').show();
+            createPopup("d:poet;txt:Error. Could not submit data.");
+        }
+    };
+    xhttp.open("POST", getFile, true);
+    xhttp.send(formData);
+
+  return false;
+}
+function toggleStatus() {
+    getFile = encodeURI("TogProd.php?id=<?php echo $prodId; ?>");
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = async function () {
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+
+          if (this.responseText.includes("active") || this.responseText.includes("paused")) {
+            createPopup("d:pub;txt:Status toggled.");
+          }
+          else {
+              createPopup("d:poet;txt:Error. Could not toggle status.");
+          }
+
+          if (this.responseText.includes("paused")) {$('.statusinfo').html("paused");}
+          else if  (this.responseText.includes("active")) {$('.statusinfo').html("active");}
+        }
+        else if (this.readyState == 4) {
+            createPopup("d:poet;txt:Error. Could not toggle status.");
+        }
+    };
+    xhttp.open("POST", getFile, true);
+    xhttp.send();
+  }
 </script>

@@ -30,6 +30,12 @@ if ($correct){
 }
 
 $conn->close();
+
+if (isset($_COOKIE["loggedIn"])) {$return = "/account/SignedIn.php"; } else {$return = "/home"; }
+if (isset($_COOKIE["seeker"])){
+  $return = $_COOKIE["seeker"];
+  setcookie("seeker", "", time() - 2200);
+}
 ?>
 
 
@@ -48,7 +54,7 @@ $conn->close();
 
 
 <h1><?php if ($success){echo " Email Confirmed" ; } else {echo "Email not Confirmed"; } ?></h1>
-<div style="width:80%;margin:10px auto 10px auto;"><img src="<?php if ($success){echo "/Imgs/Recruit.png" ; } else {echo "/Imgs/Oops.png"; } ?>" alt="accountBanner" style='width:100%;'></div>
+<div class="bannerI"><img src="<?php if ($success){echo "/Imgs/Recruit.png" ; } else {echo "/Imgs/Oops.png"; } ?>" alt="accountBanner" style='width:100%;'></div>
 
 <?php if ($success){ echo "
 <p>You're free to sail the Many Isles!<br><br>Note that some pages might not update immediately; you can always reload them.</p>
@@ -64,7 +70,7 @@ else {
 
 ?>
 
-<div><a class="popupButton" style="width:15%;margin-top:20px;" href="<?php if (isset($_COOKIE["loggedIn"])) {echo "SignedIn.php"; } else {echo "/home"; } ?>">OK</a></div>
+<div><a class="popupButton" style="width:15%;margin-top:20px;" href="<?php echo $return; ?>">OK</a></div>
 </body>
 </html>
 <script src="/Code/CSS/global.js"></script>

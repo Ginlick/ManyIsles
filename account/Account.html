@@ -223,6 +223,7 @@
     var urlParams = new URLSearchParams(window.location.search);
     var error = urlParams.get('error');
     var display = urlParams.get('display');
+    var add = urlParams.get('add');
     if (display != null) {
         clinnation(display);
     }
@@ -256,6 +257,10 @@
     }
     else if (error == "spamblock") {
         document.getElementById("createAccountP").innerHTML = "Our spam block interrupted your account creation. Please try again tomorrow.";
+    }
+
+    if (add != null) {
+      seekMaker(add);
     }
 
     function inputGramm(x, y) {

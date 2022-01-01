@@ -1,144 +1,132 @@
-﻿<?php
-if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:/dl/Partner.php?id=1");}
+<?php
+if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:/dl/partner?id=1");}
+$pId = $_GET["id"];
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require_once("global/engine.php");
+$dl = new dlengine($conn);
+$dl->partInfo($pId);
 
-$producttab = <<<YEAH
 
-           <div class="container MEGANUM">
-            <a  href="/dl/View.php?id=SENDMETOTHEPRODUCT">
-                <div class="imgCont" load-image="/IndexImgs/GREATINDEXIMAGE" id="recMEGANUM">
-                </div>
-            <div class='titling'>GRANDTITLE</div></a> </div>
-YEAH;
-$name = "";
-$image="";
-$jacob="";
-$query = sprintf("SELECT * FROM partners WHERE id = %s", $_GET["id"]);
-if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $name = $row["name"];
-      $image = $row["image"];
-      $jacob = $row["jacob"];
-      $status = $row["status"];
-    }
-}
-if ($name == null){header("Location: /dl/Goods.php");}
-if ($status == "suspended"){$jacob = "<span style='color:red'>This partnership is currently suspended, and all its products are temporarily unavailable in the digital library.</a>";}
 
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/Favicon.png">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-     <link rel="stylesheet" type="text/css" href="global/dl2.css">
-    <title><?php echo $name; ?> | Products</title>
-    <style>
-    </style>
+    <link rel="icon" href="../Imgs/Favicon.png">
+    <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
+    <title><?php echo $dl->partName ?> | Digital Library</title>
+    <?php echo $dl->styles(); ?>
 </head>
-<body  onresize="hideSome();">
-<div class="all-container">
-   <div include-html="global/gprods.html">
-   </div>
+<style>
+.flexer {text-align: center;}
+.imageShower {
+  width: 37%;
+}
 
+</style>
+<body>
 
-<div class="maincontain">
+  <?php
+      echo $dl->giveGlobs();
+  ?>
+      <div class="flex-container">
+        <div class='left-col'>
+            <ul class="myMenu">
+                <li><a class="Bar" href="/home"><i class="fas fa-arrow-left"></i> Home</a></li>
+            </ul>
+            <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
 
-    <div  include-html="global/gsearch.html" class="search">
-    </div>
+            <?php
+                echo $dl->giveMenu();
+            ?>
 
-    <div>
-    <div include-html="global/gmenu.html" class="sideMenu">
-    </div>
-    </div>
-
-<div class="content">
-
-<h1 class="maintitleMobile" style="padding-bottom:5px;"> <?php echo $name; ?></h1>
-
-<div class="viewMage" load-image="PartIm/<?php echo $image; ?>" id="viewMage">
-</div>
-
-<div style="width:60%;display:inline-block;float:left;padding:5px">
-<h1 class="maintitle" style="padding-bottom:5px;"> <?php echo $name; ?></h1>
-
-<p class="jacobp"> <?php echo $jacob; ?> </p>
-
-</div>
-
-        <div>
-            <img src="/Imgs/Bar2.png" alt="RedBar" class='separator'>
+            <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
+            <ul class="myMenu bottomFAQ">
+                <li><a class="Bar" href="/docs/11/Digital_Library" target="_blank">Digital Library FAQ</a></li>
+            </ul>
         </div>
-<div >
+
+        <div class='column'>
+          <section class="pInfoBlock">
+            <?php echo $dl->giveAccTab(); ?>
+            <div class="crumbs"><a href="/dl/home">Digital Library</a> - <a href="/docs/4/Partnership%20Program" target="_blank">Partners</a> - <?php echo $dl->partName; ?></div>
+            <div class="flexer">
+                <section class="imageShower">
+                    <div class="squareCont">
+                        <div class="square">
+                                <img src="<?php echo $dl->clearmage($dl->partImage); ?>">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rightOvertails">
+                    <div class="overtail">
+                        <h1><?php echo $dl->partName; ?></h1>
+                        <p>
+                            p#<?php echo $pId; ?> (<?php echo $dl->pType; ?>)<br>
+                            Joined <?php echo $dl->pRegDate; ?><br>
+                            Library Publications: <?php echo $dl->totalPub; ?>
+                        </p>
+                    </div>
+                    <div class="overtail normal">
+                        <p>
+                            <?php echo $dl->partDesc;  ?>
+                        </p>
+                    </div>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-facebook"></a>
+                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-reddit"></a>
+                    <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!%0A&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
+                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&media=<?php echo $image; ?>&description=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
+                </section>
 
 
-<?php
+            </div>
 
-if ($status != "suspended"){
-    $sql = 'SELECT * FROM products WHERE partner = "'.$name.'"ORDER BY popularity DESC';
-    $result = $conn->query($sql);
-    if (mysqli_num_rows($result) > 0) {
-       echo '  <div class="digCont"><h1 style="margin-left:2.15%;">By this Partner</h1>';
-       makeRow($result, "m");
-    }
 
-    $sql = 'SELECT * FROM diggies WHERE partner = "'.$name.'"ORDER BY popularity DESC';
-    $result = $conn->query($sql);
-    if (mysqli_num_rows($result) > 0) {
-       echo '  <div class="digCont"><h1 style="margin-left:2.15%;">Tools by this Partner</h1>';
-       makeRow($result, "d");
-    }
+                <h2>Discover</h2>
+                <div class="itemRow single">
+                    <?php
+                      echo $dl->results(["partner"=>$pId, "method"=>"RAND()"], "row", 9);
+                    ?>
+                </div>
 
-    $sql = 'SELECT * FROM art WHERE partner = "'.$name.'"ORDER BY popularity DESC';
-    $result = $conn->query($sql);
-    if (mysqli_num_rows($result) > 0) {
-       echo '  <div class="digCont"><h1 style="margin-left:2.15%;">Art by this Partner</h1>';
-       makeRow($result, "a");
-    }
-}
-function makeRow($result, $type){
-global $nume;
-$nume = 0;
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        if ($nume == 8 ){break;}
-        $premium = false;
-        if ($row["tiers"]!="g"){$premium = true;}
-        global $producttab;
-        $titling = $row["name"];
-        if($row["displaytitle"] != null){$titling = $row["displaytitle"];}
-        makeFirstProdTab($producttab, $titling, $row["image"], $row["id"], $premium, $type);
-    }
-}
-echo '</div>';
-}
- function makeFirstProdTab($producttab, $titling, $image, $link, $premium, $type) {
-        global $nume;
-        $nume++;
-        $producttab = str_replace("GREATINDEXIMAGE", $image, $producttab);
-        $producttab = str_replace("GRANDTITLE", $titling, $producttab);
-        $producttab = str_replace("SENDMETOTHEPRODUCT", $link."&t=".$type, $producttab);
-        $producttab = str_replace("MEGANUM", $nume, $producttab);
-        if ($premium == true){$producttab = str_replace("class='titling'", "class='titling premium'", $producttab);}
-        echo $producttab;
-        
- }
+                <?php
+                  foreach ($dl->typeNames as $key => $genrename){
+                    $result = $dl->results(["partner"=>$pId,"genre"=>$key,"method"=>"popularity"], "row", 9);
+                    if ($result != "Hmmm... there aren't many great results."){
+                      echo "<h2>$genrename by this Partner</h2>";
+                      echo "<div class='itemRow single'>";
+                      echo $result;
+                      echo "</div>";
+                    }
+                  }
+                 ?>
 
-?>
+
+        </div>
+    </div>
+
+    <div w3-include-html="/ds/g/GFooter.html" w3-create-newEl="true"></div>
+
+    <div class="bottomad-container">
+        <div class="bottomad">
+            <img src="global/plus.png" alt="hi" />
+            <a href="/account/BePartner.php">
+                Become Partner!
+            </a>
+        </div>
+    </div>
 </div>
-        </div></div>
-<p style="display:none;" id="partId"><?php echo $_GET["id"]; ?></p>
 
-   <div class="footer" include-html="global/Gfooter.html">
-   </div>
-</div>
+
+
 </body>
 </html>
-<script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
-<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="/Code/CSS/global.js"></script>
-<script src="global/dl2v2.js"></script>
+<?php echo $dl->baseVars(); ?>
+<?php echo $dl->scripts(); ?>
+<script>
+
+</script>

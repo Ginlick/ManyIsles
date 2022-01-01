@@ -3,8 +3,8 @@
 class dlengine {
     public $productTab = '
            <div class="container">
-                <a  href="View.php?id=SENDMETOTHEPRODUCT">
-                    <div class="imgCont" load-image="/IndexImgs/GREATINDEXIMAGE">
+                <a  href="SENDMETOTHEPRODUCT">
+                    <div class="imgCont" load-image="GREATINDEXIMAGE">
                     </div>
                     <div class="titling">GRANDTITLE</div>
                 </a>
@@ -12,8 +12,36 @@ class dlengine {
     ';
     public $conn;
     public $dlconn;
+    public $partners = [];
+    public $subgenresArr = [
+      1 => [
+        "c" => "Classes",
+        "r" => "Races",
+        "u" => "Rules",
+        "a" => "Adventures",
+        "l" => "Lore",
+        "d" => "GM Resources",
+      ],
+      2 => [
+        "h" => "Homebrewing",
+        "r" => "Generator",
+        "i" => "Index"
+      ],
+      3 => [
+        "v" => "Visual",
+        "m" => "Cartography",
+        "n" => "Dungeons"
+      ]
+    ];
+    public $gsystArr = [0 => "Any", 1 => "5eS", 2 => "5e"];
+    public $typeNames = [1=>"Modules", 2=>"Tools", 3=> "Art", 4=> "Audio"];
 
-    function __construct($conn, $dlconn = null){
+
+    function __construct($conn = null, $dlconn = null){
+        if ($conn == null) {
+            global $conn;
+            require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+        }
         $this->conn = $conn;
         if ($dlconn == null) {
             require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dl.php");
@@ -22,95 +50,193 @@ class dlengine {
         require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
         $key = 0; if (isset($_COOKIE["loggedIn"])){$key = $_COOKIE["loggedIn"];}
         $this->user = new adventurer($this->conn, $key);
+        $query = "SELECT id, status FROM partners";
+        if ($max = $this->conn->query($query)) {
+          while ($row = $max->fetch_assoc()){
+            $this->partners[$row["id"]] = $row["status"];
+          }
+        }
+    }
+    function equipPart($row) {
+      $this->partId = $row["id"];
+      $this->partName = $row["name"];
+      $this->partImage = $row["image"];
+      $this->partStat = $row["status"];
+      $this->partDesc = $row["jacob"];
+      $this->pUsId = $row["user"];
+      $this->ppower = 0;
+      if ($row["type"]=="prem"){$this->ppower = 1;}
+      $regDate = $row["reg_date"];
+
+      $this->pType = "Companionship";
+      if ($row["type"] == "prem"){$this->pType = "Full Partnership";}
+      $date_array = date_parse($regDate);
+      $this->pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
+
+      $this->partDS = false;
+      $query = 'SELECT acceptCodes FROM partners_ds WHERE id = '.$this->partId;
+      if ($result = $this->conn->query($query)){
+          if (mysqli_num_rows($result) != 0) {
+              $this->partDS = true;
+          }
+      }
+
+      $this->totalPub = 0;
+      $this->totalPrems = 0;
+      $query = "SELECT COUNT(IF (partner = $this->partId AND status != 'deleted', 1, NULL)) FROM products";
+      if ($firstrow = $this->dlconn->query($query)){
+        while ($row = $firstrow->fetch_row()) {
+          $this->totalPub = $row[0];
+        }
+      }
+    }
+    function partner($full = "stan") {
+      if (!$this->user->signedIn){$this->go("Account", "p");}
+      $query = "SELECT * FROM partners WHERE user = ".$this->user->user;
+      if ($max = $this->conn->query($query)) {
+        while ($row = $max->fetch_assoc()){
+          $this->equipPart($row);
+          if ($full){
+            if ($this->user->emailConfirmed AND $this->partStat != "deleted") {
+              if ($full == "ds"){
+                if (!$this->partDS){
+                  $this->go("activate", "ds");
+                }
+              }
+              return true;
+            }
+          }
+          return true;
+        }
+      }
+      if ($full) {
+        $this->go("BePartner", "p");
+      }
+      return false;
+    }
+    function partInfo($pId) {
+      $query = "SELECT * FROM partners WHERE id = $pId";
+      if ($max = $this->conn->query($query)) {
+        while ($row = $max->fetch_assoc()){
+          $this->equipPart($row);
+        }
+      }
     }
 
     //page generating
-    function giveSearch() {
+    function giveGlobs() {
+      return <<<BLYAT
+      <div w3-include-html="/Code/CSS/GTopnav.html"  w3-create-newEl="true"></div>
+      <div class="showBGer button" onclick="$('.left-col').toggleClass('show');$(this.firstElementChild).toggleClass('rotate');">
+        <i class="fa fa-bars"></i>
+      </div>
+      BLYAT;
+
+    }
+    function signPrompt() {
       if (!$this->user->signedIn){
         $signPrompt = '<h3>Sign In</h3>
-        <form action="/account/SignIn.php" method="POST" onsubmit="seekMaker()" style="text-align:center">
+        <form action="/account/SignIn.php?back=/dl/home" method="POST" onsubmit="seekMaker()" style="text-align:center">
           <label for="loguname"><b>Username</b></label>
           <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" autocomplete="username" required>
           <label for="logpassword"><b>Password</b></label>
           <input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" autocomplete="current-password" required>
           <button><i class="fas fa-arrow-right"></i> Sign In</button>
-        </form> ';
+        </form>
+        <p>Don\'t have an account? <a href="/account/Account?add=dl">Join us</a></p>
+        ';
       }
       else {
           $signPrompt = "<h3>".$this->user->fullName."</h3>
-          <p>Currently signed in with a tier ".$this->user->tier." account.</p>";
+          <p>Currently signed in with a tier ".$this->user->tier." account. <a href='/account/SignedIn' target='_blank'>View account</a></p>
+          <button onclick='signOut();'><i class='fas fa-arrow-right'></i> Sign Out</button>
+          ";
       }
+      $signPormpt = '
+          <div class="logoRound">
+              <div class="roundling">
+                <img src="'.$this->user->image(2).'" />
+              </div>
+              <div class="accntInfoCont">
+                <div class="accntInfoInCont">
+                  '.$signPrompt.'
+                </div>
+              </div>
+          </div>';
+      return $signPormpt;
+    }
+    function giveSearch($additive = "Digital Library") {
+        $signPrompt = $this->signPrompt();
         $search = '
         <div class="topBlock">
-            <div class="accnterCont">
-                <div class="logoRound">
-                    <div class="roundling">
-                      <img src="'.$this->user->image(2).'" />
-                    </div>
-                    <div class="accntInfoCont">
-                      '.$signPrompt.'
-                    </div>
-                </div>
-            </div>
-            <a href="home"><h1 >Digital Library</h1></a>
-            <form action="Search" class="searchForm" method="GET">
-                <input type="text" id="mySearch" class="search" name="query" placeholder="Search.." autocomplete="off" oninput="suggestNow();" onfocusout="killSugg();" onfocus="suggestNow();">
-                <div class="icon" onclick="shoBar()">
-                    <i class="fas fa-plus"></i>
-                </div>
+          <div class="accnterCont">
+          '.$signPrompt.'
+          </div>
+            <h1 >'.$additive.'</h1>
+            <form onsubmit="return goSearch(this);" class="searchForm">
+                <input type="text" id="mySearch" class="search" name="query" placeholder="Search..." autocomplete="off" oninput="suggestNow();" onfocusout="killSugg();" onfocus="suggestNow();">
                 <div class="suggestions" id="suggestions" style="display:none;"></div>
                 <button class="searchButton"><i class="fas fa-search"></i> Search</button>
             </form>
         </div>';
         return $search;
     }
+    function giveAccTab() {
+      $signPrompt = $this->signPrompt();
+      return "<div class='accLine'>$signPrompt</div>";
+    }
     function giveMenu() {
         $menu = <<<MEGAMMAMAM
         <div class="menuCont">
-            <h3>Browse</h3>
+            <a href="/dl/home"><h3>Browse</h3></a>
             <div class="dropdown">
                 <button onclick="dropdown()" class="dropbtn" id="showType">Modules</button>
                 <div id="myDropdown" class="dropdown-content">
-                    <p onclick="typeValue('module')">Modules</p>
-                    <p onclick="typeValue('diggie')">Tools</p>
-                    <p onclick="typeValue('art')">Art</p>
+                    <p onclick="typeValue(1)">Modules</p>
+                    <p onclick="typeValue(2)">Tools</p>
+                    <p onclick="typeValue(3)">Art</p>
                 </div>
             </div>
-            <ul id="moduleMenu" class="menuList">
-                <li onclick="resetAll()" class="active" id="gen">General</li>
-                <li onclick="clinnation('charop')" style="color:black" id="charop">Classes</li>
-                <li onclick="clinnation('race')" style="color:black" id="race">Races</li>
-                <li onclick="clinnation('rule')" style="color:black" id="rule">Rules</li>
-                <li onclick="clinnation('adventure')" style="color:black" id="adventure">Adventures</li>
-                <li onclick="clinnation('lore')" style="color:black" id="lore">Lore</li>
-                <li onclick="clinnation('dms')" style="color:black" id="dms">DM Stuff</li>
-                <li>
-                    <select id="sysDropdown" onchange="newSys(this.value);">
-                        <option value="0">Any System</option>
-                        <option value="1">5eS</option>
-                        <option value="2">5e</option>
-                    </select>
-                </li>
+            <ul class="menuList" type="1">
+              <li subgenre="">All</li>
+              <li subgenre="c">Classes</li>
+              <li subgenre="r">Races</li>
+              <li subgenre="u">Rules</li>
+              <li subgenre="a">Adventures</li>
+              <li subgenre="l">Lore</li>
+              <li subgenre="d">GM Resources</li>
+              <li>
+                  <select id="sysDropdown" onchange="newSys(this.value);">
+                      <option value="0">Any System</option>
+                      <option value="1">5eS</option>
+                      <option value="2">5e</option>
+                  </select>
+              </li>
             </ul>
 
-            <ul id="diggieMenu" class="menuList" style="display:none">
-                <li onclick="resetAll()" style="color:white" id="genTu">General</li>
-                <li onclick="clinnation('hmbrw')" style="color:black" id="hmbrw">Homebrewing</p></li>
-                <li><p onclick="clinnation('genr')" style="color:black" id="genr">Generator</p></li>
-                <li><p onclick="clinnation('indx')" style="color:black" id="indx">Index</p></li>
+            <ul class="menuList"  type="2">
+              <li subgenre="">All</li>
+              <li subgenre="h">Homebrewing</li>
+              <li subgenre="r">Generator</li>
+              <li subgenre="i">Index</li>
             </ul>
 
-            <ul id="artMenu" class="menuList" style="display:none">
-                <li><p onclick="resetAll()" style="color:white" id="genTri">General</p></li>
-                <li><p onclick="clinnation('vis')" style="color:black" id="vis">Visual</p></li>
-                <li><p onclick="clinnation('cart')" style="color:black" id="cart">Cartography</p></li>
-                <li><p onclick="clinnation('dun')" style="color:black" id="dun">Dungeons</p></li>
+            <ul class="menuList"  type="3">
+              <li subgenre="">All</li>
+              <li subgenre="v">Visual</li>
+              <li subgenre="m">Cartography</li>
+              <li subgenre="n">Dungeons</li>
             </ul>
-            <input type="text" class="" name="query" placeholder="Queries..." autocomplete="off" oninput="suggestNow();" onfocusout="killSugg();" onfocus="suggestNow();">
-            <button class=""><i class="fas fa-search"></i> Search</button>
+            <form onsubmit="return goSearch(this)">
+              <input type="text" class="" name="query" placeholder="Queries...">
+              <button class=""><i class="fas fa-search"></i> Search</button>
+            </form>
         </div>
         MEGAMMAMAM;
         return $menu;
+    }
+    function giveFooter() {
+      return '<div w3-include-html="/ds/g/GFooter.html" w3-create-newEl="true"></div>';
     }
 
     //action
@@ -118,7 +244,7 @@ class dlengine {
         $producttab = str_replace("GREATINDEXIMAGE", $image, $this->productTab);
         $producttab = str_replace("GRANDTITLE", $titling, $producttab);
         $producttab = str_replace("SENDMETOTHEPRODUCT", $link, $producttab);
-        if ($premium == true){$producttab = str_replace("class='titling'", "class='titling premium'", $producttab);}
+        if ($premium){$producttab = str_replace("titling", "titling premium", $producttab);}
         return $producttab;
     }
     function checkStat($prodid) {
@@ -152,36 +278,177 @@ class dlengine {
         if ($limit < 1){ $limit = 1; } else if ($limit > 22){ $limit = 22; }
         $query .= " LIMIT $limit";
 
-
-
         if ($toprow = $this->dlconn->query($query)) {
             while ($row = $toprow->fetch_assoc()) {
-                $titling = $row["name"];
-                if($row["shortName"] != ""){$titling = $row["shortName"];}
-                $image = $row["image"];
-                $link = $row["id"];
-                $premium = false;
-                if ($row["tier"]!=0){$premium = true;}
-                $return .= $this->prodTab($titling, $image, $link, $premium);
+                $return .= $this->prodItemR($row);
             }
         }
         return $return;
+    }
+    function results(array $queries, $action = "row", $max = 30, $skipper = []) {
+      $resulter = [];
+      if ($action == "row"){$resulter = "";}
+
+      $query = "";
+      $genre = 0;
+      $subgenre = "";
+      $gsystem = 0;
+      $method = "id";
+      if (isset($queries["query"])){$query=$queries["query"];}
+      if (isset($queries["genre"])){$genre=$queries["genre"];}
+      if (isset($queries["subgenre"])){$subgenre=$queries["subgenre"];}
+      if (isset($queries["gsystem"])){$gsystem=$queries["gsystem"];}
+      if (isset($queries["method"])){$method=$queries["method"];}
+      $regcate = "^";
+      $categs = str_split($subgenre);
+      foreach ($categs as $categ){
+        $regcate.= "(?=.*$categ)";
+      }
+      $regcate = $regcate.".+$";
+
+      $requ = 'SELECT * FROM products WHERE (name LIKE "%'.$query.'%" OR categories LIKE "%'.$query.'%") AND subgenre REGEXP "'.$regcate.'"';
+      if (isset($queries["partner"])){$requ .= " AND partner = ".$queries["partner"];}
+      if ($genre != 0){$requ .= " AND genre = ".$genre;}
+      $requ .=  ' ORDER BY '.$method.' DESC LIMIT 222';
+      if ($result = $this->dlconn->query($requ)){
+        if (mysqli_num_rows($result) > 0){
+          $nicetotal = 0;
+          while ($row = $result->fetch_assoc()){
+            if ($nicetotal >= $max){break;}
+            if ($row["status"]!="active"){continue;}
+            $id = $row["id"];
+            if (in_array($id, $skipper)){continue;}
+            $name = $row["name"];
+            if ($row["shortName"] != ""){$shortName = $row["shortName"];} else {$shortName = $name;}
+            $link = $this->url($id, $shortName);
+            $thumbnail = $this->clearmage($row["image"]);
+            if ($row["tier"]>0){$premium = true;}else{$premium = false;}
+            $nicetotal++;
+            if ($action == "row"){
+              $resulter .= $this->prodTab($shortName, $thumbnail, $link, $premium);
+            }
+            else {
+              $resulter[] = ["name"=>$name, "link"=>$link, "image"=> $thumbnail];
+            }
+          }
+        }
+      }
+      if ($action == "row" AND $resulter == ""){$resulter = "Hmmm... there aren't many great results.";}
+      return $resulter;
     }
     function prodItem(int $id){
         $query = "SELECT * FROM products WHERE id = $id";
         if ($toprow = $this->dlconn->query($query)) {
             while ($row = $toprow->fetch_assoc()) {
-                $titling = $row["name"];
-                if($row["shortName"] != ""){$titling = $row["shortName"];}
-                $image = $row["image"];
-                $link = $row["id"];
-                $premium = false;
-                if ($row["tier"]!=0){$premium = true;}
-                return $this->prodTab($titling, $image, $link, $premium);
+              return $this->prodItemR($row);
             }
         }
     }
+    function prodItemR($row) {
+      $partner = $row["partner"];
+      if (!isset($this->partners[$partner]) OR $this->partners[$partner]!="active") {return "";}
+      if ($row["status"]!="active"){return "";}
+      $titling = $row["name"];
+      if($row["shortName"] != ""){$titling = $row["shortName"];}
+      $image = $this->clearmage($row["image"]);
+      $link = $this->url($row["id"], $titling);
+      $premium = false;
+      if ($row["tier"]!=0){$premium = true;}
+      return $this->prodTab($titling, $image, $link, $premium);
+    }
 
+
+    function styles($dom = "dl") {
+      $return = <<<MAGDA
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/Imgs/Favicon.png">
+        <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+        <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
+        <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
+        <link rel="stylesheet" type="text/css" href="/dl/global/dl3.css">
+      MAGDA;
+      if ($dom == "p"){
+        $return .= '<link rel="stylesheet" type="text/css" href="/ds/p/form.css">';
+        $return .= '<link rel="stylesheet" type="text/css" href="/account/g/GGMdl2.css">';
+      }
+      return $return;
+    }
+    function scripts($dom = "dl") {
+      $return = <<<MAGDA
+        <script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
+        <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+        <script src="/Code/CSS/global.js"></script>
+      MAGDA;
+      if ($dom == "dl"){
+        $return .= '<script src="/dl/global/dl3.js"></script>';
+      }
+      else if ($dom == "p"){
+        $return .= '<script src="/ds/p/form.js"></script>';
+      }
+      return $return;
+    }
+    function baseVars($genre = 1, $subgenre = "[]", $gsystem = 0) {
+      return <<<MAGDA
+      <script>
+        var type = $genre;
+        var categs = $subgenre;
+        var sysNum = $gsystem;
+      </script>
+      MAGDA;
+    }
+
+    function checkOwner(int $prodId, int $partId = null) {
+      if ($partId==null){$partId = $this->partId;}
+      $query = "SELECT partner FROM products WHERE id = $prodId";
+      if ($toprow = $this->dlconn->query($query)) {
+          while ($row = $toprow->fetch_assoc()) {
+              if ($row["partner"]==$partId){return true;}
+          }
+      }
+      return false;
+    }
+    function url($id, $name) {
+      return "/dl/item/".$id."/".substr(urlencode(str_replace(" ", "_", $name)), 0, 50);
+    }
+    function clearmage($image, $type = "indeximg") {
+      if (!str_contains($image, "/")){
+        if ($type == "pimg"){
+          $image = "/dl/PartIm/".$image;
+        }
+        else {
+          $image = "/IndexImgs/".$image;
+        }
+      }
+      $image = "http://25.36.111.17:8080".$image;
+      if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
+        $image = "https://media.manyisles.ch".$image;
+      }
+      return $image;
+    }
+    function fileclear($file, $genre) {
+      if (!str_contains($file, "/")){
+        if ($genre == 1){
+          $file = "/dl/Friiz/".$file;
+        }
+        else if ($genre == 3){
+          $file = "/dl/Art/".$file;
+        }
+      }
+      return $file;
+    }
+    function parsePartName($name) {
+      if ($name == "Traveler"){$name = "a Traveler";}
+      else if ($name == "Pantheon"){$name = "the Pantheon";}
+      return $name;
+    }
+    function go($place, $dom = "dl") {
+      if ($dom == "p"){$dom = "/account/";}
+      else if ($dom == "dl"){$dom = "/dl/";}
+      else if ($dom == "ds"){$dom = "/ds/p/";}
+      echo "<script>window.location.replace('$dom$place');</script>";
+      exit;
+    }
 }
 
 

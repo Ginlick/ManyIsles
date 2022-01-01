@@ -1,9 +1,7 @@
 ﻿<?php
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once("global/engine.php");
-
-$dl = new dlengine($conn);
+$dl = new dlengine();
 
 ?>
 <!DOCTYPE html>
@@ -11,19 +9,17 @@ $dl = new dlengine($conn);
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8" />
-    <link rel="icon" href="../Imgs/Favicon.png">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
-    <link rel="stylesheet" type="text/css" href="global/dl3.css">
     <title>Digital Library</title>
+    <?php echo $dl->styles(); ?>
 </head>
 <style>
 
 
 </style>
 <body>
-
-<div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;z-index:5;"></div>
+  <?php
+      echo $dl->giveGlobs();
+  ?>
     <div class="flex-container">
         <div class='left-col'>
             <ul class="myMenu">
@@ -41,7 +37,7 @@ $dl = new dlengine($conn);
             </ul>
         </div>
 
-        <div id='content' class='column'>
+        <div class='column'>
                 <?php
                     echo $dl->giveSearch();
                 ?>
@@ -98,12 +94,14 @@ $dl = new dlengine($conn);
 
 </body>
 </html>
-<script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
-<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="/Code/CSS/global.js"></script>
-<script src="global/dl2v2.js"></script>
+<?php echo $dl->baseVars(); ?>
+<?php echo $dl->scripts(); ?>
 <script>
-function seekMaker() {
-  document.cookie='seeker=/dl/Goods';
+var why = urlParams.get('i');
+if (why == "badpartner"){
+    createPopup("d:pub;txt:This product's partnership is not active.");
+}
+else if (why == "baditem"){
+    createPopup("d:pub;txt:This product couldn't be accessed.");
 }
 </script>

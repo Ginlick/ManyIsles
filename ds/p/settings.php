@@ -131,7 +131,7 @@ require_once("../g/alertStock.php");
                             else {
                                 echo "<p>No published items yet.</p>";
                             }
-                            
+
                         }
 
                     ?>
@@ -155,7 +155,7 @@ if ($toprow = $conn->query($query)) {
 
             $codeAlterMode = $row["alterMode"];
             if ($codeAlterMode == "linear"){
-                $codeAmount = "-$".makeHuman($row["amount"]);
+                $codeAmount = "-".makeHuman($row["amount"]);
             }
             else {
                 $codeAmount = "-".($row["amount"]/10)."%";
@@ -210,7 +210,7 @@ if ($toprow = $conn->query($query)) {
                     </div>
                     </form>
 
-            </div> 
+            </div>
         </div>
     </div>
 
@@ -289,7 +289,7 @@ function toggleAcception(dir) {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let result = xhttp.responseText;
-            if (result == "\n\nsuccess") {
+            if (result.includes("success")) {
                 createPopup("d:dsp;txt:Successfully updated setting.");
             }
             else {
@@ -303,5 +303,3 @@ function toggleAcception(dir) {
     xhttp.send();
 }
 </script>
-
-

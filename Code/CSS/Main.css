@@ -4,7 +4,6 @@
     --gen-color-link: #9a0000;
     --gen-color-hlink: #b61414;
     --wiki-color-green: #b1e68f;
-    --all-color-albord: #ddd;
     --col-wikiA: #786ab5;
     --col-grey2: #f2f2f2;
     --col-wikiOuts: #ab465c;
@@ -12,6 +11,7 @@
     --col-dgrey: #7e7e7e;
     --col-lightwite: #ececec;
     --col-red: #e22727;
+    --all-color-albord: #ddd;
     --col-lgrey: #323232;
     --col-wikiBluBut: #9edae3;
     --col-wikiBluButHov: #8ec5cd;
@@ -21,11 +21,12 @@
     --doc-base-color: white;
     --col-whitet: #FFFAFF;
     --ds-gold: #d1a720;
-    --all-fonts-h1: min(calc(24px + .6vw), 35px);
+    --all-fonts-h1: min(calc(24px + .6vw), 40px);
     --all-fonts-h2: min(calc(22px + .4vw), 30px);
     --all-fonts-h3: min(calc(20px + .3vw), 27px);
     --all-fonts-larg: min(calc(17px + .3vw), 21px);
     --all-fonts-base: min(calc(14px + .3vw), 20px);
+    --all-fonts-med: min(calc(12px + .2vw), 18px);
     --all-fonts-smal: min(calc(10px + .2vw), 15px);
     --all-fonts-unresp-bigStan: 16px;
     --gen-fontfams-titles: "Pacifico", 'Luminari', 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -74,6 +75,15 @@ h3 {
 p {
    font-size: var(--all-fonts-base);
 }
+input, textarea, select {
+  display: inline-block;
+  font-size: var(--all-fonts-base);
+  padding: 5px;
+  border: 1px solid var(--all-color-albord);
+  border-radius: 3px;
+  width: 100%;
+  text-align: left;
+}
 a, .fakelink {
     text-decoration: none;
     color: var(--gen-color-link);
@@ -81,7 +91,7 @@ a, .fakelink {
 a:hover, .fakelink:hover {
     color: var(--gen-color-hlink);
 }
-button {
+button, .popupButton {
     background-color: red;
     border-radius: 4px;
     font-weight: bold;
@@ -89,8 +99,9 @@ button {
     font-size: 20px;
     border:0px;
     transition: .2s ease;
+    padding : 5px 9px;
 }
-button:hover {
+button:hover, .popupButton:hover {
     color: white;
 }
 
@@ -314,19 +325,10 @@ span.dsp {
         background-color: #f0c026;
         border-color: #f0c026;
     }
-.note {
-    background-color: var(--doc-stracc-color);
-    width: 40%;
-    max-width: 650px;
-    min-width: min(300px, 100%);
-    float: right;
-    padding: 5px;
-}
 
-    .note.wide {
-        width: 100%;
-        max-width: 100%;
-    }
-        .note.left {
-            float: left;
-        }
+.bannerI{
+  width:80%;
+  display:block;
+  margin:50px auto;
+  max-width: 950px;
+}

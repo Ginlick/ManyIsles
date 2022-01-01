@@ -1,34 +1,10 @@
 ﻿<?php
 
-
-if(!isset($_COOKIE["loggedIn"])){header("Location:/account/Account.html?error=notSignedIn");exit();}
-if(!isset($_COOKIE["loggedP"])){header("Location: /account/Account.html?error=notSignedIn");exit();}
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
-
-$id = $_COOKIE["loggedIn"];
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-    }
-}
-
-$redirect = "/account/Publish.php";
-require($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw.php");
-
-$query = 'SELECT * FROM partners WHERE account = "'.$uname.'"';
-if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-        $pId = $row["id"];
-        $status = $row["status"];
-        $artSeller = $row["name"];
-        $pType = $row["type"];
-    }
-}
-if (!isset($pId)){header("Location: /account/BePartner.php");exit();}
-if ($status != "active"){header("Location: /account/Publish.php");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
+$dl = new dlengine();
+$dl->partner();
+$conn = $dl->conn;
+$pId = $dl->partId;
 
 //doing
 

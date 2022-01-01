@@ -1,7 +1,7 @@
 ﻿<?php
 if (isset($_POST["artId"])) {if (preg_match("/^[0-9]*$/", $_POST["artId"])!=1){header("Location:hub.php");exit();} else $artId =  $_POST["artId"];} else { header("Location:hub.php");exit(); }
 
-$redirect = "item.php?why=incorrInput&id=$artId";
+$redirect = "";
 $checkArtId = true;
 require_once("security.php");
 
@@ -14,7 +14,7 @@ $artDescSpecs = $_POST["descSpecs"];
 $artShortname = inputChecker($_POST["shortname"], "/[\"]/", true);
 $artViewImgs = inputChecker($_POST["viewImgs"], "/[\"]/", true);
 $artOSources = inputChecker($_POST["oSources"], "/[\"]/", true);
-$artSpecifications = inputChecker($_POST["specifications"], "/[\"]/", true);
+$artSpecifications = inputChecker($_POST["specifications"], "/[\']/", true);
 $artKind = inputChecker($_POST["artKind"], "/[\"]/", true);
 if ($_POST["shipping"] == "") {$artShipping = ""; } else {$artShipping = inputChecker($_POST["shipping"], "/^([A-Z-a-z]{2,3}:[0-9]*(,|))+$/", false);}
 $artStock = inputChecker($_POST["stock"], "/^[0-9]*$/", false);
@@ -24,9 +24,9 @@ $artMinPrice = inputChecker($_POST["minPrice"], "/^[0-9]*$/", false);
 $artDescription = str_replace('"', '%double_quote%', $artDescription);
 $artDescSpecs = str_replace('"', '%double_quote%', $artDescSpecs);
 
-//preparing 
-require_once("../g/parseSpecs.php");
-$artSpecsArray = parseSpecs($artSpecifications);
+
+//preparing
+$artSpecsArray = json_decode($artSpecifications, true);
 
 $counter = 0;
 foreach ($artSpecsArray as $key => $specArray){
@@ -58,10 +58,12 @@ foreach ($artSpecsArray as $key => $specArray){
 }
 
 
-$artSpecifications = unparseSpecs($artSpecsArray);
+$artSpecifications = json_encode($artSpecsArray);
+
+
 $artName = substr($artName, 0, 100);
 $artShortname = substr($artShortname, 0, 22);
-if ($artPrice > 19999){$artPrice = 19999;}else if ($artPrice > 0){$artPrice = 0;}
+if ($artPrice > 19999){$artPrice = 19999;}else if ($artPrice < 0){$artPrice = 0;}
 if ($artMinPrice > 19999){$artMinPrice = 19999;}else if ($artMinPrice > 0 OR $artMinPrice == null                                                  ){$artMinPrice = 0;}
 if ($artMaxAmount > 99){$artMaxAmount = 99;}else if ($artMaxAmount > 1){$artMaxAmount = 1;}
 if ($artStock > 100){$artStock = 100;}
@@ -72,12 +74,12 @@ if ($artShortname == "") {
 
 //effectuating
 if ($artId == 0) {
-    $query = 'INSERT INTO dsprods (name, seller, price, image, thumbnail, description, shortname, viewImgs, oSources, specifications, artKind, shipping, sellerId, descSpecs, stock, maxAmount, minPrice) VALUES ("artName", "artSeller", artPrice, "artImage", "artThumbnail", "artDescription", "artShortname", "artViewImgs", "artOSources", "artSpecifications", "artArtKind", "artShipping", artSellerId, "artDescSpecs", artStock, artMaxAmount, artMinPrice); ';
+    $query = 'INSERT INTO dsprods (name, seller, price, image, thumbnail, description, shortname, viewImgs, oSources, specifications, artKind, shipping, sellerId, descSpecs, stock, maxAmount, minPrice) VALUES ("artName", "artSeller", artPrice, "artImage", "artThumbnail", "artDescription", "artShortname", "artViewImgs", "artOSources", \'artSpecifications\', "artArtKind", "artShipping", artSellerId, "artDescSpecs", artStock, artMaxAmount, artMinPrice); ';
     $query = str_replace("artSellerId", $pId, $query);
     $query = str_replace("artSeller", $artSeller, $query);
 }
 else {
-    $query = 'UPDATE dsprods SET name = "artName", price = artPrice, image = "artImage", thumbnail = "artThumbnail", description = "artDescription", shortname = "artShortname", viewImgs = "artViewImgs", oSources = "artOSources", specifications = "artSpecifications", artKind = "artArtKind", shipping = "artShipping", descSpecs = "artDescSpecs", stock = artStock, maxAmount = artMaxAmount, minPrice = artMinPrice WHERE id = artId';
+    $query = 'UPDATE dsprods SET name = "artName", price = artPrice, image = "artImage", thumbnail = "artThumbnail", description = "artDescription", shortname = "artShortname", viewImgs = "artViewImgs", oSources = "artOSources", specifications = \'artSpecifications\', artKind = "artArtKind", shipping = "artShipping", descSpecs = "artDescSpecs", stock = artStock, maxAmount = artMaxAmount, minPrice = artMinPrice WHERE id = artId';
     $query = str_replace("artId", $artId, $query);
 }
 

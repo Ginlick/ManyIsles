@@ -50,7 +50,7 @@ require_once("g/sideBasket.php");
         }
         .tierblock p {
             margin: 5px 0 10px;
-            font-size: min(1vw, 15px);           
+            font-size: min(1vw, 15px);
         }
         .tierblock ul {
             padding-left:3.5vw;
@@ -154,7 +154,13 @@ require_once("g/sideBasket.php");
 </html>
 <script src="/Code/CSS/global.js"></script>
 <script>
+var urlParams = new URLSearchParams(window.location.search);
+var sel = parseInt(urlParams.get('i'));
 var selectedTier = 0;
+if (0 < sel < 3){
+    selectedTier = sel;
+}
+
 
     function selectTier(x) {
         document.getElementById(0).removeAttribute("style");
@@ -164,7 +170,7 @@ var selectedTier = 0;
         document.getElementById(x).style.boxShadow = "0 4px 50px 0 rgba(0, 0, 0, 0.4), 0 6px 22px 0 rgba(0, 0, 0, 0.25)";
         selectedTier = x;
     }
-    selectTier(0);
+    selectTier(selectedTier);
 
 
 function submitSpecial(x) {
@@ -178,5 +184,3 @@ function submitSpecial(x) {
     document.getElementById("basket").submit();
 }
 </script>
-
-

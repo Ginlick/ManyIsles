@@ -46,96 +46,11 @@ $pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
     <meta http-equiv="Expires" content="0" />
     <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
     <link rel="stylesheet" type="text/css" href="../g/ds-g.css">
+    <link rel="stylesheet" type="text/css" href="../g/ds-item.css">
     <style>
-        .flexer {
-            display: flex;
-            flex-direction: row;
-        }
-        section.imageShower {
-            width: 37%;
-            padding: 20px;
-        }
-
-        .squareCont {
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-            .squareCont:after {
-                content: "";
-                display: block;
-                padding-bottom: 100%;
-            }
-
-            .squareCont .square {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-        .square img {
-            height: 100%;
-            object-fit: contain;
-        }
-
-        section.rightOvertails {
-            width: 62%;
-            padding: 10px;
-        }
-
-        .overtail {
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            margin: 10px;
-            font-family: 'Montserrat', sans-serif;
-            padding-bottom: 10px;
-        }
-
-            .overtail h1 {
-                text-align: left;
-                margin: 0;
-            }
-
-            .overtail p {
-                text-align: left;
-                font-family: 'Montserrat', sans-serif;
-            }
-
-            .overtail em {
-                font-style: normal;
-            }
-
-
-            .overtail.iOvertails h5 {
-                font-family: 'Montserrat', sans-serif;
-                padding-top: 15px;
-                margin: 0;
-                font-size: min(calc(12px + .3vw), 16px);
-                font-weight: normal;
-            }
-
-        .overtail.normal p {
-            font-family: 'Open Sans', sans-serif;
-        }
-
-
-        section.details {
-            width: 100%;
-            color: #505050;
-            font-family: 'Open Sans', sans-serif;
-        }
-
-        .details .specList {
-            list-style-type: none;
-            text-align: left;
-            column-count: 2;
-            padding: 0;
-        }
-
+    .imageShower {
+      width: 37%;
+    }
         .details p, .details h2 {
             text-align: left;
         }
@@ -176,7 +91,7 @@ $pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
             </div>
 
             <div id='content' class='column'>
-            <div class="crumbs"><a href="../home.php">Store</a> - View Partner</div>
+            <div class="crumbs"><a href="../home.php">Store</a> - Partners - <?php echo $name; ?></div>
             <div class="flexer">
                 <section class="imageShower">
                     <div class="squareCont">
@@ -191,7 +106,7 @@ $pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
                         <h1><?php echo $name; ?></h1>
                         <p>
                             Joined <?php echo $pRegDate; ?><br>
-                            View on the <a href="/dl/Partner.php?id=<?php echo $pId; ?>" target="_blank">digital library</a><br>
+                            View on the <a href="/dl/partner?id=<?php echo $pId; ?>" target="_blank">digital library</a><br>
                             Id: p#<?php echo $pId; ?>
                         </p>
                     </div>
@@ -258,8 +173,6 @@ function showView(element, newimg) {
 
 function purchase(item){
     document.getElementById("basketing").value = item;
-    document.getElementById("basket").submit();    
+    document.getElementById("basket").submit();
 }
 </script>
-
-

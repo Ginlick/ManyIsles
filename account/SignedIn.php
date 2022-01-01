@@ -1,12 +1,20 @@
 ﻿<?php
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/makeHuman.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
+$dl = new dlengine();
 
-if(!isset($_COOKIE["loggedIn"])) {$_COOKIE["loggedIn"] = 22;}
-if(!isset($_COOKIE["loggedP"])) {$_COOKIE["loggedP"] = "";}
+$partner = false;
+if ($dl->partner(false)) {
+  $partner = true;
+  $partname = $dl->partName;
+  $partstatus = $dl->partStat;
+  $partId = $dl->partId;
+}
+$conn = $dl->conn;
 
-$id = $_COOKIE["loggedIn"];
+$id = $dl->user->user;
+if (!$dl->user->signedIn){$dl->go("/account/Account", "");}
 
 $query = "SELECT * FROM accountsTable WHERE id = ".$id;
 $result = $conn->query($query);
@@ -19,60 +27,12 @@ while ($row = $result -> fetch_assoc()) {
     $discname = $row["discname"];
     $region = $row["region"];
 }
-$mellow = true;
-include("../Server-Side/checkPsw.php");
 
-$query = 'SELECT * FROM partners WHERE account = "'.$name.'"';
-$result = $conn->query($query);
-if ($result->num_rows == 0) {
-    $partner = false;
-}
-else {
-    $partner = true;
-    while ($row = $result -> fetch_assoc()) {
-        $partname = $row["name"];
-        $partstatus = $row["status"];
-        $parttype = $row["type"];
-        $partId = $row["id"];
-    }
-    $prodviews = 0;
-    $proddls = 0;
-    $prodprems = 0;
-
-    /*$query = 'SELECT * FROM products WHERE partner = "'.$partname.'"';
-    $result = $conn->query($query);
-    while ($row = $result -> fetch_assoc()) {
-        $prodviews = $row["popularity"] + $prodviews;
-        $proddls = $row["downloads"] + $proddls;
-        if ($row["tiers"]!= "g"){$prodprems = $prodprems++;}
-    }
-    $prodpubbed = $result->num_rows;
-
-    $query = 'SELECT * FROM diggies WHERE partner = "'.$partname.'"';
-    $result = $conn->query($query);
-    while ($row = $result -> fetch_assoc()) {
-        $prodviews = $row["popularity"] + $prodviews;
-        if ($row["tiers"]!= "g"){$prodprems = $prodprems++;}
-    }
-    $prodpubbed = $result->num_rows + $prodpubbed;
-
-    $query = 'SELECT * FROM art WHERE partner = "'.$partname.'"';
-    $result = $conn->query($query);
-    while ($row = $result -> fetch_assoc()) {
-        $prodviews = $row["popularity"] + $prodviews;
-        if ($row["tiers"]!= "g"){$prodprems = $prodprems++;}
-    }
-    $prodpubbed = $result->num_rows + $prodpubbed;   */
-    $prodpubbed = 22;
-}
 
 
 
 if(isset($_GET["show"])){$goTo = "Location: /spells/SetSLCook.php?where=SignedIn&show=".$_GET["show"];} else {$goTo = "Location: /spells/SetSLCook.php?where=SignedIn";}
 if (!isset($_COOKIE["spellLists"]) && $_GET["sl"]!="no"){header($goTo);}
-
-require($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-$adventurer = new adventurer($conn, $id);
 
 $disctitle = "Connect Discord";
 if ($discname != null){$disctitle = "Discord";}
@@ -174,14 +134,14 @@ message;
 else if ($partstatus == "active") {
 $partBar = <<<message
 <li onclick='clinnation("Part")'> <p id='PartBar' class="Bar">Partnership Overview</p></li>
-<li> <a class="Bar" href="Publish.php">Edit Partnership</a></li>COOLDS
-<li onclick='clinnation("Pol")'> <p id='PolBar' class="Bar line">Trade Policy</p></li>
+<li> <a class="Bar line" href="Publish.php">Edit Partnership</a></li>COOLDS
 message;
 
     $query = "SELECT acceptCodes FROM partners_ds WHERE id = $partId";
     $result = $conn->query($query);
     if (mysqli_num_rows($result) != 0){
-        $partBar = str_replace("COOLDS", '<li><a class="Bar" href="/ds/p/hub.php">Digital Store Hub</a></li>', $partBar); ;
+      $partBar = str_replace("Bar line", 'Bar', $partBar); ;
+      $partBar = str_replace("COOLDS", '<li><a class="Bar line" href="/ds/p/hub.php">Digital Store Hub</a></li>', $partBar); ;
     }
     else {
         $partBar = str_replace("COOLDS", '', $partBar); ;
@@ -189,8 +149,7 @@ message;
 }
 else if ($partstatus == "suspended") {
 $partBar = <<<message
-<li onclick='clinnation("Part")'> <p id='PartBar' class="Bar">Partnership</p></li>
-<li onclick='clinnation("Pol")'> <p id='PolBar' class="Bar line">Trade Policy</p></li>
+<li onclick='clinnation("Part")'> <p id='PartBar' class="Bar line">Partnership</p></li>
 message;
 }
 
@@ -223,8 +182,6 @@ $partBody =<<<MESSAGE
                 </p>
                 <ul class="coolInfo">
                     <li><b>XADA1</b> products</li>
-                    <li><b>XADA2</b> views</li>
-                    <li><b>XADA3</b> downloads</li>
                     <li><b>XADA4</b> tiered products</li>
                 </ul>
                 <div style="width:30%;margin:auto;">
@@ -233,12 +190,10 @@ $partBody =<<<MESSAGE
             </div>
 MESSAGE;/*'*/
     $partBody = str_replace("partnership", $partname, $partBody);
-    if ($parttype == "prem"){$partBody = str_replace("Trader.png", "HighMerchant.png", $partBody);}
+    if ($dl->ppower > 0){$partBody = str_replace("Trader.png", "HighMerchant.png", $partBody);}
     $partBody = str_replace("partnership", $partname, $partBody);
-    $partBody = str_replace("XADA1", $prodpubbed, $partBody);
-    $partBody = str_replace("XADA2", $prodviews, $partBody);
-    $partBody = str_replace("XADA3", $proddls, $partBody);
-    $partBody = str_replace("XADA4", $prodprems, $partBody);
+    $partBody = str_replace("XADA1", $dl->totalPub, $partBody);
+    $partBody = str_replace("XADA4", $dl->totalPrems, $partBody);
 }
 else if ($partstatus == "suspended") {
 $partBody =<<<MESSAGE
@@ -549,9 +504,7 @@ GREATSTUFF;
 
             <div id='Over' class='column'>
                 <h1><?php echo $title." ".$name; ?></h1>
-                <div style="margin:auto;">
-                    <img src="<?php echo $adventurer->image(); ?>" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                </div>
+                    <img src="<?php echo $dl->user->image(); ?>" alt="WorkingMage" class='bannerI' class='separator'>
                 <p>
                     Your account unlocks many awesome features, such as making your own spell list, access to premium content in the digital library, and getting early and free access to some of our products via mail!<br>
                     If you have any questions, problems or complaints, feel free to contact us at <a href="mailto:pantheon@manyisles.ch" target="_blank">pantheon@manyisles.ch</a>.
@@ -580,7 +533,7 @@ GREATSTUFF;
                 <h2>Sign Out</h2>
                 <p>Sign out of your account.</p>
                 <div style="width:20%;margin:auto;">
-                    <div class="popupButton" style="margin-top:3vw;" onclick="SignOut('friendly')">Sign Out</div>
+                    <div class="popupButton" style="margin-top:3vw;" onclick="signOut('friendly')">Sign Out</div>
                 </div>
             </div>
 
@@ -917,16 +870,6 @@ function getCookie(name) {
     }
     return null;
 }
-function SignOut(yeah) {
-    document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "loggedP=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellLists=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellb=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellc=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spelld=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spelle=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    if (yeah == "friendly") { window.location.href = "Account.html?error=signIn"; }
-    else if (yeah == "baddie") { window.location.href = "Account.html?error=notSignedIn"; }
-}
+
 
 </script>
