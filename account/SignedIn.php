@@ -348,10 +348,9 @@ if ($result = $moneyconn->query($query)){
         $newLine = "<tr><td>$motive</td> <td>$source</td> <td>".$amount."</td> <td>".$artPubdate."</td></tr> COOLLINESHERE";
         $creditBody = str_replace("COOLLINESHERE", $newLine, $creditBody);
     }
-    $creditBody = str_replace("COOLLINESHERE", "", $creditBody);
-    $creditBody = str_replace("CURRENTTOTAL", makeHuman($userCredit->total_credit), $creditBody);
 }
-
+$creditBody = str_replace("COOLLINESHERE", "", $creditBody);
+$creditBody = str_replace("CURRENTTOTAL", makeHuman($userCredit->total_credit), $creditBody);
 
 $creditBar = <<<MEGA
     <li onclick='clinnation("Credit")'> <p id='CreditBar' class="Bar line">Many Isles Credit</p></li>
@@ -722,13 +721,13 @@ GREATSTUFF;
     function shoBar() {
         if ($(".left-col").is(":hidden")) {
             $(".left-col").show();
-            $(".fas").toggleClass("rotate");
+            $(".fa-bars").toggleClass("rotate");
             $("#".concat(tab)).hide();
 
         }
         else {
             $(".left-col").hide();
-            $(".fas").toggleClass("rotate");
+            $(".fa-bars").toggleClass("rotate");
             $(".column").hide();
             $("#".concat(tab)).show();
         }

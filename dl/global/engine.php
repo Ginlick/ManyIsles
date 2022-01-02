@@ -91,12 +91,12 @@ class dlengine {
       }
     }
     function partner($full = "stan") {
-      if (!$this->user->signedIn){$this->go("Account", "p");}
       $query = "SELECT * FROM partners WHERE user = ".$this->user->user;
       if ($max = $this->conn->query($query)) {
         while ($row = $max->fetch_assoc()){
           $this->equipPart($row);
           if ($full){
+            if (!$this->user->signedIn){$this->go("Account", "p");}
             if ($this->user->emailConfirmed AND $this->partStat != "deleted") {
               if ($full == "ds"){
                 if (!$this->partDS){

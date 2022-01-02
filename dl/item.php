@@ -4,7 +4,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
 require_once("global/engine.php");
 $dl = new dlengine($conn);
-if (!$dl->user->check()){exit();$dl->go("home", "dl");}
+if (!$dl->user->check()){$dl->go("home", "dl");}
 $parse= new Parsedown;
 
 $digital = false;

@@ -14,7 +14,7 @@ BARRR;
 $imageStencil = <<<NABSDAI
 <div class="imageContainer" id="IMAGESRC2" name="IMAGENAME">
 <div class="sidenav">
-  <div class="shown fancyjump" style="top:10px" onclick="copyLink('https://manyisles.chIMAGESRC')"><i class="fas fa-link"></i></div>
+  <div class="shown fancyjump" style="top:10px" onclick="copyLink('IMAGESRC')"><i class="fas fa-link"></i></div>
   <div class="trans" style="top:75px" onclick="renameImage('IMAGESRC2')"><i class="fas fa-pen"></i></div>
   <div class="trans" style="top:140px" onclick="deleteImage('IMAGESRC2')"><i class="fas fa-trash"></i></div>
 </div>

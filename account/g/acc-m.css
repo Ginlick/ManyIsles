@@ -30,6 +30,7 @@
 .left-col {
     display:none;
     width:100%;
+    max-width: none;
 }
 .Bar {
     font-size: 5vw;
