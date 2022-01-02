@@ -39,7 +39,7 @@ if (isset($_POST["basketing"]) AND count($inbasket) < 11) {
     else if (isset($_POST["creditAmount"])) {
         if ($_POST["creditAmount"]>10000){$creditAmount = 10000;}else {$creditAmount = $_POST["creditAmount"];}
         $topush = $_POST["basketing"]."-".$creditAmount;
-        array_push($inbasket, $topush); 
+        array_push($inbasket, $topush);
     }
     $_SESSION["basket"] = implode(",", $inbasket);
     unset($_SESSION["subbasket"]);
@@ -53,7 +53,7 @@ if (isset($_POST["goTo"])) {
 
 if (!isset($codesMatter)){$codesMatter = false;}
 $type = "items";
-if (isset($_SESSION["subbasket"])) {$inbasket = $_SESSION["subbasket"];$type="subs";} 
+if (isset($_SESSION["subbasket"])) {$inbasket = $_SESSION["subbasket"];$type="subs";}
 $basketed = new loopBasket($conn, $inbasket, true, false, $codesMatter, $type);
 function doSideBasket() {
     global $conn, $moneyconn, $basketed;
@@ -83,7 +83,7 @@ function doSideBasket() {
             <tbody>';
 
         if ($basketed->type == "subs"){
-            foreach ($basketed->itemArray as $item) { 
+            foreach ($basketed->itemArray as $item) {
                 echo "<tr>";
                 echo '<td><img src="'.$item["row"]["image"].'" alt="thumbnail" /></td>';
                 echo '<td>'.$item["row"]["shortName"].'</td>';
@@ -95,7 +95,7 @@ function doSideBasket() {
             foreach ($basketed->itemArray as $item) {
                 $name = $item["row"]["name"];
                 if ($item["row"]["shortname"] != null) {$name = $item["row"]["shortname"];}
-                $link = linki($item["row"]["id"], $item["row"]["link"], $item["row"]["name"]);  
+                $link = linki($item["row"]["id"], $item["row"]["link"], $item["row"]["name"]);
                 echo "<tr>";
                 echo '<td><img src="'.clearImgUrl($item["row"]["thumbnail"]).'" alt="thumbnail" /></td>';
                 echo '<td><a href="'.$link.'">'.$name.'</a></td>';
@@ -125,7 +125,7 @@ function doSideBasket() {
                             </a>
                         </div>
                         </div>';
-            //mobile 
+            //mobile
             $bottomad = '
                 <div class="bottomad-container">
                     <a href="/ds/basket.php">
@@ -147,4 +147,3 @@ function doSideBasket() {
 }
 
 ?>
-

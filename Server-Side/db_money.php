@@ -10,7 +10,7 @@ else {
     $servername = "localhost";
     $username = "aufregendetage";
     $password = "vavache8810titigre";
-    $dbname = "notes";
+    $dbname = "money";
 }
 $moneyconn = new mysqli($servername, $username, $password, $dbname);
 

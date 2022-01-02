@@ -3,7 +3,9 @@
 // requires $conn, $moneyconn, $clid, $customer_email, $mycode
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/promote.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/keys/ds-actcode.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/account/prem/partAmount.php');
 if (!isset($mycode) OR $mycode != $ds_actcode){echo "invalid certification";exit();}
 
 require_once("g/countries.php");
@@ -30,6 +32,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 $custTran = new transaction($moneyconn, $customer);
+$custProm = new adventurer($conn, $customer);
 
 $codeCookieReplacement = $codeList;
 $purchase = explode(",", $purchase);
@@ -118,6 +121,8 @@ $sellerPayment = array(
 $ordersArray = array();
 
 $sellerPaymentRoyalty = $sellerPayment["Royalty"];
+
+
 foreach ($basketed->itemArray as $item) {
 $row = $item["row"];
 $prodname = $row["name"];
@@ -235,17 +240,16 @@ foreach ($purchase as $x => $value) {
     else {$shortitem = $value;}
 
     if ($shortitem == 1) {
+      //tiers
         if (str_contains($value, "tier:2")){$tieroption = 3; $newtitle = "Legendar";}
         else if (str_contains($value, "tier:1")){$tieroption = 2; $newtitle = "Grand Wizard";}
         else {$newtitle = "Imperial Soldier"; $tieroption = 1;}
-        if ($customer_tier != "g"){$customer_tier = intval($customer_tier);}
-        if ($customer_tier == "g" or $customer_tier<intval($tieroption)){
-            $query = "UPDATE accountsTable SET tier = $tieroption, title = '$newtitle' WHERE id = $customer";
-            $conn->query($query);
-            $customer_tier = $tieroption;
-        }
+        $custProm->promote($newtitle);
+        $forPartner = floor(0.5*$ordiprice);
+        payTiers($forPartner, $tieroption);
     }
     else if ($shortitem == 2){
+      //credit
         $price = substr($value, strpos($value, "-"));
         $price = str_replace("-", "", $price);
         $credit = $price;
@@ -254,6 +258,7 @@ foreach ($purchase as $x => $value) {
         $pTran->new($credit, $customer_title." ".$customer_name, "Pay-in");
     }
     else if ($shortitem == 3) {
+      //support product
         $price = substr($value, stripos($value, "/")+1, -1);
         $option = substr($value, stripos($value, "(")+1, stripos($value, "/")-2);
         if ($option == "the Pantheon"){$option = "Pantheon";}
@@ -272,6 +277,7 @@ foreach ($purchase as $x => $value) {
         if (isset($pId)) {
             $pTran = new transaction($moneyconn, $pId);
             $pTran->new($price, $customer_title." ".$customer_name, "Support Payment");
+            $custProm->promote("Journeyman");
         }
     }
 }

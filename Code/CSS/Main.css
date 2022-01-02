@@ -77,7 +77,7 @@ p {
 }
 input, textarea, select {
   display: inline-block;
-  font-size: var(--all-fonts-base);
+  font-size: var(--all-fonts-med);
   padding: 5px;
   border: 1px solid var(--all-color-albord);
   border-radius: 3px;
@@ -331,4 +331,8 @@ span.dsp {
   display:block;
   margin:50px auto;
   max-width: 950px;
+}
+.bannerI.smol {
+  width:30%;
+  max-width: 300px;
 }

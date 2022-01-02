@@ -6,7 +6,7 @@ class mailer {
         "gen" => [
             "banner" => "https://manyisles.ch/Imgs/PopupGeneral.png"
         ],
-        "trade" => [
+        "pub" => [
             "banner" => "https://manyisles.ch/Imgs/PopTrade.png"
         ],
         "acc" => [
@@ -56,6 +56,6 @@ MYGREATMAIL;
             return false;
         }
     }
-} 
+}
 
 ?>

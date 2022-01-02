@@ -3,6 +3,8 @@
 if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:partner.php?id=1");}
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
+$dl = new dlengine($conn);
 require_once("../g/artTabs.php");
 $pId = $_GET['id'];
 
@@ -96,7 +98,7 @@ $pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
                 <section class="imageShower">
                     <div class="squareCont">
                         <div class="square">
-                                <img src="/dl/PartIm/<?php echo $image; ?>">
+                                <img src="<?php echo $dl->clearmage($image); ?>">
                         </div>
                     </div>
                 </section>

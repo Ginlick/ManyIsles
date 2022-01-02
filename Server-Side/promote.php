@@ -27,6 +27,7 @@ class adventurer {
     function __construct($conn, $user) {
         $this->conn = $conn;
         $this->user = $user;
+        $this->signedIn = false;
 
         $query = "SELECT title, tier, uname, password, emailConfirmed FROM accountsTable WHERE id = $user";
         if ($result = $this->conn->query($query)) {
@@ -44,7 +45,7 @@ class adventurer {
         $this->fullName = $this->title." ".$this->uname;
     }
 
-    function check($mod = true) {
+    function check($mod = false) {
       if ($this->signedIn OR $mod){
         require($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
         return checkNudePsw($this->cpsw);
@@ -58,8 +59,15 @@ class adventurer {
             }
         }
         $tier = $this->titleArr[$title];
-        $query = "UPDATE accountsTable SET title = '$title', tier = $tier WHERE id = $this->user";
-        if ($this->conn->query($query)){return true;}
+
+        $titlePos = array_search($title, $this->titleArr);
+        $oldTitlePos = array_search($this->title, $this->titleArr);
+
+        if ($titlePos > $oldTitlePos){
+          $query = "UPDATE accountsTable SET title = '$title', tier = $tier WHERE id = $this->user";
+          if ($this->conn->query($query)){return true;}
+        }
+        return true;
     }
     function image($x = 1) {
         if (!$this->signedIn){

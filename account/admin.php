@@ -97,14 +97,14 @@ if ($result->num_rows > 0) {
     echo "<td>".$row["name"]."</td>";
     echo "<td>p#".$row["id"]."</td>";
     echo "<td>u#".$row["user"]."</td>";
-    echo "<td><a class='popupButton' href='/dl/partner?id=".$row["id"]."'>View</a></td>";
+    echo "<td><a href='/dl/partner?id=".$row["id"]."'>View</a></td>";
         $query2 = 'SELECT email FROM accountsTable WHERE id = "'.$row["user"].'"';
         $result2 = $conn->query($query2);
         while($row2 = $result2->fetch_assoc()){
             $email = $row2["email"];
             break;
         }
-    echo '<td><a class="popupButton" href="mailto:'.$email.'" target="_blank">Contact</a></td>';
+    echo '<td><a href="mailto:'.$email.'" target="_blank">Contact</a></td>';
     if ($row["status"]=="active"){$susp = "Suspend";}else{$susp = "Reactivate";}
     echo "<td><a class='button' href='suspend.php?id=".$row["id"]."'>".$susp."</a></td>";
     echo "</tr>";
@@ -114,7 +114,25 @@ if ($result->num_rows > 0) {
 ?>
 </table>
 </div>
+<div class="contentBlock">
+<h2>Premium Activation Requests</h2>
+<table>
+<?php
 
+    $query = "SELECT * FROM requests WHERE domain = 'pub' AND request = 'prem'";
+    $result = $conn->query($query);
+if ($result->num_rows > 0) {
+  while($row = $result->fetch_assoc()) {
+    echo "<tr>";
+    echo "<td><a href='/dl/partner?id=".$row["requestee"]."' target='_blank'>p#".$row["requestee"]."</a></td>";
+    echo "<td><a href='prem/activate?id=".$row["requestee"]."' target='_self'>activate</a></td>";
+    echo "</tr>";
+  }
+}
+
+?>
+</table>
+</div>
 
 <?php
 
@@ -123,7 +141,7 @@ echo '
 <div class="contentBlock">
 <h2>Digital Store Admin</h2>
 <p>Get an overview (no edit power).</p>
-<a class="popupButton" href="/ds/p/killAdmin.php?dir=1"  style="width:22%;">Get In</a>
+<a href="/ds/p/killAdmin.php?dir=1"  style="width:22%;">Get In</a>
 </div>
 ';
 }
@@ -132,5 +150,8 @@ echo '
 </script>
 <script>
 var urlParams = new URLSearchParams(window.location.search);
-var why = urlParams.get('why');
+var why = urlParams.get('i');
+if (why == "activtd") {
+  createPopup("d:pub;txt:Partnership extension activated");
+}
 </script>

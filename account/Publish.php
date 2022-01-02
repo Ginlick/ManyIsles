@@ -48,6 +48,7 @@ padding:0;
           <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
           <ul class="myMenu bottomFAQ">
             <li><a class="Bar" href="/docs/4/Partnerships" target="_blank">Partnership Program</a></li>
+            <li><a class="Bar" href="/docs/59/Partnership_Types" target="_blank">Partnership Extensions</a></li>
           </ul>
       </div>
 
@@ -55,7 +56,7 @@ padding:0;
         <?php
         echo $dl->giveAccTab();
          ?>
-      <h1><?php echo $dl->partName; ?>, by <?php echo $dl->user->uname; ?>!</h1>
+      <h1><?php echo $dl->partName; ?>, by <?php echo $dl->user->uname; ?></h1>
       <?php
 
       if ($dl->ppower>0) {echo "<div><img src='/Imgs/Ranks/HighMerchant.png' alt:'Oopsie!' class='bannerI'></div>";}
@@ -84,10 +85,11 @@ padding:0;
       $query = 'SELECT * FROM products WHERE status != "deleted" AND partner = '.$dl->partId.' order by name ASC';
       if ($firstrow = $dl->dlconn->query($query)) {
           while ($row = $firstrow->fetch_assoc()) {
-            $column = "<a class='procol' href='URL'>MEHA (GENRE)</a>";
-            $column = str_replace("URL", "Product?id=".$row["id"], $column);
-            $column = str_replace("MEHA", $row["name"], $column);
-            $column = str_replace("GENRE", $dl->typeNames[$row["genre"]], $column);
+            $column = "<a class='procol' href='%%URL'>%%MEHA (%%GENRE)</a>";
+            $column = str_replace("%%URL", "Product?id=".$row["id"], $column);
+            $column = str_replace("%%MEHA", $row["name"], $column);
+            if ($dl->ppower > 0 && $row["tier"] != 0){$column = str_replace("%%GENRE", "Tier ".$row["tier"].", ".$dl->typeNames[$row["genre"]], $column);}
+            else {$column = str_replace("%%GENRE", $dl->typeNames[$row["genre"]], $column);}
           echo $column;
         }
       }
@@ -101,7 +103,7 @@ padding:0;
 
 
     <div class="contentBlock">
-      <h1>Your <?php echo $dl->pType; ?></h1>
+      <h1>Your <?php echo $dl->pType; ?> p#<?php echo $dl->partId; ?></h1>
       <p>This is publically visible information about your partnership. <a href="/dl/partner?id=<?php echo $dl->partId; ?>" target="_blank">View Page</a>
       <form action="SubPar.php" method="POST" class="stanForm" enctype="multipart/form-data">
         <section class="duel">
@@ -149,8 +151,28 @@ padding:0;
         echo '
      <div class="contentBlock">
         <h1>Digital Store Extension</h1>
-        <p>Activate a Digital Store extension to start publishing in the digital store.<br>Note that this cannot be undone. <a href="/docs/18/Digital_Store_Extension" target="_blank">More info</a></p>
+        <p>Activate the Digital Store extension to start publishing in the digital store.<br>Note that this cannot be undone. <a href="/docs/18/Digital_Store_Extension" target="_blank">More info</a></p>
         <a href="/ds/p/activate.php"><button class="dsButton"><i class="fas fa-arrow-right"></i> Activate</button></a>
+    </div>
+    ';
+    }
+
+    if ($dl->ppower == 0) {
+        echo '
+     <div class="contentBlock">
+        <h1>Premium Partnership Extension</h1>
+        <p>Request activation of the Premium Partnership extension to publish tiered products. <a href="/docs/63/Premium_Extension" target="_blank">More info</a><br>
+        You should have at least one published product to be cleared.</p>
+        <a href="prem/request.php"><button><i class="fas fa-arrow-right"></i> Request Activation</button></a>
+    </div>
+    ';
+    }
+    else {
+      echo '
+     <div class="contentBlock">
+        <h1>Premium Partnership </h1>
+        <p>Your partnership has an active Premium extension. <a href="/docs/63/Premium_Extension" target="_blank">More info</a></p>
+        <a href="prem/hub"><button><i class="fas fa-arrow-right"></i> More</button></a>
     </div>
     ';
     }
@@ -199,5 +221,14 @@ else if (why == "badmage") {
 }
 else if (why == "proddel") {
   createPopup("d:pub;txt:Product deleted.");
+}
+else if (why == "requ") {
+  createPopup("d:pub;txt:Request submitted.");
+}
+else if (why == "notrequ") {
+  createPopup("d:pub;txt:Error. Could not submit request.");
+}
+else if (why == "405") {
+  createPopup("d:pub;txt:Error. You aren't allowed to do that.");
 }
 </script>

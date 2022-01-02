@@ -102,6 +102,9 @@ class smolengine {
       header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
       header('Pragma: public');
       header('Content-Length: ' . filesize($target));
+      while (ob_get_level()) {
+        ob_end_clean();
+      }
       readfile($target);
       exit();
     }
