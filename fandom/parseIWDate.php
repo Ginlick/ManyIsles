@@ -108,7 +108,7 @@ function banner($banner, $info = null){
     }
 
     if (!str_contains($banner, "/")){
-        return "/wikimgs/banners/".$banner;
+        return "https://media.manyisles.ch/wikimgs/banners/".$banner;
     }
     else {
         return $banner;

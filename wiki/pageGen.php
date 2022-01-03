@@ -29,6 +29,7 @@ class gen {
     public $WSet = "";
     public $autoLinkArr = [];
     public $domainSpecs = [];
+    public $full = false; //for Notebook full
 
     function __construct($mode = "view", $page = 0, $parentWiki = 2, $new = false, $domain = "fandom", $moreSpecs = []) {
         $this->writingNew = $new;
@@ -165,16 +166,6 @@ class gen {
         //mystral limits
         if ($this->domain == "mystral"){
           if (!$notArticle){
-            $query = "SELECT a.id
-            FROM $this->database a
-            LEFT OUTER JOIN $this->database b
-            ON a.id = b.id AND a.v < b.v
-            WHERE b.id IS NULL AND a.root = 0";
-            if ($result = $this->dbconn->query($query)){
-                if (mysqli_num_rows($result) >= $this->mystData["notebooks"]) {
-                    $this->canedit = false; $this->ediProblem = "Full Notebooks";
-                }
-            }
             $query = "SELECT a.id
             FROM $this->database a
             LEFT OUTER JOIN $this->database b
@@ -679,7 +670,13 @@ MAIN;
         </div>
         </div>
 NABSDAI;
-        $newNB = "<a class='wikiButton' href='newNb.php' target='_self'><i class='fas fa-plus'></i> Create Notebook</a>";
+        $newNB = "<form action='newNb.php' method='GET'><button class='wikiButton' type='submit'><i class='fas fa-plus'></i> Create Notebook</button>
+                  <select name='notebookType' class='noterSelect'>
+                    <option value=''>default</option>
+                    <option value='1'>roleplaying campaign</option>
+                    <option value='2'>fantasy wiki</option>
+                  </select>
+                  </form>";
         $main = "";
         $query = "SELECT a.*
         FROM $this->database a
@@ -777,12 +774,12 @@ NABSDAI;
 
                     <img src="/Imgs/Bar2.png" class="separator"></img>
 
-                    <h3>Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
-                    <p>This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
-                    <textarea name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabTitle.'</textarea>
-                    <input type="text" name="sidetabImg" placeholder="Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
-                    <textarea name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabText.'</textarea>
-                    <div class="complete"><h4>Timeframe</h4>
+                    <h3  class="complete">Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
+                    <p class="complete">This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
+                    <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabTitle.'</textarea>
+                    <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
+                    <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabText.'</textarea>
+                    <div><h4>Timeframe</h4>
                     <input name="timeStart" type="text" value ="'.$this->article->timeStart.'" placeholder="Starting Date" />
                     <input name="timeEnd" type="text" value ="'.$this->article->timeEnd.'" placeholder="Ending Date"  /></div>
                     ';
@@ -796,7 +793,7 @@ NABSDAI;
                     <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
                     <span class="complete" onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
                 </p>
-                <textarea name="body" id="bodyFieldarea" rows = "40" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->article->body.'</textarea>
+                <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->article->body.'</textarea>
                 <img src="/Imgs/Bar2.png" class="separator"></img> ';
             if ($modifier > 0){
                 $main .= '                <div class="complete">
@@ -1112,9 +1109,6 @@ NABSDAI;
         }
         else if ($this->ediProblem == "No Space") {
             $basetext = "<h1>No Space - Cannot Edit</h1><p>You've got too many pages. Delete some unneeded versions with the Filicide button, or <a href='/mystral/hub?view=sub'>uy a better plan</a>.</p>";
-        }
-        else if ($this->ediProblem == "Full Notebooks") {
-            $basetext = "<h1>Notebooks Full - Cannot Edit</h1><p>You're all out of notebooks. <a href='/mystral/hub?view=sub'>Buy a better plan</a> to create more.</p>";
         }
         else {
             $basetext = "<h1>Error - Cannot Edit</h1><p>Sorry, you are forbidden of editing for this reason: $this->ediProblem.<br>Contact the Pantheon if you feel this is wrong.</p>";

@@ -245,8 +245,7 @@ foreach ($purchase as $x => $value) {
         else if (str_contains($value, "tier:1")){$tieroption = 2; $newtitle = "Grand Wizard";}
         else {$newtitle = "Imperial Soldier"; $tieroption = 1;}
         $custProm->promote($newtitle);
-        $forPartner = floor(0.5*$ordiprice);
-        payTiers($forPartner, $tieroption);
+        payTiers($ordiprice, $tieroption);
     }
     else if ($shortitem == 2){
       //credit

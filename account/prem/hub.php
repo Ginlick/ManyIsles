@@ -50,7 +50,7 @@ padding:0;
         <h1>Tiered Products</h1>
         <p>Your products published to each of the three tiers give you a part of the total.</p>
         <?php
-          $amounts = [1=>100, 2=>250, 3=> 500];
+          $amounts = [1=>200, 2=>500, 3=> 1000];
           for ($i = 1; $i < 4; $i++){
             echo "<h3>Tier $i</h3>";
             $tierValue = giveTierValue($dl->partId, $i);

@@ -58,7 +58,12 @@ BARRR;
     .colrTab {
         display: none;
     }
-
+.noterSelect {
+  width: clamp(80px, 30%, 200px);
+  margin: 14px auto;
+  color: var(--doc-ahover-color);
+  border-color: var(--doc-ahover-color);
+}
 .tierCont {
     display:flex;
     padding: calc(10px + 1vw) 0;
@@ -290,10 +295,11 @@ h1 {
                     <?php
                         if (count($gen->autoLinkArr) != 0) {
                             echo '                <table>
-                                <thead><tr><td>Keyword</td><td>URL</td><td></td></tr></thead>
+                                <thead><tr><td>Keyword</td><td>URL</td><td>Wiki</td><td></td></tr></thead>
                                 <tbody>';
                             foreach ($gen->autoLinkArr as $name => $autoLinkBlock){
-                                echo "<tr><td>$name</td><td>".$autoLinkBlock["href"]."</td><td><a class='mellow' href='killAutKeyw.php?id=".$name."'><i class='fas fa-trash'></i> Delete</a></td>";
+                              $autWik = 0; if (isset($autoLinkBlock["wiki"])){$autWik = $autoLinkBlock["wiki"];}
+                              echo "<tr><td>$name</td><td>".$autoLinkBlock["href"]."</td><td>".$autWik."</td><td><a class='mellow' href='killAutKeyw.php?id=".$name."'><i class='fas fa-trash'></i> Delete</a></td>";
                             }
                             echo '                    </tbody>
                             </table>';

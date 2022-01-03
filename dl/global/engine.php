@@ -31,6 +31,10 @@ class dlengine {
         "v" => "Visual",
         "m" => "Cartography",
         "n" => "Dungeons"
+      ],
+      4 => [
+        "a" => "Ambient Music",
+        "p" => "Active Music"
       ]
     ];
     public $gsystArr = [0 => "Any", 1 => "5eS", 2 => "5e"];
@@ -195,6 +199,7 @@ class dlengine {
                     <p onclick="typeValue(1)">Modules</p>
                     <p onclick="typeValue(2)">Tools</p>
                     <p onclick="typeValue(3)">Art</p>
+                    <p onclick="typeValue(4)">Audio</p>
                 </div>
             </div>
             <ul class="menuList" type="1">
@@ -213,20 +218,24 @@ class dlengine {
                   </select>
               </li>
             </ul>
-
             <ul class="menuList"  type="2">
               <li subgenre="">All</li>
               <li subgenre="h">Homebrewing</li>
               <li subgenre="r">Generator</li>
               <li subgenre="i">Index</li>
             </ul>
-
             <ul class="menuList"  type="3">
               <li subgenre="">All</li>
               <li subgenre="v">Visual</li>
               <li subgenre="m">Cartography</li>
               <li subgenre="n">Dungeons</li>
             </ul>
+            <ul class="menuList"  type="4">
+              <li subgenre="">All</li>
+              <li subgenre="a">Ambient Music</li>
+              <li subgenre="p">Active Music</li>
+            </ul>
+
             <form onsubmit="return goSearch(this)">
               <input type="text" class="" name="query" placeholder="Queries...">
               <button class=""><i class="fas fa-search"></i> Search</button>

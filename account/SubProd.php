@@ -78,7 +78,7 @@ if ($image){
 if ($file){
   $external = 1;
   if ($realpath = $filing->new($file, $prodId, "462")) {
-    $filetype = "dlPdf";if ($genre == 3){$filetype = "dlArt";}
+    $filetype = "dlPdf";if ($genre == 3){$filetype = "dlArt";} else if ($genre == 4){$filetype = "bigAudio";}
     if ($filing->check($file, $filetype)){
       $placedF = $filing->add($file["tmp_name"], $realpath);
       $external = 0;

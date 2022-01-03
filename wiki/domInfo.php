@@ -103,9 +103,9 @@ function equipDom($gen, $domain = "fandom"){
         $gen->minPower = 2;
         $gen->domainLogo = '<span class="mysLogo">Mystral</span>';
         $gen->defaultBanner = "notes.png";
-        $gen->cateoptions = json_decode('[{"name":"Generic Note","value":"Note"},{"name":"Condition / Disease","value":"Condition"},{"name":"Conflict","value":"Conflict"},{"name":"Culture","value":"Culture"},{"name":"Document","value":"Document"},{"name":"Event / Legend","value":"Event"},{"name":"Geography","value":"Geography"},{"name":"Item","value":"Item"},{"name":"Language","value":"Language"},{"name":"Magic","value":"Magic"},{"name":"Organization / State","value":"Organization"},{"name":"Person / Deity","value":"Person"},{"name":"Politics","value":"Politics"},{"name":"Technology","value":"Technology"},{"name":"Race / Ethnicity","value":"Race"},{"name":"Relation / Treaty","value":"Relation"},{"name":"Religion","value":"Religion"},{"name":"Settlement / Location","value":"Settlement"}]', true);
+        $gen->cateoptions = json_decode('[{"name":"Generic Note","value":"Note"},{"name":"File","value":"File"},{"name":"Condition / Disease","value":"Condition"},{"name":"Conflict","value":"Conflict"},{"name":"Culture","value":"Culture"},{"name":"Document","value":"Document"},{"name":"Event / Legend","value":"Event"},{"name":"Geography","value":"Geography"},{"name":"Item","value":"Item"},{"name":"Language","value":"Language"},{"name":"Magic","value":"Magic"},{"name":"Organization / State","value":"Organization"},{"name":"Person / Deity","value":"Person"},{"name":"Politics","value":"Politics"},{"name":"Technology","value":"Technology"},{"name":"Race / Ethnicity","value":"Race"},{"name":"Relation / Treaty","value":"Relation"},{"name":"Religion","value":"Religion"},{"name":"Settlement / Location","value":"Settlement"}]', true);
         $gen->defaultGenre = "Note";
-        $gen->artRootLink = "/mystral/";
+        $gen->artRootLink = "/mystral/".$gen->user."/";
         $gen->baseLink = "/mystral/";
         $gen->luckying = true;
         $gen->baseWSet = $gen->user."_";

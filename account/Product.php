@@ -1,8 +1,9 @@
 <?php
-
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/fileManager.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
 $dl = new dlengine();
 $dl->partner();
+$filing = new smolengine();
 
 $prodId = 0;
 $writingNew = true;
@@ -179,6 +180,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
                   <option value="1">Module</option>
                   <option value="2">Tool</option>
                   <option value="3">Art</option>
+                  <option value="4">Audio</option>
                           ';
                     $text = str_replace('value="'.$proGenre.'"', 'value="'.$proGenre.'" selected', $text);
                     echo $text;
@@ -203,6 +205,10 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
                 <span class="input"><input type="checkbox" onclick = "catValue('v');" subg="v">visual</input></span>
                 <span class="input"><input type="checkbox" onclick = "catValue('m');" subg="m">cartography</input></span>
                 <span class="input"><input type="checkbox" onclick = "catValue('n');" subg="n">dungeons</input></span>
+              </div>
+              <div id="field4" style="display:none;" class="field">
+                <span class="input"><input type="checkbox" onclick = "catValue('a');" subg="v">ambient music</input></span>
+                <span class="input"><input type="checkbox" onclick = "catValue('p');" subg="m">active music</input></span>
               </div>
           </div>
           <input type="text" style="display:none" id="subgenre" name="subgenre" value="<?php echo $proSubgenre; ?>"/>
@@ -273,7 +279,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
               <input type="hidden" name="MAX_FILE_SIZE" value="35000000" />
               <input class="file-upload-input" type='file' onchange="readURL(this);" name="file" id="file-upload-input" accept="application/pdf" />
               <div class="drag-text">
-                <p>Drag and drop a file, or click to upload (max 30 MB)</p>
+                <p id="drag-textr">Drag and drop a file, or click to upload (max 30 MB)</p>
               </div>
             </div>
             <div class="file-upload-content">
@@ -290,7 +296,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
           </div>
           <?php
             if ($writingNew){ $proLink = "Not yet uploaded"; }
-              echo "<p>Current File: <a href='$proLink' target='_link' id='thisfile'>$proLink</a></p>";
+              echo "<p  id='thisfile'>Current File: <a href='$proLink' target='_link'>$proLink</a></p>";
            ?>
         </div>
 
@@ -327,6 +333,7 @@ echo $dl->giveFooter();
 var genre = 1;
 var subgenre = "";
 var external =  false;
+var requArray = <?php echo json_encode($filing->fileRequs); ?>;
 
 function readURL2(input) {
   if (input.files && input.files[0]) {
@@ -385,15 +392,33 @@ if (why == "delfail"){
   createPopup("d:pub;txt:Error deleting your product.");
 }
 
+function giveAccept(weirds) {
+  var retursn = "";
+  for (let wird of weirds){
+    retursn += "."+wird+", ";
+  }
+  return retursn;
+}
 
 function updateFiler() {
   external = document.getElementById("externalized").checked;
   genre= document.getElementById("genre").value;
   subgenre= document.getElementById("subgenre").value;
 
-  if (!external && (genre == 1 || genre == 3)) {
+  if (!external && (genre != 2)) {
     $('.file-upload').show();
-    document.getElementById("file-upload-input").setAttribute("accept", "application/pdf");
+    if (genre == 4) {
+      document.getElementById("file-upload-input").setAttribute("accept", giveAccept(requArray["bigAudio"]["types"]));
+      $("#drag-textr").html("Drag and drop a file. Max " + formatBytes(requArray["bigAudio"]["size"], 0));
+    }
+    else if (genre == 3) {
+      document.getElementById("file-upload-input").setAttribute("accept", giveAccept(requArray["dlArt"]["types"]));
+      $("#drag-textr").html("Drag and drop a file. Max " + formatBytes(requArray["dlArt"]["size"], 0));
+    }
+    else {
+      document.getElementById("file-upload-input").setAttribute("accept", giveAccept(requArray["dlPdf"]["types"]));
+      $("#drag-textr").html("Drag and drop a file. Max " + formatBytes(requArray["dlPdf"]["size"], 0));
+    }
     document.getElementById("linkInput").style.display="none";
     removeUpload();
   }
@@ -477,9 +502,9 @@ function sendForm(form) {
             createPopup("d:pub;txt:Error uploading image.");
           }
           else if (this.responseText.includes("success")){
-            <?php if ($writingNew) {echo "location.reload();"; } ?>
+            <?php if ($writingNew) {echo "window.location.href = 'Publish?i=pcreated';"; } ?>
             createPopup("d:pub;txt:Product updated.");
-            document.getElementById("thisfile").innerHTML = fileName;
+            document.getElementById("thisfile").innerHTML = "Current File: " + fileName;
           }
           else {
             createPopup("d:poet;txt:Error. Could not submit data.");
