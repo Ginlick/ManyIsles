@@ -56,7 +56,7 @@ WHERE b.id IS NULL ORDER BY importance DESC LIMIT 0, 999";
 if ($result = $info->dbconn->query($query)){
     $counter = 0;
     while ($row = $result->fetch_assoc()) {
-        $itemArray = [];       
+        $itemArray = [];
         $name = normalizeChars($row["name"]);
         $shortName = normalizeChars($row["shortName"]);
         $queryTags = normalizeChars($row["queryTags"]);
@@ -111,8 +111,8 @@ if ($result = $info->dbconn->query($query)){
         $itemArray["name"] = "I'm Feeling Lucky";
         $itemArray["thumbnail"] = "/wikimgs/icons/random.jpg";
         $itemArray["genre"] = "Lore";
-        $itemArray["NSFW"] = 0;      
-        $itemArray["date"] = "type something to generate new link";      
+        $itemArray["NSFW"] = 0;
+        $itemArray["date"] = "type something to generate new link";
         $resultArray[] = $itemArray;
     }
 }

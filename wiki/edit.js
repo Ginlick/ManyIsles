@@ -138,7 +138,7 @@ function createLink(link, what, pdomain = domain) {
         var myText = "[" + linkName + "](" + link + ")";
         if (document.getElementById("autoLinkChecker") != null) {
             if (document.getElementById("autoLinkChecker").checked) {
-                newAutoLink(document.getElementById("linkNameEr").value, link);
+                newAutoLink(document.getElementById("linkNameEr").value, link, parentWiki);
             }
         }
     }
@@ -334,7 +334,7 @@ Mousetrap.bind("ctrl+shift+r", function (e) {
 
 function addChar(myText) {
     var myField = document.activeElement;
-    //IE support    
+    //IE support
     if (document.selection) {
         document.myField.focus();
         sel = document.selection.createRange();
@@ -379,7 +379,7 @@ differComplic(document.getElementById("neatChecker"));
 
 var doLinkage = true;
 var allDoneLinks = [];
-if (getCookie("doLinkage") != 1) { doLinkage = false;}
+if (getCookie("doLinkage") == 0) { doLinkage = false;}
 function autoLinkage() {
     if (!doLinkage) { return;}
     let checkPos = textareaToFill.selectionStart;
@@ -398,12 +398,16 @@ function autoLinkage() {
         }
     }
 }
-function doStuff(word, firstHalf, lastHalf) { 
+function doStuff(word, firstHalf, lastHalf) {
     if (allDoneLinks[textareaToFill.id] == undefined) { allDoneLinks[textareaToFill.id] = [];}
 
     if (word.match(/.*s/)) { word.slice(0, -1); }
     if (allDoneLinks[textareaToFill.id].includes(word)) { return; }
     if (autoLinks.hasOwnProperty(word.toLowerCase())) {
+        let autoLinkWiki = autoLinks[word.toLowerCase()]["wiki"];
+        if (autoLinkWiki != null && autoLinkWiki != 0){
+          if (autoLinkWiki != parentWiki){return;}
+        }
         console.log("triggered");
         let coolLink = "[" + word + "](" + autoLinks[word.toLowerCase()]["href"] + ") ";
         let firstPos = firstHalf.length - word.length - 1;
@@ -412,5 +416,3 @@ function doStuff(word, firstHalf, lastHalf) {
         allDoneLinks[textareaToFill.id].push(word);
     }
 }
-
-

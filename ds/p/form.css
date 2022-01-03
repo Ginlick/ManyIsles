@@ -15,7 +15,7 @@ h2 {
         font-size: var(--all-fonts-med);
     }
 
-        .inputCont label span {
+        .inputCont span {
             color: #a21414;
         }
 
@@ -36,7 +36,7 @@ h2 {
         text-align: center;
     }
 
-.roundInfo {
+span.roundInfo {
     border: 1px solid #8dceff;
     color: #8dceff;
     border-radius: 50px;
@@ -45,7 +45,7 @@ h2 {
     margin: 0 6px;
     display: inline-block;
 }
-.roundInfo.gold {
+span.roundInfo.gold {
   color: var(--ds-gold);
   border-color:  var(--ds-gold);
 }

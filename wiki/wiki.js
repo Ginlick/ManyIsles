@@ -193,21 +193,21 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
                 let trie = parent;
                 window.setTimeout(function () { trie.style.display = 'none'; }, 300);
             });
-            
+
         }
     };
     xhttp.open("GET", getFile, true);
     xhttp.send();
 }
 
-function newAutoLink(name, reference) {
+function newAutoLink(name, reference, wiki = 0) {
     if (name.match(/^[^ ]+ [^ ]+$/) !== null || name.match(/^[^ ]+$/) !== null) {
         if (name.match(/.*s/)) { name.slice(0, -1); }
 
         if (typeof autoLinks !== 'undefined') {
             autoLinks[name.toLowerCase()] = { "href": reference };
         }
-        file = "/mystral/newAutoLink.php?name=" + name + "&reference=" + reference; console.log(file);
+        file = "/mystral/newAutoLink.php?name=" + name + "&reference=" + reference + "&wiki=" + wiki; console.log(file)
         xhttp.open("GET", file, true);
         xhttp.send();
     }
@@ -235,4 +235,3 @@ whenAvailable("Mousetrap", function () {
         removePops();
     });
 });
-

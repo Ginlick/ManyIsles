@@ -1,5 +1,5 @@
 ﻿<?php
-$name = ""; $href = "";
+$name = ""; $href = ""; $wiki = 0;
 if (isset($_GET["name"])) {
     if (preg_match("/['\"]/", $_GET['name'])==1){exit();}
     $name = strtolower($_GET["name"]);
@@ -7,6 +7,9 @@ if (isset($_GET["name"])) {
 if (isset($_GET["reference"])) {
     if (preg_match("/['\"]/", $_GET['reference'])==1){exit();}
     $href = $_GET["reference"];
+}
+if (isset($_GET["wiki"])) {
+  $wiki = substr(preg_replace("/[^0-9]/","",  $_GET['wiki']), 0, 22);
 }
 
 if (!preg_match("/[^ ]+ [^ ]+/", $name) AND !preg_match("/^[^ ]+$/", $name)){exit();}
@@ -28,7 +31,7 @@ if ($result = $gen->dbconn->query($query)){
         }
     }
 }
-$insArr = ["href" => $href];
+$insArr = ["href" => $href, "wiki"=> $wiki];
 $oldArr[$name] = $insArr;
 $newArr = json_encode($oldArr);
 
@@ -41,5 +44,3 @@ else {
 }
 
 ?>
-
-
