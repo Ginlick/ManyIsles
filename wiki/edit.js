@@ -1,4 +1,4 @@
-﻿//wants: parentWiki, articleCategArray, newWiki
+//wants: parentWiki, articleCategArray, newWiki
 
 function addSome(how) {
     let currentnum = document.getElementById("gimmeBabesTbody").childElementCount + 1;
@@ -103,18 +103,18 @@ function insertImage(link, what) {
     removePops();
 }
 function addCategory(link, name) {
-    if (!articleCategArray.includes(link)) {
-        let cateRow = document.getElementById("currentCategs");
-        if (cateRow.children.length != 0) {
-            var toAddCate = "<span onclick='removeCateg(" + link + ")' id='removableCateg"+link+"'>, " + name + "</span>";
-        }
-        else {
-            var toAddCate = "<span onclick='removeCateg(" + link + ")' id='removableCateg" + link +"'>" + name + "</span>";
-        }
-        cateRow.innerHTML = cateRow.innerHTML + toAddCate;
-        articleCategArray.push(link);
-    }
-    document.getElementById("categs").value = articleCategArray.join();
+  if (!articleCategArray.includes(link)) {
+      let cateRow = document.getElementById("currentCategs");
+      if (cateRow.children.length != 0) {
+          var toAddCate = "<span onclick='removeCateg(" + link + ")' id='removableCateg"+link+"'>, " + name + "</span>";
+      }
+      else {
+          var toAddCate = "<span onclick='removeCateg(" + link + ")' id='removableCateg" + link +"'>" + name + "</span>";
+      }
+      cateRow.innerHTML = cateRow.innerHTML + toAddCate;
+      articleCategArray.push(link);
+  }
+  document.getElementById("categs").value = articleCategArray.join();
 }
 function removeCateg(link) {
     for (let i = 0; i < articleCategArray.length; i++) {
@@ -123,24 +123,25 @@ function removeCateg(link) {
         }
     }
     document.getElementById("removableCateg" + link).remove();
-    document.getElementById("currentCategs").children[0].innerHTML = document.getElementById("currentCategs").children[0].innerHTML.replace(", ", "");
     document.getElementById("categs").value = articleCategArray.join();
+    if (document.getElementById("currentCategs").children.length > 0) {document.getElementById("currentCategs").children[0].innerHTML = document.getElementById("currentCategs").children[0].innerHTML.replace(", ", "");}
 }
 function createLink(link, what, pdomain = domain) {
     var myField = textareaToFill;
-    if (/^\d+$/.test(link)) {
-        link = domInfos[pdomain]["baseURL"] + link + "/";
-    }
-
     if (what == "href") {
-        let linkName = document.getElementById("linkNameEr").value;
-        linkName = linkName.replace(/"/g, '“');
-        var myText = "[" + linkName + "](" + link + ")";
-        if (document.getElementById("autoLinkChecker") != null) {
-            if (document.getElementById("autoLinkChecker").checked) {
-                newAutoLink(document.getElementById("linkNameEr").value, link, parentWiki);
-            }
-        }
+      if (/^\d+$/.test(link)) {
+        console.log(link);
+          link = domInfos[pdomain]["baseURL"] + link + "/";
+          console.log(link);
+      }
+      let linkName = document.getElementById("linkNameEr").value;
+      linkName = linkName.replace(/"/g, '“');
+      var myText = "[" + linkName + "](" + link + ")";
+      if (document.getElementById("autoLinkChecker") != null) {
+          if (document.getElementById("autoLinkChecker").checked) {
+              newAutoLink(document.getElementById("linkNameEr").value, link, parentWiki);
+          }
+      }
     }
     else if (what == "wikthumb") {
         var myText = "[wiki:art" + link + "]";

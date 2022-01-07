@@ -268,6 +268,7 @@ h1 {
             ?>
         </div>
         <div class="colr center">
+          <?php echo $gen->userMod->signPrompt($gen->artLink); ?>
             <div id="home" class="colrTab">
             <img class="hubImg" src="<?php echo $gen->baseImage; ?>"/>
             <?php
@@ -288,7 +289,7 @@ h1 {
                     echo $gen->giveSubs();
                 ?>
             </div>
-            <div id="links" class="colrTab">
+            <div id="links" class="colrTab" style="display: block">
                 <h1>Manage Auto-Links</h1>
                 <p>Auto-linking creates link markup for you when you write certain keywords. Save new keywords when creating a link.</p>
 
@@ -297,9 +298,10 @@ h1 {
                             echo '                <table>
                                 <thead><tr><td>Keyword</td><td>URL</td><td>Wiki</td><td></td></tr></thead>
                                 <tbody>';
-                            foreach ($gen->autoLinkArr as $name => $autoLinkBlock){
-                              $autWik = 0; if (isset($autoLinkBlock["wiki"])){$autWik = $autoLinkBlock["wiki"];}
-                              echo "<tr><td>$name</td><td>".$autoLinkBlock["href"]."</td><td>".$autWik."</td><td><a class='mellow' href='killAutKeyw.php?id=".$name."'><i class='fas fa-trash'></i> Delete</a></td>";
+                            foreach ($gen->autoLinkArr as $autWiki => $wikiLinkArr){
+                              foreach ($wikiLinkArr as $autoLinkBlock) {
+                                echo "<tr><td>".$autoLinkBlock["name"]."</td><td>".$autoLinkBlock["href"]."</td><td>".$autWiki."</td><td><a class='mellow' href='killAutKeyw.php?id=".$autoLinkBlock["name"]."'><i class='fas fa-trash'></i> Delete</a></td>";
+                              }
                             }
                             echo '                    </tbody>
                             </table>';
@@ -410,7 +412,12 @@ h1 {
         createPopup("d:poet;txt:Keyword deleted");
         switchDis("links");
     }
-
+    else if (why == "grpdeleted"){
+        createPopup("d:poet;txt:Notebook deleted");
+    }
+    else if (why == "nexist"){
+        createPopup("d:poet;txt:Page not found.");
+    }
 
 //images
 function readURL(input) {

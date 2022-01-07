@@ -35,7 +35,8 @@ if ($fileTitle = $gen->files->new($file, generateRandomString(22), "221")) {
     if ($placed = $gen->files->add($file["tmp_name"], $fileTitle)) {
       $query = "INSERT INTO images (title, name, size, user) VALUES ('$firstName', '$placed', ".$_FILES["file"]["size"].", $gen->user)";
       $gen->dbconn->query($query);
-      $insert = str_replace("IMAGESRC", $gen->files->clearmage($placed), $imageStencil);
+      $insert = str_replace("IMAGESRC2", $placed, $imageStencil);
+      $insert = str_replace("IMAGESRC", $gen->files->clearmage($placed), $insert);
       $insert = str_replace("IMAGENAME", $firstName, $insert);
       echo $insert;
     }

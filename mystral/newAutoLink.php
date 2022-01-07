@@ -31,8 +31,10 @@ if ($result = $gen->dbconn->query($query)){
         }
     }
 }
-$insArr = ["href" => $href, "wiki"=> $wiki];
-$oldArr[$name] = $insArr;
+
+if (in_array($name, $oldArr[$wiki])){exit();}
+$insArr= ["name" => $name, "href" => $href];
+$oldArr[$wiki][] = $insArr;
 $newArr = json_encode($oldArr);
 
 $query = "UPDATE auto_links SET data = '$newArr' WHERE id = $gen->user";

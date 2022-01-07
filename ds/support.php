@@ -198,15 +198,15 @@ require_once("g/sideBasket.php");
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var resultJSON = JSON.parse(xhttp.responseText);
-
+                  console.log(resultJSON);
                 var unordered = document.createElement("UL");
-                for (var name in resultJSON) {
-                    var link = resultJSON[name];
+                for (var block in resultJSON) {
+                    var link = resultJSON[block]["link"];
                     var node = document.createElement("SPAN");
-                    var textnode = document.createTextNode(name);
+                    var textnode = document.createTextNode(resultJSON[block]["name"]);
                     var listElement = document.createElement("LI");
                     node.appendChild(textnode);
-                    listElement.setAttribute("onclick", 'switchSupport("' + name + '");');
+                    listElement.setAttribute("onclick", 'switchSupport("' +  resultJSON[block]["id"] + '");');
                     listElement.appendChild(node);
                     unordered.appendChild(listElement);
                 }
@@ -236,22 +236,23 @@ require_once("g/sideBasket.php");
     }
 
     var currentPartner = "";
-    function switchSupport(prodname) {
-        getFile = "g/prodInfo.php?q=" + encodeURIComponent(prodname);
+    function switchSupport(prodId) {
+        getFile = "g/prodInfo.php?q=" + encodeURIComponent(prodId);
         parent = document.getElementById("myParent");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 let resultJSON = JSON.parse(xhttp.responseText);
+                console.log(resultJSON);
                 currentPartner = resultJSON["partner"];
                 parent.innerHTML = "";
                 let imgDiv = document.createElement("DIV");
                 imgDiv.setAttribute("class", "imgDiv");
                 let img = document.createElement("IMG");
-                img.setAttribute("src", "/IndexImgs/" + resultJSON["image"]);
+                img.setAttribute("src", resultJSON["image"]);
                 imgDiv.appendChild(img);
                 let p = document.createElement("P");
-                p.innerHTML = prodname + ", by " + resultJSON["partner"];
+                p.innerHTML = resultJSON["name"] + ", by " + resultJSON["partner"];
                 parent.appendChild(imgDiv);
                 parent.appendChild(p);
             }
@@ -281,9 +282,7 @@ require_once("g/sideBasket.php");
         switchSupport(myParam);
     }
     else {
-        switchSupport("Starter Guide");
+        switchSupport(0);
     }
 
 </script>
-
-

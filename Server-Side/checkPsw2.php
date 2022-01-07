@@ -6,12 +6,13 @@ function checkNudePsw($checkpsw){
   if ($checkpsw == null){return false;}
   $psw = openssl_decrypt ( $_COOKIE["loggedP"], "aes-256-ctr", "Ga22Y/", 0, "12gah589ds8efj5a");
   if (!isset($_COOKIE["loggedIn"]) OR !isset($_COOKIE["loggedP"])) {return false;}
-  if (password_verify($psw, $checkpsw)!=1){return false;}
-
-  return true;
+  return checkInputPsw($psw, $checkpsw);
 }
 
-
+function checkInputPsw($inputpsw, $checkpsw){
+  if (password_verify($inputpsw, $checkpsw)!=1){return false;}
+  return true;
+}
 
 
 ?>

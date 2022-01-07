@@ -1,8 +1,9 @@
 ﻿<?php
 
-require_once($_SERVER['DOCUMENT_ROOT']."/wiki/domInfo.php");
-class gay {} $gen = new gay;
-equipDom($gen, "mystral");
+require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
+$gen = new gen("act", 0, 0, true, "mystral");
+
+
 
 $method ="";
 if (isset($_GET["notebookType"])) {$method = $_GET["notebookType"];}

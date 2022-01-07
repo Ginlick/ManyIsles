@@ -12,7 +12,7 @@ class dlengine {
     ';
     public $conn;
     public $dlconn;
-    public $partners = [];
+    public $partners = [0=>["status"=>"suspended"]];
     public $subgenresArr = [
       1 => [
         "c" => "Classes",
@@ -135,42 +135,9 @@ class dlengine {
         <i class="fa fa-bars"></i>
       </div>
       BLYAT;
-
-    }
-    function signPrompt() {
-      if (!$this->user->signedIn){
-        $signPrompt = '<h3>Sign In</h3>
-        <form action="/account/SignIn.php?back=/dl/home" method="POST" onsubmit="seekMaker()" style="text-align:center">
-          <label for="loguname"><b>Username</b></label>
-          <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" autocomplete="username" required>
-          <label for="logpassword"><b>Password</b></label>
-          <input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" autocomplete="current-password" required>
-          <button><i class="fas fa-arrow-right"></i> Sign In</button>
-        </form>
-        <p>Don\'t have an account? <a href="/account/Account?add=dl">Join us</a></p>
-        ';
-      }
-      else {
-          $signPrompt = "<h3>".$this->user->fullName."</h3>
-          <p>Currently signed in with a tier ".$this->user->tier." account. <a href='/account/SignedIn' target='_blank'>View account</a></p>
-          <button onclick='signOut();'><i class='fas fa-arrow-right'></i> Sign Out</button>
-          ";
-      }
-      $signPormpt = '
-          <div class="logoRound">
-              <div class="roundling">
-                <img src="'.$this->user->image(2).'" />
-              </div>
-              <div class="accntInfoCont">
-                <div class="accntInfoInCont">
-                  '.$signPrompt.'
-                </div>
-              </div>
-          </div>';
-      return $signPormpt;
     }
     function giveSearch($additive = "Digital Library") {
-        $signPrompt = $this->signPrompt();
+        $signPrompt = $this->user->signPrompt();
         $search = '
         <div class="topBlock">
           <div class="accnterCont">
@@ -186,7 +153,7 @@ class dlengine {
         return $search;
     }
     function giveAccTab() {
-      $signPrompt = $this->signPrompt();
+      $signPrompt = $this->user->signPrompt();
       return "<div class='accLine'>$signPrompt</div>";
     }
     function giveMenu() {
@@ -337,7 +304,7 @@ class dlengine {
               $resulter .= $this->prodTab($shortName, $thumbnail, $link, $premium);
             }
             else {
-              $resulter[] = ["name"=>$name, "link"=>$link, "image"=> $thumbnail];
+              $resulter[] = ["name"=>$name, "link"=>$link, "image"=> $thumbnail, "id"=>$id];
             }
           }
         }

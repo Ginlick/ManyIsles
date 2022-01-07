@@ -50,9 +50,8 @@ function fancyLinkage() {
         else if (/f.php\?id=[0-9]+/.test(chref)) {
             idStr = chref.substr(chref.indexOf("?id=") + 4);
         }
-        else if (/\/mystral\/[0-9]+\//.test(chref)) {
-            idStr = chref.replace(/\/mystral\//, "");
-            idStr = idStr.replace(/\/.*/, "");
+        else if (/\/mystral\/[0-9]+\//.test(chref) || /\/mystral\/[0-9]+\/[0-9]+\//.test(chref)) {
+          idStr = chref.match(/\/([0-9]+)\/[^\/]*$/)[1];
         }
         if (idStr != "") {
             let targetPage = "/fandom/getArticleInfo.php?id=" + idStr + "&dom=" + domain;

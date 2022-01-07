@@ -6,6 +6,7 @@ require_once("global/engine.php");
 $dl = new dlengine($conn);
 if (!$dl->user->check()){$dl->go("home", "dl");}
 $parse= new Parsedown;
+$parse->setSafeMode(true);
 
 $digital = false;
 $query = "SELECT * FROM products WHERE id = $artId";

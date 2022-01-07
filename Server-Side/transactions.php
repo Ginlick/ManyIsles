@@ -12,20 +12,17 @@ class transaction {
 
         $query = "SELECT * FROM global_credit WHERE id = $target";
         if ($result = $this->moneyconn->query($query)) {
-            if (mysqli_num_rows($result) == 0) {
-                $reference = rand(10000000, 99999999);
-                $reference = $target.$reference;
-                $squery = "INSERT INTO global_credit (id, credit, reference) VALUES ($target, 0, $reference)";
-                $this->moneyconn->query($squery);
-                $this->reference = $reference;
-                $squery = sprintf("SELECT id FROM transfers_%s ORDER BY id DESC LIMIT 1", $reference);
-                if ($result = $this->moneyconn->query($query)) {
-                    if (mysqli_num_rows($result) == 0) {
-                      $squery = sprintf("CREATE TABLE transfers_%s LIKE transfers_1422222222", $reference);
-                      $this->moneyconn->query($squery);
-                    }
-                  }
-
+          if (mysqli_num_rows($result) == 0) {
+              $reference = rand(10000000, 99999999);
+              $reference = $target.$reference;
+              $squery = "INSERT INTO global_credit (id, credit, reference) VALUES ($target, 0, $reference)";
+              $this->moneyconn->query($squery);
+              $this->reference = $reference;
+              $squery = sprintf("SELECT id FROM transfers_%s ORDER BY id DESC LIMIT 1", $reference);
+              if (!$this->moneyconn->query($squery)) {
+                  $squery = sprintf("CREATE TABLE transfers_%s LIKE transfers_1422222222", $reference);
+                  $this->moneyconn->query($squery);
+              }
             }
             else {
                 while ($row = $result->fetch_assoc()) {

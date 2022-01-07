@@ -63,4 +63,3 @@ color: #c7ad1a;
     echo $gen->giveScripts();
     echo $gen->giveDocScript();
 ?>
-

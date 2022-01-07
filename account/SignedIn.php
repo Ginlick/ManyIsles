@@ -305,7 +305,7 @@ $creditBody = <<<EPICCOOL
                             <span>Add</span>
                         </button>
                     </a>
-                    <a href="/wiki/h/digsto/credit.html" target="_blank">
+                    <a href="/docs/16/Credit" target="_blank">
                         <button class="checkout">
                             <i class="fas fa-arrow-right"></i>
                             <span>Payout</span>

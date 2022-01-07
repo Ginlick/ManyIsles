@@ -81,22 +81,19 @@ class parse {
         FROM $this->database a
         LEFT OUTER JOIN $this->database b
             ON a.id = b.id AND a.v < b.v
-        WHERE a.root = $page AND b.id IS NULL LIMIT 22";
+        WHERE a.root = $page AND a.status = 'active' AND b.id IS NULL LIMIT 22";
         if ($firstrow = $this->dbconn->query($query)) {
             while ($row = $firstrow->fetch_assoc()) {
                 $pageName = $row["name"];
                 $pageShortName = $row["shortName"];
                 $pageImg = $row["banner"];
                 $thumbImg = $row["sidetabImg"];
-                $pageStatus = $row["status"];
                 $childPage = $row["id"];
                 if ($pageShortName != ""){
                     $pageName = $pageShortName;
                 }
-                if ($pageStatus != "suspended" && $pageStatus != "outstanding"){
-                    if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                    $fullChildLine .= " <div class='domCont'><a href='".artUrl($this->artRootLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
-                }
+                if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
+                $fullChildLine .= " <div class='domCont'><a href='".artUrl($this->artRootLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
             }
         }
         if ($mode == "full"){

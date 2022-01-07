@@ -9,6 +9,7 @@ class gen {
     public $wikiName = "";
     public $page = 0;
     public $user = 0;
+    public $userMod = null;
     public $signedIn = true;
     public $power = 1;
     public $canedit = true;
@@ -46,14 +47,21 @@ class gen {
         $conn = $this->conn;
 
         //base security
+        require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+        $this->userMod = new adventurer($this->conn);
+
+        $nokill = true;
         if ($mode == "edit" OR $mode == "act"){
-            $doSecurity = true;
+          $nokill = $this->userMod->check(true);
         }
         else {
-            $doSecurity = false;
-            if (!isset($_COOKIE["loggedIn"])){$this->signedIn = false;$this->canedit = false;$this->ediProblem = "Not Signed In";}
-            else {$doSecurity = true;}
+          $nokill = $this->userMod->check(false);
         }
+
+        if (!$nokill){
+          echo "<script>window.location.replace('/account/Account?error=notSignedIn');</script>";exit();
+        }
+        $this->signedIn = $this->userMod->signedIn;
 
         require($_SERVER['DOCUMENT_ROOT']."/wiki/engine.php");
         require($_SERVER['DOCUMENT_ROOT']."/fandom/getWiki.php");
@@ -197,16 +205,19 @@ class gen {
         }
 
         //miscellaneous
-        $this->editLink = $this->baseLink.'edit?id='.$this->page.'&v='.$this->article->version;
-        $this->writeLink = $this->baseLink.'edit?w='.$this->parentWiki;
+        $this->editLink = $this->baseLink.'edit?id='.$this->page.'&v='.$this->article->version."&u=".$this->user;
+        $this->writeLink = $this->baseLink.'edit?w='.$this->parentWiki."&u=".$this->user;
         $this->wsettLink = "";$this->wsettCogLink = "";
-        if ($this->article->root == 0 && $this->power > 2) {$this->wsettLink = $this->baseLink."wsettings?w=".$this->parentWiki;$this->wsettCogLink = " <a href='".$this->wsettLink."'><i class='fas fa-cog'></i></a>"; }
-
+        if ($this->article->root == 0 && $this->power > 2) {
+          $this->wsettLink = $this->baseLink."wsettings?w=".$this->parentWiki."&u=".$this->user."&c=".rand(0,22);
+          $this->wsettCogLink = " <a href='".$this->wsettLink."'><i class='fas fa-cog'></i></a>";
+        }
 
         $this->typeTab = "roundInfo title";
         if ($this->domain == "fandom"){
             $this->typeTab = "typeTab";
         }
+        $this->artLink = artUrl($this->artRootLink, $this->page, parse2Url($this->article->shortName));
 
         //set buttons
         if ($this->article->incomplete == 0){$nowText = "Incomplete";$incD=1;}else{$nowText = "Complete";$incD=0;}
@@ -253,12 +264,6 @@ class gen {
             $this->artRootLink = "/fandom/".parse2Url($this->wikiName)."/";
         }
 
-        if ($this->domain == "mystral"){
-            $this->artLink = artUrl($this->artRootLink, $this->page, parse2Url($this->article->shortName));
-        }
-        else {
-            $this->artLink = artUrl("/fandom/".parse2Url($this->wikiName)."/", $this->page, $this->article->shortName);
-        }
         if ($this->article->NSFW == 2 AND !isset($_COOKIE["clearNSFW"])){
             $this->prude = true;
         }
@@ -322,6 +327,8 @@ class gen {
         return $main;
     }
     function giveScripts() {
+      $mysURL = "/mystral/";
+      if ($this->domain == "mystral"){$mysURL = $this->artRootLink;}
         $main = '
         <div class="showBGer" onclick="showMenu(this)" id="barsBoi">
             <i class="fas fa-bars" > </i >
@@ -332,6 +339,7 @@ class gen {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
         <script src="/wiki/wiki.js"></script>
         <script>
+            var user = '.$this->user.';
             var power = '.$this->power.';
             var parentWiki = "'.$this->parentWiki.'";
             var sourceJSON = \''.$this->article->sources.'\';
@@ -348,7 +356,7 @@ class gen {
                     "baseURL" : "/5eS/"
                 },
                 3 : {
-                    "baseURL" : "/mystral/"
+                    "baseURL" : "'.$mysURL.'"
                 }
             }
         </script>
@@ -528,7 +536,7 @@ MAIN;
             <h2>'.$this->domainName.'</h2>
             <p>This is your '.$this->wikiName.' notebook\'s homepage.</p>
             <div class="bottButtCon">
-                <a class="wikiButton" href="/mystral/hub">Home</button></a>
+                <a class="wikiButton" href="/mystral/hub?u='.$this->user.'">Home</button></a>
             </div>
             </div>
             ';
@@ -622,7 +630,7 @@ MAIN;
                 <a href="http://www.reddit.com/submit?title=Read up on '.$this->article->shortName.' lore on the Many Isles!&url=https://manyisles.ch'.$this->artLink.'" target="_blank" class="fa fa-reddit"></a>
                 <a href="https://twitter.com/intent/tweet?text=Read up on '.$this->article->shortName.' lore on the Many Isles!%0A&url=https://manyisles.ch'. $this->artLink.'&hashtags=manyisles,lore" target="_blank" class="fa fa-twitter"></a>';
                 if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="fa fa-pinterest"></a> '; }
-               $main .= ' <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://manyisles.ch/'.$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
+               $main .= ' <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://manyisles.ch'.$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
             </div>
         </div>';
         return $main;
@@ -721,8 +729,8 @@ NABSDAI;
         if ($this->article->root == 0) {$main .= " homepage";}
             $main .= '</span></h1>
             <form action="/fandom/ediPage.php" method="POST" class="pageForm">
-                <input type="text" name="name" placeholder="Page Name" value="'.$this->article->name.'" pattern="'.jsReg("wikiName").'" required></input>
-                <input class="complete" type="text" name="shortName" placeholder="Short Name" value="'.$this->article->shortName.'" pattern="'.jsReg("wikiName").'"></input>
+                <input type="text" name="name" placeholder="Page Name" value="'.$this->article->name.'" required></input>
+                <input class="complete" type="text" name="shortName" placeholder="Short Name" value="'.$this->article->shortName.'" ></input>
 
                 <div ';
         if ($this->article->root == 0){$main .= "style='display:none;'";}
@@ -730,7 +738,7 @@ NABSDAI;
                     <p id="currentRoot" class="topinfo" style="padding-top:5px;"><a href="/fandom/home">Fandom</a></p>
                     <input type="text" placeholder="New Root"  oninput="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');" autocomplete="off" onfocus="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');this.value=\'\';"></input>
                     <div class="suggestions" style=""></div>
-                    <input type="text" id="root" name="root" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->page.'"/>
+                    <input type="text" id="root" name="root" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->parentWiki.'"/>
                 </div>';
         if ($modifier > 0){
             $main .='
@@ -738,7 +746,7 @@ NABSDAI;
                     <p id="currentCategs" class="topinfo" style="padding-top:5px;"></p>
                     <input type="text" id="viewRoot3" placeholder="Add Categories"  oninput="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');" autocomplete="off" onfocus="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');this.value=\'\';"></input>
                     <div class="suggestions" style=""></div>
-                    <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->page.'"/>
+                    <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->categories.'"/>
                 </div>';
         }
             $main .= '
@@ -930,7 +938,9 @@ NABSDAI;
             <input type="text" class="wikisearchbar" placeholder="Search '.$this->wikiName.' '.$this->groupName.'..." id="viewRoot1"  oninput="offerSuggestions(this, \'findSuggestions\', 1);" onfocus="offerSuggestions(this, \'findSuggestions\', 1);" autocomplete="off"></input>
             <div class="suggestions" style="transform: translate(0, 35px);"></div>
 
-            <img src="'.banner($this->article->banner).'" alt="banner" class="topBanner" />';
+            <img src="'.banner($this->article->banner).'" alt="banner" class="topBanner" />
+            ';
+        $main .= $this->userMod->signPrompt($this->artLink);
 
         function root($gen) {
             $page = $gen->page;$dontEcho = true;$branch = $gen->domain;
@@ -1105,10 +1115,10 @@ NABSDAI;
             $basetext = "<h1>Error - Cannot Edit</h1><p>Sorry, this $this->pagename has reverted versions and cannot be edited, because this would overwrite them. Please wait until the $this->wikiName moderators age this $this->pagename.</p>";
         }
         else if ($this->ediProblem == "Full Notes") {
-            $basetext = "<h1>Notes Full - Cannot Edit</h1><p>You're all out of notes. <a href='/mystral/hub?view=sub'>Buy a better plan</a> to write more.</p>";
+            $basetext = "<h1>Notes Full - Cannot Edit</h1><p>You're all out of notes. <a href='/mystral/hub?0=$this->user&view=sub'>Buy a better plan</a> to write more.</p>";
         }
         else if ($this->ediProblem == "No Space") {
-            $basetext = "<h1>No Space - Cannot Edit</h1><p>You've got too many pages. Delete some unneeded versions with the Filicide button, or <a href='/mystral/hub?view=sub'>uy a better plan</a>.</p>";
+            $basetext = "<h1>No Space - Cannot Edit</h1><p>You've got too many pages. Delete some unneeded versions with the Filicide button, or <a href='/mystral/hub?$this->user&view=sub'>uy a better plan</a>.</p>";
         }
         else {
             $basetext = "<h1>Error - Cannot Edit</h1><p>Sorry, you are forbidden of editing for this reason: $this->ediProblem.<br>Contact the Pantheon if you feel this is wrong.</p>";
@@ -1127,6 +1137,12 @@ NABSDAI;
         $page = $this->page;$dontEcho = true;$branch = $this->domain;
         include($_SERVER['DOCUMENT_ROOT']."/fandom/getRoot.php");
         $main = '
+            <div class="docTopRiter">
+               <div class="fakelink" onclick="navigator.clipboard.writeText(\'https://manyisles.ch'.$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');">
+                 <i class="fas fa-link fancyjump"></i>
+               </div>
+            </div>
+
             <div class="colrContent">
                 <div class="topinfo">'.$fullLine.'</div>
                 <h1>'.$this->article->name.'<span class="roundInfo title">'.$this->article->cate.'</span>
@@ -1151,7 +1167,7 @@ NABSDAI;
                         <ul>
                             <li>222 notes</li>
                             <li>2 notebooks</li>
-                            <li>5 images</li>
+                            <li>22 images</li>
                             <li>Default styles</li>
                         </ul>
                     </div>
@@ -1495,7 +1511,7 @@ class article {
     public $timeStart = "";
     public $timeEnd = "";
     public $queryTags = "";
-    public $importance = 0;
+    public $importance = 5;
     public $version = 0;
     public $pop = 0;
     public $parseClear = 0;
