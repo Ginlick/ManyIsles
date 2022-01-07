@@ -288,46 +288,87 @@ function createPageTable($type) {
             ?>
         </div>
 
-        <?php
-        if ($gen->domain == "fandom"){
-            echo '<div class="col-r">
-            <h1>Pages</h1>
-                <h2>Suspended Pages</h2>
-                <p>These cannot currently be visited.</p> ';
+          <?php
+          if ($gen->domain == "fandom"){
+              echo '<div class="col-r">
+              <h1>Pages</h1>
+                  <h2>Suspended Pages</h2>
+                  <p>These cannot currently be visited.</p> ';
 
-                createPageTable("suspended");
+                  createPageTable("suspended");
 
-                echo '<h2>Reported Pages</h2>
-                <p>Users have reported these articles. Check them, take action if necessary (eg. banning the author from the authors side-column), and clear the article.</p>';
+                  echo '<h2>Reported Pages</h2>
+                  <p>Users have reported these articles. Check them, take action if necessary (eg. banning the author from the authors side-column), and clear the article.</p>';
 
-                createPageTable("reported");
-            echo '
-            </div>
-            <div class="col-r">
-            <h1>Personnel</h1>
-                <h2>Users</h2>
-                <p>Please be aware that any promoted user - including a curated author - has a lot of power over this wiki, and may be able to do some serious damage.<br>Promote users via the authors panel on an article.</p>
-                <h4>Banned Users</h4>';
+                  createPageTable("reported");
+              echo '
+              </div>
+              <div class="col-r">
+              <h1>Personnel</h1>
+                  <h2>Users</h2>
+                  <p>Please be aware that any promoted user - including a curated author - has a lot of power over this wiki, and may be able to do some serious damage.<br>Promote users via the authors panel on an article.</p>
+                  <h4>Banned Users</h4>';
 
-                createUserTable($banned, 0);
-                echo '
-                            <h4>Curated Authors</h4>
-                ';
-                createUserTable($auths, 2);
-                echo '
-                            <h4>Moderators</h4>';
-                createUserTable($mods, 3);
-                echo '
-                <h2>Requests</h2>
-                <h4>Curation Requests</h4>
-                <p>Please be careful and respectful with this personal information. Talk with the user to make sure their intentions are good, and promote them if you trust them.<br>Clear the request once it is processed.</p>
-                ';
-                createPageTable("reqcur");
-                echo '
-            </div>
-            ';
-        }
-        ?>
+                  createUserTable($banned, 0);
+                  echo '
+                              <h4>Curated Authors</h4>
+                  ';
+                  createUserTable($auths, 2);
+                  echo '
+                              <h4>Moderators</h4>';
+                  createUserTable($mods, 3);
+                  echo '
+                  <h2>Requests</h2>
+                  <h4>Curation Requests</h4>
+                  <p>Please be careful and respectful with this personal information. Talk with the user to make sure their intentions are good, and promote them if you trust them.<br>Clear the request once it is processed.</p>
+                  ';
+                  createPageTable("reqcur");
+                  echo '
+              </div>
+              ';
+          }
+          ?>
+          <div class="col-r">
+              <h1>Categories</h1>
+              <p>This <?php echo $gen->groupName; ?>'s categories.</p>
+              <?php
+              echo '
+                      <table class="credTable">
+                          <thead><tr><td>Name</td><td></td></tr></thead>
+                          <tbody>
+              ';
+              $query = "SELECT * FROM wikicategories WHERE wiki = '$parentWiki'";
+              if ($gen->domain == "mystral"){$query .= " AND user = $gen->user"; }
+              $result = $conn->query($query);
+              if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                  echo "<tr>";
+                  echo "<td>".$row["name"]."</td>";
+                  echo "<td><a class='mellow' href='/fandom/killCateg.php?id=".$row["id"]."&w=".$row["wiki"]."&dom=".$gen->domainnum."'><i class='fas fa-trash'></i> Delete</a></td>";
+                  echo "</tr>";
+                }
+              }
+              echo "</table>";
+               ?>
+          </div>
+
+          <?php
+            if($gen->domain == "mystral"){
+              echo '
+              <div class="col-r">
+              <h1>Delete '.ucwords($gen->groupName).'</h1>
+                <p>Instantly delete this '.$gen->groupName.', including all its children.<br>This action cannot be undone.</p>
+                <form action="/fandom/delWiki.php" method="POST">
+                  <input type="text" name="WIKI" style="display:none" value="'.$gen->parentWiki.'" />
+                  <input type="password" name="psw" placeholder="currentPassword22" style="margin: 20px auto"/>
+                  <div class="bottButtCon">
+                      <button class="wikiButton"><i class="fas fa-trash"></i> Delete</button>
+                  </div>
+                </form>
+              </div>';
+            }
+           ?>
+
         </div>
     </div>
 
@@ -353,6 +394,13 @@ else if (why == "bigup"){
 else if (why == "reqCurDel"){
     createPopup("d:poet;txt:Curation request cleared.");
 }
+else if (why == "catdel"){
+    createPopup("d:poet;txt:Category deleted");
+}
+else if (why == "badpsw"){
+    createPopup("d:poet;txt:Incorrect password");
+}
+
 
 function banner2JSON() {
     var value = document.getElementById("bannList").value;
@@ -387,4 +435,3 @@ function genre2JSON() {
     document.getElementById("genreForm").submit();
 }
 </script>
-

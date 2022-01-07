@@ -13,7 +13,7 @@ $gen = new gen("view", $page, 1, false, "mystral");
 
 if ($gen->user == 0){echo "<script>window.location.replace('/mystral/hub');</script>";exit();}
 else if ($gen->article->name == ""){
-    echo "<script>window.location.replace('/mystral/hub?i=nexist');</script>";exit();
+    echo "<script>window.location.replace('/mystral/hub?i=nexist&u$gen->user');</script>";exit();
 }
 
 $gen->doFandWork();
@@ -65,5 +65,3 @@ $gen->doFandWork();
     echo $gen->giveScripts();
     echo $gen->giveArtScript();
 ?>
-
-

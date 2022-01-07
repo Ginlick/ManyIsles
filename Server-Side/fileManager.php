@@ -16,11 +16,10 @@ class fileengine {
   use fundamentals;
 
   function __construct($user) {
-    $this->root = dirname($_SERVER['DOCUMENT_ROOT']);
+    $this->giveBasis();
     $this->user = $user;
     $this->outsideDir = "/priv/".$this->user."/";
     $this->userDir = $this->root."/media".$this->outsideDir;
-    $this->mediaDir = $this->root."/media";
 
     if (!is_dir($this->userDir)){
       mkdir($this->userDir, 0777, true);
@@ -70,48 +69,23 @@ class fileengine {
     }
     return true;
   }
-  function deleteD($filepath) {
-    //less safe: not user-specifc!
-    if (file_exists($this->mediaDir.$filepath)){
-      if(unlink($this->mediaDir.$filepath)){
-        return true;
-
-        //STILL ERRROR ON DELETING IMMEDIATELY (VIA JS)
-
-      }
-    }
-    return false;
-  }
 }
 
 class smolengine {
   use fundamentals;
   function __construct() {
-    $this->root = dirname($_SERVER['DOCUMENT_ROOT']);
-  }
-
-  function download($file, $basename = "") {
-    $fileType = strtolower(pathinfo($file,PATHINFO_EXTENSION));
-    $target = $this->root."/media/".$file;
-    $basename = $this->purate($basename).".".$fileType;
-    if ($basename == ""){$basename = basename($target);}
-    if (file_exists($target)){
-      header('Content-Type: application/octet-stream');
-      header('Content-Disposition: attachment; filename="'.$basename.'"');
-      header('Expires: 0');
-      header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-      header('Pragma: public');
-      header('Content-Length: ' . filesize($target));
-      while (ob_get_level()) {
-        ob_end_clean();
-      }
-      readfile($target);
-      exit();
-    }
+    $this->giveBasis();
   }
 }
 
 trait fundamentals {
+  public $root = ""; public $mediaDir = "";
+
+  public function giveBasis() {
+    $this->root = dirname($_SERVER['DOCUMENT_ROOT']);
+    $this->mediaDir = $this->root."/media";
+  }
+
   public $fileRequs = [
     "standImg" => ["size"=>330000, "types"=>["jpg", "png", "jpeg"], "likesImg"=>true],
     "mystimg" => ["size"=>2200000, "types"=>["jpg", "png", "jpeg", "gif"], "likesImg"=>true],
@@ -137,6 +111,35 @@ trait fundamentals {
       $file = "http://25.36.111.17:8080".$file;
     }
     return $file;
+  }
+
+  function download($file, $basename = "") {
+    $fileType = strtolower(pathinfo($file,PATHINFO_EXTENSION));
+    $target = $this->root."/media/".$file;
+    $basename = $this->purate($basename).".".$fileType;
+    if ($basename == ""){$basename = basename($target);}
+    if (file_exists($target)){
+      header('Content-Type: application/octet-stream');
+      header('Content-Disposition: attachment; filename="'.$basename.'"');
+      header('Expires: 0');
+      header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+      header('Pragma: public');
+      header('Content-Length: ' . filesize($target));
+      while (ob_get_level()) {
+        ob_end_clean();
+      }
+      readfile($target);
+      exit();
+    }
+  }
+  function deleteD($filepath) {
+    //less safe than $fileengine->delete(): not user-specifc!
+    if (file_exists($this->mediaDir.$filepath)){
+      if(unlink($this->mediaDir.$filepath)){
+        return true;
+      }
+    }
+    return false;
   }
 }
 

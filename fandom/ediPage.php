@@ -12,11 +12,12 @@ else if ($branch == "5eS") {
     $redirect = "/fandom/home";
 }
 
+$name = ""; $shortName = "";
 if (!isset($_POST['writeInfo'])){$_POST['writeInfo'] = true;} else {if (preg_match("/[^0-9]/", $_POST['writeInfo'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['id'])){$_POST['id'] = 1;} else {if (preg_match("/[^0-9]/", $_POST['id'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['root'])){$_POST['root'] = 0;} else {if (preg_match("/[0-9]*/", $_POST['root'])!=1){header("Location:$redirect");exit();}}
-if (!isset($_POST['name'])){$_POST['name'] = "";} else {if (!checkRegger("wikiName", $_POST["name"])){header("Location:$redirect");exit();}}
-if (!isset($_POST['shortName'])){$_POST['shortName'] = "";} else {if (!checkRegger("wikiName", $_POST["shortName"])){header("Location:$redirect");exit();}}
+if (isset($_POST['name'])){$name = purate($_POST['name'], "wikiName");}
+if (isset($_POST['shortName'])){$shortName = purate($_POST['shortName'], "wikiName");}
 if (!isset($_POST['categories'])){$_POST['categories'] = "";} else {if (preg_match("/[^0-9,]/", $_POST['categories'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['cate'])){$_POST['cate'] = "";} else {if (preg_match("/[^A-Za-z\- ]{2,}/", $_POST['cate'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['banner'])){$_POST['banner'] = "current";} else {if (preg_match('["<>]', $_POST['banner'])==1){header("Location:$redirect");exit();}}
@@ -33,15 +34,8 @@ if ($_POST['writeInfo'] == 0) {$writingNew = false;}else {$writingNew = true;}
 
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 $gen = new gen("act", $_POST['id'], 0, $writingNew, $branch);
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$gen->user;
-if ($firstrow = $gen->conn->query($query)) {
-    if (mysqli_num_rows($firstrow) == 0){header("Location:$redirect");}
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $title = $row["title"];
-    }
-}
+$uname = $gen->userMod->uname;
+$title = $gen->userMod->title;
 
 function addWikiAuth($gen, $uname){
     if ($gen->parentWiki != 0 AND $gen->domain == "fandom"){
@@ -169,13 +163,9 @@ else {
     $importance = $gen->article->importance;
 }
 
-$name = substr($_POST['name'], 0, 100);
-if ($branch == "docs" OR $branch == "5eS"){
-    $shortName = substr($_POST['shortName'], 0, 30);
-}
-else {
-    $shortName = substr($_POST['shortName'], 0, 22);
-}
+$name = substr($name, 0, 100);
+$shortName = substr($shortName, 0, 30);
+
 $body = str_replace('"', '%double_quote%', $_POST['body']);
 $sidetabText = str_replace('"', '%double_quote%', $_POST['sidetabText']);
 $sidetabTitle = str_replace('"', '%double_quote%', $_POST['sidetabTitle']);

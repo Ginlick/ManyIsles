@@ -15,12 +15,12 @@ if (isset($_POST['prodId']) AND $_POST['prodId'] != 0){
 $genre = 1;
 $gsystem = 0;
 $support = 0;
-$external = 0;
+$external = 0;$wantsExternal = 0;
 $tier = 0;
 $image = false; $file = false;$placedI = false; $placedF = false;
 
-$pname = substr(preg_replace("/[^A-Za-z0-9\&\'\- ]/", "", $_POST['pname']), 0, 60);
-$spname = substr(preg_replace("/[^A-Za-z0-9\&\'\- ]/", "", $_POST['spname']), 0, 20);
+$pname = substr(preg_replace("/[^A-Za-z0-9\&\'\- ]/", "", $_POST['pname']), 0, 70);
+$spname = substr(preg_replace("/[^A-Za-z0-9\&\'\- ]/", "", $_POST['spname']), 0, 35);
 $jacob = substr(str_replace('"', '%double_quote%', $_POST['description']), 0, 500);
 $genre = substr(preg_replace("/[^0-9]/", "", $_POST['genre']), 0, 1);
 $subgenre = substr(preg_replace("/[^a-z]/", "", $_POST['subgenre']), 0, 50);
@@ -30,7 +30,7 @@ $support = substr(preg_replace("/[^0-1]/", "", $_POST['supportProd']), 0, 1);
 $format = substr(preg_replace("/[^A-Za-z0-9\'\- ]/", "", $_POST['format']), 0, 60);
 $tier = substr(preg_replace("/[^0-9]/", "", $_POST['tier']), 0, 2);
 $placedF = substr(str_replace('"', '', $_POST['link']), 0, 500);
-if(isset($_POST['external']) AND $_POST['external']=="on"){$external = 1;}
+if(isset($_POST['wantsExternal']) AND $_POST['wantsExternal']==1){$wantsExternal = 1;$external = 1;}
 
 if (!$writingNew){
   if (isset($_FILES["image"])) {
@@ -89,6 +89,11 @@ if ($file){
   }
 }
 
+if ($external == 1 AND !$writingNew) {
+  if ($wantsExternal == 0) {
+    $placedF = ""; $external = 0;
+  }
+}
 if($external == 1){echo "external";}
 
 $more = [];

@@ -301,6 +301,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
         </div>
 
         <input type="text" name="prodId" style="display: none" value="<?php echo $prodId; ?>" />
+        <input type="text" name="wantsExternal" style="display: none" value="<?php echo $proExternal; ?>" id="proExterner" />
         <div class="file-uploading-content" style="display:none;">
           <p><i class="fas fa-spinner fa-spin"></i> Uploading</p>
         </div>
@@ -311,7 +312,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
           <div class="contentBlock"<?php if ($writingNew){ echo "style='display:none'"; } ?> >
             <h1>Manage Product Status</h1>
             <p><b>Active</b> products are normally visible in the digital library, <b>paused</b> ones aren't.
-              <br>Current status: <span class="statusinfo"><?php echo $proStatus; ?></span>
+              <br>Current status: <b><span class="statusinfo"><?php echo $proStatus; ?></span></b>
             </p>
             <button onclick="toggleStatus()"><i class="fas fa-arrow-right"></i> Toggle Status</button>
             <h3>Delete</h3>
@@ -443,6 +444,13 @@ function updateFiler() {
   $(".field").hide();
   $("#field"+genre).show();
   $("#field"+genre+">span>input").prop("checked", false);
+
+  if (external) {
+    document.getElementById("proExterner").value = 1;
+  }
+  else {
+    document.getElementById("proExterner").value = 0;
+  }
 
   for (let option of document.getElementById("field"+genre).children){
     if (subgenre.includes(option.firstElementChild.getAttribute("subg"))){

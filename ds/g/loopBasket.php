@@ -158,6 +158,7 @@ class loopBasket {
                         $itemDetails["quant"] = 1;
                         $itemDetails["prodSpecs"] = [];
                         $itemDetails["codeReducs"] = [];
+                        $itemDetails["assocDico"] = [];
                         $itemDetails["totalCodeReduc"] = 0;
                         $itemDetails["basketPos"] = $x;
                         $addName = "";
@@ -182,7 +183,9 @@ class loopBasket {
                                 $stringDico = substr($value, stripos($value, "[")+1, stripos($value, "]") - 1);
                                 $chunks = array_chunk(preg_split('/(:|-)/', $stringDico), 2);
                                 $assocDico = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+                                $itemDetails["assocDico"] = $assocDico;
                             }
+                            $itemDetails["assocDico"] = $assocDico;
                             //check quantity / stock
                             if (isset($assocDico["quant"])){
                                 $quantOption = intval($assocDico["quant"]);

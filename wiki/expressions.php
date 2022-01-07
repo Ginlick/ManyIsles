@@ -14,6 +14,7 @@ $regArray = [
 ];
 $regArrayR = [
     "basic" => "/[^A-Za-z0-9]/",
+    "wikiName" => "/[^A-Za-z0-9$accentedCharacters',():\- ]/"
 ];
 
 function checkRegger($regex, $toCheck) {

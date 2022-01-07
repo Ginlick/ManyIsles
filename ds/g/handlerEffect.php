@@ -124,77 +124,111 @@ $sellerPaymentRoyalty = $sellerPayment["Royalty"];
 
 
 foreach ($basketed->itemArray as $item) {
-$row = $item["row"];
-$prodname = $row["name"];
-$prodimg = $row["image"];
-$sellerId = $row['sellerId'];
-$prodId = $row["id"];
-$ordiprice = $item["price"] - $item["totalCodeReduc"];
+  $row = $item["row"];
+  $prodname = $row["name"];
+  $prodimg = $row["image"];
+  $sellerId = $row['sellerId'];
+  $prodId = $row["id"];
+  $ordiprice = $item["price"] - $item["totalCodeReduc"];
 
-if (!isset($sellerPayment[$sellerId])){
-    $sellerPayment[$sellerId] = array("paid"=>0, "shipping"=>0, "amount"=>0, "items"=>array(), "digital"=>1);
-}
-$sellerPaymentInfo = $sellerPayment[$sellerId];
-if ($prodId == 3){$royalty = 0;}
-else {
-    $royalty = ceil(($ordiprice*22)/1000);
-}
+  if (!isset($sellerPayment[$sellerId])){
+      $sellerPayment[$sellerId] = array("paid"=>0, "shipping"=>0, "amount"=>0, "items"=>array(), "digital"=>1);
+  }
+  $sellerPaymentInfo = $sellerPayment[$sellerId];
 
-$sellerPaymentRoyalty["paid"] = $sellerPaymentRoyalty["paid"] + $royalty;
-$toSeller = $ordiprice - $royalty;
-$passtotal = $sellerPaymentInfo["paid"] + $toSeller;
-$sellerPaymentInfo["paid"] = $sellerPaymentInfo["paid"] + $toSeller;
+  $royalty = ceil(($ordiprice*22)/1000);
+  $toSeller = $ordiprice - $royalty;
+  if ($prodId == 3 OR $prodId == 2 OR $prodId == 1){
+    $royalty = 0;
+    $toSeller = 0;
+  }
 
-$sellerPaymentInfo["items"][] = detailsLine($prodname, $item["prodSpecs"]);
-if ($row["digital"] == 0){$sellerPaymentInfo["digital"] = 0;}
+  $passtotal = $sellerPaymentInfo["paid"] + $toSeller;
+  $sellerPaymentRoyalty["paid"] = $sellerPaymentRoyalty["paid"] + $royalty;
+  $sellerPaymentInfo["paid"] = $sellerPaymentInfo["paid"] + $toSeller;
 
-$artShipping = $row["shipping"];
-$shippingCost = $item["specShipping"];
-if ($artShipping != ""){
-    $chunks = array_chunk(preg_split('/(:|,)/', $artShipping), 2);
-    $assocDico = array_combine(array_column($chunks, 0), array_column($chunks, 1));
-    foreach ($assocDico as $key => $value) {
-        if (strlen($key) == 3){
-        //see if it's in a country array
-            $currentArray =  $countries[$key];
-            if (isset($currentArray[$country])){
-                $shippingCost = $value;
-                break;
-            }
-        }
-        else if (strlen($key) == 2){
-        //single country
-            if ($key==$country){
-                $shippingCost = $value;
-                break;
-            }
+  $sellerPaymentInfo["items"][] = detailsLine($prodname, $item["prodSpecs"]);
+  if ($row["digital"] == 0){$sellerPaymentInfo["digital"] = 0;}
+
+  $artShipping = $row["shipping"];
+  $shippingCost = $item["specShipping"];
+  if ($artShipping != ""){
+      $chunks = array_chunk(preg_split('/(:|,)/', $artShipping), 2);
+      $assocDico = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+      foreach ($assocDico as $key => $value) {
+          if (strlen($key) == 3){
+          //see if it's in a country array
+              $currentArray =  $countries[$key];
+              if (isset($currentArray[$country])){
+                  $shippingCost = $value;
+                  break;
+              }
+          }
+          else if (strlen($key) == 2){
+          //single country
+              if ($key==$country){
+                  $shippingCost = $value;
+                  break;
+              }
+          }
+      }
+  }
+  $sellerPaymentInfo["shipping"] += $shippingCost;
+
+  $sellerPaymentInfo["amount"] += $ordiprice + $shippingCost;
+  $sellerPayment[$sellerId] = $sellerPaymentInfo;
+
+  //generate email line
+  $currentLine = str_replace("COOLPRICE", makeHuman($ordiprice), $itemLine);
+  $currentLine = str_replace("COOLTITLE", $prodname, $currentLine);
+  $currentLine = str_replace("COOLIMAGE", $prodimg, $currentLine);
+  $coolAddInfo = "";
+  $coolAddInfo = $coolAddInfo."Seller: ".$row["seller"]." (p#".$row['sellerId'].")"."<br>";
+  if ($row["digital"] == 0) {$coolAddInfo = $coolAddInfo."Shipping: ".makeHuman($shippingCost)."<br>";}
+  foreach ($item["prodSpecs"] as $addInfo){
+      $coolAddInfo .= ucfirst($addInfo)."<br>";
+  }
+  $currentLine = str_replace("COOLADDINFO", $coolAddInfo, $currentLine);
+
+  $fullLine = $fullLine.$currentLine;
+
+  //update stock info
+  if ($row["digital"] == 0){
+      $query = "UPDATE dsprods SET stock = stock - ".$item["quant"]." WHERE id = $prodId";
+      $conn->query($query);
+  }
+
+  //specials
+  if ($prodId == 1){
+    //tiers
+    $newtitle = "Imperial Soldier"; $tieroption = 1;
+    if (str_contains($item["assocDico"]["tier"], "1")){$newtitle = "Grand Wizard"; $tieroption = 2;}
+    else if (str_contains($item["assocDico"]["tier"], "2")){$newtitle = "Legendar"; $tieroption = 3;}
+    $custProm->promote($newtitle);
+    payTiers($ordiprice, $tieroption);
+  }
+  else if ($prodId == 2){
+    //credit
+      $pTran = new transaction($moneyconn, $customer);
+      $pTran->new($ordiprice, $customer_title." ".$customer_name, "Pay-in");
+  }
+  else if ($prodId == 3) {
+    //support product
+    $option = $item["addName"];
+    if ($option == "the Pantheon"){$option = "Pantheon";}
+    $query = 'SELECT user FROM partners WHERE name = "'.$option.'"';
+    if ($result = $conn->query($query)) {
+        while ($row = $result->fetch_assoc()){
+            $pId = $row["user"];
         }
     }
-}
-$sellerPaymentInfo["shipping"] += $shippingCost;
 
-$sellerPaymentInfo["amount"] += $ordiprice + $shippingCost;
-$sellerPayment[$sellerId] = $sellerPaymentInfo;
-
-//generate email line
-$currentLine = str_replace("COOLPRICE", makeHuman($ordiprice), $itemLine);
-$currentLine = str_replace("COOLTITLE", $prodname, $currentLine);
-$currentLine = str_replace("COOLIMAGE", $prodimg, $currentLine);
-$coolAddInfo = "";
-$coolAddInfo = $coolAddInfo."Seller: ".$row["seller"]." (p#".$row['sellerId'].")"."<br>";
-if ($row["digital"] == 0) {$coolAddInfo = $coolAddInfo."Shipping: ".makeHuman($shippingCost)."<br>";}
-foreach ($item["prodSpecs"] as $addInfo){
-    $coolAddInfo .= ucfirst($addInfo)."<br>";
-}
-$currentLine = str_replace("COOLADDINFO", $coolAddInfo, $currentLine);
-
-$fullLine = $fullLine.$currentLine;
-
-//update stock info
-if ($row["digital"] == 0){
-    $query = "UPDATE dsprods SET stock = stock - ".$item["quant"]." WHERE id = $prodId";
-    $conn->query($query);
-}
+    if (isset($pId)) {
+        $pTran = new transaction($moneyconn, $pId);
+        $pTran->new($ordiprice, $customer_title." ".$customer_name, "Support Payment");
+        $custProm->promote("Journeyman");
+    }
+  }
 }
 
 $sellerPayment["Royalty"] = $sellerPaymentRoyalty;
@@ -223,63 +257,6 @@ $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 mail ("pantheon@manyisles.ch", "Order #$clid Cleared", $bigMail, $headers);
 mail ($customer_email, "Order #$clid Cleared", $bigMail, $headers);
 
-
-// calc stuff
-
-foreach ($purchase as $x => $value) {
-    if ($value == "") {continue;}
-    if (stripos($value, "[")) {
-        $shortitem = substr($value, 0, strpos($value, "["));
-    }
-    else if (stripos($value, "-")) {
-        $shortitem = substr($value, 0, strpos($value, "-"));
-    }
-    else if (stripos($value, "(")) {
-        $shortitem = substr($value, 0, strpos($value, "("));
-    }
-    else {$shortitem = $value;}
-
-    if ($shortitem == 1) {
-      //tiers
-        if (str_contains($value, "tier:2")){$tieroption = 3; $newtitle = "Legendar";}
-        else if (str_contains($value, "tier:1")){$tieroption = 2; $newtitle = "Grand Wizard";}
-        else {$newtitle = "Imperial Soldier"; $tieroption = 1;}
-        $custProm->promote($newtitle);
-        payTiers($ordiprice, $tieroption);
-    }
-    else if ($shortitem == 2){
-      //credit
-        $price = substr($value, strpos($value, "-"));
-        $price = str_replace("-", "", $price);
-        $credit = $price;
-
-        $pTran = new transaction($moneyconn, $customer);
-        $pTran->new($credit, $customer_title." ".$customer_name, "Pay-in");
-    }
-    else if ($shortitem == 3) {
-      //support product
-        $price = substr($value, stripos($value, "/")+1, -1);
-        $option = substr($value, stripos($value, "(")+1, stripos($value, "/")-2);
-        if ($option == "the Pantheon"){$option = "Pantheon";}
-        $query = 'SELECT * FROM partners WHERE name = "'.$option.'"';
-        if ($result = $conn->query($query)) {
-            while ($row = $result->fetch_assoc()){
-                $paccname = $row["account"];
-            }
-        }
-        $query = 'SELECT id FROM accountsTable WHERE uname = "'.$paccname.'"';
-        if ($result = $conn->query($query)) {
-            while ($row = $result->fetch_assoc()){
-                $pId = $row["id"];
-            }
-        }
-        if (isset($pId)) {
-            $pTran = new transaction($moneyconn, $pId);
-            $pTran->new($price, $customer_title." ".$customer_name, "Support Payment");
-            $custProm->promote("Journeyman");
-        }
-    }
-}
 
 //pay partners
 print_r($sellerPayment);
@@ -330,13 +307,12 @@ foreach ($sellerPayment as $partner => $partnerArray) {
     }
 }
 
-if ($pureDigit == false) {
+if ($basketed->pureDigit == false) {
     $query = "UPDATE dsclearing SET status = 1 WHERE id = $clid";
 }
 else {
     $query = "UPDATE dsclearing SET status = 2 WHERE id = $clid";
 }
 $conn->query($query);
-
 
 ?>

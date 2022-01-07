@@ -103,10 +103,10 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
     var query = searcher.value;
     var getFile = "";
     if (target == "findCategSugg") {
-        getFile = "/fandom/findCategSugg.php?q=" + query + "&w=" + parentWiki + "&domain=" + pdomain;
+        getFile = "/fandom/findCategSugg.php?q=" + query + "&w=" + parentWiki + "&domain=" + pdomain + "&u=" + user;
     }
     else {
-        getFile = "/fandom/findSuggestions.php?q=" + query + "&w=" + parentWiki + "&ig=" + ignore + "&domain=" + pdomain;
+        getFile = "/fandom/findSuggestions.php?q=" + query + "&w=" + parentWiki + "&ig=" + ignore + "&domain=" + pdomain + "&u=" + user;
     }
     parent = searcher.nextElementSibling;
     let xhttp = new XMLHttpRequest();
@@ -208,6 +208,7 @@ function newAutoLink(name, reference, wiki = 0) {
             autoLinks[name.toLowerCase()] = { "href": reference };
         }
         file = "/mystral/newAutoLink.php?name=" + name + "&reference=" + reference + "&wiki=" + wiki; console.log(file)
+        console.log(file);
         xhttp.open("GET", file, true);
         xhttp.send();
     }

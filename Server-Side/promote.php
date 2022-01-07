@@ -24,10 +24,19 @@ class adventurer {
         "Poet" => "Poet.png", "Trader" => "Trader.png", "Royal Valkyrie" => "RoyalValkyrie.png", "Loremaster" => "Loremaster.png", "Grand Wizard" => "GrandWizard.png", "High Merchant" => "HighMerchant.png", "Grand Poet" => "GP.png"
     ];
 
-    function __construct($conn, $user) {
+    function __construct($conn = null, $user = null) {
+        if ($user == null){
+          if (isset($_COOKIE["loggedIn"])){
+            $user = $_COOKIE["loggedIn"];
+          }
+        }
+        if ($conn == null){
+          include($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+        }
         $this->conn = $conn;
-        $this->user = $user;
+        $this->user = preg_replace("/[^0-9]/", "", $user);
         $this->signedIn = false;
+        if ($this->user == null){$this->user = 0;}
 
         $query = "SELECT title, tier, uname, password, emailConfirmed FROM accountsTable WHERE id = $user";
         if ($result = $this->conn->query($query)) {
@@ -47,10 +56,14 @@ class adventurer {
 
     function check($mod = false) {
       if ($this->signedIn OR $mod){
-        require($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
+        require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
         return checkNudePsw($this->cpsw);
       }
       return true;
+    }
+    function checkInputPsw($psw) {
+      require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
+      return checkInputPsw($psw, $this->cpsw);
     }
     function promote($title){
         if (preg_match("/[0-9]*/", $title)) {
@@ -86,6 +99,38 @@ class adventurer {
         else if ($x == 2){
           return "/Imgs/Ranks/single/".$image;
         }
+    }
+    function signPrompt($back = "/dl/home") {
+      if (!$this->signedIn){
+        $signPrompt = '<h3>Sign In</h3>
+        <form action="/account/SignIn.php?back='.$back.'" method="POST" onsubmit="seekMaker()" style="text-align:center">
+          <label for="loguname"><b>Username</b></label>
+          <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" autocomplete="username" required>
+          <label for="logpassword"><b>Password</b></label>
+          <input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" autocomplete="current-password" required>
+          <button class="wikiButton"><i class="fas fa-arrow-right"></i> Sign In</button>
+        </form>
+        <p>Don\'t have an account? <a href="/account/Account?add=dl">Join us</a></p>
+        ';
+      }
+      else {
+          $signPrompt = "<h3>".$this->fullName."</h3>
+          <p>Currently signed in with a tier ".$this->tier." account. <a href='/account/SignedIn' target='_blank'>View account</a></p>
+          <button onclick='signOut();' class='wikiButton'><i class='fas fa-arrow-right'></i> Sign Out</button>
+          ";
+      }
+      $signPormpt = '
+          <div class="logoRound">
+              <div class="roundling">
+                <img src="'.$this->image(2).'" />
+              </div>
+              <div class="accntInfoCont">
+                <div class="accntInfoInCont">
+                  '.$signPrompt.'
+                </div>
+              </div>
+          </div>';
+      return $signPormpt;
     }
 }
 
