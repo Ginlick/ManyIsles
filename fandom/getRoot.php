@@ -79,7 +79,7 @@ foreach ($resultArray as $pageId){
         $currentLine = str_replace("COOLLINK", artUrl($info->artRootLink, $pageId, $currentName), $currentLine);
     }
     else {
-        $currentLine = str_replace("COOLLINK", artUrl($info->artRootLink.parse2Url($wikiName)."/", $pageId, $currentName), $rootLine);
+        $currentLine = str_replace("COOLLINK", artUrl($info->artRootLink, $pageId, $currentName), $rootLine);
     }
     $currentLine = str_replace("COOLNAME", $currentName, $currentLine);
     $fullLine .= $currentLine;

@@ -23,7 +23,7 @@ if ($firstrow = $conn->query($query)) {
         $artDescription = $row["description"];
         $artKind = $row["artKind"];
         $artShipping = $row["shipping"];
-        $artStock = $row["stock"];
+        $artStock = hasAnyStock($artSpecs, $row["stock"]);
         $artMaxAmount = $row["maxAmount"];
         $artMinPrice = $row["minPrice"];
         $artStatus = $row["status"];
@@ -166,7 +166,7 @@ else {
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
 </head>
 <body>
-    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;z-index:22;"></div>
+  <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl = "true"></div>
 
     <div class="flex-container">
         <div class='left-col'>
@@ -292,7 +292,7 @@ if ($artStock == 0){$startValue = 0;}else {$startValue = 1;}
 if ($artMaxAmount != 1){
     echo '
         <h5>Quantity</h5>
-        <input type="number" value="'.$startValue.'" max="'.$actualMaxAmount.'" min="'.$startValue.'" onchange="checkMax(this, '.$actualMaxAmount.');" id="inputQuant" />';
+        <input type="number" value="'.$startValue.'" max="'.$actualMaxAmount.'" min="'.$startValue.'" onchange="checkMax(this);" id="inputQuant" />';
 }
 else {
     echo '<input type="number" value="1" style="display:none" id="inputQuant" />';
@@ -355,7 +355,7 @@ butonge;
 }
 
 if ($artStatus == "paused") {echo '<p class="warning blue">this article is paused and cannot currently be purchased</p>';}
-else if ($artStock <= 5) { if ($artStock <= 0) {echo '<p class="warning red">out of stock!<br>please check back later</p>';} else { echo '<p class="warning brown">only '.$artStock.' items left in stock</p>'; }}
+echo '<p class="warning red" id="warningNone" style="display: none">out of stock!<br>please check back later</p>';
                        echo "  </div>";
 ?>
                     </div>
@@ -427,9 +427,15 @@ foreach ($thisItemDeliverable as $shippableCountry) {
     var quantEx = true;
     var orderDetails = {<?php
 foreach ($artSpecsArray as $specArray){
-    echo '"'.$specArray["name"].'" : 0, ';
+echo '"'.$specArray["name"].'" : 0, ';
 }
 ?>};
+    var itemSpecs = <?php
+echo json_encode($artSpecsArray);
+?>;
+    var itemNum = <?php
+      echo json_encode($basketed->itemNumArray);
+     ?>;
     var basePrice =<?php
     echo $artPrice;
 ?>;
@@ -442,6 +448,10 @@ foreach ($artSpecsArray as $specArray){
 }
 ?>};
 
+  var smartstock = false;
+  for (let spec in itemSpecs) {
+    if (itemSpecs[spec]["smartstock"]==1){smartstock = true;}
+  }
     function makeHuman(ordiprice) {
         ordiprice = String(ordiprice);
         price = ordiprice.substr(0, ordiprice.length-2) + "." + ordiprice.substr(ordiprice.length-2, ordiprice.length);
@@ -454,6 +464,7 @@ foreach ($artSpecsArray as $specArray){
         let name = selecter.getAttribute("selecter-name");
         let number = selecter.options[selecter.selectedIndex].value;
         orderDetails[name] = number;
+        checkMax(document.getElementById("inputQuant"));
         if (selecter.options[selecter.selectedIndex].hasAttribute("price-modifier")){
             priceModifier = parseInt(selecter.options[selecter.selectedIndex].getAttribute("price-modifier"));
             priceMods[name] = priceModifier;
@@ -469,14 +480,43 @@ foreach ($artSpecsArray as $specArray){
         document.getElementById("price").innerHTML = makeHuman(currentPrice);
     }
     updatePrice();
-    function checkMax(element, value) {
-        if (element.value >= value) {
-            element.value = value;
+    function checkMax(element) {
+      if (smartstock) {
+        stock = 0;
+        for (let choice in orderDetails){
+          let choiceName = choice;
+          let choiceValue = orderDetails[choice];
+          for (let spec in itemSpecs){
+            if (itemSpecs[spec]["name"] == choiceName){
+              if(itemSpecs[spec]["smartstock"]==1){
+                stock = itemSpecs[spec]["options"][choiceValue]["stock"];
+                if (itemNum["<?php echo $artId."_";?>"+choiceValue]!=undefined){
+                  stock = stock - itemNum["<?php echo $artId."_";?>"+choiceValue];
+                  console.log(itemNum["<?php echo $artId."_";?>"+choiceValue]);
+                }
+              }
+            }
+          }
         }
-        else if (element.value <= 0) {
-            element.value = 1;
-        }
+      }
+      else {
+        stock = <?php echo $actualMaxAmount; ?>
+      }
+      if (parseInt(element.value) >= stock) {
+          element.value = stock;
+      }
+      else if (element.value <= 0) {
+          element.value = 1;
+      }
+      if (stock == 0){
+        document.getElementById("warningNone").style.display = "block";
+      }
+      else {
+        document.getElementById("warningNone").style.display = "none";
+      }
     }
+    checkMax(document.getElementById("inputQuant").value);
+
     function basket(returnTo) {
         subArray = [];
         for (let specif in orderDetails) {

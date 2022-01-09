@@ -2,31 +2,15 @@
 
 if(isset($_GET["w"])) {if ($_GET["w"]!="1"){header("Location: basket.html");exit();} else {$newAcc = true;} } else {$newAcc = false;}
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
-
-if(!isset($_COOKIE["loggedIn"])){header("Location: checkout.html");exit();}
-
-$id = $_COOKIE["loggedIn"];
-
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-      $confirmed = $row["emailConfirmed"];
-    }
-}
-
-$redirect = "checkout.html";
-include("../Server-Side/checkPsw.php");
-
-if ($confirmed == 1){header("Location: checkout1.php");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$user = new adventurer;
+if (!$user->check(true)){header("Location: checkout");exit();}
+else if ($user->emailConfirmed){header("Location: checkout1");exit();}
+$conn = $user->conn;
 
 session_start();
 if (!isset($_SESSION["subbasket"])) {
     if (isset($_SESSION["basket"])) {
-        echo $_SESSION["basket"];exit();
         if ($_SESSION["basket"] == "") {
             echo "<script>window.location.replace('/ds/store');</script>";exit();
         }
@@ -74,6 +58,7 @@ if (!isset($_SESSION["subbasket"])) {
             </div>
 
             <div id='content' class='column'>
+              <?php echo $user->signPrompt(); ?>
 
                 <h1>Step 0</h1>
 
@@ -125,6 +110,3 @@ if (!isset($_SESSION["subbasket"])) {
 </body>
 </html>
 <script src="/Code/CSS/global.js"></script>
-
-
-

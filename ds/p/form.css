@@ -18,7 +18,6 @@ h2 {
         .inputCont span {
             color: #a21414;
         }
-
 .inputErr {
     display: block;
     opacity: 0;
@@ -55,6 +54,9 @@ input, textarea, select {
     margin: 4px 0;
     font-size: var(--all-fonts-base);
     font-family: "Open sans", sans-serif;
+}
+input[type=checkbox] {
+  width: auto;
 }
 
 .warning {
@@ -98,7 +100,6 @@ input, textarea, select {
         .rightSpecCol .buttCon .checkout {
             margin: 0;
         }
-
     .rightSpecCol h3 {
         font-size: calc(17px + .2vw);
         padding: 15px 0 0;

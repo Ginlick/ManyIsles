@@ -46,7 +46,8 @@ class parse {
                 $body = $this->addFullChildLine($body, $artId, "spec");
             }
             if (str_contains($body, "[wiki:new")){$body = $this->addRecents($body, "reg_date");}
-            if (str_contains($body, "[wiki:pop")){$body = $this->addRecents($body, "pop");}
+            if (str_contains($body, "[wiki:rand")){$body = $this->addRecents($body, "RAND()");}
+            if (str_contains($body, "[wiki:pop")){$body = $this->addRecents($body);}
             if (str_contains($body, "[wiki:genre:")){$body = $this->addGenre($body);}
             if (str_contains($body, "[wiki:art")){$body = $this->addThumbnails($body);}
 
@@ -81,7 +82,7 @@ class parse {
         FROM $this->database a
         LEFT OUTER JOIN $this->database b
             ON a.id = b.id AND a.v < b.v
-        WHERE a.root = $page AND a.status = 'active' AND b.id IS NULL LIMIT 22";
+        WHERE a.root = $page AND a.status != 'outstanding' AND b.id IS NULL LIMIT 22";
         if ($firstrow = $this->dbconn->query($query)) {
             while ($row = $firstrow->fetch_assoc()) {
                 $pageName = $row["name"];
@@ -139,8 +140,9 @@ class parse {
         }
     }
 
-    function addRecents($body, $sort){
+    function addRecents($body, $sort = "pop"){
         if ($sort == "reg_date") {$sortName = "new";}
+        else if ($sort == "RAND()") {$sortName = "rand";}
         else {$sortName = "pop";}
 
         if (str_contains($body, "[wiki:$sortName]")){
@@ -148,7 +150,7 @@ class parse {
             $fullRow = "";
         }
         else {
-            $artId = substr($body, strpos($body, "[wiki:$sortName") + 9);
+            $artId = substr($body, strpos($body, "[wiki:$sortName") + strlen("[wiki:$sortName"));
             $age = substr($artId, 0, strpos($artId, "]"));
         }
 
@@ -165,16 +167,15 @@ class parse {
                     if (getWiki($childPage) != $this->parentWiki OR $row["status"] != "active") {continue;}
                     if ($age > 0) {
                         if ($age == $counter) {
-                                $pageName = $row["shortName"];
-                                $pageImg = $row["banner"];
-                                $thumbImg = $row["sidetabImg"];
-                                if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                                $toInsertThumb = $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
-                                $body = substr_replace($body, $toInsertThumb, strpos($body, "[wiki:$sortName".$age."]"), 0);
-                                $body = str_replace("[wiki:$sortName".$age."]", "", $body);
-                                if (str_contains($body, "[wiki:$sortName")){return $this->addRecents($body, $sort);}
-                                else { return $body;}
-                                break;
+                          $pageName = $row["shortName"];
+                          $pageImg = $row["banner"];
+                          $thumbImg = $row["sidetabImg"];
+                          if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
+                          $toInsertThumb = $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                          $body = str_replace("[wiki:$sortName".$age."]", $toInsertThumb, $body);
+                          if (str_contains($body, "[wiki:$sortName")){return $this->addRecents($body, $sort);}
+                          else { return $body;}
+                          break;
                         }
                         else {$counter++;}
                     }
@@ -277,8 +278,7 @@ class parse {
 
         $footnote = "<sup class='footnote' onclick='showFoot($footNumber);'>[$footNumber]</sup>";
 
-        $body = substr_replace($body, $footnote, strpos($body, "[footnote:$footNumber]"), 0);
-        $body = str_replace("[footnote:$footNumber]", "", $body);
+        $body = str_replace("[footnote:$footNumber]", $footnote, $body);
         if (str_contains($body, "[footnote:")){return $this->doSources($body);}
         else { return $body;}
     }

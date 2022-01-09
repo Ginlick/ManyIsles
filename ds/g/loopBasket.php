@@ -3,6 +3,7 @@
 
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/makeHuman.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/countries.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/alertStock.php");
 
 class loopBasket {
     public $itemArray = [];
@@ -55,7 +56,7 @@ class loopBasket {
     }
 
 
-    function __construct($conn, $inbasket, $sideBasket = false, $theoretical = false, $codesMatter = false, $type = "items") {
+    function __construct($conn, $inbasket, $sideBasket = false, $theoretical = false, $codesMatter = false, $type = "items", $effect = false) {
         global $codeCookieReplacement, $countries;
         $this->conn = $conn;
         $this->inbasket = $inbasket;
@@ -138,8 +139,6 @@ class loopBasket {
                     while ($row = $result->fetch_assoc()) {
                         //validity
                         $killThis = false;
-                        if ($row["stock"] == 0 AND $row["digital"]==0 AND !$this->theoretical){$killThis = true; }
-                        if (!isset($this->itemNumArray[$shortitem])) {$this->itemNumArray[$shortitem] = 0;}
                         $query = "SELECT status FROM partners WHERE id = ".$row["sellerId"];
                         if ($result = $this->conn->query($query)){
                             if (mysqli_num_rows($result) == 0) { $killThis = true; }
@@ -187,14 +186,53 @@ class loopBasket {
                             }
                             $itemDetails["assocDico"] = $assocDico;
                             //check quantity / stock
+                            $itemStock = $row["stock"];
+                            $smartstock = false;
+                            foreach ($specsArray as $spec){
+                              if (isset($spec["smartstock"]) AND $spec["smartstock"] == 1){
+                                $smartstock = true;break;
+                              }
+                            }
+
+                            //parse specifications
+                            $specShipping = 0; $itemNumId = $shortitem;
+                            foreach($specsArray as $key => $specArray){
+                                $option = $specArray["name"];
+                                if (isset($assocDico[$option])){
+                                    $selected = intval($assocDico[$option]);
+                                }
+                                else {
+                                    $selected = 0;
+                                }
+                                if (!isset($specArray["options"][$selected])){
+                                    $selected = 0;
+                                }
+                                if (isset($specArray["options"][$selected]["shipping"])){
+                                    $specShipping += intval($specArray["options"][$selected]["shipping"]);
+                                }
+                                if ($smartstock AND isset($specArray["smartstock"]) AND $specArray["smartstock"] == 1){
+                                  $itemStock = $specArray["options"][$selected]["stock"];
+                                  $itemNumId = $shortitem."_".$selected; $neatKey = $key; $neatSelected = $selected;
+                                }
+
+                                $price += $specArray["options"][$selected]["price"];
+                                $coolProdSpecs[] = $option.": ".$specArray["options"][$selected]["name"];
+
+                                if ($shortitem == 1){
+                                    if ($selected == 2){$addName = "Legendar";}else if($selected==1){$addName = "Grand Wizard";}else{$addName = "Imperial Soldier";}
+                                }
+                            }
+                            $itemDetails["specShipping"] = $specShipping;
+                            if (!isset($this->itemNumArray[$itemNumId])) {$this->itemNumArray[$itemNumId] = 0;}
+
                             if (isset($assocDico["quant"])){
                                 $quantOption = intval($assocDico["quant"]);
                             }
-
+                            //correct actual amount
                             if (!$this->theoretical) {
                                 if ($row["digital"]== 0 ){
                                     $artMaxAmount = $row["maxAmount"];
-                                    $actualMaxAmount = $row["stock"] - $this->itemNumArray[$shortitem];
+                                    $actualMaxAmount = $itemStock - $this->itemNumArray[$itemNumId]; if ($effect){$actualMaxAmount = $itemStock;}
                                     if ($artMaxAmount < $actualMaxAmount AND $artMaxAmount != 0){$actualMaxAmount = $artMaxAmount;}
                                     if ($actualMaxAmount > 99) {$actualMaxAmount = 99;}
                                     if ($quantOption > $actualMaxAmount){$quantOption = $actualMaxAmount;}
@@ -209,48 +247,35 @@ class loopBasket {
                             $itemMinPrice = $itemMinPrice * $quantOption;
                             $itemDetails["quant"] = $quantOption;
 
-                            $this->itemNumArray[$shortitem] += $quantOption;
+                            $this->itemNumArray[$itemNumId] += $quantOption;
                             if (!$this->theoretical){
                                 if ($row["digital"]==0){
-                                    if ($row["stock"] - $this->itemNumArray[$shortitem] < 0 OR $quantOption == 0){
-                                        unset($inbasket[$x]);
-                                        if ($sideBasket) {$_SESSION["basket"] = implode(",",$inbasket);}
-                                        header("Location: ".$_SERVER['REQUEST_URI'] . "?".http_build_query( array_merge( $_GET, array( 'show' => 'outOfStock' ) ) ) );
-                                        continue;
+                                    if ($effect){
+                                      if ($smartstock){
+                                        $specsArray[$neatKey]["options"][$neatSelected]["stock"] = $itemStock - $quantOption;
+                                        $nameSpeccer = json_encode($specsArray);
+                                        $query = "UPDATE dsprods SET specifications = '$nameSpeccer' WHERE id = $shortitem";
+                                        $conn->query($query);
+                                      }
+                                      else {
+                                        $query = "UPDATE dsprods SET stock = stock - ".$quantOption." WHERE id = $shortitem";
+                                        $conn->query($query);
+                                      }
+                                    }
+                                    else {
+                                      if ($itemStock - $this->itemNumArray[$itemNumId] < 0 OR $quantOption == 0){
+                                          unset($inbasket[$x]);
+                                          if ($sideBasket) {$_SESSION["basket"] = implode(",",$inbasket);}
+                                          header("Location: /ds/basket?show=outOfStock" );
+                                          continue;
+                                      }
                                     }
                                 }
                             }
 
-                            //parse specifications
-                            $specShipping = 0;
-                            foreach($specsArray as $specArray){
-                                $option = $specArray["name"];
-                                if (isset($assocDico[$option])){
-                                    $selected = intval($assocDico[$option]);
-                                }
-                                else {
-                                    $selected = 0;
-                                }
-                                if (!isset($specArray["options"][$selected])){
-                                    $selected = 0;
-                                }
-                                if (isset($specArray["options"][$selected]["shipping"])){
-                                    $specShipping += intval($specArray["options"][$selected]["shipping"]);
-                                }
-
-                                $price += $specArray["options"][$selected]["price"];
-                                $coolProdSpecs[] = $option.": ".$specArray["options"][$selected]["name"];
-
-                                if ($shortitem == 1){
-                                    if ($selected == 2){$addName = "Legendar";}else if($selected==1){$addName = "Grand Wizard";}else{$addName = "Imperial Soldier";}
-                                }
-                            }
-                            $itemDetails["specShipping"] = $specShipping;
-
                             if ($quantOption != 1){
                                 $coolProdSpecs[] = "Quantity: ".$quantOption;
                             }
-
                             $price = $price * $quantOption;
                             $itemDetails["prodSpecs"] = $coolProdSpecs;
                         }

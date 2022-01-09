@@ -1,7 +1,7 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/stripe-php-7.75.0/init.php');
-require_once($_SERVER['DOCUMENT_ROOT']."/ds/keys/stripe-sk.php");
+require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/stripe-sk.php");
 \Stripe\Stripe::setApiKey($stripe_sk);
 
 header('Content-Type: application/json');

@@ -4,7 +4,7 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/promote.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/ds/keys/ds-actcode.php');
+require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/ds-actcode.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/account/prem/partAmount.php');
 if (!isset($mycode) OR $mycode != $ds_actcode){echo "invalid certification";exit();}
 
@@ -37,8 +37,7 @@ $custProm = new adventurer($conn, $customer);
 $codeCookieReplacement = $codeList;
 $purchase = explode(",", $purchase);
 $inbasket = $purchase;
-$basketed = new loopBasket($conn, $purchase, false, false, true);
-
+$basketed = new loopBasket($conn, $purchase, false, false, true, "items", true);
 
 $partnerMail = <<<MASSMAIL
 <!DOCTYPE html>
@@ -148,6 +147,7 @@ foreach ($basketed->itemArray as $item) {
   $sellerPaymentInfo["paid"] = $sellerPaymentInfo["paid"] + $toSeller;
 
   $sellerPaymentInfo["items"][] = detailsLine($prodname, $item["prodSpecs"]);
+  echo detailsLine($prodname, $item["prodSpecs"]);
   if ($row["digital"] == 0){$sellerPaymentInfo["digital"] = 0;}
 
   $artShipping = $row["shipping"];
@@ -191,12 +191,6 @@ foreach ($basketed->itemArray as $item) {
   $currentLine = str_replace("COOLADDINFO", $coolAddInfo, $currentLine);
 
   $fullLine = $fullLine.$currentLine;
-
-  //update stock info
-  if ($row["digital"] == 0){
-      $query = "UPDATE dsprods SET stock = stock - ".$item["quant"]." WHERE id = $prodId";
-      $conn->query($query);
-  }
 
   //specials
   if ($prodId == 1){
@@ -257,7 +251,6 @@ $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 mail ("pantheon@manyisles.ch", "Order #$clid Cleared", $bigMail, $headers);
 mail ($customer_email, "Order #$clid Cleared", $bigMail, $headers);
 
-
 //pay partners
 print_r($sellerPayment);
 
@@ -272,7 +265,7 @@ foreach ($sellerPayment as $partner => $partnerArray) {
         //create orders
         unset($partnerAccId);
         if ($partnerArray["digital"]==0){$ordStatus = 0;} else {$ordStatus = 2;}
-        $orderItems = implode(",", $partnerArray["items"]);
+        $orderItems = implode(", ", $partnerArray["items"]);
         $query = sprintf('INSERT INTO dsorders (orderId, buyer, seller, paid, shipping, items, address, amount, status, codes) VALUES ("%s", %s, %s, %s, %s, "%s", "%s", %s, %s, "%s")', $clid, $customer, $partner, $paid, $shippingPaid, $orderItems, $address, $partnerArray["amount"], $ordStatus, $codeList);
         if ($conn->query($query)){
             //pay partners

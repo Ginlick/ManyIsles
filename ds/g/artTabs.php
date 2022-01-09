@@ -22,28 +22,35 @@ $itemStencil = <<<NABSDAI
 NABSDAI;
 
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/makeHuman.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/alertStock.php");
 function makeArtTab($row, $itemNumArray = [], $showNoStock = false){
     global $itemStencil, $conn;
-    if ($row["stock"]>0 or $showNoStock){
-        if ($row["status"] != "deleted"){
-            $query = "SELECT status FROM partners WHERE id = ".$row["sellerId"];
-            $clearPartner = true;
-            if ($result = $conn->query($query)){
-                if (mysqli_num_rows($result) == 0) { $clearPartner = false; }
-                while ($nRow = $result->fetch_assoc()) {
-                    if ($nRow["status"]!="active"){$clearPartner = false; }
-                }
-            }
-            if ($clearPartner) {
-                $articleId = $row["id"];
-                $canBuy = true;
+      if ($row["status"] != "deleted"){
+          $query = "SELECT status FROM partners WHERE id = ".$row["sellerId"];
+          $clearPartner = true;
+          if ($result = $conn->query($query)){
+              if (mysqli_num_rows($result) == 0) { $clearPartner = false; }
+              while ($nRow = $result->fetch_assoc()) {
+                  if ($nRow["status"]!="active"){$clearPartner = false; }
+              }
+          }
+          if ($clearPartner) {
+              $articleId = $row["id"];
+              $canBuy = true;
+              $hasStock = false;
+
+              if ($totalStock = hasAnyStock($row["specifications"], $row["stock"])){
                 if (isset($itemNumArray[$articleId])){
-                    if ($row["stock"] - $itemNumArray[$articleId] <=0 AND $row["digital"] == 0){
-                        $hasStock = false;
-                    } else {$hasStock = true;}
+                  if ($totalStock - $itemNumArray[$articleId] > 0) {
+                    $hasStock = true;
+                  }
                 }
-                else {$hasStock = true;}
-                if ($row["stock"]==0 ) {$hasStock = false;}
+                else {
+                  if ($totalStock != 0){$hasStock = true; }
+                }
+              }
+
+              if ($hasStock or $showNoStock){
                 if ($row["status"]=="paused" ) {$canBuy = false;}
                 $titling = $row["name"];
                 $thumbnail = clearImgUrl($row["image"]);
@@ -85,8 +92,8 @@ function makeArtTab($row, $itemNumArray = [], $showNoStock = false){
                 if ($canBuy OR $showNoStock) {
                     echo $itemTab;
                 }
-            }
-        }
+              }
+          }
     }
 }
 ?>

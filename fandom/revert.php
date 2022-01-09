@@ -20,7 +20,7 @@ if ($firstrow = $gen->dbconn->query($query)) {
 }
 if (!isset($minv)){exit();}
 
-$base =  $gen->artRootLink.$_GET['id']."/".$gen->article->shortName;
+$base =  $gen->artRootLink.$_GET['id']."/";
 if ($_GET['dir'] == 0){
     $query = "SELECT MAX(v) FROM $gen->database WHERE id = ".$_GET['id']. " AND status = 'active'";
     $firstrow = $gen->dbconn->query($query);

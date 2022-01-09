@@ -1,30 +1,17 @@
 ﻿<?php
-    
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+
 require_once("g/sideBasket.php");
 $basketed->possibleCountries();
 if ($basketed->pureDigit) {
     header("Location: checkout2.php");exit();
 }
 
-if(!isset($_COOKIE["loggedIn"])){header("Location: checkout.html");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$user = new adventurer;
+if (!$user->emailConfirmed){header("Location: checkoutw");exit();}
+else if (!$user->check(true)){header("Location: checkout");exit();}
+$conn = $user->conn;
 
-$id = $_COOKIE["loggedIn"];
-
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-      $confirmed = $row["emailConfirmed"];
-    }
-}
-
-$redirect = "checkout.html";
-include("../Server-Side/checkPsw.php");
-
-if ($confirmed != 1){header("Location: checkoutw.php");exit();}
 if (isset($_SESSION["basket"])) {
     if ($_SESSION["basket"] == "") {
         header("Location: home.php");exit();
@@ -32,9 +19,9 @@ if (isset($_SESSION["basket"])) {
 }
 else {header("Location: home.php");exit();}
 
-$query = "SELECT * FROM address WHERE id = ".$id;
+$query = "SELECT * FROM address WHERE id = ".$user->user;
 $autofillA = false;
-if ($result = $conn->query($query)) {  
+if ($result = $conn->query($query)) {
     while ($row = $result->fetch_assoc()) {
         $fullname = $row["fullname"];
         $address = $row["address"];
@@ -76,7 +63,7 @@ if ($result = $conn->query($query)) {
                 </ul>
                 <?php
                     doSideBasket();
-                ?>    
+                ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
                     <li><a class="Bar" href="/docs/15/Digital%20Store" target="_blank">Digital Store documentation</a></li>
@@ -85,6 +72,7 @@ if ($result = $conn->query($query)) {
             </div>
 
             <div id='content' class='column'>
+              <?php echo $user->signPrompt(); ?>
 
                 <h1>Step 2</h1>
 
@@ -101,7 +89,7 @@ if (count($basketed->deliverableCountries) == 0){
     foreach ($basketed->difficultShippingItems as $itemId => $isIt) {
         if ($isIt > 0){
             $query = "SELECT name FROM dsprods WHERE id = $itemId";
-            if ($result = $conn->query($query)) {  
+            if ($result = $conn->query($query)) {
                 while ($row = $result->fetch_assoc()) {
                     $cunter++;
                     if ($cunter != 1) {echo ", ";}
@@ -124,7 +112,7 @@ else {
                                     <label for="zip">Zip</label>
                                     <input type="text" id="zip" name="zip" placeholder="10001" '; if ($autofillA) {echo 'value="'.$zip.'"';}  echo '>
                                     <label for="state">Country</label>
-                                    
+
 ';
 echo '<select id="state" name="state">';
 foreach ($basketed->deliverableCountries as $key => $value) {
@@ -223,5 +211,3 @@ if (why =="delItem"){
 
 
     </script>
-
-

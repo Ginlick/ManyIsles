@@ -225,9 +225,9 @@ class gen {
         $this->wriButton = '<a  href="'.$this->writeLink.'" ><button class="wikiButton">Write</button></a>';
         $this->repButton = '<a href="/fandom/report.php?id='.$this->page.'&v='.$this->article->version.'" class="wikiButton">Report</a>';
         $this->compButton = '<a href="/fandom/incomplete.php?v='.$this->article->version.'&name='.$this->page.'&d='.$incD.'&dom='.$this->domainnum.'" class="wikiButton">'.$nowText.'</a>';
-        $this->revButtons = '<a href="/fandom/revert.php?dir=0&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'" class="wikiButton">Revert</a>';
-        if ($this->article->revertees){$this->revButtons .= '<a href="/fandom/revert.php?dir=1&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'" class="wikiButton">Evolve</a>';
-                                $this->revButtons .= '<a href="/fandom/revert.php?dir=2&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'" class="wikiButton">Age</a>';
+        $this->revButtons = '<a href="/fandom/revert.php?dir=0&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'" target="_self" class="wikiButton">Revert</a>';
+        if ($this->article->revertees){$this->revButtons .= '<a href="/fandom/revert.php?dir=1&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'"  target="_self" class="wikiButton">Evolve</a>';
+                                $this->revButtons .= '<a href="/fandom/revert.php?dir=2&id='.$this->page.'&dom='.$this->domainnum.'&v='.$this->article->version.'"  target="_self" class="wikiButton">Age</a>';
         }
         $this->filButton = "";
         $this->delButton = "";
@@ -576,7 +576,7 @@ MAIN;
         FROM $this->database a
         LEFT OUTER JOIN $this->database b
             ON a.id = b.id AND a.v < b.v
-        WHERE b.id IS NULL AND a.root = $this->page AND a.status = 'active' ORDER BY reg_date ASC LIMIT 0, 999";
+        WHERE b.id IS NULL AND a.root = $this->page AND a.status != 'outstanding' ORDER BY reg_date ASC LIMIT 0, 999";
         if ($firstrow = $this->dbconn->query($query)) {
             while ($row = $firstrow->fetch_assoc()) {
                 $currentLink = str_replace("COOLTEXT", $row["id"], $rootChildLink);

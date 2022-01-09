@@ -167,6 +167,7 @@ a, .fakelink {
     float: right;
     padding: 16px;
     display: inline-block;
+    position: relative;
 }
 
 .flex-container {

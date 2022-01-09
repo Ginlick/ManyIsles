@@ -86,11 +86,14 @@ class dlengine {
       }
 
       $this->totalPub = 0;
-      $this->totalPrems = 0;
-      $query = "SELECT COUNT(IF (partner = $this->partId AND status != 'deleted', 1, NULL)) FROM products";
+      $this->totalPrem = 0; $this->totalPop = 0; $this->totalDl = 0;
+      $query = "SELECT tier, popularity, downloads  FROM products WHERE partner = $this->partId AND status != 'deleted'";
       if ($firstrow = $this->dlconn->query($query)){
-        while ($row = $firstrow->fetch_row()) {
-          $this->totalPub = $row[0];
+        while ($row = $firstrow->fetch_assoc()) {
+          $this->totalPub += 1;
+          if ($row["tier"]!=0){$this->totalPrem += 1;}
+          $this->totalPop += $row["popularity"];
+          $this->totalDl += $row["downloads"];
         }
       }
     }
