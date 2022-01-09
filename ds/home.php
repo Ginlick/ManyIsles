@@ -31,7 +31,7 @@ require_once("g/sideBasket.php");
     </style>
 </head>
 <body>
-    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;z-index:5;"></div>
+    <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl = "true"></div>
 
         <div class="flex-container">
             <div class='left-col'>
@@ -42,7 +42,7 @@ require_once("g/sideBasket.php");
                 <?php
                     doSideBasket();
                 ?>
-                
+
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
                     <li><a class="Bar" href="/docs/18/Digital_Store_Extension" target="_blank">Digital Store FAQ</a></li>
@@ -62,8 +62,7 @@ $latestid = "whelp";
         if ($toprow = $conn->query($query)) {
         $counter = 0;
             while ($row = $toprow->fetch_assoc()) {
-                if ($counter == 22){break;}
-                if (makeArtTab($row, $basketed->itemNumArray)) {$counter++;}
+                makeArtTab($row, $basketed->itemNumArray);
             }
         }
 
@@ -114,7 +113,7 @@ function showView(element, newimg) {
 
 function purchase(item){
     document.getElementById("basketing").value = item;
-    document.getElementById("basket").submit();    
+    document.getElementById("basket").submit();
 }
 
 var urlParams = new URLSearchParams(window.location.search);
@@ -137,6 +136,3 @@ function pop(x) {
 }
 
 </script>
-
-
-

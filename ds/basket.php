@@ -52,7 +52,7 @@ $includeDCodes = true;
     </style>
 </head>
 <body>
-    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;"></div>
+  <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl = "true"></div>
 
         <div class="flex-container">
             <div class='left-col'>
@@ -62,7 +62,7 @@ $includeDCodes = true;
                 </ul>
                 <?php
                     doSideBasket();
-                ?>            
+                ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
                     <li><a class="Bar" href="/wiki/h/digsto.html" target="_blank">Digital Store FAQ</a></li>
@@ -115,7 +115,7 @@ $includeDCodes = true;
             <?php if ($basketed->prodNum != 0){
                 echo '              <div class="checkoutBox">';
                 if ($basketed->type == "subs"){
-                    echo '  
+                    echo '
                     <button class="checkout" onclick="window.location.href = \'store?clear=subs\';">
                         <i class="fas fa-times"></i>
                         <span>Cancel</span>
@@ -148,6 +148,3 @@ if (show =="outOfStock"){
     createPopup("d:dsp;txt:Error. Some items in your basket were out of stock.");
 }
 </script>
-
-
-

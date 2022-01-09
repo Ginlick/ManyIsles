@@ -3,24 +3,11 @@
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 
-if(!isset($_COOKIE["loggedIn"])){header("Location: checkout.html");exit();}
-
-$id = $_COOKIE["loggedIn"];
-
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-      $confirmed = $row["emailConfirmed"];
-      $customerEmail = $row["email"];
-    }
-}
-
-$redirect = "checkout.html";
-include("../Server-Side/checkPsw.php");
-if ($confirmed == NULL){header("Location: checkoutw.php");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$user = new adventurer;
+if (!$user->emailConfirmed){header("Location: checkoutw");exit();}
+else if (!$user->check(true)){header("Location: checkout");exit();}
+$conn = $user->conn; $id = $user->user;
 
 session_start();
 if (!isset($_SESSION["subbasket"]) or $_SESSION["subbasket"] == ""){
@@ -165,7 +152,7 @@ print_r($testArray);*/
 
 
 require_once('stripe-php-7.75.0/init.php');
-require_once("keys/stripe-sk.php");
+require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/stripe-sk.php");
 header('Content-Type: application/json');
 
 $metaInfo = ["clid"=>$clearingId, "type"=>$basketed->type];
@@ -174,7 +161,7 @@ $successLink = '/ds/success?type='.$basketed->type;
 
 \Stripe\Stripe::setApiKey($stripe_sk);
 $checkout_session = \Stripe\Checkout\Session::create([
-  'customer_email' => $customerEmail,
+  'customer_email' => $user->email,
   'payment_method_types' => ['card'],
   'line_items' => $line_items,
   'mode' => $mode,
@@ -187,8 +174,7 @@ if ($basketed->type == "subs"){
     header("Location: " . $checkout_session->url);
 }
 else {
-    echo json_encode(['id' => $checkout_session->id]);  
+    echo json_encode(['id' => $checkout_session->id]);
 }
 
 ?>
-

@@ -8,7 +8,7 @@ class adventurer {
     public $cpsw = "";
     public $tier = 0;
     public $signedIn = false;
-    public $emailConf = false;
+    public $emailConfirmed = false;
 
     public $titleArr = [
             "Adventurer" => 0, "Poet" => 0, "Trader" => 0, "Journeyman" => 0,
@@ -38,7 +38,7 @@ class adventurer {
         $this->signedIn = false;
         if ($this->user == null){$this->user = 0;}
 
-        $query = "SELECT title, tier, uname, password, emailConfirmed FROM accountsTable WHERE id = $user";
+        $query = "SELECT title, tier, uname, password, email, emailConfirmed FROM accountsTable WHERE id = $user";
         if ($result = $this->conn->query($query)) {
             if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -46,6 +46,7 @@ class adventurer {
                     $this->title = $row["title"];
                     $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
                     $this->uname = $row["uname"];
+                    $this->email = $row["email"];
                     $this->cpsw = $row["password"];
                     if ($row["emailConfirmed"]==1){$this->emailConfirmed = true;}
                 }

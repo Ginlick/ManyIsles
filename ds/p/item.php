@@ -116,6 +116,9 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
 .switch input:focus + .slider {
     box-shadow: 0 0 1px var(--ds-gold);
 }
+.ss {
+  display: none;
+}
     </style>
 </head>
 <body>
@@ -131,6 +134,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
                 <li><a class="Bar" href="/docs/19/Publishing_Obligations">DS Publishing Conditions</a></li>
                 <li><a class="Bar" href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a></li>
                 <li><a class="Bar" href="countryArrays.php" target="_blank">Country Codes</a></li>
+                <li><a class="Bar" href="/docs/72/Smart_Stock" target="_blank">Smart Stock Syntax</a></li>
                 <li><a class="Bar" href="/docs/18/Digital_Store_Extension" target="_blank">DS Publishing</a></li>
                 <li><a class="Bar" href="/docs/15/Digital_Store" target="_blank">Digital Store FAQ</a></li>
             </ul>
@@ -166,7 +170,7 @@ else if ($artId != 0) {
                       echo '<td><a href="../'.$artId."/".str_replace(" ", "_", $artName).'" target="_blank">'.$artName.'</a></td>';
                       echo '<td>'.makeHuman($artPrice).'</td>';
                       echo '<td>'.$artPopularity.'</td>';
-                      echo '<td>'.alertStock($artStock).'</td>';
+                      echo '<td>'.alertStock(hasAnyStock($artSpecs, $artStock)).'</td>';
                       echo '<td>'.prodStatSpan($artStatus).'</td>';
                       echo "</tr>";
   echo '
@@ -174,7 +178,7 @@ else if ($artId != 0) {
       </table>';
 
   //stock
-  echo "<div class='stockCont' id='hStock'><h2>Update Stock</h2>";
+  echo "<div class='stockCont stockerble' id='hStock'><h2>Update Stock</h2>";
 
   $stockStatus = 0;
   $stockStatus = alertStock($artStock);
@@ -261,7 +265,7 @@ else {
                 </div>
                 <h2>Illustrations</h2>
                 <div class="formContentBlock">
-                    <p>Images must be hosted on an external service. Insert only direct links, and make sure they work by pasting them in your search bar.</p>
+                    <p>Images must be <a href="https://manyisles.ch/docs/28/Hosting_Images" target="_blank">hosted on an external service</a>. Insert only direct links, and make sure they work by pasting them in your search bar.</p>
                     <div class="inputCont">
                         <label for="thumbnail">Thumbnail <span>*</span></label>
                         <input type="text" name="thumbnail" value="<?php echo $artThumbnail; ?>" placeholder="https://i.imgur.com/VcMvMPc.png" autocomplete="off" required />
@@ -306,6 +310,10 @@ $specTemplate = <<<BIGTEMPLE
                 <input type="text" value="SPECTOOLTIP" placeholder="Choose a Color" autocomplete="off" onchange="updateSpecs(specNumHerePls, 'tooltip', this); " />
                 <p class="inputErr info" default="Optionally gives some extra info about the specification to the customer."></p>
             </div>
+            <div class="inputCont">
+                <label>Specific Stock</label>
+                <input type="checkbox" onchange="updateSpecs(specNumHerePls, 'smartstock', this);" checked/>
+            </div>
         </div>
         <div class="rightSpecCol">
             <div class="buttCon">
@@ -314,7 +322,9 @@ $specTemplate = <<<BIGTEMPLE
                     <span>Remove</span>
                 </button>
             </div>
+            <div style="width:100%;" class="optionContCont" tracker-specOptionsId="specNumHerePls">
             ADDSPECOTIONSHERE
+            </div>
             <div class="addSome" onclick="addSome(1, specNumHerePls);">
                 <i class="fa fa-plus"></i>
             </div>
@@ -325,7 +335,6 @@ $specTemplate = <<<BIGTEMPLE
 </div>
 BIGTEMPLE;
 $optionTemplate = <<<BIGTEMPLE
-            <div style="width:100%;" class="optionContCont" tracker-specOptionsId="specNumHerePls">
                 <div class="optionCont" tracker-option="TRACKEROPTION">
                     <h3>Option 1</h3>
                     <div class="inputCont">
@@ -338,13 +347,17 @@ $optionTemplate = <<<BIGTEMPLE
                         <input type="number" value="OPTIONPRICEMOD" tracker-optionName="price" placeholder="120" oninput="checkSyntax(this, '[^-0-9]', 0)" onchange="checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
                         <p class="inputErr info" default="This modifier in US$ cents will be added to the base price. Takes negatives."></p>
                     </div>
+                    <div class="inputCont smartstockerspecNumHerePls" style='display:none'>
+                        <label>Stock</label>
+                        <input type="number" value="OPTIONSTOCKMOD" tracker-optionName="stock" placeholder="10" oninput="checkSyntax(this, '[^0-9]', 0)" onchange="checkSyntax(this, '[^0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
+                        <p class="inputErr info" default="How many of this variant you have in stock."></p>
+                    </div>
                     <div class="inputCont">
                         <label>Shipping Modifier</label>
                         <input type="number" value="OPTIONSHIPMOD" tracker-optionName="shipping" placeholder="120" oninput="checkSyntax(this, '[^-0-9]', 0)" onchange="checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
                         <p class="inputErr info" default="This modifier in US$ cents will be added to the base shipping costs."></p>
                     </div>
                 </div>
-            </div>
 BIGTEMPLE;
     $tracker = -1;
     foreach ($artSpecsArray as $specArray){
@@ -353,6 +366,8 @@ BIGTEMPLE;
         $specCol = str_replace("specNumHerePls", $tracker, $specCol);
         $specCol = str_replace("SPECNAME", txtUnparse($specArray["name"], 1), $specCol);
         $specCol = str_replace("SPECTOOLTIP", txtUnparse($specArray["tooltip"], 1), $specCol);
+        $smartstock = true;
+        if (!isset($specArray["smartstock"]) OR $specArray["smartstock"]==0){$smartstock = false;$specCol = str_replace("checked", "", $specCol);}
         $optionTracker = -1;
         foreach ($specArray["options"] as $optionArray){
             if (!isset($optionArray["shipping"])){$optionArray["shipping"] = 0;}
@@ -364,6 +379,8 @@ BIGTEMPLE;
             $optionCont = str_replace("OPTIONNAME", txtUnparse($optionArray["name"], 1), $optionCont);
             $optionCont = str_replace("OPTIONPRICEMOD",  txtUnparse($optionArray["price"], 1), $optionCont);
             $optionCont = str_replace("OPTIONSHIPMOD",  txtUnparse($optionArray["shipping"], 1), $optionCont);
+            $optionCont = str_replace("OPTIONSTOCKMOD",  txtUnparse($optionArray["stock"], 1), $optionCont);
+            if ($smartstock) { $optionCont = str_replace("style='display:none'",  "", $optionCont);}
             $specCol = str_replace("ADDSPECOTIONSHERE",  $optionCont."ADDSPECOTIONSHERE", $specCol);
         }
         $specCol = str_replace("ADDSPECOTIONSHERE",  "", $specCol);
@@ -389,10 +406,10 @@ BIGTEMPLE;
                     <input type="text" name="shipping" value="<?php echo $artShipping; ?>" placeholder="US:200,EUR:900,GLO:1800" oninput="checkSyntaxR(this, '^([A-Z-a-z]{2,3}:[0-9]*(,|))+$', 0)" onchange="checkSyntaxR(this, '^([A-Z-a-z]{2,3}:[0-9]*(,|))+$', 1)" autocomplete="off" />
                     <p class="inputErr info" default="How much one batch costs you to send, in US$ cents (set the Maximal Simultaneous Purchase value to limit batch size).  <a href='countryArrays.php' target='_blank'>view country codes</a>"></p>
                 </div>
-                <div class="inputCont">
+                <div class="inputCont stockerble">
                     <label for="stock">Current Stock <span>*</span></label>
-                    <input type="number" name="stock" value="<?php echo $artStock; ?>" min="0" placeholder="10" oninput="checkSyntax(this, '[^0-9]', 0)" onchange="checkSyntax(this, '[^0-9]', 1)" required />
-                    <p class="inputErr info" default="How many items you currenly have in stock."></p>
+                    <input type="number" name="stock" value="<?php echo $artStock; ?>" min="0" placeholder="10" oninput="checkSyntax(this, '[^0-9]', 0)" onchange="checkSyntax(this, '[^0-9]', 1)" />
+                    <p class="inputErr info" default="Leave empty if using specific stock. <a href='/docs/72/Smart_Stock' target='_blank'>More info</a>"></p>
                 </div>
                 <div class="inputCont">
                     <label for="minPrice">Minimal Price</label>
@@ -447,6 +464,7 @@ BIGTEMPLE;
 </html>
 <script src="/Code/CSS/global.js"></script>
 <script src="/Server-Side/parseTxt.js"></script>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script>
 
 var urlParams = new URLSearchParams(window.location.search);
@@ -472,31 +490,11 @@ else if (why == "sStatus"){
 
 //deal with notifs: fullSub, stockSub
 
-    var specsArray = {
+    var specsArray =
 <?php
-    $tracker = -1;
-    foreach ($artSpecsArray as $specArray){
-        $tracker++;
-        if ($tracker == 0){
-            $workedTracker = $tracker;
-        } else {$workedTracker = ", $tracker"; }
-        echo $workedTracker.': {"name" : "'.$specArray["name"].'", "tooltip" : "'.$specArray["tooltip"].'", "options" : [ ';
-        $optionTracker = -1;
-        foreach ($specArray["options"] as $optionArray){
-            if (!isset($optionArray["shipping"])){$optionArray["shipping"] = 0;}
-            $optionTracker++;
-            if ($optionTracker != 0) {echo ", ";}
-            echo '{ "name": "'.$optionArray["name"].'", "price": '.txtUnparse($optionArray["price"], 1).', "shipping": '.txtUnparse($optionArray["shipping"], 1).' }';
-        }
-        echo "] }";
-    }
-    echo "};
+  echo json_encode($artSpecsArray).";";
 
-";
-
-    echo " var currSpecification = $tracker;
-
-";
+    echo " var currSpecification = $tracker;";
 
 if ($artStatus == "deleted"){
     echo "document.getElementById('subItemForm').remove();";
@@ -514,6 +512,10 @@ if ($artStatus == "deleted"){
                 <label>Tooltip</label>
                 <input type="text" placeholder="Choose a Color" autocomplete="off" onchange="updateSpecs(specNumHerePls, 'tooltip', this); " />
                 <p class="inputErr info" default="Optionally gives some extra info about the specification to the customer."></p>
+            </div>
+            <div class="inputCont">
+                <label>Specific Stock</label>
+                <input type="checkbox" onchange="updateSpecs(specNumHerePls, 'smartstock', this);" />
             </div>
         </div>
         <div class="rightSpecCol">
@@ -536,6 +538,11 @@ if ($artStatus == "deleted"){
                         <input type="number" tracker-optionName="price" placeholder="120" oninput="checkSyntax(this, '[^-0-9]', 0)" onchange="checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
                         <p class="inputErr info" default="This modifier in US$ cents will be added to the base price. Takes negatives."></p>
                     </div>
+                    <div class="inputCont ss smartstockerspecNumHerePls">
+                        <label>Stock</label>
+                        <input type="number" value="OPTIONSTOCKMOD" tracker-optionName="stock" placeholder="10" oninput="checkSyntax(this, '[^0-9]', 0)" onchange="checkSyntax(this, '[^0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
+                        <p class="inputErr info" default="How many of this variant you have in stock."></p>
+                    </div>
                     <div class="inputCont">
                         <label>Shipping Modifier</label>
                         <input type="number" tracker-optionName="shipping" placeholder="20" oninput="checkSyntax(this, '[^-0-9]', 0)" onchange="checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
@@ -554,13 +561,17 @@ if ($artStatus == "deleted"){
 
     for (let inputCont of document.getElementsByClassName("inputCont")) {
         let input = inputCont.children[1];
-        input.addEventListener("focus", showInfo);
-        input.addEventListener("focusout", hideInfo);
+        if (inputCont.children[2] != undefined){
+          input.addEventListener("focus", showInfo);
+          input.addEventListener("focusout", hideInfo);
+        }
     }
     function showInfo(evt) {
+      if (evt.currentTarget.parentElement.children[2] != undefined){
         evt.currentTarget.parentElement.children[2].classList.add("info");
         evt.currentTarget.parentElement.children[2].innerHTML = evt.currentTarget.parentElement.children[2].getAttribute("default");
         evt.currentTarget.parentElement.children[2].style.opacity = "1";
+      }
     }
 
     for (let inputErr of document.getElementsByClassName("inputErr")) {
@@ -614,19 +625,49 @@ if ($artStatus == "deleted"){
 
 
     function updateSpecs(specification, index, element) {
-        checkSyntax(element, '"', 1);
         if (index != "options") {
+          if (index == "smartstock"){
+            let smarter = 0;
+            if (element.checked){smarter = 1;}
+            specsArray[specification]["smartstock"] = smarter;
+            for (let inputCont of document.getElementsByClassName("smartstocker"+specification)) {
+              if (smarter == 1){
+                inputCont.style.display = "block";
+              }
+              else {
+                inputCont.style.display = "none";
+              }
+            }
+            checkIfSmart();
+          }
+          else {
+            checkSyntax(element, '"', 1);
             specsArray[specification][index] = txtParse(element.value, 2);
+          }
         }
         else {
+            checkSyntax(element, '"', 1);
             let optionsIndex = element.parentElement.parentElement.getAttribute("tracker-option");
             let which = element.getAttribute("tracker-optionName");
             let newvalve = "";
             if (which=="name"){newvalve = txtParse(element.value, 2);} else {newvalve = element.value;}
             specsArray[specification][index][optionsIndex][which] = newvalve;
+            specsArray[specification]["smartstock"] = 1;
         }
     }
-
+    function checkIfSmart() {
+      smartstock = false;
+      for (let eilement in specsArray){
+        if (specsArray[eilement]["smartstock"] == 1){smartstock = true;break;}
+      }
+      if (smartstock){
+        $(".stockerble").hide();
+      }
+      else {
+        $(".stockerble").show();
+      }
+    }
+    checkIfSmart();
 
     function objectSize(obj) {
         var size = 0,
@@ -654,23 +695,29 @@ if ($artStatus == "deleted"){
             let inputCont1 = `<div class="inputCont"><label> Label <span>*</span></label><input type="text" tracker-optionName="name" placeholder="Red" onchange=" updateSpecs(specNumsHere, 'options', this);" required /><p class="inputErr info" default="This option's label."></p></div >`;
             let inputCont2 = `<div class="inputCont"><label> Price Modifier</label><input type="text" tracker-optionName="price" placeholder="120" onchange=" checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumsHere, 'options', this);" /><p class="inputErr info" default="This modifier in US$ cents will be added to the base price. Takes negatives."></p></div >`;
             let inputCont3 = `<div class="inputCont"><label> Shipping Modifier</label><input type="text" tracker-optionName="shipping" placeholder="20" onchange=" checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumsHere, 'options', this);" /><p class="inputErr info" default="This modifier in US$ cents will be added to the base shipping costs."></p></div >`;
+            let inputCont4 = `<div class="inputCont ss smartstockerspecNumsHere"><label> Stock</label><input type="text" tracker-optionName="stock" placeholder="10" onchange="updateSpecs(specNumsHere, 'options', this);" /><p class="inputErr info" default="How many of this variant you have in stock."></p></div >`;
             inputCont1 = inputCont1.replace(/specNumsHere/g, specification);
             inputCont2 = inputCont2.replace(/specNumsHere/g, specification);
             inputCont3 = inputCont3.replace(/specNumsHere/g, specification);
+            inputCont4 = inputCont4.replace(/specNumsHere/g, specification);
 
             inputCont1 = parseHTML(inputCont1);
             inputCont2 = parseHTML(inputCont2);
             inputCont3 = parseHTML(inputCont3);
+            inputCont4 = parseHTML(inputCont4);
             inputCont1.children[1].addEventListener("focus", showInfo);
             inputCont1.children[1].addEventListener("focusout", hideInfo);
             inputCont2.children[1].addEventListener("focus", showInfo);
             inputCont2.children[1].addEventListener("focusout", hideInfo);
             inputCont3.children[1].addEventListener("focus", showInfo);
             inputCont3.children[1].addEventListener("focusout", hideInfo);
+            inputCont4.children[1].addEventListener("focus", showInfo);
+            inputCont4.children[1].addEventListener("focusout", hideInfo);
 
             optionCont.appendChild(optionH3);
             optionCont.appendChild(inputCont1);
             optionCont.appendChild(inputCont2);
+            optionCont.appendChild(inputCont4);
             optionCont.appendChild(inputCont3);
             for (let optionContCont of document.getElementsByClassName("optionContCont")) {
                 if (optionContCont.getAttribute("tracker-specOptionsId") == specification) {
@@ -682,8 +729,8 @@ if ($artStatus == "deleted"){
         else {
             if (specsArray[specification]["options"].length > 1) {
                 for (let optionContCont of document.getElementsByClassName("optionContCont")) {
-                    if (optionContCont.getAttribute("tracker-specOptionsId") == specification) {
-                        optionContCont.removeChild(optionContCont.lastChild);
+                    if (optionContCont.getAttribute("tracker-specoptionsid") == specification) {
+                        optionContCont.removeChild(optionContCont.lastElementChild);
                         specsArray[specification]["options"].pop();
                     }
                 }
@@ -701,9 +748,11 @@ if ($artStatus == "deleted"){
                 specsArray[currSpecification] = {
                     "name": "",
                     "tooltip": "",
+                    "smartstock": 0,
                     "options": [{
                         "name": "",
                         "price": 0,
+                        "stock": 0,
                         "shipping": 0
                     }]
                 };

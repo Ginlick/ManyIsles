@@ -40,6 +40,7 @@ foreach ($artSpecsArray as $key => $specArray){
     if ($specArray["name"] == "") {
         $specArray["name"] = "Select $counter";
     }
+    if (!isset($specArray["smartstock"])){$specArray["smartstock"] = 0;}
     $oCounter = 0;
     foreach ($specArray["options"] as $key2 => $optionArray){
         $oCounter++;
@@ -51,6 +52,9 @@ foreach ($artSpecsArray as $key => $specArray){
         }
         if ($optionArray["shipping"] == "") {
             $optionArray["shipping"] = 0;
+        }
+        if ($optionArray["stock"] == "") {
+            $optionArray["stock"] = 0;
         }
         $specArray["options"][$key2] = $optionArray;
     }

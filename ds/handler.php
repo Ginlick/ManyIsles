@@ -4,8 +4,8 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/stripe-php-7.75.0/init.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/ds/keys/stripe-sk.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/ds/keys/ds-actcode.php');
+require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/stripe-sk.php");
+require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/ds-actcode.php");
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/subs/subHandler.php');
 
@@ -40,7 +40,7 @@ switch ($event->type) {
 
         if ($session->metadata["type"]=="items"){
             require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/handlerEffect.php');
-    
+
             session_start();
             session_destroy();
         }
@@ -72,4 +72,3 @@ http_response_code(200);
 
 
 ?>
-

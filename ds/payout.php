@@ -87,7 +87,7 @@ function makeHuman($ordiprice) {
                 <div class="contentblock">
                     <h2>Credit Payout</h2>
                     <p>Withdraw money from your Many Isles Credit. <span id="infoSpan">Note that a fee of 2.9% + .32$ applies to payments through stripe.</span></p>
-                    <form id="SignUpForm" >
+                    <form id="" >
 
                         <div class="container">
                             <label for="creditAmount"><i class="fas fa-coins"></i> Payout Amount ($)</label>
@@ -137,13 +137,13 @@ function makeHuman($ordiprice) {
         $("#InputErr").hide();
         $("#howMuchInfo").html("");
         if (isNaN(value)){
-            $("#InputErr").show();           
-            $("#InputErr").html("Incorrect Format!");           
+            $("#InputErr").show();
+            $("#InputErr").html("Incorrect Format!");
         }
         else if (value < 5) {
             $("#infoSpan").show();
             $("#InputErr").show();
-            $("#InputErr").html("Insufficient Amount!");           
+            $("#InputErr").html("Insufficient Amount!");
         }
         else if (value > custTotal) {
             $("#InputErr").show();
@@ -157,5 +157,3 @@ function makeHuman($ordiprice) {
     }
 
 </script>
-
-

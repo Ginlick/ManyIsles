@@ -3,26 +3,15 @@
 if(!isset($_COOKIE["loggedIn"])) {header("Location: checkout.html");setcookie("loggedP", "", time() -3600, "/");exit();}
 if(!isset($_COOKIE["loggedP"])) {header("Location: checkout.html");setcookie("loggedIn", "", time() -3600, "/");exit();}
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
 $codesMatter = true;
 require_once("g/sideBasket.php");
 
-
-$id = $_COOKIE["loggedIn"];
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-      $confirmed = $row["emailConfirmed"];
-    }
-}
-
-$redirect = "checkout.html";
-include("../Server-Side/checkPsw.php");
-if ($confirmed == NULL){header("Location: checkoutw.php");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$user = new adventurer;
+if (!$user->emailConfirmed){header("Location: checkoutw");exit();}
+else if (!$user->check(true)){header("Location: checkout");exit();}
+$conn = $user->conn; $id = $user->user;
 
 if ($type == "items"){
     if (isset($_SESSION["basket"])) {
@@ -261,6 +250,7 @@ if ($basketed->codesExist){
             </div>
 
             <div id='content' class='column'>
+              <?php echo $user->signPrompt(); ?>
 
                 <h1>Step 3</h1>
 
@@ -394,7 +384,7 @@ if ($basketed->codesExist){
         }
     }
 
-    <?php require("keys/stripe-pk.php");
+    <?php require(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/stripe-pk.php");
     echo "var stripe = Stripe('$stripe_pk');"; ?>
     function doStripe() {
       if (<?php if ($stripeTotal >= 150){echo "true";} else {echo "false";}?>) {
@@ -456,5 +446,3 @@ if ($basketed->codesExist){
     }
 
 </script>
-
-

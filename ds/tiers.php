@@ -37,8 +37,6 @@ require_once("g/sideBasket.php");
 }
 
         .tierblock h2 {
-            font-family: 'Trebuchet MS';
-            color:black;
             margin: 10px 0 0;
             font-size: 2vw;
         }

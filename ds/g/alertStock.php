@@ -38,4 +38,26 @@ if (!function_exists ("prodStatSpan")) {
         return $span;
     }
 }
-?>     
+if (!function_exists ("hasAnyStock")) {
+    function hasAnyStock($specs, $baseStock){
+      if (gettype($specs)=="string"){$specs = json_decode($specs, true);}
+      $smartstock = false;
+      $totalStock = 0;
+      foreach ($specs as $spec){
+        if (isset($spec["smartstock"]) AND $spec["smartstock"] == 1){
+          $smartstock = true;
+          foreach ($spec["options"] as $option){
+            if (isset($option["stock"])){
+              $totalStock += $option["stock"];
+            }
+          }
+        }
+      }
+      if (!$smartstock){
+        $totalStock = $baseStock;
+      }
+
+      return $totalStock;
+    }
+}
+?>

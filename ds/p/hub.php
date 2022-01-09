@@ -127,7 +127,7 @@ require_once("../g/alertStock.php");
                                     echo "<tr>";
                                     echo '<td><img src="'.clearImgUrl($row["thumbnail"]).'" alt="thumbnail" /></td>';
                                     echo '<td><a href="../'.$link.'" target="_blank">'.$articleName.'</a></td>';
-                                    echo '<td>'.alertStock($row["stock"]).'</td>';
+                                    echo '<td>'.alertStock(hasAnyStock($row["specifications"], $row["stock"])).'</td>';
                                     echo '<td>'.prodStatSpan($row["status"]).'</td>';
                                     echo '<td><a href="item.php?id='.$articleId.'"><button class="checkout homescreen"><i class="fas fa-arrow-right"></i> Edit</button></a></td>';
                                     echo "</tr>";

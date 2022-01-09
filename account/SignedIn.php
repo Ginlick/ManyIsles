@@ -172,6 +172,7 @@ $partBody =<<<MESSAGE
 MESSAGE;
 }
 else if ($partstatus == "active") {
+
 $partBody =<<<MESSAGE
                 <div id='Part' class='column'>
                 <h1>partnership</h1>
@@ -184,6 +185,8 @@ $partBody =<<<MESSAGE
                 <ul class="coolInfo">
                     <li><b>XADA1</b> products</li>
                     <li><b>XADA4</b> tiered products</li>
+                    <li><b>XADA2</b> views</li>
+                    <li><b>XADA3</b> downloads</li>
                 </ul>
                 <div style="width:30%;margin:auto;">
                     <a class="popupButton" style="margin-top:3vw;" href="Publish.php">Edit</a>
@@ -194,7 +197,9 @@ MESSAGE;/*'*/
     if ($dl->ppower > 0){$partBody = str_replace("Trader.png", "HighMerchant.png", $partBody);}
     $partBody = str_replace("partnership", $partname, $partBody);
     $partBody = str_replace("XADA1", $dl->totalPub, $partBody);
-    $partBody = str_replace("XADA4", $dl->totalPrems, $partBody);
+    $partBody = str_replace("XADA4", $dl->totalPrem, $partBody);
+    $partBody = str_replace("XADA2", $dl->totalPop, $partBody);
+    $partBody = str_replace("XADA3", $dl->totalDl, $partBody);
 }
 else if ($partstatus == "suspended") {
 $partBody =<<<MESSAGE
@@ -270,8 +275,6 @@ if ($toprow = $conn->query($query)) {
             $ordXStatus = $row["status"];
             $ordRegdate = $row["reg_date"];
 
-            $inbasket = explode(",", $ordItems);
-            $fullUL = detailsUL($inbasket);
 
 
             $date_array = date_parse($ordRegdate);
@@ -279,7 +282,7 @@ if ($toprow = $conn->query($query)) {
 
             $coolTable .= "<tr>";
             $coolTable .= '<td>#'.$ordClid."-".$ordUd.'</td>';
-            $coolTable .= '<td>'.$fullUL.'</td>';
+            $coolTable .= '<td>'.$ordItems.'</td>';
             $coolTable .= '<td><a href="/ds/p/partner.php?id='.$ordSeller.'" target="_blank">p#'.$ordSeller.'</a></td>';
             $coolTable .= '<td>'.makeHuman($ordAmount).'</td>';
             $coolTable .= '<td>'.$ordPubdate.'</td>';
@@ -315,7 +318,7 @@ $creditBody = <<<EPICCOOL
                 <table class="theTable">
                     <thead>
                         <tr>
-                            <td>Description</td><td>Source</td><td>Amount</td><td>Date</td>
+                            <td>Transaction</td><td>Source</td><td>Amount</td><td>Date</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -476,7 +479,6 @@ GREATSTUFF;
                     <li onclick='clinnation("Over")'><p id='OverBar' class="Bar">Overview</p></li>
                     <?php if ($emailConfirmed != 1) {echo $confMailBar; } ?>
                     <li onclick='clinnation("Disc")'> <p id='DiscBar' class="Bar"><?php echo $disctitle; ?></p></li>
-                    <li onclick='clinnation("Pat")'> <p id='PatBar' class="Bar">Connect Patreon</p></li>
                     <li> <a class="Bar line" href="/ds/tiers.php" target="_blank">Purchase Tier</a></li>
                     <?php echo $partBar; ?>
                     <?php echo $adminBar; ?>
@@ -537,24 +539,6 @@ GREATSTUFF;
                 else if ($discname == null) { echo $discConnBody; }
                 else {echo $discBody; }
                 ?>
-            </div>
-
-            <div id='Pat' class='column'>
-                <h1>Connect Patreon</h1>
-                <div style="margin:auto;">
-                    <img src="/Imgs/Pat.png" alt="discord" style='width:20%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                </div>
-                <p>
-                    If you are a patron of the <a href="https://patreon.com/manyisles" target="_blank">Many Isles Patreon</a>, make sure to connect your account so that you can gain the higher title and tier.<br />
-                    <span style="color:crimson">Note:</span> This method is deprecated. We recommend that you <a href="/ds/tiers.php">buy tiers in our digital store</a> instead.
-                </p>
-                <form action="PatConn.php" method="post">
-                    <div class="container">
-                        <input class="mainInput" type="text" name="patSubmit" placeholder="Elder Gods" autocomplete="off" required />
-                    </div>
-                    <p id="patSucc" style="display:none;color:green">Connected! Your tier should be updated in a moment.</p>
-                    <button class="popupButton" type="submit" style="margin-top:3vw;">Submit</button>
-                </form>
             </div>
 
             <?php echo $partBody; /*'*/ ?>
