@@ -312,6 +312,12 @@ class gen {
 
     function giveFavicon() {
         $main = ' <link rel="icon" href="/Imgs/FaviconWiki.png">';
+        if ($this->domain == "spells"){
+          $main = ' <link rel="icon" href="/Imgs/FaviconSpell.png">';
+        }
+        else {
+          $main = ' <link rel="icon" href="/Imgs/FaviconMyst.png">';
+        }
         $main .= '  <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
         <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">';
@@ -393,26 +399,41 @@ class gen {
         if ($this->domain == "5eS"){
           $main .=' <img src="/Imgs/5eSlogo.png" />';
         }
-        else if ($this->domain == "mystral") {
+        else if ($this->domain == ("mystral" OR"spells")) {
             $main .='<a href="'.$this->homelink.'" style="padding: 0;display:flex;align-items: center;"> <img src="'.$this->baseImage.'" /></a>';
         }
         else {
           $main .=' <img src="/Imgs/Favicon.png" />';
         }
-        $main .='   </div>
-            <div class="logoCont"><a href="/home" target="_self">'.$this->domainLogo.'</a></div>
-            <div class="wikisbarcont">
-                <input type="text" class="wikisearchbar serach" placeholder="Search '.$this->pagename.'s..." oninput="offerSuggestions(this, \'\', 0, \'link\', 1);" onfocus="offerSuggestions(this, \'\', 0, \'link\', 1);" autocomplete="off"></input>
-                <div class="suggestions" ></div>
-            </div>
-        </div>
-        <div class="topBarLeft">';
-            if ($this->power >= $this->minPower AND $this->domain != "mystral") {
-                $main .= $this->revButtons;
-                $main .= '<a href="/docs/edit.php?v='.$this->article->version.'&id='.$this->page.'&domain='.$this->domain.'" target="_self">Edit</a>';
-                $main .= '<a href="/docs/edit.php?w='.$this->parentWiki.'&domain='.$this->domain.'" target="_self">Write</a>';
-            }
+        if ($this->domainType == "spells"){
+          $main .='   </div>
+              <div class="logoCont"><a href="/home" target="_self">'.$this->domainLogo.'</a></div>
+              <div class="wikisbarcont">
+                  <input type="text" class="wikisearchbar serach" placeholder="Search '.$this->pagename.'s..." oninput="offerSuggestions(this, \'\', 0, \'link\', 1);" onfocus="offerSuggestions(this, \'\', 0, \'link\', 1);" autocomplete="off"></input>
+                  <div class="suggestions" ></div>
+              </div>
+          </div>
+          <div class="topBarLeft">
+            <a href="'.$this->baseLink.'index">Index</a>
+            <a href="'.$this->baseLink.'list">Lists</a>
+          ';
+        }
+        else {
+          $main .='   </div>
+              <div class="logoCont"><a href="/home" target="_self">'.$this->domainLogo.'</a></div>
+              <div class="wikisbarcont">
+                  <input type="text" class="wikisearchbar serach" placeholder="Search '.$this->pagename.'s..." oninput="offerSuggestions(this, \'\', 0, \'link\', 1);" onfocus="offerSuggestions(this, \'\', 0, \'link\', 1);" autocomplete="off"></input>
+                  <div class="suggestions" ></div>
+              </div>
+          </div>
+          <div class="topBarLeft">';
+              if ($this->power >= $this->minPower AND $this->domain != "mystral") {
+                  $main .= $this->revButtons;
+                  $main .= '<a href="/docs/edit.php?v='.$this->article->version.'&id='.$this->page.'&domain='.$this->domain.'" target="_self">Edit</a>';
+                  $main .= '<a href="/docs/edit.php?w='.$this->parentWiki.'&domain='.$this->domain.'" target="_self">Write</a>';
+              }
 
+        }
         $main .=' <a href="/account/SignedIn.php" target="_self">Account</a>
                 <a href="/home" target="_self">Home</a>
             </div>
