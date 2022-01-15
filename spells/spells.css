@@ -26,12 +26,15 @@
   padding: 15px 5px;
   background-color: var(--doc-base-color);
 }
-.theTable {
+.theTable, thead, tbody {
   width: 100%;
-  display: inline-block;
+  text-align: left;
 }
 tr:nth-child(even), thead tr {
   background-color: var(--spell-accent);
+}
+.theTable tr > :nth-child(1), .theTable tr > :nth-child(6) {
+   display: none;
 }
 .image-content img {
   width: 100%;

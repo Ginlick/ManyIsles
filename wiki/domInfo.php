@@ -98,14 +98,13 @@ function equipDom($gen, $domain = "fandom"){
     else if ($domain == "spells"){
         require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_spells.php");
         $gen->dbconn = $spellconn;
-        $gen->dbconn = $gen->conn;
         $gen->domain = "spells";
         $gen->domainnum = 4;
         $gen->database = "spells";
         $gen->pagename = "spell";
         $gen->groupName = "spell list";
         $gen->homelink = "/spells/index";
-        $gen->minPower = 0;
+        $gen->minPower = 2;
         $gen->domainName = "Spells";
         $gen->domainLogo = '<span class="fakelink fesLogo">Spells</span>';
         $gen->defaultBanner = "starry.png";

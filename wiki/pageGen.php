@@ -140,7 +140,8 @@ class gen {
         //power
         if ($this->domain != "mystral"){
             require_once($_SERVER['DOCUMENT_ROOT']."/fandom/accStat.php");
-            $this->power = getAccStat($this->dbconn, $this->user, $this->parentWiki, false);
+            $cunn = $this->dbconn; if ($this->domainType == "spells"){$cunn = $this->conn;}
+            $this->power = getAccStat($cunn, $this->user, $this->parentWiki, false);
         }
         else {
             $this->power = 5;
@@ -315,7 +316,7 @@ class gen {
         if ($this->domain == "spells"){
           $main = ' <link rel="icon" href="/Imgs/FaviconSpell.png">';
         }
-        else {
+        else if ($this->domain == "mystral") {
           $main = ' <link rel="icon" href="/Imgs/FaviconMyst.png">';
         }
         $main .= '  <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
@@ -374,6 +375,12 @@ class gen {
             $main .= '<script src="/wiki/edit.js"></script>';
             $main .= '<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>';
         }
+
+        if ($this->domain == "spells"){
+          $main .= '        <script src="theTablebuilder.js">
+                   </script>';
+        }
+
         return $main;
     }
     function giveWikStyle() {
@@ -1509,6 +1516,88 @@ NABSDAI;
     }
 }
 
+class spellGen {
+  public $gen;
+  public $parse;
+  function __construct($gen) {
+    $this->gen = $gen;
+    if ($this->gen->$page == 0){$this->gen->page = 25;}
+    if ($this->gen->$page == 0){$this->gen->page = 25;}
+
+    require($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
+    $this->parse = new parse($gen->dbconn, 0, 0, $gen->domain);
+  }
+  function dic($mod = "") {
+    $query = "SELECT details FROM ".$this->gen->database." $mod";
+    $arr = [];
+    if ($found = $this->gen->dbconn->query($query)) {
+      while ($row = $found->fetch_assoc()){
+        $details = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $row["details"]), true);
+        $details["Name"] = txtUnparse($details["Name"]);
+        $details["FullDesc"] = $this->parse->bodyParser($details["FullDesc"]);
+        array_push($arr, $details);
+      }
+    }
+    return $arr;
+  }
+  function spellBlock($spellId = null, $wikId = null) {
+    if ($this->gen->$page != 0) {}
+    $spellA = $this->dic("WHERE id = $spellId AND parentWiki = $wikId ORDER BY v DESC LIMIT 1");
+    if ($spellA == []){ $spellId = 25; $wikId = 1; $spellA = $this->dic("WHERE id = $spellId AND parentWiki = $wikId ORDER BY v DESC MAX 1"); }
+
+    $stencil = <<<MAXX
+      <div class="sInfoBlock">
+          <h3 id="sName">Slashing Light</h3>
+          <div id="sLevel" class="sText">Level 0 spell</div>
+          <div id="sSchool" class="sText">Evocation</div>
+          <div id="sElement" class="sText">High Magic</div>
+      </div>
+      <div class="sInfoBlock">
+          <div id="sCastingTime" class="sText">Casting Time: 1 action</div>
+          <div id="sRange" class="sText">Range: 120 feet</div>
+          <div id="sComponents" class="sText">Components: V, S</div>
+          <div id="sDuration" class="sText">Duration: Instantaneous</div>
+      </div>
+      <div class="sInfoBlock">
+          <div id="sClass" class="sText"> Bard, Cleric, Psion, Valkyrie, Wizard</div>
+      </div>
+      <div class="sInfoBlock">
+          <div id="sFullDesc" class="sText">
+              DESCRIPTION
+          </div>
+          <div id="exclusiveNote">
+              SOURCE3
+          </div>
+      </div>
+    MAXX;
+
+    if ($spellA != []){
+      $spellA = $spellA[0];
+      $stencil = str_replace("Slashing Light", $spellA["Name"], $stencil);
+      $stencil = str_replace(" 0 ", " ".$spellA["Level"]." ", $stencil);
+      $stencil = str_replace("Evocation", $spellA["School"], $stencil);
+      $stencil = str_replace("High Magic", $spellA["Element"], $stencil);
+      $stencil = str_replace("1 action", $spellA["CastingTime"], $stencil);
+      $stencil = str_replace("120 feet", $spellA["Range"], $stencil);
+      $stencil = str_replace("V, S", $spellA["Components"], $stencil);
+      $stencil = str_replace("Instantaneous", $spellA["Duration"], $stencil);
+      $stencil = str_replace("Bard, Cleric, Psion, Valkyrie, Wizard", $spellA["Class"], $stencil);
+      $stencil = str_replace("DESCRIPTION", $spellA["FullDesc"], $stencil);
+      //if ($spellA["Source"]!=""){$stencil = str_replace("SOURCE3", "Source: ".$spellA["Source"], $stencil);}
+    }
+    else {
+      $stencil = str_replace("DESCRIPTION", "You hurl a ray of light at a creature within range. Make a ranged attack roll. On a hit, the creature takes 1d10 radiant damage. <br><br> This spell's damage increases: 5th-2d10, 11th-3d10, 17th-4d10.", $stencil);
+    }
+    $stencil = str_replace("SOURCE3", "", $stencil);
+
+    if ($gen->canedit) {
+      $stencil .= '
+        <div class="bottButtCon">'.$gen->ediButton.' '.$gen->wriButton.'</div>
+      ';
+    }
+  }
+}
+
 class article {
     public $conn;
     public $page;
@@ -1562,6 +1651,7 @@ class article {
             if ($firstrow = $this->conn->query($query)) {
                 if (mysqli_num_rows($firstrow) > 0){
                     while ($row = $firstrow->fetch_assoc()) {
+                      if ($this->gen->domainType != "spells"){
                         $this->status = $row["status"];
                         if ($this->status == "reverted"){$this->revertees = true; return $this->getInfo($level + 1);}
                         $this->name = $row["name"];
@@ -1588,13 +1678,15 @@ class article {
                         $this->parentWiki = $row["parentWiki"];
                         $this->parseClear = $row["parseClear"];
                         $this->regdate = $row["reg_date"];
-                    }
-                    $this->body = txtUnparse($this->body, 2);
-                    $this->sidetabTitle = txtUnparse($this->sidetabTitle, 2);
-                    $this->sidetabText = txtUnparse($this->sidetabText, 2);
 
-                    $date_array = date_parse($this->regdate);
-                    $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
+                        $this->body = txtUnparse($this->body, 2);
+                        $this->sidetabTitle = txtUnparse($this->sidetabTitle, 2);
+                        $this->sidetabText = txtUnparse($this->sidetabText, 2);
+
+                        $date_array = date_parse($this->regdate);
+                        $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
+                      }
+                    }
                 }
             }
         }

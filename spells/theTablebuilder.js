@@ -1,26 +1,16 @@
-function shoBar() {
-    var x = document.getElementById("topnav");
-    if (x.className === "topnav") {
-        x.className += " responsive";
-    } else {
-        x.className = "topnav";
-    }
+function genSide(id) {
+  getFile = "/spells/returnSpell.php" + "?id=" + id;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+          let result = xhttp.responseText;
+          document.getElementById("sInfo").innerHTML = result;
+      }
+  };
+  xhttp.open("GET", getFile, true);
+  xhttp.send();
 }
-
-function genSide(dic, huh) {
-    document.getElementById("sName").innerHTML = dic.Name;
-    document.getElementById("sLevel").innerHTML = "Level " + dic.Level + " spell";
-    document.getElementById("sSchool").innerHTML = dic.School;
-    document.getElementById("sElement").innerHTML = dic.Element;
-    document.getElementById("sCastingTime").innerHTML = "Casting Time: " + dic.CastingTime;
-    document.getElementById("sRange").innerHTML = "Range: " + dic.Range;
-    document.getElementById("sComponents").innerHTML = "Components: " + dic.Components;
-    document.getElementById("sDuration").innerHTML = "Duration: " + dic.Duration;
-    document.getElementById("sFullDesc").innerHTML = dic.FullDesc;
-    document.getElementById("sClass").innerHTML = dic.Class;
-    if (huh == "yay") { document.getElementById("exclusiveNote").style.display = "block" } else { document.getElementById("exclusiveNote").style.display = "none" };
-
-}
+genSide(0);
 
 function kickColumns(zzz) {
     if (zzz == "Element") return true;
@@ -41,7 +31,6 @@ function specExcls(ya) {
     if (ya.includes("exclusive")) {
         return true
     } else { return false }
-    ;
 }
 function generateTableHead(table, headers) {
     let thead = table.createTHead();
@@ -52,17 +41,16 @@ function generateTableHead(table, headers) {
             let text = document.createTextNode(header);
             th.appendChild(text);
             row.appendChild(th);
-            console.log(row);
             if (header == "Name") {
-                th.onclick = function () { sortTable(0, false) }
+                th.onclick = function () { sortTable(1, false) }
             }
             if (header == "Level") {
-                th.onclick = function () { sortTable(1, true) }
+                th.onclick = function () { sortTable(2, true) }
             }
             if (header == "School") {
-                th.onclick = function () { sortTable(2, false) }
+                th.onclick = function () { sortTable(3, false) }
             }
-            if (header == "Type") {
+            if (header == "Class") {
                 th.onclick = function () { sortTable(4, false) }
             }
         }
@@ -72,8 +60,8 @@ function generateTable(table, list) {
     for (let element of list) {
         if (kickRows(element.Type)) continue;
         let row = table.insertRow();
-        if (!specExcls(element.Note)) { row.onclick = function () { genSide(element, "nay") }; } else {
-            row.onclick = function () { genSide(element, "yay") };
+        if (!specExcls(element.Note)) { row.onclick = function () { genSide(element.id) }; } else {
+            row.onclick = function () { genSide(element.id) };
         }
         for (key in element) {
             if (!kickColumns(key)) {
@@ -92,10 +80,10 @@ function searchSpells() {
         for (var i = 0, row; row = table.rows[i]; i++) {
             row.style.display = "table-row";
             if (odd == true) {
-                row.style.backgroundColor = "#e4e4e3";
+                row.style.backgroundColor = "var(--spell-accent)";
                 odd = false;
             }
-            else { row.style.backgroundColor = "#f2f2f2"; odd = true; }
+            else { row.style.backgroundColor = "transparent"; odd = true; }
         }
     }
     else {
@@ -108,10 +96,10 @@ function searchSpells() {
                 row.style.display = "table-row";
                 isNone = false;
                 if (odd == true) {
-                    row.style.backgroundColor = "#e4e4e3";
+                    row.style.backgroundColor = "var(--spell-accent)";
                     odd = false;
                 }
-                else { row.style.backgroundColor = "#f2f2f2"; odd = true; }
+                else { row.style.backgroundColor = "transparent"; odd = true; }
             };
         }
         if (isNone == true) { table.rows[0].style.display = "none"; }
