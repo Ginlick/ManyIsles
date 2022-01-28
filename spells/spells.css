@@ -1,12 +1,15 @@
 :root{
   --spell-accent: #3f3b3b;
 }
-.content {
+.content.speld {
   flex-direction: row-reverse;
   padding: 0;
   width: 100%;
 }
-.col-l {
+.content.speld.normal {
+  padding-bottom: 80px;
+}
+.col-l.speld {
     width: 66%;
     height:100%;
     max-height: calc(100vh - 60px);
@@ -14,12 +17,16 @@
     overflow:auto;
     padding: 0 5px;
 }
-.col-r {
+.col-r.speld {
     width: 34%;
     min-height: 200px;
-    max-height: 100%;
+    max-height: calc(100vh - 60px);
+    overflow: auto;
 }
-
+.colrTab {
+  width: 100%;
+  text-align: center;
+}
 .search-tab {
   position: sticky;
   top: 0;
@@ -58,4 +65,18 @@ tr:nth-child(even), thead tr {
     padding-left: 3px;
     color: var(--doc-accent-color);
     display: inline;
+}
+
+/*table ones*/
+.indexSelecter {
+  width: 20%;
+  max-width: 200px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.bottButtCon.two {
+  margin-top: 70px;
+  text-align: center;
+  background-color: var(--doc-base-color);
 }

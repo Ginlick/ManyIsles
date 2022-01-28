@@ -1,36 +1,40 @@
+var currSpell = 0;
 function genSide(id) {
-  getFile = "/spells/returnSpell.php" + "?id=" + id;
+  getFile = "/spells/returnSpell.php" + "?id=" + id + "&wiki=" + parentWiki;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
           let result = xhttp.responseText;
           document.getElementById("sInfo").innerHTML = result;
+          currSpell = id;
+          getIndexImgs();
       }
   };
   xhttp.open("GET", getFile, true);
   xhttp.send();
 }
-genSide(0);
+startspell = 0; if (spells[0]!=undefined){startspell =spells[0]["id"];}
+genSide(startspell);
 
 function kickColumns(zzz) {
-    if (zzz == "Element") return true;
-    if (zzz == "CastingTime") return true;
-    if (zzz == "Range") return true;
-    if (zzz == "Components") return true;
-    if (zzz == "Duration") return true;
-    if (zzz == "Type") return true;
-    if (zzz == "CasterNumer") return true;
-    if (zzz == "Note") return true;
-    if (zzz == "FullDesc") return true;
-    else return false;
+  if (zzz == "id") return false;
+  if (zzz == "Name") return false;
+  if (zzz == "Level") return false;
+  if (zzz == "School") return false;
+  if (zzz == "Class") return false;
+  else return true;
 }
 function kickRows(ya) {
+  if (ya != undefined){
     if (ya.includes("Ritual")) { return true } else { return false };
+  }
 }
 function specExcls(ya) {
+  if (ya != undefined){
     if (ya.includes("exclusive")) {
         return true
     } else { return false }
+  }
 }
 function generateTableHead(table, headers) {
     let thead = table.createTHead();
@@ -149,27 +153,4 @@ generateTable(tableH, spells);
 
 let data = Object.keys(spells[0]);
 generateTableHead(tableH, data);
-
-        function includeHTML() {
-        var z, i, elmnt, file, xhttp;
-        z = document.getElementsByTagName("*");
-        for (i = 0; i < z.length; i++) {
-            elmnt = z[i];
-        file = elmnt.getAttribute("w3-include-html");
-            if (file) {
-            xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState == 4) {
-                        if (this.status == 200) {elmnt.innerHTML = this.responseText; }
-                        if (this.status == 404) {elmnt.innerHTML = "Page not found."; }
-        elmnt.removeAttribute("w3-include-html");
-        includeHTML();
-    }
-}
-xhttp.open("GET", file, true);
-xhttp.send();
-return;
-}
-}
-}
-    includeHTML();
+sortTable(2, true);

@@ -242,7 +242,6 @@ function addSpell(list) {
             }
             insertSpellNum();
             genSide(dic);
-            document.getElementById("ss".concat(dic.Name)).remove();
             document.getElementById("spellToAdd").value = "";
             unsave();
         }

@@ -13,8 +13,10 @@ $regArray = [
     "number" => "/^(-|)[0-9]+$/"
 ];
 $regArrayR = [
-    "basic" => "/[^A-Za-z0-9]/",
-    "wikiName" => "/[^A-Za-z0-9$accentedCharacters',():\- ]/"
+  "basic" => "/[^A-Za-z0-9]/",
+  "basic2" => "/[^A-Za-z0-9 ]/",
+  "posint" => "/[^0-9]/",
+  "wikiName" => "/[^A-Za-z0-9$accentedCharacters',():\-_ ]/"
 ];
 
 function checkRegger($regex, $toCheck) {
@@ -32,7 +34,15 @@ function checkRegger($regex, $toCheck) {
 }
 
 function purate($input, $regex = "basic") {
-  global $regArrayR;
+  $accentedCharacters = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū";
+  $regArrayR = [
+    "basic" => "/[^A-Za-z0-9]/",
+    "basic2" => "/[^A-Za-z0-9 ]/",
+    "posint" => "/[^0-9]/",
+    "wikiName" => "/[^A-Za-z0-9$accentedCharacters',():\-_ ]/"
+  ];
+
+  if ($regex == "text"){$input =  str_replace("'", "%single_quote%", $input); return str_replace('"', "%double_quote%", $input);}
   return preg_replace($regArrayR[$regex], "", $input);
 }
 

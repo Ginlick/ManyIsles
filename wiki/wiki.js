@@ -236,3 +236,25 @@ whenAvailable("Mousetrap", function () {
         removePops();
     });
 });
+
+//doc-like tabbing
+var switched = false;
+function switchDis(which) {
+    switched = true;
+    for (let cont of document.getElementsByClassName("colrTab")) {
+        cont.style.display = "none";
+    }
+    for (let cont of document.getElementsByClassName("navLink")) {
+        cont.classList.remove("selected");
+    }
+    var tab = document.getElementById(which);
+    var naver = document.getElementById("sid" + which);
+    if (tab != null){tab.style.display = "block";}
+    if (naver != null){naver.classList.add("selected");}
+}
+
+var urlParams2 = new URLSearchParams(window.location.search);
+var view = urlParams2.get("view");
+if (view != null){
+    switchDis(view);
+}

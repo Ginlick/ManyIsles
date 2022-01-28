@@ -37,21 +37,23 @@ function newSource(which) {
 
 var textareaToFill = document.getElementById("bodyFieldarea");
 
+
 function switchSupport(parentname) {
     if (parentname == 0) {
-        document.getElementById("currentRoot").innerHTML = "<a href='/fandom/home' >Fandom</a > - <a>Wiki</a>";
-        document.getElementById("root").value = 0;
-        document.getElementById("rootChanger").style.display = "none";
-        document.getElementById("writeInfo").innerHTML = 1;
+        $("#currentRoot").innerHTML = "<a href='/fandom/home' >Fandom</a > - <a>Wiki</a>";
+        $("#root").value = 0;
+        $("#rootChanger").hide();
+        $("#writeInfo").innerHTML = 1;
         if (newWiki) {
             parentWiki = 0;
-            document.getElementById("addCateColl").style.display = "none";
-            document.getElementById("cateChanger").style.display = "none";
+            $("#addCateColl").hide();
+            $("#cateChanger").hide();
             document.getElementById("topLInfo").innerHTML = "<p>You are creating the homepage of a new wiki.<br> <a href='/wiki/h/fandom.html' target='_blank'>more info</a></p>";
             document.getElementById("coolInfoH1").innerHTML = "Create Homepage";
         }
     }
     else {
+      if (domainType != "spells"){
         getFile = "/fandom/getRoot.php?q=" + encodeURIComponent(parentname) + "&dom=" + domain;
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -63,6 +65,7 @@ function switchSupport(parentname) {
         };
         xhttp.open("GET", getFile, true);
         xhttp.send();
+      }
     }
 }
 

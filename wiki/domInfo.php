@@ -52,6 +52,8 @@ function equipDom($gen, $domain = "fandom"){
     $gen->defaultStyle = "Fandom";
     $gen->baseImage = "/Imgs/docs.png";
 
+    $gen->editable = [];
+
     if ($domain == "docs"){
         $gen->dbconn = $gen->conn;
         $gen->domain = "docs";
@@ -83,7 +85,7 @@ function equipDom($gen, $domain = "fandom"){
         $gen->homelink = "/5eS/1/home";
         $gen->minPower = 3;
         $gen->domainName = "5eS Rulebook";
-        $gen->domainLogo = '<span class="fakelink fesLogo">Rulebook</span>';
+        $gen->domainLogo = '<a href="/5eS/home"><span class="fakelink fesLogo">Rulebook</span></a>';
         $gen->defaultBanner = "fesban.jpg";
         $gen->cateoptions =   json_decode('[{"name":"Rule","value":"Rule"},{"name":"Race","value":"Race"},{"name":"Subrace","value":"Subrace"},{"name":"Class","value":"Class"},{"name":"Subclass","value":"Subclass"},{"name":"Prestige Class","value":"Prestige Class"},{"name":"Abilities","value":"Abilities"},{"name":"Spell","value":"Spell"},{"name":"Item","value":"Item"},{"name":"Feat","value":"Feat"},{"name":"Skill","value":"Skill"}]', true);
         $gen->defaultGenre = "Rule";
@@ -102,11 +104,13 @@ function equipDom($gen, $domain = "fandom"){
         $gen->domainnum = 4;
         $gen->database = "spells";
         $gen->pagename = "spell";
-        $gen->groupName = "spell list";
+        $gen->groupName = "spell index";
+        $gen->listName = "spell list";
         $gen->homelink = "/spells/index";
         $gen->minPower = 2;
         $gen->domainName = "Spells";
-        $gen->domainLogo = '<span class="fakelink fesLogo">Spells</span>';
+        $gen->domainLogo = '<a href="/5eS/home"><span class="fakelink fesLogo">Spells</span></a>';
+
         $gen->defaultBanner = "starry.png";
         $gen->cateoptions =   json_decode('[{"name":"Spell","value":"Spell"},{"name":"Ritual","value":"Ritual"},{"name":"Ceremony","value":"Ceremony"}]', true);
         $gen->defaultGenre = "Spell";
@@ -115,8 +119,16 @@ function equipDom($gen, $domain = "fandom"){
 
         $gen->styles = ["Spells"];
         $gen->defaultStyle = "Spells";
-        $gen->baseImage = "/Imgs/5eSlogo.png";
+        $gen->baseImage = "/Imgs/ManySpells.png";
         $gen->domainType = "spells";
+
+        $gen->domainSpecs = ["totalIndexes"=>0, "totalLists" => 0];
+        $gen->mystData = [
+            "indexes" => 2, "lists" => 6
+        ];
+
+        $gen->editable = ["Name" => "string", "Level"=>"int", "School"=>"string", "Element"=>"string", "Class"=>"string", "CastingTime"=>"string", "Range"=>"string", "Components"=>"string", "Duration"=>"string", "FullDesc"=>"text", "Direct_Image_Link"=>"url","Source"=>"string"];
+        $gen->modules = ["Seas"=>["code"=>"4251","codeName"=>"Seas","fullName"=>"Adventurer's Guide to the Seas"],"DarkSecrets"=>["code"=>"6660","codeName"=>"DarkSecrets","fullName"=>"Handbook of Dark Secrets"]];
     }
     else if ($domain == "mystral") {
         require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_notes.php");
@@ -197,6 +209,7 @@ function equipDom($gen, $domain = "fandom"){
         $gen->luckying = true;
         $gen->acceptsTopBar = false;
     }
+    if (!isset($gen->listName)){$gen->listName = $gen->groupName;}
     $gen->style = $gen->defaultStyle;
 }
 
