@@ -37,7 +37,7 @@ class gen {
         $this->page = $page;
         $this->mode = $mode;
 
-        $fillIt = false; $igRev = false;$this->notArticle = false;
+        $fillIt = true; $igRev = false;$this->notArticle = false;
         if (isset($moreSpecs["fillIt"])){$fillIt = $moreSpecs["fillIt"];}
         if (isset($moreSpecs["igRev"])){$igRev = $moreSpecs["igRev"];}  //ignores the issue of reverted pages on edit / act
         if (isset($moreSpecs["notArticle"])){$this->notArticle = $moreSpecs["notArticle"];}
@@ -308,9 +308,9 @@ class gen {
 
         if ($this->article->status == "suspended" && !isset($_GET["clear"])){
             if ($this->page != $this->parentWiki){
-                header("Location:$newArtRoot".$this->parentWiki."/home?i=susp");exit();
+                $this->redirect("Location:$newArtRoot".$this->parentWiki."/home?i=susp");
             }
-            else {header("Location:/fandom/home?i=susp");exit();}
+            else {$this->redirect("Location:/fandom/home?i=susp");}
         }
 
         $settingsId = $this->parentWiki; if ($this->domain == "mystral"){$settingsId = $this->user."_".$this->parentWiki;}
@@ -348,7 +348,7 @@ class gen {
 
     function giveFavicon() {
         $main = ' <link rel="icon" href="/Imgs/FaviconWiki.png">';
-        if ($this->domain == ("spells" OR "5eS")){
+        if ($this->domain == "spells" OR $this->domain == "5eS"){
           $main = ' <link rel="icon" href="/Imgs/FaviconSpell.png">';
         }
         else if ($this->domain == "mystral") {
@@ -564,7 +564,7 @@ MAIN;
         if ($this->manySlot){
              $main .= '<p id="outstanderAlert" style="text-align:center;color:green;display:none;">'.ucwords($this->pagename).' Created!</p>';
         }
-        else {
+        else if ($this->power < 2){
              $main .= '<p id="outstanderAlert" style="text-align:center;color:#A93226;">Warning: Only 1 Slot Left</p>';
         }
 
@@ -874,7 +874,7 @@ MAIN;
               $main .='  <img src="/Imgs/Bar2.png" class="separator"></img>
 
                   <h3>Body<span class="roundInfo">Takes Markdown</span></h3>
-                  <p>Write your page\'s body below using <a href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a>. <br>
+                  <p>Write your page\'s body below using <a href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a>. Also check out this doc on <a href="/docs/25/Special_Syntax" target="_blank">cool special elements</a>. <br>
                       <span class="typeTab tiny" onclick="insLink();">ctrl+shift+k</span> insert link<br>
                       <span class="typeTab tiny" onclick="insThumb();">ctrl+shift+l</span> insert '.$this->pagename.' thumbnail<br>
                       <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
@@ -1007,7 +1007,6 @@ MAIN;
                                 <option value="sideimg">Side Image</option>
                                 <option value="sideimg medium">Larger Side Image</option>
                                 <option value="sideimg landscape">Landscape Side Image</option>
-                                <option value="sideimg gallery">Gallery Image</option>
                             </select>
                             <input type="text" placeholder="Direct link to image" id="insImgSrc" />
                             <input type="text" placeholder="Caption (optional)" id="insImgCap"  />
@@ -1467,6 +1466,13 @@ MAIN;
         showAuthors();
         addJSON(sourceJSON);
 
+        var allLinks = document.getElementsByTagName("a");
+        for (let coollink of allLinks) {
+            let chref = coollink.href;
+            if (!/\/'.$this->domain.'\//.test(chref) && !/\/home/.test(chref) && !coollink.hasAttribute("target")) {
+                coollink.setAttribute("target", "_blank");
+            }
+        }
         </script>';
         return $main;
     }
@@ -1498,7 +1504,6 @@ MAIN;
 
 
         var allLinks = document.getElementsByTagName("a");
-
         for (let coollink of allLinks) {
             let chref = coollink.href;
             if (!/\/'.$this->domain.'\//.test(chref) && !/\/home/.test(chref) && !coollink.hasAttribute("target")) {

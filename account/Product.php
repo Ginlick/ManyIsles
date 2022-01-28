@@ -59,7 +59,6 @@ if (!$writingNew){
 }
 if ($proStatus=="deleted"){$dl->go("Publish", "p");}
 
-
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -146,7 +145,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
                   </div>
                   <div class="overlay content">
                       <span class="viewOverlay"><i class="fas fa-arrow-up"></i></span>
-                      .png or .jpg<br>max 250kb
+                      .png or .jpg<br>max 450kb
                       <input type="file" onchange="readURL2(this);" id="image" value="null" name = "image" accept=".png, .jpg"/>
                   </div>
               </div>
@@ -214,11 +213,11 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
           <input type="text" style="display:none" id="subgenre" name="subgenre" value="<?php echo $proSubgenre; ?>"/>
 
           <div class="inputCont" id="mSpecificMeta">
-              <label for="pname">Game System</label>
+              <label for="gamesys">Game System</label>
               <select id="gamesys" name="gamesys">
                 <option value="0">Any / Other</option>
-                <option value="2">5e</option>
-                <option value="1">5eS</option>
+                <option value="2" <?php if ($proGsystem == 2) echo "selected";?>>5e</option>
+                <option value="1" <?php if ($proGsystem == 1) echo "selected";?>>5eS</option>
               </select>
           </div>
         </div>
@@ -428,7 +427,7 @@ function updateFiler() {
     document.getElementById("linkInput").style.display="inline-block";
     removeUpload();
   }
-  if (genre == 0){
+  if (genre == 1){
       document.getElementById("mSpecificMeta").style.display="block";
   }
   else {

@@ -117,7 +117,7 @@ padding:0;
                 </div>
                 <div class="overlay content">
                     <span class="viewOverlay"><i class="fas fa-arrow-up"></i></span>
-                    .png or .jpg<br>max 250kb
+                    .png or .jpg<br>max 450kb
                     <input type="file" onchange="readURL(this);" id="image" value="null" name = "image" accept=".png, .jpg"/>
                 </div>
             </div>

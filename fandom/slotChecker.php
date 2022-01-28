@@ -42,18 +42,15 @@ if (($power < 2) OR ($override)){
     }
 }
 
-$query="SELECT * FROM poets WHERE id = ".$uid;
-if ($result =  $conn->query($query)) {
-    if ($result->num_rows == 0){
-        $query = sprintf('INSERT INTO poets (id, uname, edits) VALUES (%s, "%s", 1)', $uid, $uname);
-        $conn->query($query);
-    }
+$query = 'UPDATE poets SET edits= edits + 1 WHERE id = '.$uid;
+if ($result = $conn->query($query)) {
 }
-
 else {
-    $query = 'UPDATE poets SET edits= edits + 1 WHERE id = '.$uid;
+    $query = sprintf('INSERT INTO poets (id, uname, edits) VALUES (%s, "%s", 1)', $uid, $uname);
     $conn->query($query);
 }
+
+
 
 
 ?>

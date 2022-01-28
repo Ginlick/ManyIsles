@@ -87,7 +87,7 @@ trait fundamentals {
   }
 
   public $fileRequs = [
-    "standImg" => ["size"=>330000, "types"=>["jpg", "png", "jpeg"], "likesImg"=>true],
+    "standImg" => ["size"=>500000, "types"=>["jpg", "png", "jpeg"], "likesImg"=>true],
     "mystimg" => ["size"=>2200000, "types"=>["jpg", "png", "jpeg", "gif"], "likesImg"=>true],
     "dlPdf" => ["size"=>35000000, "types"=>["pdf"], "likesImg"=>false],
     "dlArt" => ["size"=>12000000, "types"=>["jpg", "png", "jpeg", "gif"], "likesImg"=>true],
