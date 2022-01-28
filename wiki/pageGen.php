@@ -37,14 +37,16 @@ class gen {
         $this->page = $page;
         $this->mode = $mode;
 
-        $fillIt = false; $igRev = false;$notArticle = false;
+        $fillIt = false; $igRev = false;$this->notArticle = false;
         if (isset($moreSpecs["fillIt"])){$fillIt = $moreSpecs["fillIt"];}
-        if (isset($moreSpecs["igRev"])){$igRev = $moreSpecs["igRev"];}
-        if (isset($moreSpecs["notArticle"])){$notArticle = $moreSpecs["notArticle"];}
+        if (isset($moreSpecs["igRev"])){$igRev = $moreSpecs["igRev"];}  //ignores the issue of reverted pages on edit / act
+        if (isset($moreSpecs["notArticle"])){$this->notArticle = $moreSpecs["notArticle"];}
 
         require_once($_SERVER['DOCUMENT_ROOT']."/wiki/domInfo.php");
         equipDom($this, $domain);
         $conn = $this->conn;
+
+        if (isset($moreSpecs["newMinP"])){$this->minPower = $moreSpecs["newMinP"];}
 
         //base security
         require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
@@ -78,41 +80,57 @@ class gen {
             if ($parentWiki == 0){$this->wikiName = "New";}
         }
 
-        $query="SELECT name FROM $this->database WHERE id = $this->parentWiki ORDER BY v DESC LIMIT 0, 1";
-        if ($result =  $this->dbconn->query($query)) {
-            if (mysqli_num_rows($result) > 0){
-                while ($row = $result->fetch_assoc()){
-                    $this->wikiName = $row["name"];
-                }
-                if ($this->writingNew){$this->page = $this->parentWiki;}
-            }
+        $this->article = new article($this);
+        if ($this->article->name != "" AND $this->domainType == "spells"){$this->parentWiki = $this->article->parentWiki;}
+
+        if ($this->domainType == "spells"){
+          $query="SELECT wikiName FROM wiki_settings WHERE id = $this->parentWiki";
+          if ($result =  $this->dbconn->query($query)) {
+              if (mysqli_num_rows($result) > 0){
+                  while ($row = $result->fetch_assoc()){
+                      $this->wikiName = $row["wikiName"];
+                  }
+              }
+          }
+        }
+        else {
+          $query="SELECT name FROM $this->database WHERE id = $this->parentWiki ORDER BY v DESC LIMIT 0, 1";
+          if ($result =  $this->dbconn->query($query)) {
+              if (mysqli_num_rows($result) > 0){
+                  while ($row = $result->fetch_assoc()){
+                      $this->wikiName = $row["name"];
+                  }
+                  if ($this->writingNew){$this->page = $this->parentWiki;}
+              }
+          }
         }
 
-        $this->article = new article($this);
         if ($this->article->revertees) {$this->canedit = false; $this->ediProblem = "Reverted";}
         $this->WSet = $this->baseWSet.$this->parentWiki;
 
-        $query= "SELECT * FROM wiki_settings WHERE id = '$this->WSet' LIMIT 1";
-        if ($result =  $this->dbconn->query($query)) {
-            if (mysqli_num_rows($result) > 0){
-                while ($row = $result->fetch_assoc()){
-                    if ($row["defaultBanner"]!= null){
-                        $this->defaultBanner = $row["defaultBanner"];
-                        if($this->writingNew OR $this->article->banner == "default"){
-                            $this->article->banner = $this->defaultBanner;
-                        }
-                    }
-                    if ($row["banners"]!= null){
-                        $this->article->banners = json_decode($row["banners"], true);
-                    }
-                    if ($row["styles"]!= null){
-                        $this->style = $row["styles"];
-                    }
-                    if ($this->changeableGenre AND isset($row["genres"]) AND $row["genres"] != ""){
-                        $this->cateoptions = json_decode($row["genres"], true);
-                    }
-                }
-            }
+        if ($this->domainType == "fandom" OR $this->domainType == "docs"){
+          $query= "SELECT * FROM wiki_settings WHERE id = '$this->WSet' LIMIT 1";
+          if ($result =  $this->dbconn->query($query)) {
+              if (mysqli_num_rows($result) > 0){
+                  while ($row = $result->fetch_assoc()){
+                      if ($row["defaultBanner"]!= null){
+                          $this->defaultBanner = $row["defaultBanner"];
+                          if($this->writingNew OR $this->article->banner == "default"){
+                              $this->article->banner = $this->defaultBanner;
+                          }
+                      }
+                      if ($row["banners"]!= null){
+                          $this->article->banners = json_decode($row["banners"], true);
+                      }
+                      if ($row["styles"]!= null){
+                          $this->style = $row["styles"];
+                      }
+                      if ($this->changeableGenre AND isset($row["genres"]) AND $row["genres"] != ""){
+                          $this->cateoptions = json_decode($row["genres"], true);
+                      }
+                  }
+              }
+          }
         }
         $this->article->banner = banner($this->article->banner, $this);
 
@@ -136,44 +154,67 @@ class gen {
             }
             if ($this->domainSpecs["totalImages"]>=$this->mystData["images"] OR $this->domainSpecs["imageSpace"]>=$this->mystData["fullSpace"]){$this->domainSpecs["canImage"]=false; }
         }
+        else if ($this->domain == "spells") {
+          $query = "SELECT * FROM wiki_settings WHERE mods = ".$this->user;
+          if ($result =  $this->dbconn->query($query)) {
+              $this->domainSpecs["totalIndexes"] = mysqli_num_rows($result);
+          }
+          $query="SELECT id FROM spelllists WHERE user = $this->user";
+          if ($result =  $this->dbconn->query($query)) {
+            $this->domainSpecs["totalLists"] = mysqli_num_rows($result);
+          }
+        }
 
         //power
-        if ($this->domain != "mystral"){
-            require_once($_SERVER['DOCUMENT_ROOT']."/fandom/accStat.php");
-            $this->power = getAccStat($this->dbconn, $this->user, $this->parentWiki, false);
+        if ($this->userMod->signedIn){
+          require_once($_SERVER['DOCUMENT_ROOT']."/fandom/accStat.php");
+          if ($this->domainType == "spells"){
+            $this->power = getAccStat($this->conn, $this->user, $this->parentWiki, false);
+            $query = "SELECT mods FROM wiki_settings WHERE id = ".$this->parentWiki;
+            if ($result =  $this->dbconn->query($query)) {
+              while ($row = $result->fetch_assoc()){
+                  if ($row["mods"]==$this->user){$this->power = 3;}
+              }
+            }
+          }
+          else if ($this->domain != "mystral"){
+              $this->power = getAccStat($this->dbconn, $this->user, $this->parentWiki, false);
+          }
+          else {
+              $this->power = 5;
+          }
+          if ($this->domain == "fandom") {
+              $setto = "a";
+              $query = "SELECT * FROM slots WHERE id = ".$this->user;
+              if ($result = $this->conn->query($query)) {
+                  while ($row = $result->fetch_assoc()){
+                      if ($row["a"]==null){$setto="a";}
+                      else if ($row["b"]==null){$setto="b";}
+                      else if ($row["c"]==null){$setto="c";}
+                      else if ($row["d"]==null){$setto="d";}
+                      else if ($row["e"]==null){$setto="e";}
+                      else if ($row["f"]==null){$setto="f";}
+                      else if ($row["g"]==null){$setto="g";}
+                      else if ($row["h"]==null){$setto="h";}
+                      else if ($row["i"]==null){$setto="i";$this->manySlot = false;}
+                      else if ($row["j"]==null){$setto="j";$this->manySlot = false;}
+                      else {$setto = "";}
+                  }
+              }
+              $canedit = true;
+              if ($setto == "") {$this->canedit = false;$this->ediProblem = "Slots";}
+              $slotAt = $setto;
+          }
         }
         else {
-            $this->power = 5;
+          $this->canedit = false;
         }
 
-        if (!$this->signedIn){$this->power == 1;}
-        else if ($this->domain == "fandom") {
-            $setto = "a";
-            $query = "SELECT * FROM slots WHERE id = ".$this->user;
-            if ($result = $this->conn->query($query)) {
-                while ($row = $result->fetch_assoc()){
-                    if ($row["a"]==null){$setto="a";}
-                    else if ($row["b"]==null){$setto="b";}
-                    else if ($row["c"]==null){$setto="c";}
-                    else if ($row["d"]==null){$setto="d";}
-                    else if ($row["e"]==null){$setto="e";}
-                    else if ($row["f"]==null){$setto="f";}
-                    else if ($row["g"]==null){$setto="g";}
-                    else if ($row["h"]==null){$setto="h";}
-                    else if ($row["i"]==null){$setto="i";$this->manySlot = false;}
-                    else if ($row["j"]==null){$setto="j";$this->manySlot = false;}
-                    else {$setto = "";}
-                }
-            }
-            $canedit = true;
-            if ($setto == "") {$this->canedit = false;$this->ediProblem = "Slots";}
-            $slotAt = $setto;
-        }
         if ($this->power < $this->minPower){$this->canedit = false; $this->ediProblem = "Status";}
 
         //mystral limits
         if ($this->domain == "mystral"){
-          if (!$notArticle){
+          if (!$this->notArticle){
             $query = "SELECT a.id
             FROM $this->database a
             LEFT OUTER JOIN $this->database b
@@ -252,11 +293,6 @@ class gen {
         require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/fileManager.php");
         $this->files = new fileEngine($this->user);
 
-        //remove when mostly done
-        if ($this->article->parentWiki != $this->parentWiki){
-            $query = "UPDATE $this->database SET parentWiki = $this->parentWiki WHERE id = $this->page AND v = ".$this->article->version;
-            $this->dbconn->query($query);
-        }
     }
 
     function doFandWork() {
@@ -312,6 +348,12 @@ class gen {
 
     function giveFavicon() {
         $main = ' <link rel="icon" href="/Imgs/FaviconWiki.png">';
+        if ($this->domain == ("spells" OR "5eS")){
+          $main = ' <link rel="icon" href="/Imgs/FaviconSpell.png">';
+        }
+        else if ($this->domain == "mystral") {
+          $main = ' <link rel="icon" href="/Imgs/FaviconMyst.png">';
+        }
         $main .= '  <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
         <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">';
@@ -326,7 +368,7 @@ class gen {
 
         return $main;
     }
-    function giveScripts() {
+    function giveScripts($modifier = 0) {
       $mysURL = "/mystral/";
       if ($this->domain == "mystral"){$mysURL = $this->artRootLink;}
         $main = '
@@ -344,6 +386,7 @@ class gen {
             var parentWiki = "'.$this->parentWiki.'";
             var sourceJSON = \''.$this->article->sources.'\';
             var domain = '.$this->domainnum.';
+            var domainType = "'.$this->domainType.'";
             var baseURL = "'.$this->artRootLink.'";
             var domInfos = {
                 0 : {
@@ -363,14 +406,23 @@ class gen {
         ';
         if ($this->mode == "view"){
             $main .= '<script src="/wiki/write.js"></script>';
+            if ($this->domain == "spells" AND $modifier > 0){
+              $main .= '<script src="/spells/theTablebuilder.js"></script>';
+              if ($modifier > 1) {
+                $main .= '<script src="/spells/savedList.js"></script>';
+                $main .= '<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>';
+              }
+            }
         }
         else if ($this->mode == "edit"){
             $main .= '<script src="/wiki/edit.js"></script>';
             $main .= '<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>';
         }
+
         return $main;
     }
     function giveWikStyle() {
+      if ($this->domainType != "spells"){
         $query = "SELECT * FROM wiki_settings WHERE id = '$this->WSet'";
         if ($firstrow = $this->dbconn->query($query)) {
             if (mysqli_num_rows($firstrow) != 0){
@@ -382,6 +434,7 @@ class gen {
                 }
             }
         }
+      }
     }
 
     function giveTopBar() {
@@ -397,7 +450,7 @@ class gen {
             $main .='<a href="'.$this->homelink.'" style="padding: 0;display:flex;align-items: center;"> <img src="'.$this->baseImage.'" /></a>';
         }
         else {
-          $main .=' <img src="/Imgs/Favicon.png" />';
+          $main .=' <img src="'.$this->baseImage.'" />';
         }
         $main .='   </div>
             <div class="logoCont"><a href="/home" target="_self">'.$this->domainLogo.'</a></div>
@@ -407,11 +460,21 @@ class gen {
             </div>
         </div>
         <div class="topBarLeft">';
+        if (!$this->notArticle){
+          if ($this->domainType == "spells"){
+            $main .='
+              <a href="'.$this->baseLink.'index">Indexes</a>
+              <a href="'.$this->baseLink.'list">Lists</a>
+            ';
+          }
+          else {
             if ($this->power >= $this->minPower AND $this->domain != "mystral") {
                 $main .= $this->revButtons;
                 $main .= '<a href="/docs/edit.php?v='.$this->article->version.'&id='.$this->page.'&domain='.$this->domain.'" target="_self">Edit</a>';
                 $main .= '<a href="/docs/edit.php?w='.$this->parentWiki.'&domain='.$this->domain.'" target="_self">Write</a>';
             }
+          }
+        }
 
         $main .=' <a href="/account/SignedIn.php" target="_self">Account</a>
                 <a href="/home" target="_self">Home</a>
@@ -428,10 +491,17 @@ class gen {
         ';
 
             if ($this->writingNew) {
-                $main .= " <p>You are creating a new $this->pagename in the $this->wikiName wiki.<br> <a href='/fandom/21/Edit_and_Write' target='_blank'>more info</a></p>";
-                $main .= '               <div class="bottButtCon" style="display: table">
-                    <div class="wikiButton" onclick="newWiki=true;switchSupport(0)">New Wiki</div>
-                    </div>';
+                $main .= " <p>You are creating a new $this->pagename in the $this->wikiName $this->groupName.<br> <a href='/fandom/21/Edit_and_Write' target='_blank'>more info</a></p>";
+              if ($this->domainType == "spells"){
+                $main .= '
+';
+              }
+              else {
+                $main .= '
+                 <div class="bottButtCon">
+                    <div class="wikiButton" onclick="newWiki=true;switchSupport(0)">New '.ucwords($this->groupName).'</div>
+                  </div>';
+              }
             }
             else {
                 $main .= "                <p>You are editing a $this->wikiName $this->groupName $this->pagename.<br> <a href='/docs/20/Fandom' target='_blank'>more info</a></p>";
@@ -562,7 +632,7 @@ MAIN;
             <div class="bottButtCon">'.$this->ediButton.$this->wriButton."</div>";
             if ($this->domain == "mystral" && $this->wsettLink != ""){$main .= "<div class='bottButtCon'><a href='".$this->wsettLink."' class='wikiButton'>Notebook Setup</a></div>";}
             if ($this->power == 0) {
-                $main.= "<p class='warning'>You are banned from this '.$this->groupName.' and cannot edit.</p>";
+                $main.= "<p class='warning'>You are banned from this $this->groupName and cannot edit.</p>";
             }
         $main .= '</div>';
 
@@ -630,7 +700,7 @@ MAIN;
                 <a href="http://www.reddit.com/submit?title=Read up on '.$this->article->shortName.' lore on the Many Isles!&url=https://manyisles.ch'.$this->artLink.'" target="_blank" class="fa fa-reddit"></a>
                 <a href="https://twitter.com/intent/tweet?text=Read up on '.$this->article->shortName.' lore on the Many Isles!%0A&url=https://manyisles.ch'. $this->artLink.'&hashtags=manyisles,lore" target="_blank" class="fa fa-twitter"></a>';
                 if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="fa fa-pinterest"></a> '; }
-               $main .= ' <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://manyisles.ch'.$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
+               $main .= ' <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://'.$_SERVER["HTTP_HOST"].$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
             </div>
         </div>';
         return $main;
@@ -663,21 +733,6 @@ MAIN;
         return $main;
     }
     function giveNotebooks() {
-        $itemStencil = <<<NABSDAI
-        <div class="artContainer">
-        <div class="incontainer">
-        <a href="MEGALINK">
-            <div class="imagCont">
-                <div class="artSquare">
-                    <img src="MEGATHUMBNAIL" alt="Thumbnail" class="linkim">
-                </div>
-            </div>
-            <div class='titling'>MEGANAME <hr class="solid"> <span class="date">MEGADATE</span><br></div>
-        </a>
-            <a href="MEGALINK"><button class="wikiButton homescreen"><i class="fas fa-arrow-right"></i><span> View</span></button></a>
-        </div>
-        </div>
-NABSDAI;
         $newNB = "<form action='newNb.php' method='GET'><button class='wikiButton' type='submit'><i class='fas fa-plus'></i> Create Notebook</button>
                   <select name='notebookType' class='noterSelect'>
                     <option value=''>default</option>
@@ -699,12 +754,7 @@ NABSDAI;
                 $date_array = date_parse($row["reg_date"]);
                 $nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
 
-                $itemTab = $itemStencil;
-                $itemTab = str_replace("MEGALINK", $this->artRootLink.$row["id"]."/".parse2URL($row["shortName"]), $itemTab);
-                $itemTab = str_replace("MEGATHUMBNAIL", $image, $itemTab);
-                $itemTab = str_replace("MEGANAME", $row["name"], $itemTab);
-                $itemTab = str_replace("MEGADATE", $nicedate, $itemTab);
-                $main .= $itemTab;
+                $main .= $this->burpStencil($this->artRootLink.$row["id"]."/".parse2URL($row["shortName"]), $image, $row["name"], $nicedate);
             }
             if (mysqli_num_rows($result) >= $this->mystData["notebooks"]) {
                 $main .= "<div class='starterCont'><button class='wikiButton' onclick='switchDis(\"sub\");'><i class='fas fa-plus'></i> More Notebooks</button></div>";
@@ -715,6 +765,30 @@ NABSDAI;
         }
         if ($main == ""){$main = "<div class='starterCont'><p>Let's get started!</p>$newNB</div>";}
         return $main;
+    }
+    function burpStencil($link, $image, $name, $date = null, $buttName = "View") {
+      $itemTab = <<<NABSDAI
+        <div class="artContainer">
+        <div class="incontainer">
+        <a href="MEGALINK">
+            <div class="imagCont">
+                <div class="artSquare">
+                    <img src="MEGATHUMBNAIL" alt="Thumbnail" class="linkim">
+                </div>
+            </div>
+            <div class='titling'>MEGANAME  MEGADATE<br></div>
+        </a>
+            <a href="MEGALINK" target="_self"><button class="wikiButton homescreen"><i class="fas fa-arrow-right"></i><span> View</span></button></a>
+        </div>
+        </div>
+      NABSDAI;
+      $itemTab = str_replace("View", $buttName, $itemTab);
+      $itemTab = str_replace("MEGALINK", $link, $itemTab);
+      $itemTab = str_replace("MEGATHUMBNAIL", $image, $itemTab);
+      $itemTab = str_replace("MEGANAME", $name, $itemTab);
+      if ($date != null){$itemTab = str_replace("MEGADATE", "<hr class='solid'><span class='date'>$date</span>", $itemTab);}
+      $itemTab = str_replace("MEGADATE", "", $itemTab);
+      return $itemTab;
     }
 
     function giveREdit($modifier = 2) {
@@ -729,112 +803,124 @@ NABSDAI;
         if ($this->article->root == 0) {$main .= " homepage";}
             $main .= '</span></h1>
             <form action="/fandom/ediPage.php" method="POST" class="pageForm">
-                <input type="text" name="name" placeholder="Page Name" value="'.$this->article->name.'" required></input>
-                <input class="complete" type="text" name="shortName" placeholder="Short Name" value="'.$this->article->shortName.'" ></input>
+            <input type="text" name="id" value="'.$this->article->page.'"style="display:none;" required></input>
+            ';
 
-                <div ';
-        if ($this->article->root == 0){$main .= "style='display:none;'";}
-        $main .= 'id ="rootChanger">
-                    <p id="currentRoot" class="topinfo" style="padding-top:5px;"><a href="/fandom/home">Fandom</a></p>
-                    <input type="text" placeholder="New Root"  oninput="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');" autocomplete="off" onfocus="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');this.value=\'\';"></input>
-                    <div class="suggestions" style=""></div>
-                    <input type="text" id="root" name="root" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->parentWiki.'"/>
-                </div>';
-        if ($modifier > 0){
-            $main .='
-                <div id="cateChanger">
-                    <p id="currentCategs" class="topinfo" style="padding-top:5px;"></p>
-                    <input type="text" id="viewRoot3" placeholder="Add Categories"  oninput="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');" autocomplete="off" onfocus="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');this.value=\'\';"></input>
-                    <div class="suggestions" style=""></div>
-                    <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->categories.'"/>
-                </div>';
+        if ($this->domainType == "spells"){$main .= $this->giveREditSpell();}
+        else {
+          $main .= '
+              <input type="text" name="name" placeholder="Page Name" value="'.$this->article->name.'" required></input>
+              <input class="complete" type="text" name="shortName" placeholder="Short Name" value="'.$this->article->shortName.'" ></input>
+
+              <div ';
+          if ($this->article->root == 0){$main .= "style='display:none;'";}
+          $main .= 'id ="rootChanger">
+                      <p id="currentRoot" class="topinfo" style="padding-top:5px;"><a href="/fandom/home">Fandom</a></p>
+                      <input type="text" placeholder="New Root"  oninput="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');" autocomplete="off" onfocus="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');this.value=\'\';"></input>
+                      <div class="suggestions" style=""></div>
+                      <input type="text" id="root" name="root" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->parentWiki.'"/>
+                  </div>';
+          if ($modifier > 0){
+              $main .='
+                  <div id="cateChanger">
+                      <p id="currentCategs" class="topinfo" style="padding-top:5px;"></p>
+                      <input type="text" id="viewRoot3" placeholder="Add Categories"  oninput="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');" autocomplete="off" onfocus="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');this.value=\'\';"></input>
+                      <div class="suggestions" style=""></div>
+                      <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->categories.'"/>
+                  </div>';
+          }
+              $main .= '
+                  <div class="selectCont">
+                      <label for="cate">Choose a genre:</label>
+                      <select id="cate" name="cate" >';
+                      foreach ($this->cateoptions as $option){
+                          $main .= '<option value="'.$option["value"].'">'.$option["name"].'</option>';
+                      }
+                      $main .= '
+                      </select>
+                  </div>';
+              if ($modifier > 0){
+                  $main .= '
+                      <div class="selectCont">
+                          <label for="banner">Choose a banner:</label>
+                          <select id="banner" name="banner" onchange="newBanner()">
+                              <option value="current">current</option>';
+                                  foreach ($this->article->banners as $banner){
+                                      $main .= "<option value='".banner($banner["src"])."'>".$banner["name"]."</option>";
+                                  }
+                      $main .= '</select>
+                      </div>
+                      <div class="selectCont complete">
+                          <label for="NSFW">Set NSFW level:</label>
+                          <select name="NSFW">
+                              <option value="0"'; if ($this->article->NSFW == 0) { $main .=  "selected"; } $main .= '>SFW</option>
+                              <option value="1"'; if ($this->article->NSFW == 1) { $main .=  "selected"; } $main .= '>Some graphic content</option>
+                              <option value="2"'; if ($this->article->NSFW == 2) { $main .=  "selected"; } $main .= '>NSFW</option>
+                          </select>
+                      </div>
+
+                      <img src="/Imgs/Bar2.png" class="separator"></img>
+
+                      <h3  class="complete">Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
+                      <p class="complete">This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
+                      <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabTitle.'</textarea>
+                      <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
+                      <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabText.'</textarea>
+                      <div><h4>Timeframe</h4>
+                      <input name="timeStart" type="text" value ="'.$this->article->timeStart.'" placeholder="Starting Date" />
+                      <input name="timeEnd" type="text" value ="'.$this->article->timeEnd.'" placeholder="Ending Date"  /></div>
+                      ';
+              }
+              $main .='  <img src="/Imgs/Bar2.png" class="separator"></img>
+
+                  <h3>Body<span class="roundInfo">Takes Markdown</span></h3>
+                  <p>Write your page\'s body below using <a href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a>. <br>
+                      <span class="typeTab tiny" onclick="insLink();">ctrl+shift+k</span> insert link<br>
+                      <span class="typeTab tiny" onclick="insThumb();">ctrl+shift+l</span> insert '.$this->pagename.' thumbnail<br>
+                      <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
+                      <span class="complete" onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
+                  </p>
+                  <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->article->body.'</textarea>
+                  <img src="/Imgs/Bar2.png" class="separator"></img> ';
+              if ($modifier > 0){
+                  $main .= '                <div class="complete">
+                      <h4>Sources (Footnotes)</h4>
+                      <p>Put footnotes in your body text with the "[footnote:X]" syntax. Add sources here as references.</p>
+                      <table id="gimmeBabes">
+                          <tbody id="gimmeBabesTbody">
+                          </tbody>
+                      </table>
+                      <input type="text" value="" id = "sources" name ="sources" style="display:none;" />
+
+                      <div class="addSome" onclick="addSome(1);">
+                          <i class="fas fa-plus"></i>
+                      </div>
+                      <div class="addSome" onclick="addSome(0);">
+                          <i class="fas fa-minus"></i>
+                      </div>
+                      <img src="/Imgs/Bar2.png" class="separator"></img>
+                      </div> ';
+              }
+                  if ($this->power > 1) {
+                      $main .= '<div class="complete">
+                          <h2>Additional Details<span class="roundInfo green">Optional</span></h2>';
+                      $main .= "<h4>Search Details</h4>";
+                      $main .= "<input type='text' name='queryTags' placeholder='Tree,Brate'  value='".$this->article->queryTags."' pattern=\"".jsReg("basicList")."\" />";
+                      $main .= "<input type='number' name='importance' placeholder='Importance'  value='".$this->article->importance."'/>
+                          <img src='/Imgs/Bar2.png' class='separator'></img></div>";
+                  }
         }
-            $main .= '
-                <input type="text" name="id" value="'.$this->article->page.'"style="display:none;" required></input>
-                <div class="selectCont">
-                    <label for="cate">Choose a genre:</label>
-                    <select id="cate" name="cate" >';
-                    foreach ($this->cateoptions as $option){
-                        $main .= '<option value="'.$option["value"].'">'.$option["name"].'</option>';
-                    }
-                    $main .= '
-                    </select>
-                </div>';
-            if ($modifier > 0){
-                $main .= '
-                    <div class="selectCont">
-                        <label for="banner">Choose a banner:</label>
-                        <select id="banner" name="banner" onchange="newBanner()">
-                            <option value="current">current</option>';
-                                foreach ($this->article->banners as $banner){
-                                    $main .= "<option value='".banner($banner["src"])."'>".$banner["name"]."</option>";
-                                }
-                    $main .= '</select>
-                    </div>
-                    <div class="selectCont complete">
-                        <label for="NSFW">Set NSFW level:</label>
-                        <select name="NSFW">
-                            <option value="0"'; if ($this->article->NSFW == 0) { $main .=  "selected"; } $main .= '>SFW</option>
-                            <option value="1"'; if ($this->article->NSFW == 1) { $main .=  "selected"; } $main .= '>Some graphic content</option>
-                            <option value="2"'; if ($this->article->NSFW == 2) { $main .=  "selected"; } $main .= '>NSFW</option>
-                        </select>
-                    </div>
-
-                    <img src="/Imgs/Bar2.png" class="separator"></img>
-
-                    <h3  class="complete">Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
-                    <p class="complete">This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
-                    <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabTitle.'</textarea>
-                    <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
-                    <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabText.'</textarea>
-                    <div><h4>Timeframe</h4>
-                    <input name="timeStart" type="text" value ="'.$this->article->timeStart.'" placeholder="Starting Date" />
-                    <input name="timeEnd" type="text" value ="'.$this->article->timeEnd.'" placeholder="Ending Date"  /></div>
-                    ';
-            }
-            $main .='  <img src="/Imgs/Bar2.png" class="separator"></img>
-
-                <h3>Body<span class="roundInfo">Takes Markdown</span></h3>
-                <p>Write your page\'s body below using <a href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a>. <br>
-                    <span class="typeTab tiny" onclick="insLink();">ctrl+shift+k</span> insert link<br>
-                    <span class="typeTab tiny" onclick="insThumb();">ctrl+shift+l</span> insert '.$this->pagename.' thumbnail<br>
-                    <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
-                    <span class="complete" onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
-                </p>
-                <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->article->body.'</textarea>
-                <img src="/Imgs/Bar2.png" class="separator"></img> ';
-            if ($modifier > 0){
-                $main .= '                <div class="complete">
-                    <h4>Sources (Footnotes)</h4>
-                    <p>Put footnotes in your body text with the "[footnote:X]" syntax. Add sources here as references.</p>
-                    <table id="gimmeBabes">
-                        <tbody id="gimmeBabesTbody">
-                        </tbody>
-                    </table>
-                    <input type="text" value="" id = "sources" name ="sources" style="display:none;" />
-
-                    <div class="addSome" onclick="addSome(1);">
-                        <i class="fas fa-plus"></i>
-                    </div>
-                    <div class="addSome" onclick="addSome(0);">
-                        <i class="fas fa-minus"></i>
-                    </div>
-                    <img src="/Imgs/Bar2.png" class="separator"></img>
-                    </div> ';
-            }
-                if ($this->power > 1) {
-                    $main .= '<div class="complete">
-                        <h2>Additional Details<span class="roundInfo green">Optional</span></h2>';
-                    $main .= "<h4>Search Details</h4>";
-                    $main .= "<input type='text' name='queryTags' placeholder='Tree,Brate'  value='".$this->article->queryTags."' pattern=\"".jsReg("basicList")."\" />";
-                    $main .= "<input type='number' name='importance' placeholder='Importance'  value='".$this->article->importance."'/>
-                        <img src='/Imgs/Bar2.png' class='separator'></img></div>";
-                }
-
                 $main .= '<div class="bottButtCon">
                     <button id="submitButton" class="wikiButton" type="submit" onclick="setFormSubmitting()">Submit</button>
                     <a href="'.$this->artRootLink;
-                if ($this->writingNew) {$main .= $this->parentWiki."/home"; } else { $main .= $this->article->page."/".parse2Url($this->article->shortName); }
+                      if ($this->writingNew) {
+                        if ($this->domainType == "spells"){
+                          $main .= "index?w=".$this->parentWiki;
+                        }
+                        else {
+                          $main .= $this->parentWiki."/home";
+                        }
+                     } else { $main .= $this->article->page."/".parse2Url($this->article->shortName); }
                     $main .= '" class="wikiButton" onclick="setFormSubmitting()">Cancel</a>
                 </div>
 
@@ -932,6 +1018,28 @@ NABSDAI;
                     </div>
                 </div>';
         return $main;
+    }
+    function giveREditSpell() {
+
+      $input = '<input type="text" name="PLASSEHOLDER" placeholder="PLASSEHOLDER" value="PLACER%%ARR"></input>'; $fullblock = '';
+      $spellable = new spellGen($this); $spellDic = [];
+      if (!$this->writingNew){
+        $spellDic = $spellable->dic("live", false)[0];
+      }
+      //print_r($spellDic);
+      foreach ($this->editable as $key => $eidt){
+        $block = $input;
+        if ($eidt == "int"){$block = str_replace("text", "number", $block);}
+        else if ($eidt == "text"){$block = '<textarea rows="5" name="PLASSEHOLDER" placeholder="PLASSEHOLDER">PLACER%%ARR</textarea>';}
+        $block = str_replace("PLASSEHOLDER", $key, $block);
+        if (isset($spellDic[$key])){$block = str_replace("PLACER%%ARR", $spellDic[$key], $block);}
+        $block = str_replace("PLACER%%ARR", "", $block);
+        $fullblock .= $block;
+      }
+
+
+      $fullblock .= '<input type="text" name="wiki" value="'.$this->parentWiki.'"style="display:none;" required></input>';
+      return $fullblock;
     }
     function giveRArticle($parts = []){
         $main = '        <div class="col-r" style="margin-bottom:50px;">
@@ -1098,6 +1206,12 @@ NABSDAI;
             </div>';
         return $main;
     }
+    function giveUnsigner() {
+      return " <div class='starterCont'><p>Sign in to get started!</p>
+          <div class='bottButtCon'>
+          <a href='/account/Account' target='_blank' class='wikiButton'><i class='fas fa-arrow-up'></i> Account</a>
+          <a href='#' onclick='location.reload();' class='wikiButton'><i class='fas fa-redo'></i> Refresh</a></div></div>";
+    }
     function giveRArticPops() {
         if (!$this->signedIn){$basetext = "<h1>Log In</h1>
                                 <p>Sorry, you need to log in to edit the fandom.</p>
@@ -1138,7 +1252,7 @@ NABSDAI;
         include($_SERVER['DOCUMENT_ROOT']."/fandom/getRoot.php");
         $main = '
             <div class="docTopRiter">
-               <div class="fakelink" onclick="navigator.clipboard.writeText(\'https://manyisles.ch'.$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');">
+               <div class="fakelink" onclick="navigator.clipboard.writeText(\'https://'.$_SERVER["HTTP_HOST"].$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');">
                  <i class="fas fa-link fancyjump"></i>
                </div>
             </div>
@@ -1486,6 +1600,144 @@ NABSDAI;
         </script>';
         return $main;
     }
+
+    function redirect($url) {
+      $url = str_replace("'", "", $url);
+      echo "<script>window.location.replace('$url');</script>";
+      exit();
+    }
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+}
+
+class spellGen {
+  public $gen;
+  public $parse;
+  public $usableIndexes = [];
+  function __construct($gen) {
+    $this->gen = $gen;
+    if ($this->gen->page == 0){$this->gen->page = 25;}
+    if ($this->gen->page == 0){$this->gen->page = 25;}
+
+    require($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
+    $this->parse = new parse($gen->dbconn, 0, 0, $gen->domain);
+
+    $query = "SELECT * FROM wiki_settings";
+    if ($found = $this->gen->dbconn->query($query)) {
+      while ($row = $found->fetch_assoc()){
+        if ($row["visibility"] < 3){
+          $modrow = explode( ",", $row["mods"]);
+          $authrow = explode(",", $row["auths"]);
+          if (!in_array($this->gen->user, $modrow) AND !in_array($this->gen->user, $authrow)){
+            continue;
+          }
+        }
+        $this->usableIndexes[$row["id"]]=["wikiName"=>$row["wikiName"]];
+      }
+    }
+  }
+  function dic($mod = "", $parset = true) {
+    if ($mod == "live"){
+      $mod = "AND a.id = ".$this->gen->page." AND a.parentWiki = ".$this->gen->article->parentWiki;
+    }
+    $query = "SELECT a.details, a.id
+    FROM ".$this->gen->database." a
+    LEFT OUTER JOIN ".$this->gen->database." b
+        ON a.id = b.id AND a.v < b.v
+    WHERE b.id IS NULL $mod";
+    $arr = [];
+    if ($found = $this->gen->dbconn->query($query)) {
+      while ($row = $found->fetch_assoc()){
+        $predetails = preg_replace('/[\r]/', '\n', $row["details"]);
+        $details = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $predetails), true);
+        $details["id"] = $row["id"];
+        $details["Name"] = txtUnparse($details["Name"]);
+        if ($parset) {$details["FullDesc"] = $this->parse->bodyParser($details["FullDesc"]);}
+        foreach ($details as $key => $detail){
+          $details[$key] = txtUnparse($detail);
+        }
+        array_push($arr, $details);
+      }
+    }
+    return $arr;
+  }
+  function spellBlock($spellId = null, $wikId = null) {
+    if ($spellId == null){$spellId = $this->gen->page;}
+    if ($wikId == null){$wikId = $this->gen->parentWiki;}
+    if ($this->gen->page != 0) {}
+    $spellA = $this->dic("AND a.id = $spellId AND a.parentWiki = $wikId");
+    if ($spellA == []){ $spellId = 25; $wikId = 1; $spellA = $this->dic("WHERE id = $spellId AND parentWiki = $wikId"); }
+
+    $outsidestencil = '      <div class="sInfoBlock">
+                <h3 id="sName">No Spell Found MYA%%MODULE</h3>
+                CONTENUTO
+              </div>';
+    $stencil = <<<MAXX
+          <div id="sLevel" class="sText">Level SPELLEVEL spell</div>
+          <div id="sSchool" class="sText">SPELSCHOOOL</div>
+          <div id="sElement" class="sText">SPELLELEMENT</div>
+      </div>
+      <div class="sInfoBlock">
+          <div id="sCastingTime" class="sText">Casting Time: SPELLCASTTIME</div>
+          <div id="sRange" class="sText">Range: SPELLRANGE</div>
+          <div id="sComponents" class="sText">Components: SPELLCOMP</div>
+          <div id="sDuration" class="sText">Duration: SPELLDUR</div>
+      </div>
+      <div class="sInfoBlock">
+          <div id="sClass" class="sText"> SPELLCASTERS</div>
+      </div>
+      <div class="sInfoBlock">
+          <div id="sFullDesc" class="sText">
+              DESCRIPTION
+          </div>
+    MAXX;
+
+    if ($spellA != []){
+      $spellA = $spellA[0];
+      $outsidestencil = str_replace("No Spell Found", $spellA["Name"], $outsidestencil);
+      $stencil = str_replace("SPELLEVEL", " ".$spellA["Level"]." ", $stencil);
+      $stencil = str_replace("SPELSCHOOOL", $spellA["School"], $stencil);
+      $stencil = str_replace("SPELLELEMENT", $spellA["Element"], $stencil);
+      $stencil = str_replace("SPELLCASTTIME", $spellA["CastingTime"], $stencil);
+      $stencil = str_replace("SPELLRANGE", $spellA["Range"], $stencil);
+      $stencil = str_replace("SPELLCOMP", $spellA["Components"], $stencil);
+      $stencil = str_replace("SPELLDUR", $spellA["Duration"], $stencil);
+      $stencil = str_replace("SPELLCASTERS", $spellA["Class"], $stencil);
+      $stencil = str_replace("DESCRIPTION", $spellA["FullDesc"], $stencil);
+      if ($spellA["Source"]!=""){
+        $sourceName = $spellA["Source"]; foreach ($this->gen->modules as $mod){if ($mod["codeName"]==$sourceName){$sourceName = $mod["fullName"];}}
+        $outsidestencil = str_replace("MYA%%MODULE", "<span class='roundInfo title'>".$sourceName."</span>", $outsidestencil);
+      }
+      if (isset($spellA["Direct_Image_Link"])){
+        $stencil .= '<a href="'.$spellA["Direct_Image_Link"].'" target="_blank"><div class="sImage" load-image="'.$spellA["Direct_Image_Link"].'"></div></a>';
+      }
+      $stencil = str_replace("SOURCE3", "", $stencil);
+      $outsidestencil = str_replace("CONTENUTO", $stencil, $outsidestencil);
+    }
+    $outsidestencil = str_replace("CONTENUTO", "", $outsidestencil);
+    $outsidestencil = str_replace("MYA%%MODULE", "", $outsidestencil);
+
+    if ($this->gen->canedit) {
+      if ($spellA != []){
+        $outsidestencil .= '
+          <div class="bottButtCon">'.$this->gen->ediButton.' '.$this->gen->wriButton.'</div>
+        ';
+      }
+      else {
+        $outsidestencil .= '
+          <div class="bottButtCon">'.$this->gen->wriButton.'</div>
+        ';
+      }
+    }
+    return $outsidestencil;
+  }
 }
 
 class article {
@@ -1520,6 +1772,7 @@ class article {
     public $parentWiki = 1;
     public $revertees = false;
     public $banners = [];
+    public $details = [];
     public $gen = null;
 
     function __construct($gen) {
@@ -1541,9 +1794,12 @@ class article {
             if ($firstrow = $this->conn->query($query)) {
                 if (mysqli_num_rows($firstrow) > 0){
                     while ($row = $firstrow->fetch_assoc()) {
+                      $this->name = $row["name"];
+                      $this->parentWiki = $row["parentWiki"];
+                      $this->version = $row["v"];
+                      if ($this->gen->domainType != "spells"){
                         $this->status = $row["status"];
                         if ($this->status == "reverted"){$this->revertees = true; return $this->getInfo($level + 1);}
-                        $this->name = $row["name"];
                         $this->shortName = $row["shortName"];
                         $this->cate = $row["cate"];
                         $this->banner = $row["banner"];
@@ -1562,18 +1818,21 @@ class article {
                         $this->timeEnd = $row["timeEnd"];
                         $this->queryTags = $row["queryTags"];
                         $this->importance = $row["importance"];
-                        $this->version = $row["v"];
                         $this->pop = $row["pop"];
-                        $this->parentWiki = $row["parentWiki"];
                         $this->parseClear = $row["parseClear"];
                         $this->regdate = $row["reg_date"];
-                    }
-                    $this->body = txtUnparse($this->body, 2);
-                    $this->sidetabTitle = txtUnparse($this->sidetabTitle, 2);
-                    $this->sidetabText = txtUnparse($this->sidetabText, 2);
 
-                    $date_array = date_parse($this->regdate);
-                    $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
+                        $this->body = txtUnparse($this->body, 2);
+                        $this->sidetabTitle = txtUnparse($this->sidetabTitle, 2);
+                        $this->sidetabText = txtUnparse($this->sidetabText, 2);
+
+                        $date_array = date_parse($this->regdate);
+                        $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
+                      }
+                      else {
+                        $this->details = json_decode($row["details"], true);
+                      }
+                    }
                 }
             }
         }

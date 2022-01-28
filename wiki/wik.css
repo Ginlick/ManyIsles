@@ -21,7 +21,7 @@
     --wiki-fonts-h2: min(calc(12px + 1.6vw), 39px);
     --wiki-fonts-h3: min(calc(14px + 1.2vw), 32px);
     --wiki-fonts-h3-colL: min(calc(4px + 1.4vw), 22px);
-    --wiki-fonts-p: min(calc(13.5px + 0.2vw), 24px);
+    --wiki-fonts-p: min(calc(13.5px + 0.2vw), 20px);
     --wiki-fonts-smaller: min(calc(9px + 0.2vw), 19px);
     --wiki-fonts-small: min(calc(10px + 0.1vw), 15px);
 }
@@ -198,13 +198,13 @@ body {
     background-color:   var(--doc-base-color);
     overflow: visible;
 }
-    .sidetab .sImage {
+    .sImage {
         padding: 2.5%;
         width: 100%;
         text-align: center;
         position: relative;
     }
-        .sidetab .sImage img {
+        .sImage img {
             height: 100%;
             max-height: 450px;
             width: 95%;
@@ -1153,4 +1153,11 @@ h1 {
   height: 40px;
   width: 40px;
   font-size: 20px;
+}
+.starterCont {
+    padding: 22px 0;
+}
+.starterCont .wikiButton {
+    margin-top: 40px;
+    display: inline-block;
 }

@@ -74,15 +74,14 @@ if (!$gen->writingNew AND $gen->article->name == ""){ echo "<script>window.locat
         <div class="fandomcoll">
 
                <?php
-                    echo $gen->giveEditInfo();
-
-                    if (!$writingNew) {
-                        echo $gen->giveLAuthors();
-                    }
-
-                    echo $gen->giveCategs();
-                    echo $gen->giveOutstans();
-
+               echo $gen->giveEditInfo();
+               if ($gen->domainType == "fandom"){
+                 if (!$writingNew) {
+                     echo $gen->giveLAuthors();
+                 }
+                 echo $gen->giveCategs();
+                 echo $gen->giveOutstans();
+               }
                 ?>
 
         </div>

@@ -20,6 +20,7 @@ $conn = $gen->conn;
 
 $gen->doFandWork();
 
+
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +33,7 @@ $gen->doFandWork();
 <body style="<?php echo $gen->giveWikStyle(); ?>">
     <div class="content">
         <div class="fandomcoll">
-            <?php   
+            <?php
                 echo $gen->giveLWikinfo();
                 echo $gen->giveLParwikinfo();
                 echo $gen->giveLAuthors(true);
@@ -61,5 +62,3 @@ $gen->doFandWork();
     echo $gen->giveScripts();
     echo $gen->giveArtScript();
 ?>
-
-

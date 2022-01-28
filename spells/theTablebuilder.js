@@ -1,47 +1,40 @@
-function shoBar() {
-    var x = document.getElementById("topnav");
-    if (x.className === "topnav") {
-        x.className += " responsive";
-    } else {
-        x.className = "topnav";
-    }
+var currSpell = 0;
+function genSide(id) {
+  getFile = "/spells/returnSpell.php" + "?id=" + id + "&wiki=" + parentWiki;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+          let result = xhttp.responseText;
+          document.getElementById("sInfo").innerHTML = result;
+          currSpell = id;
+          getIndexImgs();
+      }
+  };
+  xhttp.open("GET", getFile, true);
+  xhttp.send();
 }
-
-function genSide(dic, huh) {
-    document.getElementById("sName").innerHTML = dic.Name;
-    document.getElementById("sLevel").innerHTML = "Level " + dic.Level + " spell";
-    document.getElementById("sSchool").innerHTML = dic.School;
-    document.getElementById("sElement").innerHTML = dic.Element;
-    document.getElementById("sCastingTime").innerHTML = "Casting Time: " + dic.CastingTime;
-    document.getElementById("sRange").innerHTML = "Range: " + dic.Range;
-    document.getElementById("sComponents").innerHTML = "Components: " + dic.Components;
-    document.getElementById("sDuration").innerHTML = "Duration: " + dic.Duration;
-    document.getElementById("sFullDesc").innerHTML = dic.FullDesc;
-    document.getElementById("sClass").innerHTML = dic.Class;
-    if (huh == "yay") { document.getElementById("exclusiveNote").style.display = "block" } else { document.getElementById("exclusiveNote").style.display = "none" };
-
-}
+startspell = 0; if (spells[0]!=undefined){startspell =spells[0]["id"];}
+genSide(startspell);
 
 function kickColumns(zzz) {
-    if (zzz == "Element") return true;
-    if (zzz == "CastingTime") return true;
-    if (zzz == "Range") return true;
-    if (zzz == "Components") return true;
-    if (zzz == "Duration") return true;
-    if (zzz == "Type") return true;
-    if (zzz == "CasterNumer") return true;
-    if (zzz == "Note") return true;
-    if (zzz == "FullDesc") return true;
-    else return false;
+  if (zzz == "id") return false;
+  if (zzz == "Name") return false;
+  if (zzz == "Level") return false;
+  if (zzz == "School") return false;
+  if (zzz == "Class") return false;
+  else return true;
 }
 function kickRows(ya) {
+  if (ya != undefined){
     if (ya.includes("Ritual")) { return true } else { return false };
+  }
 }
 function specExcls(ya) {
+  if (ya != undefined){
     if (ya.includes("exclusive")) {
         return true
     } else { return false }
-    ;
+  }
 }
 function generateTableHead(table, headers) {
     let thead = table.createTHead();
@@ -52,17 +45,16 @@ function generateTableHead(table, headers) {
             let text = document.createTextNode(header);
             th.appendChild(text);
             row.appendChild(th);
-            console.log(row);
             if (header == "Name") {
-                th.onclick = function () { sortTable(0, false) }
+                th.onclick = function () { sortTable(1, false) }
             }
             if (header == "Level") {
-                th.onclick = function () { sortTable(1, true) }
+                th.onclick = function () { sortTable(2, true) }
             }
             if (header == "School") {
-                th.onclick = function () { sortTable(2, false) }
+                th.onclick = function () { sortTable(3, false) }
             }
-            if (header == "Type") {
+            if (header == "Class") {
                 th.onclick = function () { sortTable(4, false) }
             }
         }
@@ -72,8 +64,8 @@ function generateTable(table, list) {
     for (let element of list) {
         if (kickRows(element.Type)) continue;
         let row = table.insertRow();
-        if (!specExcls(element.Note)) { row.onclick = function () { genSide(element, "nay") }; } else {
-            row.onclick = function () { genSide(element, "yay") };
+        if (!specExcls(element.Note)) { row.onclick = function () { genSide(element.id) }; } else {
+            row.onclick = function () { genSide(element.id) };
         }
         for (key in element) {
             if (!kickColumns(key)) {
@@ -92,10 +84,10 @@ function searchSpells() {
         for (var i = 0, row; row = table.rows[i]; i++) {
             row.style.display = "table-row";
             if (odd == true) {
-                row.style.backgroundColor = "#e4e4e3";
+                row.style.backgroundColor = "var(--spell-accent)";
                 odd = false;
             }
-            else { row.style.backgroundColor = "#f2f2f2"; odd = true; }
+            else { row.style.backgroundColor = "transparent"; odd = true; }
         }
     }
     else {
@@ -108,10 +100,10 @@ function searchSpells() {
                 row.style.display = "table-row";
                 isNone = false;
                 if (odd == true) {
-                    row.style.backgroundColor = "#e4e4e3";
+                    row.style.backgroundColor = "var(--spell-accent)";
                     odd = false;
                 }
-                else { row.style.backgroundColor = "#f2f2f2"; odd = true; }
+                else { row.style.backgroundColor = "transparent"; odd = true; }
             };
         }
         if (isNone == true) { table.rows[0].style.display = "none"; }
@@ -161,27 +153,4 @@ generateTable(tableH, spells);
 
 let data = Object.keys(spells[0]);
 generateTableHead(tableH, data);
-
-        function includeHTML() {
-        var z, i, elmnt, file, xhttp;
-        z = document.getElementsByTagName("*");
-        for (i = 0; i < z.length; i++) {
-            elmnt = z[i];
-        file = elmnt.getAttribute("w3-include-html");
-            if (file) {
-            xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState == 4) {
-                        if (this.status == 200) {elmnt.innerHTML = this.responseText; }
-                        if (this.status == 404) {elmnt.innerHTML = "Page not found."; }
-        elmnt.removeAttribute("w3-include-html");
-        includeHTML();
-    }
-}
-xhttp.open("GET", file, true);
-xhttp.send();
-return;
-}
-}
-}
-    includeHTML();
+sortTable(2, true);

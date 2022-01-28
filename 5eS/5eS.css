@@ -29,14 +29,15 @@ h1 .topinfo  {
 }
 .roundImgCont {
     width: 40px;
+    height: 40px;
 }
 .logoCont {
     padding: 0 5px;
 }
-a:hover {
+a:hover, .fakelink:hover {
     color: var(--doc-ahover-color);
 }
-a {
+a, .fakelink {
     color: var(--doc-a-color);
 }
 .col-l, .col-r, h2, input, select, textarea {
