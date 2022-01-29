@@ -130,7 +130,7 @@ function modSelect(element) {
 }
 
 function typeValue(num) {
-  if (num != type){  categs = '';}
+  if (num != type){  categs = [];}
   type = num;
   for (let key in menuList) {
     if (key == num){
