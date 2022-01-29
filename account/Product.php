@@ -58,7 +58,6 @@ if (!$writingNew){
   }
 }
 if ($proStatus=="deleted"){$dl->go("Publish", "p");}
-
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -166,7 +165,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
           <div class="inputCont">
               <label for="pname">Description <span>*</span> <a href="/wiki/h/fandom/markdown.html" target="_blank"><span class="roundInfo">Takes Markdown</span></a></label>
               <textarea rows="6" name="description"  placeholder="Use this great creation to create new [monsters](https://monsters.com)." required><?php echo $proDesc; ?></textarea>
-              <p class="inputErr info" default="A nice, vivid description of your product. Max 220 words."></p>
+              <p class="inputErr info" default="A nice, vivid description of your product. Max 2500 characters."></p>
           </div>
         </div>
         <div class="contentBlock">
@@ -175,41 +174,26 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
               <label for="genre">Choose a type:</label>
               <select id="genre" name="genre" onchange="typValue(this.value)">
                 <?php
-                  $text =  '
-                  <option value="1">Module</option>
-                  <option value="2">Tool</option>
-                  <option value="3">Art</option>
-                  <option value="4">Audio</option>
-                          ';
-                    $text = str_replace('value="'.$proGenre.'"', 'value="'.$proGenre.'" selected', $text);
-                    echo $text;
+                  foreach ($dl->typeNames as $key => $vale){
+                    if ($key == $proGenre){echo "<option value='$key' selected>$vale</option>";continue;}
+                    echo "<option value='$key'>$vale</option>";
+                  }
                  ?>
               </select>
           </div>
-          <div class="fieldCont" style="">
-              <div id="field1" class="field">
-                <span class="input"><input type="checkbox" onclick = "catValue('c');" subg="c">classes</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('r');" subg="r">races</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('u');" subg="u">rules</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('a');" subg="a">adventures</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('l');" subg="l">lore</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('d');" subg="d">DM stuff</input></span>
-              </div>
-              <div id="field2" style="display:none;" class="field">
-                <span class="input"><input type="checkbox" onclick = "catValue('h');" subg="h">homebrewing</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('r');" subg="r">generator</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('i');" subg="i">index/list</input></span>
-              </div>
-              <div id="field3" style="display:none;" class="field">
-                <span class="input"><input type="checkbox" onclick = "catValue('v');" subg="v">visual</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('m');" subg="m">cartography</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('n');" subg="n">dungeons</input></span>
-              </div>
-              <div id="field4" style="display:none;" class="field">
-                <span class="input"><input type="checkbox" onclick = "catValue('a');" subg="v">ambient music</input></span>
-                <span class="input"><input type="checkbox" onclick = "catValue('p');" subg="m">active music</input></span>
-              </div>
-          </div>
+          <div class="fieldCont">
+            <?php
+              foreach ($dl->typeNames as $key => $vale){
+                echo  '<div id="field'.$key.'" class="field">';
+                foreach ($dl->subgenresArr[$key] as $key2 => $subgenre){
+                  $main = '<span class="input"><input type="checkbox" onclick = "catValue(\''.$key2.'\');" subg="'.$key2.'" checked>'.$subgenre.'</input></span>';
+                  if (!str_contains($proSubgenre, $key2)){$main = str_replace("checked", "", $main);}
+                  echo $main;
+                }
+                echo "</div>";
+              }
+             ?>
+           </div>
           <input type="text" style="display:none" id="subgenre" name="subgenre" value="<?php echo $proSubgenre; ?>"/>
 
           <div class="inputCont" id="mSpecificMeta">
@@ -415,6 +399,10 @@ function updateFiler() {
       document.getElementById("file-upload-input").setAttribute("accept", giveAccept(requArray["dlArt"]["types"]));
       $("#drag-textr").html("Drag and drop a file. Max " + formatBytes(requArray["dlArt"]["size"], 0));
     }
+    else if (genre == 5){
+      document.getElementById("file-upload-input").setAttribute("accept", giveAccept(requArray["dl3d"]["types"]));
+      $("#drag-textr").html("Drag and drop a file. Max " + formatBytes(requArray["dl3d"]["size"], 0));
+    }
     else {
       document.getElementById("file-upload-input").setAttribute("accept", giveAccept(requArray["dlPdf"]["types"]));
       $("#drag-textr").html("Drag and drop a file. Max " + formatBytes(requArray["dlPdf"]["size"], 0));
@@ -500,12 +488,15 @@ function sendForm(form) {
           console.log(this.responseText);
 
           if (this.responseText.includes("fileFail")) {
+            <?php if ($writingNew) {echo "window.location.href = 'Publish?i=pcreatederror';"; } ?>
             createPopup("d:pub;txt:Error uploading file.");
           }
           else if (this.responseText.includes("too large")) {
+            <?php if ($writingNew) {echo "window.location.href = 'Publish?i=pcreatederror';"; } ?>
             createPopup("d:pub;txt:Error. Image too large.");
           }
           else if (this.responseText.includes("imgFail")) {
+            <?php if ($writingNew) {echo "window.location.href = 'Publish?i=pcreatederror';"; } ?>
             createPopup("d:pub;txt:Error uploading image.");
           }
           else if (this.responseText.includes("success")){
@@ -514,6 +505,7 @@ function sendForm(form) {
             document.getElementById("thisfile").innerHTML = "Current File: " + fileName;
           }
           else {
+            <?php if ($writingNew) {echo "window.location.href = 'Publish?i=pcreatederror';"; } ?>
             createPopup("d:poet;txt:Error. Could not submit data.");
           }
 

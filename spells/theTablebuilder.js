@@ -153,4 +153,4 @@ generateTable(tableH, spells);
 
 let data = Object.keys(spells[0]);
 generateTableHead(tableH, data);
-sortTable(2, true);
+//sortTable(2, true);

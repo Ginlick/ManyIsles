@@ -35,10 +35,17 @@ class dlengine {
       4 => [
         "a" => "Ambient Music",
         "p" => "Active Music"
+      ],
+      5 => [
+        "p" => "Player Character",
+        "m" => "Monster Figurine",
+        "t" => "Terrain",
+        "a" => "Accessory"
       ]
     ];
     public $gsystArr = [0 => "Any", 1 => "5eS", 2 => "5e"];
-    public $typeNames = [1=>"Modules", 2=>"Tools", 3=> "Art", 4=> "Audio"];
+    public $typeNames = [1=>"Modules", 2=>"Tools", 3=> "Art", 4=> "Audio", 5 => "3d Models"];
+    public $typeDets = [1=>["type"=>"dlPdf"],2=>["type"=>"dlPdf"],3=>["type"=>"dlArt"],4=>["type"=>"bigAudio"],5=>["type"=>"dl3d"]];
 
 
     function __construct($conn = null, $dlconn = null){
@@ -161,57 +168,42 @@ class dlengine {
     }
     function giveMenu() {
         $menu = <<<MEGAMMAMAM
-        <div class="menuCont">
+          <div class="menuCont">
             <a href="/dl/home"><h3>Browse</h3></a>
             <div class="dropdown">
                 <button onclick="dropdown()" class="dropbtn" id="showType">Modules</button>
                 <div id="myDropdown" class="dropdown-content">
-                    <p onclick="typeValue(1)">Modules</p>
-                    <p onclick="typeValue(2)">Tools</p>
-                    <p onclick="typeValue(3)">Art</p>
-                    <p onclick="typeValue(4)">Audio</p>
+          MEGAMMAMAM;
+          foreach ($this->typeNames as $key => $vale){
+            $menu .= "<p onclick='typeValue($key)'>$vale</p>";
+          }
+          $menu .= '
                 </div>
-            </div>
-            <ul class="menuList" type="1">
-              <li subgenre="">All</li>
-              <li subgenre="c">Classes</li>
-              <li subgenre="r">Races</li>
-              <li subgenre="u">Rules</li>
-              <li subgenre="a">Adventures</li>
-              <li subgenre="l">Lore</li>
-              <li subgenre="d">GM Resources</li>
-              <li>
-                  <select id="sysDropdown" onchange="newSys(this.value);">
-                      <option value="0">Any System</option>
-                      <option value="1">5eS</option>
-                      <option value="2">5e</option>
-                  </select>
-              </li>
-            </ul>
-            <ul class="menuList"  type="2">
-              <li subgenre="">All</li>
-              <li subgenre="h">Homebrewing</li>
-              <li subgenre="r">Generator</li>
-              <li subgenre="i">Index</li>
-            </ul>
-            <ul class="menuList"  type="3">
-              <li subgenre="">All</li>
-              <li subgenre="v">Visual</li>
-              <li subgenre="m">Cartography</li>
-              <li subgenre="n">Dungeons</li>
-            </ul>
-            <ul class="menuList"  type="4">
-              <li subgenre="">All</li>
-              <li subgenre="a">Ambient Music</li>
-              <li subgenre="p">Active Music</li>
-            </ul>
-
-            <form onsubmit="return goSearch(this)">
-              <input type="text" class="" name="query" placeholder="Queries...">
-              <button class=""><i class="fas fa-search"></i> Search</button>
-            </form>
-        </div>
-        MEGAMMAMAM;
+            </div>';
+          foreach ($this->typeNames as $key => $vale){
+            $menu .= "<ul class='menuList' type='$key'>
+            <li subgenre=''>All</li>";
+            foreach ($this->subgenresArr[$key] as $key2 =>$subgenre){
+              $menu .= "<li subgenre='$key2'>$subgenre</li>";
+            }
+            if ($key == 1){
+              $menu .= '
+                <li>
+                    <select id="sysDropdown" onchange="newSys(this.value);">
+                        <option value="0">Any System</option>
+                        <option value="1">5eS</option>
+                        <option value="2">5e</option>
+                    </select>
+                </li>';
+            }
+            $menu .= "</ul>";
+          }
+        $menu .= '
+        <form onsubmit="return goSearch(this)">
+          <input type="text" class="" name="query" placeholder="Queries...">
+          <button class=""><i class="fas fa-search"></i> Search</button>
+        </form>
+        </div>';
         return $menu;
     }
     function giveFooter() {
@@ -368,11 +360,13 @@ class dlengine {
       return $return;
     }
     function baseVars($genre = 1, $subgenre = "[]", $gsystem = 0) {
+      $typeeme = json_encode($this->typeNames);
       return <<<MAGDA
       <script>
         var type = $genre;
         var categs = $subgenre;
         var sysNum = $gsystem;
+        var typeNames = $typeeme;
       </script>
       MAGDA;
     }

@@ -29,12 +29,6 @@ while ($row = $result -> fetch_assoc()) {
     $region = $row["region"];
 }
 
-
-
-
-if(isset($_GET["show"])){$goTo = "Location: /spells/SetSLCook.php?where=SignedIn&show=".$_GET["show"];} else {$goTo = "Location: /spells/SetSLCook.php?where=SignedIn";}
-if (!isset($_COOKIE["spellLists"]) && $_GET["sl"]!="no"){header($goTo);}
-
 $disctitle = "Connect Discord";
 if ($discname != null){$disctitle = "Discord";}
 
@@ -364,41 +358,6 @@ if ($ordersExist){
     $creditBar = str_replace(" line", "", $creditBar);
 }
 
-if (isset($_COOKIE["spellLists"])||$_GET["sl"]=="no"){
-$spellPartly =<<<GREATSTUFF
-    <h1>Saved Spell Lists</h1>
-    <p>
-        You can always find these or create new ones in the Many Isles <a href="/spells/SpellList.html" target="_blank">spell list</a>.
-    </p>
-        <table id="SLoptions">
-            <thead>
-                <tr>
-                    <th>Slot</th>
-                    <th>Name</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    <div style="width:30%;margin:auto;">
-        <a class="popupButton spelly" style="margin-top:3vw;" href="/spells/SpellList.html">View</a>
-    </div>
-GREATSTUFF;
-}
-else {
-$spellPartly =<<<GREATSTUFF
-
-    <h1>Saved Spell Lists</h1>
-    <p>
-        Looks like you haven't saved any spell lists yet.
-    </p>
-    <div style="width:30%;margin:auto;">
-        <a class="popupButton spelly" style="margin-top:3vw;" href="/spells/SpellList.html">Create</a>
-    </div>
-    <p>The Many Isles allows you to create custom spell lists of all 5eS spells for your characters. Learn more in the <a href="/wiki/h/spells.html" target="_blank">wiki article</a>.</p>
-GREATSTUFF;
-}
-
 
 ?>
 <!DOCTYPE html>
@@ -484,8 +443,6 @@ GREATSTUFF;
                     <?php echo $adminBar; ?>
                     <?php echo $creditBar; ?>
                     <?php if ($ordersExist) { echo $ordersBar; } ?>
-                    <li onclick='clinnation("Spell")'> <p id='SpellBar' class="Bar">Spell Lists</p></li>
-                    <li> <a class="Bar line" href="Beta.html">Beta Goodies</a></li>
                     <li onclick='clinnation("Del")'> <p id='DelBar' class="Bar">Delete Account</p></li>
 
                 </ul>
@@ -594,11 +551,6 @@ GREATSTUFF;
             <?php echo $creditBody; ?>
 
             <?php if ($ordersExist) { echo $ordersBody; } ?>
-
-
-            <div id='Spell' class='column'>
-                <?php echo $spellPartly; ?>
-            </div>
 
             <div id='Del' class='column'>
                 <h1>Delete Account</h1>
@@ -811,25 +763,6 @@ GREATSTUFF;
     else if (show == "discSucc") {
         clinnation("Disc");
     }
-
-    fillMe();
-function fillMe() {
-        if (getCookie("spellLists") != "set") { a = getCookie("spellLists"); purify(a, "a"); }
-        if (document.cookie.indexOf('spellb') != -1) { b = getCookie("spellb"); purify(b, "b"); }
-        if (document.cookie.indexOf('spellc') != -1) { c = getCookie("spellc"); purify(c, "c"); }
-        if (document.cookie.indexOf('spelld') != -1) { d = getCookie("spelld"); purify(d, "d"); }
-        if (document.cookie.indexOf('spelle') != -1) { e = getCookie("spelle"); purify(e, "e"); }
-}
-function purify(x, y) {
-    let SLtable = document.getElementById("SLoptions");
-    x = x.replace(/\+/g, " ");
-    x = x.split(",");
-    let row = SLtable.insertRow();
-    let cell1 = row.insertCell(0);
-    cell1.innerHTML = y;
-    let cell2 = row.insertCell(1);
-    cell2.innerHTML = "<a href='/spells/SavedList.html?sl=".concat(y).concat("'>").concat(x[0]).concat("</a>");
-}
 
 function getCookie(name) {
     var cookieArr = document.cookie.split(";");

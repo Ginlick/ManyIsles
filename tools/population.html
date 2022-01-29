@@ -48,6 +48,9 @@
         .contentblock #theformula {
             font-size: .9vw;
         }
+        #autoBlock {
+          padding: 5px 15px;
+        }
     </style>
 </head>
 <body>
@@ -528,7 +531,7 @@
             if (T0 - 0.05 < 1) { var techDomain = [T0 - 0.05, 1]; }
             else { var techDomain = [1, T0]; }
 
-            var popDomain = [0, Pmax]; 
+            var popDomain = [0, Pmax];
         }
 
 
@@ -578,5 +581,3 @@
 
     plotIt();
 </script>
-
-

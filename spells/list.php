@@ -38,7 +38,7 @@ $gen->spells = new spellGen($gen);
       padding: 20px 0 40px;
     }
     select, input[type=text] {
-      width: 25%;margin-left:auto;margin-right:auto
+      width: 25%;margin-left:auto;margin-right:auto;margin-bottom: 15px;
     }
     </style>
 </head>
@@ -146,7 +146,6 @@ $gen->spells = new spellGen($gen);
                       <label for="kickMythics">Remove Mythical Spells</label><br />
                   </div>
                   <button class="wikiButton"><i class="fas fa-plus"></i> Create</button>
-
               </form>
               MASSIVE;
             }
@@ -183,10 +182,22 @@ $gen->spells = new spellGen($gen);
               echo '<h1>Create Spell Index</h1>
                 <p>Indexes are collections of spells.<br>Those you create are private.</p>
                 <form action="NewSpellIndex.php" method="GET">
-                    <input type="text" name="wikiName" placeholder="Index Name" style="margin-bottom: 15px;" />
+                    <input type="text" name="wikiName" placeholder="Index Name" />
                     <input type="number" name="visibility" value ="1" style="display:none;" />
                    <button class="wikiButton "><i class="fas fa-plus"></i> Create New Index</button>
                  </form>
+                 <h1>Duplicate Index</h1>
+                 <p>If you\'d like to add some homebrews, but not create a list from scratch.</p>
+                 <form action="NewSpellIndex.php" method="GET">
+                     <input type="text" name="wikiName" placeholder="Index Name" />
+                     <select name="index">';
+                   foreach ($gen->spells->usableIndexes as $key => $usInd){
+                     echo "<option value='".$key."'> ".$usInd["wikiName"]."</option>";
+                   }
+                   echo '
+                       </select>
+                     <button class="wikiButton "><i class="fas fa-plus"></i> Duplicate Index</button>
+                  </form>
               ';
             }
             else {

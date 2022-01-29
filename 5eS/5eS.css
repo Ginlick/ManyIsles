@@ -27,6 +27,9 @@
 h1 .topinfo  {
     display: none;
 }
+h4 {
+  color: var(--doc-text-color);
+}
 .roundImgCont {
     width: 40px;
     height: 40px;

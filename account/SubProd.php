@@ -18,11 +18,12 @@ $support = 0;
 $external = 0;$wantsExternal = 0;
 $tier = 0;
 $image = false; $file = false;$placedI = false; $placedF = false;
+$status = "active";
 
 $pname = substr(preg_replace("/[^A-Za-z0-9\&\'\- ]/", "", $_POST['pname']), 0, 70);
 $spname = substr(preg_replace("/[^A-Za-z0-9\&\'\- ]/", "", $_POST['spname']), 0, 35);
-$jacob = substr(str_replace('"', '%double_quote%', $_POST['description']), 0, 500);
-$genre = substr(preg_replace("/[^0-9]/", "", $_POST['genre']), 0, 1);
+$jacob = substr(str_replace('"', '%double_quote%', $_POST['description']), 0, 2500);
+$genre = substr(preg_replace("/[^0-9]/", "", $_POST['genre']), 0, 2);
 $subgenre = substr(preg_replace("/[^a-z]/", "", $_POST['subgenre']), 0, 50);
 $gsystem = substr(preg_replace("/[^0-9]/","",  $_POST['gamesys']), 0, 2);
 $keywords = substr(preg_replace("/[^A-Za-z0-9\&\'\-, ]/", "", $_POST['keywords']), 0, 60);
@@ -49,7 +50,7 @@ else {
   }
 
   if (!isset($_FILES["image"]) OR (!isset($_FILES["file"]) AND !isset($placedF))) {
-    $dl->go("PubProd?i=badfile", "p");
+    echo ("fileFail");exit;
   }
   $image = $_FILES["image"];
 }
@@ -72,19 +73,21 @@ if ($image){
     }
     if (!$placedI){
       echo "imgFail";
+      if ($writingNew){$placedI="/IndexImgs/GMTips.png";$status="paused";}
     }
   }
 }
 if ($file){
   $external = 1;
   if ($realpath = $filing->new($file, $prodId, "462")) {
-    $filetype = "dlPdf";if ($genre == 3){$filetype = "dlArt";} else if ($genre == 4){$filetype = "bigAudio";}
+    $filetype = $dl->typeDets[$genre]["type"];
     if ($filing->check($file, $filetype)){
       $placedF = $filing->add($file["tmp_name"], $realpath);
       $external = 0;
     }
     if (!$placedF){
       echo "fileFail";
+      if ($writingNew){$status="paused";}
     }
   }
 }
@@ -107,8 +110,8 @@ $more["indirect"]=$external;
 $more = json_encode($more);
 
 if ($writingNew) {
-  $baseCommand = 'INSERT INTO products (name, shortName, image, partner, genre, subgenre, categories, tier, description, link, support, more) VALUES
-   ("'.$pname.'", "'.$spname.'","'.$placedI.'", "'.$dl->partId.'", "'.$genre.'","'.$subgenre.'", "'.$keywords.'","'.$tier.'","'.$jacob.'", "'.$placedF.'", "'.$support.'", \''.$more.'\')';
+  $baseCommand = 'INSERT INTO products (name, shortName, image, partner, genre, subgenre, categories, tier, description, link, support, more, status) VALUES
+   ("'.$pname.'", "'.$spname.'","'.$placedI.'", "'.$dl->partId.'", "'.$genre.'","'.$subgenre.'", "'.$keywords.'","'.$tier.'","'.$jacob.'", "'.$placedF.'", "'.$support.'", \''.$more.'\', "'.$status.'")';
 }
 else {
   $baseCommand = 'UPDATE products SET

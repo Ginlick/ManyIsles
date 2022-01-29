@@ -1,7 +1,6 @@
 var modList = ["charop", "race", "rule", "adventure", "lore", "dms"];
 var tulList = ["hmbrw", "genr", "indx"];
 var artList = ["vis", "cart", "dun"];
-var typeNames = {1:"Modules", 2:"Tools", 3: "Art", 4: "Audio"};
 var fulList = modList.concat(tulList).concat(artList);
 
 let urlaa = window.location.href;
@@ -131,6 +130,7 @@ function modSelect(element) {
 }
 
 function typeValue(num) {
+  if (num != type){  categs = '';}
   type = num;
   for (let key in menuList) {
     if (key == num){

@@ -1656,19 +1656,28 @@ class spellGen {
     FROM ".$this->gen->database." a
     LEFT OUTER JOIN ".$this->gen->database." b
         ON a.id = b.id AND a.v < b.v
-    WHERE b.id IS NULL $mod";
-    $arr = [];
+    WHERE b.id IS NULL $mod ORDER BY a.name ASC";
+    $subarr = [];
     if ($found = $this->gen->dbconn->query($query)) {
       while ($row = $found->fetch_assoc()){
         $predetails = preg_replace('/[\r]/', '\n', $row["details"]);
         $details = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $predetails), true);
+        if ($details == null) {echo $row["id"];}
         $details["id"] = $row["id"];
-        $details["Name"] = txtUnparse($details["Name"]);
-        if ($parset) {$details["FullDesc"] = $this->parse->bodyParser($details["FullDesc"]);}
-        foreach ($details as $key => $detail){
-          $details[$key] = txtUnparse($detail);
+        if ($parset) {
+          $details["FullDesc"] = $this->parse->bodyParser($details["FullDesc"]);
+          foreach ($details as $key => $detail){
+            $details[$key] = txtUnparse($detail);
+          }
         }
-        array_push($arr, $details);
+        $subarr[$details["Level"]][] = $details;
+      }
+    }
+    $arr = [];
+    ksort($subarr);
+    foreach ($subarr as $suba) {
+      foreach ($suba  as $sub){
+        $arr[] = $sub;
       }
     }
     return $arr;

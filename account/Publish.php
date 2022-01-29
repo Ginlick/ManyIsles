@@ -33,6 +33,12 @@ padding:0;
         transition: .2s ease;
         cursor: pointer;
     }
+    .paused {
+      color: #2f39b6;
+    }
+    .paused:hover {
+      color: #5962db;
+    }
 </style>
 </head>
 <body>
@@ -86,7 +92,8 @@ padding:0;
       $query = 'SELECT * FROM products WHERE status != "deleted" AND partner = '.$dl->partId.' order by name ASC';
       if ($firstrow = $dl->dlconn->query($query)) {
           while ($row = $firstrow->fetch_assoc()) {
-            $column = "<a class='procol' href='%%URL'>%%MEHA (%%GENRE)</a>";
+            $column = "<a class='procol paused' href='%%URL'>%%MEHA (%%GENRE)</a>";
+            if ($row["status"]=="active"){$column = str_replace("paused", "", $column);}
             $column = str_replace("%%URL", "Product?id=".$row["id"], $column);
             $column = str_replace("%%MEHA", $row["name"], $column);
             if ($dl->ppower > 0 && $row["tier"] != 0){$column = str_replace("%%GENRE", "Tier ".$row["tier"].", ".$dl->typeNames[$row["genre"]], $column);}
@@ -213,6 +220,9 @@ if (why == "created") {
 }
 else if (why == "pcreated") {
   createPopup("d:pub;txt:Product published!");
+}
+else if (why == "pcreatederror") {
+  createPopup("d:pub;txt:Product published, but with errors.");
 }
 else if (why == "updated") {
   createPopup("d:pub;txt:Partnership info updated");

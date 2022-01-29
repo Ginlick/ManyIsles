@@ -91,7 +91,8 @@ trait fundamentals {
     "mystimg" => ["size"=>2200000, "types"=>["jpg", "png", "jpeg", "gif"], "likesImg"=>true],
     "dlPdf" => ["size"=>35000000, "types"=>["pdf"], "likesImg"=>false],
     "dlArt" => ["size"=>12000000, "types"=>["jpg", "png", "jpeg", "gif"], "likesImg"=>true],
-    "bigAudio" => ["size"=>2200000, "types"=>["wav", "mp3", "pcm"], "likesImg"=>false]
+    "dl3d" => ["size"=>22000000, "types"=>["stl", "fbx", "obj", "usd", "usdz"], "likesImg"=>false],
+    "bigAudio" => ["size"=>1200000, "types"=>["wav", "mp3", "pcm"], "likesImg"=>false]
   ];
   public $regArrayR = [
       "basic" => "/[^A-Za-z0-9]/",

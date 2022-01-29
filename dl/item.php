@@ -1,11 +1,12 @@
 ﻿<?php
 if (isset($_GET["id"])){if (preg_match("/^[0-9]+$/", $_GET["id"])!=1){header("Location: /dl/home");exit();} else {$artId = $_GET["id"];} } else {header("Location: /dl/home");exit();}
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
 require_once("global/engine.php");
 $dl = new dlengine($conn);
 if (!$dl->user->check()){$dl->go("home", "dl");}
-$parse= new Parsedown;
+$parse= new parseDown();
 $parse->setSafeMode(true);
 
 $digital = false;
@@ -29,6 +30,7 @@ if ($firstrow = $dl->dlconn->query($query)) {
         $artStatus = $row["status"];
     }
 }
+$artType = $dl->typeDets[$artGenre]["type"];
 if ($artName==""){$dl->go("home?i=baditem", "dl");}
 else if ($dl->partners[$artPartnerId]!="active"){$dl->go("home?i=badpartner", "dl");}
 else if ($artStatus != "active" AND $artStatus != "paused"){$dl->go("home?i=baditem", "dl");}
@@ -85,7 +87,12 @@ $overlay = str_replace("ACCESSMODENAME", $access, $overlay);
 $checkoutPair = str_replace("ACCESSMODENAME", $access, $checkoutPair);
 if ($canPeruse){
  if ($access == "Download"){
-   $checkoutPair = str_replace("BUTTWO", " <a href='".$dl->fileclear($artLink, $artGenre, true)."' target='_blank'><button class='checkout'> <i class='fas fa-arrow-up'></i> Open in Browser</button></a>",   $checkoutPair);
+   if ($artType=="dlPdf" OR $artType=="dlArt" OR $artType=="bigAudio") {
+     $checkoutPair = str_replace("BUTTWO", " <a href='".$dl->fileclear($artLink, $artGenre, true)."' target='_blank'><button class='checkout'> <i class='fas fa-arrow-up'></i> Open in Browser</button></a>",   $checkoutPair);
+   }
+   else {
+     $checkoutPair = str_replace("BUTTWO", "",   $checkoutPair);
+   }
    $overlay = replaceBusiness($overlay, "fas fa-arrow-down", "/Server-Side/downStuff.php?name=".urlencode($artShortName)."&dlid=".$artId."&dl=".$dl->fileclear($artLink, $artGenre), "download='' target='_blank'");
    $checkoutPair = replaceBusiness($checkoutPair, "fas fa-arrow-down", "/Server-Side/downStuff.php?name=".urlencode($artShortName)."&dlid=".$artId."&dl=".$dl->fileclear($artLink, $artGenre), "download='' target='_blank'");
  }
@@ -118,7 +125,38 @@ $dl->dlconn->query($query);
     <?php echo $dl->styles(); ?>
 </head>
 <style>
+    .details {
+      max-height: 300px;
+      overflow: hidden;
+      position : relative;
+    }
 
+    .details:after {
+      content  : "";
+      position : absolute;
+      z-index  : 1;
+      bottom   : 0;
+      left     : 0;
+      pointer-events   : none;
+      background-image : linear-gradient(to bottom,
+                        rgba(255,255,255, 0),
+                        rgba(255,255,255, 1) 90%);
+      width    : 100%;
+      height   : 100px;
+    }
+    .details.full {
+      max-height: none;
+    }
+    .details.full:after {
+      display: none;
+    }
+    .viewMore {
+      margin-top: 0;
+      text-align: left;
+    }
+    .lined {
+      border-bottom: 1px var(--all-color-albord) solid;
+    }
 </style>
 <body>
   <?php
@@ -232,13 +270,16 @@ $dl->dlconn->query($query);
                 </section>
             </div>
 
-            <section class="details">
+            <section class="lined">
+              <div  class="details" id="detailsBlock">
                 <div>
                         <?php if ($artGsystem != 0){echo "<p>Game System: ".$dl->gsystArr[$artGsystem]."</p>";}
-                        echo $parse->text($artDesc); ?>
+                        echo txtUnparse($parse->text($artDesc)); ?>
                 </div>
-                <div>
-                </div>
+              </div>
+              <p class="viewMore fakelink" id="viewMore" onclick="toggleView()">
+                More
+              </p>
             </section>
             <section>
               <?php
@@ -286,5 +327,18 @@ function submitNormal() {
         document.getElementById("coolForm").submit();
     }
 }
-
+function toggleView(force = false) {
+  if (document.getElementById("detailsBlock").classList.contains("full") && !force){
+    document.getElementById("detailsBlock").classList.remove("full");
+    document.getElementById("viewMore").innerHTML = "More";
+  }
+  else {
+    document.getElementById("detailsBlock").classList.add("full");
+    document.getElementById("viewMore").innerHTML = "Less";
+  }
+}
+if (document.getElementById("detailsBlock").clientHeight < 300){
+  toggleView(true);
+  document.getElementById("viewMore").style.display = "none";
+}
 </script>
