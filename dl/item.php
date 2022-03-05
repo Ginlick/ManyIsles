@@ -257,8 +257,8 @@ $dl->dlconn->query($query);
                       if ($artStatus == "paused"){
                         echo '<p class="warning blue">This product is paused and cannot currently be found in the library.</p>';
                       }
-                      if ($artPartner != "Pantheon"){
-                        echo '<p class="warning">Warning: the Many Isles carry no responsibility for malware in third-party products.</p>';
+                      else if ($artPartner != "Pantheon" AND $access == "Download" AND $canPeruse){
+                        echo '<p class="warning">The Many Isles carry no responsibility for possible malware in third-party products.</p>';
                       }
                        ?>
                     </div>
