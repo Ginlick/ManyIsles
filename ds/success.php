@@ -1,5 +1,5 @@
 ﻿<?php
-    
+
 $servername = "localhost:3306";
 $username = "aufregendetage";
 $password = "vavache8810titigre";
@@ -72,7 +72,7 @@ if (isset($_GET["type"])){
                 </ul>
                 <?php
                     include("g/sideBasket.php");
-                ?>    
+                ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
                 </ul>
@@ -147,14 +147,9 @@ if (isset($_GET["type"])){
         if (document.cookie.indexOf('loggedIn') == -1) {
             window.location.href = "checkout.html";
         }
-        else if (document.cookie.indexOf('loggedP') == -1) {
-            window.location.href = "checkout.html";
-        }
     }
     checkCookie();
 
 
 
     </script>
-
-

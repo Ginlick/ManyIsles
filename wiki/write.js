@@ -55,6 +55,7 @@ function fancyLinkage() {
         }
         if (idStr != "") {
             let targetPage = "/fandom/getArticleInfo.php?id=" + idStr + "&dom=" + domain;
+            if (domain == 3 && typeof getCookie === "function"){targetPage += "&u="+getCookie("loggedIn");}
             console.log(targetPage);
             xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {

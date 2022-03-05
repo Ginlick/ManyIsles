@@ -1,7 +1,6 @@
 ﻿<?php
 if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:hub.php");exit();}
 if(!isset($_COOKIE["loggedIn"])){header("Location:../home.php");exit();}
-if(!isset($_COOKIE["loggedP"])){header("Location: ../home.php");exit();}
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 
 $id = $_COOKIE["loggedIn"];
@@ -160,7 +159,7 @@ $ordExplicitStatus = ordStatus($ordNStatus, 1);
                     echo "</tr>";
 
                     echo "</tbody></table>";
-  
+
                 ?>
                 <h2>Shipping Information</h2>
                 <p style="text-align:left;">
@@ -169,7 +168,7 @@ $ordExplicitStatus = ordStatus($ordNStatus, 1);
                     echo "Customer Id: u#".$ordBuyer."<br>";
                     echo "Name: ".$customerTitle." ".$customerUname."<br>";
                     echo "Contact: ".$customerEmail." <br><span class='warning red'>(try to contact the customer as little as possible)</span>";
-                   
+
                 ?>
                 </p>
 
@@ -177,7 +176,7 @@ $ordExplicitStatus = ordStatus($ordNStatus, 1);
                     <li class="pHeader">Address</li>
                     <?php
                         $addressArray = explode(";", $ordAddress);
-                    
+
                         for ($c = 0; $c < count($addressArray) ;$c++){
                             if ($c == count($addressArray)-1){
                                 echo "<li>".$countries["GLO"][$addressArray[$c]]." (".$addressArray[$c].")</li>";
@@ -220,5 +219,3 @@ if (isset($_GET["recStatChange"])){
 <script>
 
 </script>
-
-

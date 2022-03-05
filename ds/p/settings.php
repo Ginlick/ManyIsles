@@ -1,7 +1,6 @@
 ﻿<?php
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 if(!isset($_COOKIE["loggedIn"])){header("Location: /account/Account.html?error=notSignedIn");exit();}
-if(!isset($_COOKIE["loggedP"])){header("Location: /account/Account.html?error=notSignedIn");exit();}
 
 if (isset($_COOKIE["admin"])){$adminClearance = true;$admin = true;}else {$admin = false;}
 $redirect = "../home.php";

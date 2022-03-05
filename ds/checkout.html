@@ -74,7 +74,7 @@
                                     </td>
                                 </tr>
                             </table>
-                            <input type="text" style="display:none;visibility:hidden" value="/ds/checkoutw.php?w=1" name="goTo" required>
+                            <input type="hidden"  value="/ds/checkoutw.php?w=1" name="goTo">
                             <p style="color:red;display:none;" id="createBlock">Our spam block interrupted your account creation. Please try again tomorrow.</p>
                             <p>Already have an account? <span class="fakelink" onclick="switchBlock('getIt');">Sign in</span></p>
                             <div style="text-align:center;margin-top:40px;">
@@ -134,19 +134,20 @@
 </body>
 </html>
 <script src="/Code/CSS/global.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "loggedP=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "loggedCode=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
     var whichBlock = "makeIt";
     function switchBlock(x) {
         document.getElementById(x).style.display = "block";
         document.getElementById(whichBlock).style.display = "none";
         if (x == "makeIt") {
-          document.getElementById("checkoutBox").setAttribute("onclick", "document.getElementById('signUpForm').submit();");
+          document.getElementById("checkoutBox").setAttribute("onclick", "document.getElementById('SignUpForm').submit();");
         }
         else {
-            document.getElementById("checkoutBox").setAttribute("onclick", "document.getElementById('signInForm').submit();");
+          document.getElementById("checkoutBox").setAttribute("onclick", "document.getElementById('signInForm').submit();");
         }
         whichBlock = x;
     }

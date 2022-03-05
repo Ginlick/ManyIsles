@@ -1,24 +1,16 @@
 ﻿<?php
-if(!isset($_COOKIE["loggedIn"])) {header("Location: Account.html?error=notSignedIn");setcookie("loggedP", "", time() -3600, "/");exit();}
-if(!isset($_COOKIE["loggedP"])) {header("Location: Account.html?error=notSignedIn");setcookie("loggedIn", "", time() -3600, "/");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$user = new adventurer();
+if (!$user->check(true)){header("Location:Account?error=notSignedIn");}
+$id = $user->user;
+$conn = $user->conn;
+$uname = $user->uname;
 
-if (preg_match("/[A-Za-z0-9]{1,}/", $_GET['psw'])!=1){header("Location: SignedIn.php?show=delWrongPassword");exit();}
-if ($_GET['psw'] != openssl_decrypt ( $_COOKIE["loggedP"], "aes-256-ctr", "Ga22Y/", 0, "12gah589ds8efj5a")) {header("Location: SignedIn.php?show=delWrongPassword");exit();}
+if (!$user->checkInputPsw($_POST['password'])){header("Location: SignedIn.php?show=wrongPassword");exit();}
+
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
-
-$id = $_COOKIE['loggedIn'];
-
-$query = "SELECT uname, password FROM accountsTable WHERE id = ".$id;
-$result =  $conn->query($query);
-while ($row = $result->fetch_assoc()) {
-   $checkpsw = $row["password"];
-   $uname = $row["uname"];
-}
-$redirect = "Location: SignedIn.php?show=delWrongPassword";
-include("../Server-Side/checkPsw.php");
-
 
 
 $subject = "Partnership Dissolution";
@@ -46,7 +38,7 @@ $message = <<<MYGREATMAIL
 </html>
 MYGREATMAIL;
 
-$subject2 = "Goodbye";
+$subject2 = "Goodbye, ".$user->fullName;
 $message2 = <<<MYGREATMAIL
 <!DOCTYPE html>
 <html>
@@ -107,7 +99,7 @@ if ($result=$conn->query($query)) {
 
     mail("godsofmanyisles@gmail.com", "Account Deleted", "yep, it's sad to say, ".$uname, $headers);
     setcookie("loggedIn", "", time() -3600, "/");
-    setcookie("loggedP", "", time() -3600, "/");
+    setcookie("loggedCode", "", time() -3600, "/");
     echo "Done";
     header("Location: Account.html");
 }

@@ -98,6 +98,7 @@ trait fundamentals {
       "basic" => "/[^A-Za-z0-9]/",
   ];
   function purate($input, $regex = "basic") {
+    $input = str_replace(" ", "_", $input);
     return preg_replace($this->regArrayR[$regex], "", $input);
   }
   function clearmage($file, $oldOption = "") {

@@ -69,16 +69,17 @@ if (isset($_COOKIE["loggedIn"])) {
     </style>
 </head>
 <body>
+    <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl="true"></div>
     <div class="content">
         <div class="fandomcoll">
             <div class="col-l">
                 <h2>Many Isles</h2>
-               <div class="bottButtCon"><a href="/home"><button class="wikiButton" >Home</button></a></div>             
+               <div class="bottButtCon"><a href="/home"><button class="wikiButton" >Home</button></a></div>
             </div>
             <div class="col-l">
                 <h2>Many Isles Fandom</h2>
                 <p>Get your lore public!</p>
-               
+
                     <?php if ($canedit) {
                         echo ' <div class="bottButtCon"><a href="edit.php?new=1"><button class="wikiButton" >Create Wiki</button></a></div>';
                     }
@@ -91,7 +92,7 @@ if (isset($_COOKIE["loggedIn"])) {
 
 
                     ?>
-                
+
             </div>
         </div>
 
@@ -140,4 +141,3 @@ else if (why == "cantedit"){
     createPopup("d:poet;txt:Sorry, you cannot edit this wiki.");
 }
 </script>
-

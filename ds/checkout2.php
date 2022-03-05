@@ -1,8 +1,4 @@
 ﻿<?php
-
-if(!isset($_COOKIE["loggedIn"])) {header("Location: checkout.html");setcookie("loggedP", "", time() -3600, "/");exit();}
-if(!isset($_COOKIE["loggedP"])) {header("Location: checkout.html");setcookie("loggedIn", "", time() -3600, "/");exit();}
-
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
 $codesMatter = true;
 require_once("g/sideBasket.php");
@@ -347,9 +343,6 @@ if ($basketed->codesExist){
 <script>
     function checkCookie() {
         if (document.cookie.indexOf('loggedIn') == -1) {
-            window.location.href = "checkout.html";
-        }
-        else if (document.cookie.indexOf('loggedP') == -1) {
             window.location.href = "checkout.html";
         }
     }

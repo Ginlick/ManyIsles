@@ -298,12 +298,7 @@ function getCookie(cname) {
 //account
 function signOut(yeah = null) {
     document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "loggedP=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellLists=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellb=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spellc=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spelld=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "spelle=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "loggedCode=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     if (yeah == "friendly") { window.location.href = "/account/Account?error=signIn"; }
     else if (yeah == "baddie") { window.location.href = "/account/Account?error=notSignedIn";}
     else {window.location.reload(true);}

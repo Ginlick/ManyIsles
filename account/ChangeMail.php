@@ -1,31 +1,13 @@
 ﻿<?php
-if(!isset($_COOKIE["loggedIn"])) {header("Location: Account.html?error=notSignedIn");setcookie("loggedP", "", time() -3600, "/");exit();}
-if(!isset($_COOKIE["loggedP"])) {header("Location: Account.html?error=notSignedIn");setcookie("loggedIn", "", time() -3600, "/");exit();}
-
-$servername = "localhost:3306";
-$username = "aufregendetage";
-$password = "vavache8810titigre";
-$dbname = "manyisle_accounts";
-
-if ($_SERVER['REMOTE_ADDR']=="::1"){
-$servername = "localhost";
-$username = "aufregendetage";
-$password = "vavache8810titigre";
-$dbname = "accounts";
-}
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-$id = $_COOKIE['loggedIn'];
-$query = "SELECT password, email FROM accountsTable WHERE id = ".$id;
-$result =  $conn->query($query);
-while ($row = $result->fetch_assoc()) {$curpsw = $row["password"];$email = $row["email"];}
-$cpsw = openssl_decrypt ( $_COOKIE["loggedP"], "aes-256-ctr", "Ga22Y/", 0, "12gah589ds8efj5a");
-if (password_verify($cpsw, $curpsw)!=1){header("Location: Account.html?error=notSignedIn");setcookie("loggedIn", "", time() -3600, "/");exit();}
-if ($_POST['psw'] != $cpsw) {header("Location: SignedIn.php?show=emailWrongPassword");exit();}
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$user = new adventurer();
+if (!$user->check(true)){header("Location:Account?error=notSignedIn");}
+$id = $user->user;
+$conn = $user->conn;
+if (!$user->checkInputPsw($_POST['psw'])){header("Location: SignedIn.php?show=wrongPassword");exit();}
 
 $conCode = "";
-require_once($_SERVER['DOCUMENT_ROOT']."/account/newConCode.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/account/newConfCode.php");
 
 $subject = "Confirm New Email";
 $message = <<<MYGREATMAIL

@@ -1,7 +1,10 @@
 ﻿<?php
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$subUname = str_replace("'", "", $_POST['uname']);
+$subPsw = $_POST['psw'];
+$user = new adventurer();
 
-$return = "SignedIn.php";
+$return = "SignedIn";
 if (isset($_COOKIE["seeker"])){
   if ( $_COOKIE["seeker"] != "" AND $_COOKIE["seeker"] != "undefined"){
     $return = $_COOKIE["seeker"];
@@ -12,30 +15,8 @@ else if (isset($_GET["back"])){
   $return = $_GET["back"];
 }
 
-require("../Server-Side/encryptData.php");
-$storedPassword = openssl_encrypt ($_POST['psw'], $method, $key, 0, $iv);
-
-if(!isset($_COOKIE["loggedIn"])) {
-    echo "1";
-    if ($userrow = $conn->query(sprintf("SELECT * FROM accountsTable WHERE uname='%s';", $_POST['uname']))) {
-        echo "2";
-        if ($userrow->num_rows == 1) {
-            echo "3";
-            while ($row = $userrow->fetch_assoc()) {
-                echo "4";
-                if (password_verify($_POST['psw'], $row["password"])==1) {
-                    $id = $row["id"];
-                    setcookie("loggedIn", $id, time()+1900800, "/");
-                    setcookie("loggedP", $storedPassword, time()+1900800, "/");
-                    echo "success";
-                    header("Location: $return");
-                }
-               else {header("Location: Account.html?error=signingIn");}
-            }
-        }
-        else {header("Location: Account.html?error=signingIn");}
-    }
-    else {header("Location: Account.html?error=signingIn");}
+if ($user->signIn($subUname, $subPsw)) {
+  header("Location: $return"); exit;
 }
-else {header("Location: SignedIn.php");}
+header("Location:Account?error=signingIn");
 ?>

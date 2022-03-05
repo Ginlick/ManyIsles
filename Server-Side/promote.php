@@ -55,16 +55,52 @@ class adventurer {
         $this->fullName = $this->title." ".$this->uname;
     }
 
-    function check($mod = false) {
+    function signIn($subUname, $subPsw) {
+      $subUname = str_replace("'", "", $subUname);
+      $query = "SELECT id, password FROM accountsTable WHERE uname = '".$subUname."'";
+      if ($userrow = $this->conn->query($query)){
+        if ($userrow->num_rows == 1) {
+          if ($row = $userrow->fetch_assoc()){
+            if (!password_verify($subPsw, $row["password"])){return false;}
+
+            $this->user = $row["id"];
+            $code = $this->generateRandomString(22);
+            $query = "DELETE FROM signCodes WHERE user = ".$this->user; $this->conn->query($query);
+            $query = "INSERT INTO signCodes (user, code) VALUES ('$this->user', '$code')"; $this->conn->query($query);
+            setcookie("loggedIn", $this->user, time()+1900800, "/");
+            setcookie("loggedCode", $code, time()+1900800, "/");
+            $this->signedIn = true;
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    function check($mod = false, $emailConfirmedMatters = false) {
       if ($this->signedIn OR $mod){
-        require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
-        return checkNudePsw($this->cpsw);
+        if ($emailConfirmedMatters){
+          if (!$this->emailConfirmed){
+            $this->signOut(); return false;
+          }
+        }
+        if (isset($_COOKIE["loggedIn"]) AND isset($_COOKIE["loggedCode"])){
+          $code = $_COOKIE["loggedCode"];
+          $query = "SELECT * FROM signCodes WHERE user = $this->user";
+          if ($result = $this->conn->query($query)) {
+            if (mysqli_num_rows($result) > 0) {
+              while ($row = $result->fetch_assoc()) {
+                if ($code == $row["code"]){return true;}
+              }
+            }
+          }
+        }
+        $this->signOut(); return false;
       }
       return true;
     }
     function checkInputPsw($psw) {
-      require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw2.php");
-      return checkInputPsw($psw, $this->cpsw);
+      if (password_verify($psw, $this->cpsw)){return true;}
+      return false;
     }
     function promote($title){
         if (preg_match("/[0-9]*/", $title)) {
@@ -101,7 +137,7 @@ class adventurer {
           return "/Imgs/Ranks/single/".$image;
         }
     }
-    function signPrompt($back = "/dl/home") {
+    function signPrompt($back = "/account/Account") {
       if (!$this->signedIn){
         $signPrompt = '<h3>Sign In</h3>
         <form action="/account/SignIn.php?back='.$back.'" method="POST" onsubmit="seekMaker()" style="text-align:center">
@@ -132,6 +168,22 @@ class adventurer {
               </div>
           </div>';
       return $signPormpt;
+    }
+    function signOut() {
+      setcookie("loggedIn", "", time()-22, "/");
+      setcookie("loggedCode", "", time()-22, "/");
+      $query = "DELETE FROM signCodes WHERE user = ".$this->user; $this->conn->query($query);
+      $this->signedIn = false;
+    }
+
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
 

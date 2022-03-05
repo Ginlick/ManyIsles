@@ -158,23 +158,24 @@ code {
     display: block;
 }
 
-    .top-bar, .top-bar a {
+    .top-bar {
+        line-height: 1;
         font-family: var(--gen-fontfams-headers);
         font-size: var(--all-fonts-unresp-bigStan);
         display: inline;
-        padding: 2px 10px;
-        color: #d5d5d5;
+        padding: 4px 10px;
         float: left;
         margin: 0;
+    }
+    .top-bar a {
+      color: #d5d5d5;
+      padding: 0;
     }
     .top-bar.right {
         float: right;
     }
-        .top-bar:hover, .top-bar a:hover {
+        .top-bar, .top-bar a:hover {
             color: white;
-        }
-        .top-bar.first {
-            padding: 0;
         }
 @media (max-width: 560px) {
     .topnav .top-bar.leftr:nth-of-type(2) {

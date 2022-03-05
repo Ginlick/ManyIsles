@@ -31,6 +31,7 @@ $gen->doFandWork();
     <title><?php echo $gen->article->name; ?> | Fandom</title>
 </head>
 <body style="<?php echo $gen->giveWikStyle(); ?>">
+    <?php echo $gen->giveTopBar(); ?>
     <div class="content">
         <div class="fandomcoll">
             <?php

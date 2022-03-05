@@ -15,7 +15,7 @@
     --wiki-color-beige: beige;
     --doc-text-color: black;
     --doc-stext-color: black;
-    --doc-base-color: white;
+    --doc-base-color: #fffefd;
     --doc-neatshadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
     --wiki-fonts-h1: min(calc(15px + 2vw), 45px);
     --wiki-fonts-h2: min(calc(12px + 1.6vw), 39px);
@@ -45,8 +45,17 @@ body {
 .aHoverDiv {
     border-color: var(--doc-ahover-color);
 }
-
-
+.topnav {
+  background-color: var(--doc-base-color);
+  border-bottom: 1px solid var(--wiki-color-albord);
+  box-shadow: var(--doc-neatshadow);
+}
+.top-bar a {
+  color: var(--doc-text-color);
+}
+.top-bar a:hover {
+  color: var(--wiki-color-ahover);
+}
 
 
 a, .fakelink, .footnote {
@@ -164,7 +173,7 @@ body {
     z-index: 1;
 }
 .col-l {
-    background-color: white;
+    background-color: var(--doc-base-color);
     width: 100%;
     margin: 10px 0 10px 0;
     display: inline-block;
@@ -181,7 +190,7 @@ body {
     display: inline-block;
     min-height: 200px;
     margin: 10px 0 10px 0;
-    background-color: #fffefd;
+    background-color: var(--doc-base-color);
     padding: 8px;
     box-shadow: 0 6px 80px 0 rgba(0, 0, 0, 0.22);
     border-radius: 4px;

@@ -95,9 +95,8 @@ if ($result = $info->dbconn->query($query)){
             WHERE b.id IS NULL ORDER BY RAND() LIMIT 1";
             if ($result = $info->dbconn->query($query)){
                 while ($row = $result->fetch_assoc()) {
-                    continue;
                     if ($w != 0){
-                        if (getWiki($row["id"])==$w){
+                        if (getWiki($row["id"], $info->database, $info->dbconn)==$w){
                             return $row["id"];
                         }
                         else {

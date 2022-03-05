@@ -6,6 +6,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
 $dl = new dlengine();
 
 $partner = false;
+if (!$dl->user->check(true)){$dl->go("Account", "p");}
 if ($dl->partner(false)) {
   $partner = true;
   $partname = $dl->partName;
@@ -54,7 +55,7 @@ $discConMailBody = <<<MESSAGE
                     <img src="/Imgs/disc.png" alt="discord" style='width:20%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 </div>
                 <p>
-                    Please <span class="fakelink" onclick="pop('Conf');">confirm your email</span> first.
+                    Please <span class="fakelink" onclick="clinnation('Conf');">confirm your email</span> first.
                 </p>
 
 MESSAGE;
@@ -585,8 +586,8 @@ if ($ordersExist){
                 All information we send you will go to your new email. Please be aware that if you enter a wrong address, you will not get anything from us, be it free goodies or important updates.
             </p>
             <form style="padding:0 10% 0 10%" action="ChangeMail.php" autocomplete="off" method="POST">
-                <input type="password" id="psw" name="psw" placeholder="CurrentUniquePassword22" required />
-                <input type="email" id="newmail" name="newmail" placeholder="godsofmanyisles@gmail.com" autocomplete="new-password" required />
+                <input type="password" id="psw" name="psw" placeholder="CurrentUniquePassword22" autocomplete="password" required />
+                <input type="email" id="newmail" name="newmail" placeholder="newemail@gmail.com" autocomplete="new-email" required />
                 <p id="emailWrongPsw" style="color:red;display:none">Incorrect Password.</p>
                 <p id="emailAccomplished" style="color:green;display:none">Confirm new email to complete change</p>
                 <button class="popupButton" style="margin-bottom:2%;padding:10px 20px 10px 20px;" type="submit">OK</button>
@@ -616,9 +617,9 @@ if ($ordersExist){
             <img src="/Imgs/PopupBar.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block " />
             <h1 style="color: grey">Sorry to see you leave...</h1>
             <p style="color: grey">
-                This step is irreversible.
+                This step is irreversible. Any partnerships, spell lists, or many isles credit will be lost.
             </p>
-            <form style="padding:0 10% 0 10%" action="DelAcc.php?dewIt=<?php echo $id; ?>">
+            <form style="padding:0 10% 0 10%" action="DelAcc.php?dewIt=<?php echo $id; ?>" method="POST">
                 <input type="password" name="psw" placeholder="uniquePassword22" />
                 <p id="delWrongPsw" style="color:red;display:none">Incorrect Password.</p>
                 <button class="popupButton" style="margin-bottom:2%;padding:10px 20px 10px 20px;" type="submit">OK</button>
@@ -646,9 +647,6 @@ if ($ordersExist){
 
     function checkCookie() {
         if (document.cookie.indexOf('loggedIn') == -1) {
-            window.location.href = "Account.html?error=notSignedIn";
-        }
-        else if (document.cookie.indexOf('loggedP') == -1) {
             window.location.href = "Account.html?error=notSignedIn";
         }
     }
@@ -722,23 +720,14 @@ if ($ordersExist){
         document.getElementById('emailWrongPsw').style.display = 'block';
         document.getElementById('emailWrongPsw').innerHTML = 'Email already used';
     }
-    else if (show == "pswWrongPassword") {
-        pop("psw-b");
-        document.getElementById('pswWrongPsw').style.display = 'block';
-    }
-    else if (show == "pswWrongPassword") {
-        pop("psw-b");
-        document.getElementById('pswWrongPsw').style.display = 'block';
-        $("#pswWrongPsw").innerHTML = "Incorrect input; use only numbers and letters.";
+    else if (show == "pswWrongPsw") {
+      createPopup("d:acc;txt:Error. Your password could not be updated.")
     }
     else if (show == "pswAccomplished") {
-        pop("psw-b");
-        document.getElementById('pswAccomplished').style.display = 'block';
+      createPopup("d:acc;txt:Password successfully updated.")
     }
-    else if (show == "delWrongPassword") {
-        pop("del");
-        clinnation("Del");
-        document.getElementById('delWrongPsw').style.display = 'block';
+    else if (show == "wrongPassword") {
+      createPopup("d:acc;txt:Error. Incorrect password.")
     }
     else if (show == "resent") {
         clinnation("Conf");

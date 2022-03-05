@@ -144,15 +144,12 @@ class parse {
         if ($sort == "reg_date") {$sortName = "new";}
         else if ($sort == "RAND()") {$sortName = "rand";}
         else {$sortName = "pop";}
+        $age = 0;
+        $fullRow = "";
 
-        if (str_contains($body, "[wiki:$sortName]")){
-            $age = 0;
-            $fullRow = "";
-        }
-        else {
-            $artId = substr($body, strpos($body, "[wiki:$sortName") + strlen("[wiki:$sortName"));
-            $age = substr($artId, 0, strpos($artId, "]"));
-        }
+        $artId = substr($body, strpos($body, "[wiki:$sortName") + strlen("[wiki:$sortName"));
+        $age = substr($artId, 0, strpos($artId, "]"));
+        if ($age == ""){$age = 0;}
 
         $query = "SELECT a.*
         FROM $this->database a
@@ -164,8 +161,23 @@ class parse {
                 $counter = 1;
                 while ($row = $firstrow->fetch_assoc()) {
                     $childPage = $row["id"];
-                    if (getWiki($childPage) != $this->parentWiki OR $row["status"] != "active") {continue;}
+                    if (getWiki($childPage, $this->database, $this->dbconn) != $this->parentWiki OR $row["status"] != "active") {continue;}
                     if ($age > 0) {
+                      if ($sortName == "rand"){
+                        if ($age >= $counter) {
+                          $pageName = $row["shortName"];
+                          $pageImg = $row["banner"];
+                          $thumbImg = $row["sidetabImg"];
+                          if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
+                          $fullRow .= $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                          $counter++;
+
+                        }
+                        else {
+                          break;
+                        }
+                      }
+                      else {
                         if ($age == $counter) {
                           $pageName = $row["shortName"];
                           $pageImg = $row["banner"];
@@ -178,6 +190,7 @@ class parse {
                           break;
                         }
                         else {$counter++;}
+                      }
                     }
                     else {
                         if ($counter > 8) {break;}
@@ -192,12 +205,16 @@ class parse {
             }
         }
         if ($age == 0){
-            $body = substr_replace($body, $fullRow, strpos($body, "[wiki:$sortName]"), 0);
-            $body = str_replace("[wiki:$sortName]", "", $body);
-
-            if (str_contains($body, "[wiki:$sortName")){return $this->addRecents($body, $sort);}
-            else { return $body;}
+          $body = substr_replace($body, $fullRow, strpos($body, "[wiki:$sortName]"), 0);
+          $body = str_replace("[wiki:$sortName]", "", $body);
         }
+        else {
+          $body = str_replace("[wiki:$sortName".$age."]", $fullRow, $body);
+          $body = str_replace("[wiki:$sortName".$age."]", "", $body);
+        }
+
+        if (str_contains($body, "[wiki:$sortName")){return $this->addRecents($body, $sort);}
+        else { return $body;}
     }
 
     function addGenre($body){
@@ -253,7 +270,7 @@ class parse {
             if (!isset($img["style"]) OR !checkRegger("cleanText", $img["style"])){$img["style"] = "";}
             $caption = $this->bodyParser(txtUnparse($img["caption"], 0), 0, $this->database);
 
-            $echoImg = '<div class="'.$img["class"].'" style="'.$img["style"].'"><img src="'.$img["src"].'" /><p>'.$caption.'</p></div>';
+            $echoImg = '<div class="'.$img["class"].'" style="'.$img["style"].'"><a href="'.$img["src"].'" target="_blank"><img src="'.$img["src"].'" /></a><p>'.$caption.'</p></div>';
 
             $this->insertArray[$keyTracker] = $echoImg;
             $pos = strpos($body, "{");

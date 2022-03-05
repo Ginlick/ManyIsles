@@ -14,7 +14,6 @@
     </style>
     <script>
         if (document.cookie.indexOf('loggedIn=') != -1) { window.location.replace("SignedIn.php"); }
-        if (document.cookie.indexOf('loggedP=') != -1) { window.location.replace("SignedIn.php"); }
     </script>
 </head>
 <body>
@@ -258,6 +257,9 @@
     else if (error == "spamblock") {
         document.getElementById("createAccountP").innerHTML = "Our spam block interrupted your account creation. Please try again tomorrow.";
     }
+    else if (error == "creatingAcc") {
+      createPopup("d:acc,txt:Sorry, there was an error creating your account.");
+    }
 
     if (add != null) {
       seekMaker(add);
@@ -267,7 +269,7 @@
         var input = x.value;
         var patt = new RegExp("[^A-Za-z0-9 ]");
         var target = "uname";
-        if (y == "e") { patt = new RegExp("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]$"); target = "email"; }
+        if (y == "e") { patt = new RegExp("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]$"); target = "email"; }
         else if (y == "p") { patt = new RegExp("[^A-Za-z0-9 ]"); target = "psw"; }
         target = "#".concat(target).concat("InputErr");
         $("input").removeAttr("style");

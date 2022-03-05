@@ -1,6 +1,4 @@
 ﻿<?php
-
-if(!isset($_COOKIE["loggedIn"])) {header("Location: checkout.html");setcookie("loggedP", "", time() -3600, "/");exit();}
 if(!isset($_COOKIE["loggedP"])) {header("Location: checkout.html");setcookie("loggedIn", "", time() -3600, "/");exit();}
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");

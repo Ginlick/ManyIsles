@@ -104,20 +104,18 @@ class dlengine {
         }
       }
     }
-    function partner($full = "stan") {
+    function partner($full = false) {
       $query = "SELECT * FROM partners WHERE user = ".$this->user->user;
       if ($max = $this->conn->query($query)) {
         while ($row = $max->fetch_assoc()){
           $this->equipPart($row);
           if ($full){
-            if (!$this->user->signedIn){$this->go("Account", "p");}
-            if ($this->user->emailConfirmed AND $this->partStat != "deleted") {
-              if ($full == "ds"){
-                if (!$this->partDS){
-                  $this->go("activate", "ds");
-                }
+            if (!$this->user->check(true, true)){$this->go("Account", "p");}
+            if ($this->partStat == "deleted") {$this->go("Account", "p");}
+            if ($full == "ds"){
+              if (!$this->partDS){
+                $this->go("activate", "ds");
               }
-              return true;
             }
           }
           return true;
@@ -147,7 +145,7 @@ class dlengine {
       BLYAT;
     }
     function giveSearch($additive = "Digital Library") {
-        $signPrompt = $this->user->signPrompt();
+        $signPrompt = $this->user->signPrompt("/dl/home");
         $search = '
         <div class="topBlock">
           <div class="accnterCont">
@@ -162,8 +160,8 @@ class dlengine {
         </div>';
         return $search;
     }
-    function giveAccTab() {
-      $signPrompt = $this->user->signPrompt();
+    function giveAccTab($back = "/dl/home") {
+      $signPrompt = $this->user->signPrompt($back);
       return "<div class='accLine'>$signPrompt</div>";
     }
     function giveMenu() {

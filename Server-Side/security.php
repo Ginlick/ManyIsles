@@ -1,6 +1,5 @@
 <?php
 if(!isset($_COOKIE["loggedIn"])){echo "<script>window.location.replace('/account/Account.html?error=notSignedIn');</script>"; exit();}
-if(!isset($_COOKIE["loggedP"])){echo "<script>window.location.replace('/account/Account.html?error=notSignedIn');</script>"; exit();}
 if (!isset($conn)){require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");}
 
 $uid = $_COOKIE["loggedIn"];

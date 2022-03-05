@@ -1,32 +1,5 @@
 ﻿//requires: domain
 
-function includeHTML() {
-    var z, i, elmnt, file, xhttp;
-    z = document.getElementsByTagName("*");
-    for (i = 0; i < z.length; i++) {
-        elmnt = z[i];
-        file = elmnt.getAttribute("wiki-include-html");
-        if (file) {
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) { elmnt.innerHTML = this.responseText; }
-                    if (this.status == 404) { elmnt.innerHTML = "Page not found."; }
-                    elmnt.removeAttribute("wiki-include-html");
-                    if (typeof doOnIncludeLoad !== "undefined") {
-                        doOnIncludeLoad(file);
-                    }
-                    includeHTML();
-                }
-            }
-            xhttp.open("GET", file, true);
-            xhttp.send();
-            return;
-        }
-    }
-}
-includeHTML();
-
 responsive('/wiki/mobile.css', "small");
 
 function showBg(x) {
@@ -108,6 +81,7 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
     else {
         getFile = "/fandom/findSuggestions.php?q=" + query + "&w=" + parentWiki + "&ig=" + ignore + "&domain=" + pdomain + "&u=" + user;
     }
+    console.log(getFile);
     parent = searcher.nextElementSibling;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {

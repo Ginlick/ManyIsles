@@ -46,6 +46,7 @@ $conn = $gen->conn;
     </style>
 </head>
 <body  style="<?php echo $gen->giveWikStyle(); ?>">
+  <?php echo $gen->giveTopBar(); ?>
     <div class="content">
         <div class="fandomcoll">
             <?php
@@ -56,7 +57,7 @@ $conn = $gen->conn;
             <div class="col-r">
                 <input type="text" class="wikisearchbar" placeholder="Search <?php echo $gen->wikiName; ?> wiki..." id="viewRoot1"  oninput="offerSuggestions(this, 'suggestNow', 1);" onfocus="offerSuggestions(this, 'suggestNow', 1);" autocomplete="off"></input>
                 <div class="suggestions"  style="transform: translate(0, 31px);"></div>
-            
+
                 <img src="<?php  echo banner($gen->article->banner); ?>" alt="oops" class="topBanner" />
                 <div class="topinfo"><a href="/fandom/home">Fandom</a> - <a href="/fandom/wiki/<?php echo $gen->parentWiki; ?>/home"><?php echo $gen->wikiName; ?></a> - <a href="#">Search</a></div>
                 <h1>Search Results<a href="f.php?id=<?php echo $wiki; ?>"><span class='typeTab'><?php echo $gen->wikiName; ?> wiki</span></a></h1>
@@ -115,5 +116,3 @@ $conn = $gen->conn;
 </body>
 </html>
 <?php echo $gen->giveScripts(); echo $gen->giveSScript($genre, $categories); ?>
-
-

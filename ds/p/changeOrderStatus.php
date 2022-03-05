@@ -2,7 +2,6 @@
 if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:hub.php");exit();}
 if (preg_match("/^[-0-9]*$/", $_GET["dir"])!=1){header("Location:hub.php");exit();}
 if(!isset($_COOKIE["loggedIn"])){header("Location: checkout.html");exit();}
-if(!isset($_COOKIE["loggedP"])){header("Location: checkout.html");exit();}
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 
 $id = $_COOKIE["loggedIn"];
@@ -56,5 +55,3 @@ else if ($dir == 1 AND $ordStatus < 2){
 }
 
 ?>
-
-

@@ -2,8 +2,7 @@
 
 if (isset($_GET["code"])) {if (preg_match("/[^-A-Za-z0-9]/", $_GET["code"])==1){header("Location: ../basket.php");exit();} else {$code = $_GET["code"];} } else  {header("Location: ../checkout2.php?why=invalidCode");exit();}
 
-if(!isset($_COOKIE["loggedIn"])) {header("Location: checkout.html");setcookie("loggedP", "", time() -3600, "/");exit();}
-if(!isset($_COOKIE["loggedP"])) {header("Location: checkout.html");setcookie("loggedIn", "", time() -3600, "/");exit();}
+if(!isset($_COOKIE["loggedIn"])) {header("Location: checkout.html");exit();}
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 
@@ -47,4 +46,3 @@ else {
 }
 
 ?>
-

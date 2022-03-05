@@ -180,7 +180,7 @@ $dl->dlconn->query($query);
         </div>
 
         <div class='column'>
-            <?php echo $dl->giveAccTab(); ?>
+            <?php echo $dl->giveAccTab($dl->url($artId, $artShortName)); ?>
             <div class="crumbs"><a href="/dl/home">Digital Library</a> - <?php echo $dl->typeNames[$artGenre]; ?> - <?php echo $artShortName; ?></div>
             <div class="flexer">
                 <section class="imageShower">
@@ -255,7 +255,10 @@ $dl->dlconn->query($query);
                          </a>';
                       }
                       if ($artStatus == "paused"){
-                        echo '<p class="warning blue">this product is paused and cannot currently be found in the library</p>';
+                        echo '<p class="warning blue">This product is paused and cannot currently be found in the library.</p>';
+                      }
+                      if ($artPartner != "Pantheon"){
+                        echo '<p class="warning">Warning: the Many Isles carry no responsibility for malware in third-party products.</p>';
                       }
                        ?>
                     </div>

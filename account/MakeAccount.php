@@ -7,8 +7,9 @@ if (isset($_COOKIE["seeker"])){
   setcookie("seeker", "", time() - 2200);
 }
 
+
 if (preg_match("/[A-Za-z0-9 ]{2,}/", $_POST['uname'])!=1){$redirect = "uname";}
-else if (preg_match("/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/", $_POST['email'])!=1){$redirect = "email";}
+else if (preg_match("/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $_POST['email'])!=1){$redirect = "email";}
 else if (preg_match("/[A-Za-z0-9]{1,}/", $_POST['psw'])!=1){$redirect = "psw";}
 else if (preg_match("/[1-3]/", $_POST['region'])!=1){$redirect = "reg";}
 else {$redirect = "false";}
@@ -23,6 +24,7 @@ if ($redirect != "false"){
 }
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
 
 //spamkill
 $query = "SELECT * FROM accountsTable order by id DESC LIMIT 22,1";
@@ -37,17 +39,12 @@ if ($result = $conn->query($query)){
 }
 
 $email = $_POST['email'];
-
-require("../Server-Side/encryptData.php");
-$storedPassword = openssl_encrypt ($_POST['psw'], $method, $key, 0, $iv);
-
 if ($result = $conn->query(sprintf("SELECT email FROM accountsTable WHERE email='%s';", $email))) {
    if ($result->num_rows > 0) {
      header("Location:Account.html?".$autofill."&error=EmailTaken");
      exit();
    }
 }
-
 if ($result = $conn->query(sprintf("SELECT uname FROM accountsTable WHERE uname='%s';", $_POST['uname']))) {
    if ($result->num_rows > 0) {
      header("Location: Account.html?".$autofill."&error=UnameTaken");
@@ -64,21 +61,12 @@ $sql = sprintf(
   $hashedPsw);
 
 $id = "";
-if ($conn->query($sql) === TRUE) {
-    $getid = sprintf("SELECT id FROM accountsTable WHERE email = '%s'",  $email);
-        if ($idresult = $conn->query($getid)) {
-            if ($idresult->num_rows == 1) {
-                  while ($row = $idresult->fetch_row()) {
-                      $id = sprintf ("%s", $row[0]);
-                      setcookie("loggedIn", $id, time()+1900800, "/");
-                      setcookie("loggedP", $storedPassword, time()+1900800, "/");
-                  }
-            }
-        else {
-            echo sprintf("You're wrong %d rows",$idresult->num_rows);
-        }
-    }
-    else {echo $conn->error;}
+if ($conn->query($sql)) {
+  $user = new adventurer();
+  if (!$user->signIn($_POST['uname'], $_POST['psw'])){
+    $query = "DELETE FROM accountsTable WHERE uname = '".$_POST['uname']."'"; $conn->query($query);
+    header("Location: Account.html?".$autofill."&error=dataPlacing");
+  }
 }
 else {
   echo "Error: " . $sql . "<br>" . $conn->error;

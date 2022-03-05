@@ -438,7 +438,7 @@ class gen {
     }
 
     function giveTopBar() {
-        if (!$this->acceptsTopBar){return;}
+        if (!$this->acceptsTopBar){return $this->giveGTopnav();}
         $main ='
         <div class="topBar '.$this->domain.'">
             <div class="topBarRight">
@@ -482,6 +482,9 @@ class gen {
         </div>
         ';
     return $main;
+    }
+    function giveGTopnav() {
+      return '<div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl="true"></div>';
     }
     function giveEditInfo() {
         $main = '
@@ -875,10 +878,12 @@ MAIN;
 
                   <h3>Body<span class="roundInfo">Takes Markdown</span></h3>
                   <p>Write your page\'s body below using <a href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a>. Also check out this doc on <a href="/docs/25/Special_Syntax" target="_blank">cool special elements</a>. <br>
-                      <span class="typeTab tiny" onclick="insLink();">ctrl+shift+k</span> insert link<br>
-                      <span class="typeTab tiny" onclick="insThumb();">ctrl+shift+l</span> insert '.$this->pagename.' thumbnail<br>
-                      <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
-                      <span class="complete" onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
+                      <span class="flipcomplete">
+                        <span class="typeTab tiny" onclick="insLink();">ctrl+shift+k</span> insert link<br>
+                        <span class="typeTab tiny" onclick="insThumb();">ctrl+shift+l</span> insert '.$this->pagename.' thumbnail<br>
+                        <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
+                        <span onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
+                      </span>
                   </p>
                   <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->article->body.'</textarea>
                   <img src="/Imgs/Bar2.png" class="separator"></img> ';
@@ -1041,6 +1046,11 @@ MAIN;
       return $fullblock;
     }
     function giveRArticle($parts = []){
+        $this->sidetabEx = false;
+        if ($this->article->sidetabTitle != ""  OR $this->article->sidetabText != "") {
+          $this->sidetabEx = true;
+        }
+
         $main = '        <div class="col-r" style="margin-bottom:50px;">
             <input type="text" class="wikisearchbar" placeholder="Search '.$this->wikiName.' '.$this->groupName.'..." id="viewRoot1"  oninput="offerSuggestions(this, \'findSuggestions\', 1);" onfocus="offerSuggestions(this, \'findSuggestions\', 1);" autocomplete="off"></input>
             <div class="suggestions" style="transform: translate(0, 35px);"></div>
@@ -1095,7 +1105,13 @@ MAIN;
             else if ($gen->article->NSFW == 2) {
                 $main .=   '<span class="'.$gen->typeTab.' not">NSFW</span>';
             }
-            return $main.'</h1>';
+            $main .= '</h1>';
+            if (!$gen->sidetabEx AND ($gen->article->timeStart != "" OR $gen->article->timeEnd != "")) {
+                $dateline = "<p><i>".parseIWDate($gen->article->timeStart, $gen->article->timeEnd, $gen->dateArray, true);
+                $dateline .="</i></p>";
+                $main .= $dateline;
+            }
+            return $main;
         }
         function body($gen){
             $sidetab = "<div class='sidetab'>".$gen->parse->bodyParser($gen->article->sidetabTitle, 0, $gen->database);
@@ -1107,7 +1123,7 @@ MAIN;
             $sidetab = $sidetab.$gen->parse->bodyParser($gen->article->sidetabText, 0, $gen->database)."</div>";
 
             $main = '<div style="'; if ($gen->prude) { $main .= "visibility: hidden";} $main .= '" id="actualNeatCont" >';
-                if ($gen->article->sidetabTitle != ""  OR $gen->article->sidetabText != ""){
+                if ($gen->sidetabEx){
                     $main .= $sidetab;
                 }
 

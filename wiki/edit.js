@@ -357,6 +357,7 @@ function addChar(myText) {
 }
 
 var allCompletes = document.getElementsByClassName("complete");
+var allFlipCompletes = document.getElementsByClassName("flipcomplete");
 function differComplic(check, target = "preferFullEdit") {
     if (check != null) {
         if (check.checked) {
@@ -374,6 +375,14 @@ function differComplic(check, target = "preferFullEdit") {
                 }
                 else {
                     element.style.display = "none";
+                }
+            }
+            for (let element of allFlipCompletes) {
+                if (check.checked) {
+                    element.style.display = "none";
+                }
+                else {
+                    element.style.display = "inherit";
                 }
             }
         }

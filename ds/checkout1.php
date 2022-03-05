@@ -8,8 +8,9 @@ if ($basketed->pureDigit) {
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
 $user = new adventurer;
-if (!$user->emailConfirmed){header("Location: checkoutw");exit();}
-else if (!$user->check(true)){header("Location: checkout");exit();}
+
+if (!$user->check(true, true)){header("Location: checkoutw");exit();}
+
 $conn = $user->conn;
 
 if (isset($_SESSION["basket"])) {
@@ -200,9 +201,6 @@ if (why =="delItem"){
 
     function checkCookie() {
         if (document.cookie.indexOf('loggedIn') == -1) {
-            window.location.href = "checkout.html";
-        }
-        else if (document.cookie.indexOf('loggedP') == -1) {
             window.location.href = "checkout.html";
         }
     }
