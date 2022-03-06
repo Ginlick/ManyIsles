@@ -33,6 +33,7 @@
     --gen-fontfams-headers: 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     --gen-fontfams-base: Arial, Helvetica, sans-serif;
     --gen-fontfams-code: Courier New, Courier, monospace;
+    --doc-neatshadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
 
 * {

@@ -1,8 +1,9 @@
 <?php
-// engine.php, getWiki(), parseTxt.php (engine)
 
+require_once($_SERVER['DOCUMENT_ROOT']."/wiki/engine.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/domInfo.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/fandom/getWiki.php");
 
 class parse {
     public $conn = null;

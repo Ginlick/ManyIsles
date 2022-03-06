@@ -16,7 +16,6 @@
     --doc-text-color: black;
     --doc-stext-color: black;
     --doc-base-color: #fffefd;
-    --doc-neatshadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
     --wiki-fonts-h1: min(calc(15px + 2vw), 45px);
     --wiki-fonts-h2: min(calc(12px + 1.6vw), 39px);
     --wiki-fonts-h3: min(calc(14px + 1.2vw), 32px);
