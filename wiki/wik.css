@@ -120,7 +120,9 @@ ul {
 li p {
     margin: 0;
 }
-
+.sideimg {
+    background-color: var(--doc-base-color);
+}
 blockquote {
     margin: 15px 5px 15px 10px;
     font-style: italic;
@@ -642,59 +644,6 @@ a:hover .aHoverDiv, span:hover .aHoverDiv {
     position:relative;
 }
 
-.sideimg {
-    float: right;
-    width: 30%;
-    max-width: 400px;
-    min-width: 100px;
-    padding: 10px;
-    /*background-color: var(--all-color-albord);*/
-    background-color: var(--doc-base-color);
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content: center;
-}
-    .sideimg.medium {
-        max-width: 600px;
-        width: 39%;
-    }
-    .sideimg.landscape {
-        max-width: 800px;
-        width: 55%;
-    }
-
-    .sideimg img {
-        height: 100%;
-        max-width: 100%;
-        object-fit: contain;
-        max-height: 500px;
-        margin: auto;
-    }
-
-    .sideimg p {
-        font-style: italic;
-        margin: 0;
-        line-height: 1.1;
-    }
-
-.gallery {
-    text-align: center;
-}
-    .gallery .sideimg {
-        float: unset;
-        display: inline-block;
-        position: relative;
-        vertical-align: top;
-        max-width: 200px;
-        margin: 10px;
-    }
-    .gallery .sideimg.medium{
-        max-width: 350px;
-    }
-        .gallery .sideimg.landscape {
-            max-width: 500px;
-        }
  table {
     font-size: 16px;
     border-collapse: collapse;
@@ -1170,3 +1119,58 @@ h1 {
     margin-top: 40px;
     display: inline-block;
 }
+
+/*discontinued (/Code/CSS/Main.css) */
+.sideimg {
+    float: right;
+    width: 30%;
+    max-width: 400px;
+    min-width: 100px;
+    padding: 10px;
+    /*background-color: var(--all-color-albord);*/
+    background-color: var(--doc-base-color);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+    .sideimg.medium {
+        max-width: 600px;
+        width: 39%;
+    }
+    .sideimg.landscape {
+        max-width: 800px;
+        width: 55%;
+    }
+
+    .sideimg img {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        max-height: 500px;
+        margin: auto;
+    }
+
+    .sideimg p {
+        font-style: italic;
+        margin: 0;
+        line-height: 1.1;
+    }
+
+.gallery {
+    text-align: center;
+}
+    .gallery .sideimg {
+        float: unset;
+        display: inline-block;
+        position: relative;
+        vertical-align: top;
+        max-width: 200px;
+        margin: 10px;
+    }
+    .gallery .sideimg.medium{
+        max-width: 350px;
+    }
+        .gallery .sideimg.landscape {
+            max-width: 500px;
+        }

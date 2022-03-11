@@ -7,13 +7,22 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
 header('Content-Type: application/json');
 
-if (isset($_GET["id"])) {if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){echo "[]";exit();} $q = $_GET["id"];} else {exit();}
-if (isset($_GET["dom"])){
-    if (preg_match("/^[0-9]$/", $_GET["dom"])!=1){exit();} else {$domain = $_GET["dom"];}
+if (!isset($local)) {
+  if (isset($_GET["id"])) {if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){echo "[]";exit();} $q = $_GET["id"];} else {exit();}
+  if (isset($_GET["dom"])){
+      if (preg_match("/^[0-9]$/", $_GET["dom"])!=1){exit();} else {$domain = $_GET["dom"];}
+  }
+  else {
+      $domain = 0;
+  }
 }
 else {
-    $domain = 0;
+  //want $q
+  if (!isset($domain)){
+      $domain = 0;
+  }
 }
+
 
 class gay {} $info = new gay;
 equipDom($info, $domain);

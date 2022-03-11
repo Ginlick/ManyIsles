@@ -15,6 +15,8 @@ RewriteRule  ^ds/([0-9]+)/.*   ds/item.php?id=$1 [NC,L]
 RewriteRule  "dl/home" "dl/Goods.php" [L]
 RewriteRule  ^dl/item/([0-9]+)/.*   dl/item.php?id=$1 [NC,L]
 
+RewriteRule  ^blog/post/(.+)/.*   blog/posted.php?p=$1 [NC,L]
+
 RewriteRule  ^([^/]*)/([0-9]+)/.*   $1/page.php?id=$2&%{QUERY_STRING} [NC,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f

@@ -192,7 +192,7 @@ function createPopup(popup) {
     popupBar.setAttribute("class", "popupBar");
     let popupImage = document.createElement("img");
     popupImage.setAttribute("src", imgOArray[idom]);
-    popupImage.setAttribute("alt", "domain");
+    popupImage.setAttribute("alt", idom);
     let popupP = document.createElement("p");
     popupP.innerHTML = txt;
     if (popupArray["b"] == 1) {

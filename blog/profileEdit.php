@@ -2,7 +2,9 @@
 require_once("g/blogEngine.php");
 $blog = new blogEngine("Profile");
 $blog->userCheck();
-$buserInfo = $blog->fetchBuserInfo();
+$targetBuser = $blog->buserId;
+$blog->isPartnerVersion($targetBuser);
+$buserInfo = $blog->fetchBuserInfo($targetBuser);
 
 ?>
 <!DOCTYPE html>
@@ -15,10 +17,22 @@ $buserInfo = $blog->fetchBuserInfo();
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
 </head>
 <style>
-  .bannerBlock {
-    width: 30%;
-    max-width: 300px;
+.pp-upload-cont {
+  width: 30%;
+  max-width: 300px;
+}
+  .bannerBlock, .uploadable {
+    width: 100%;
   }
+  .bannerBlock.two {
+    height: auto;
+  }
+  <?php
+    if ($blog->partnerVersion) {
+      echo ".imageform {display:none;}";
+    }
+
+   ?>
 </style>
 <body>
     <?php echo $blog->giveTopnav(); ?>
@@ -30,20 +44,43 @@ $buserInfo = $blog->fetchBuserInfo();
         <div class='column'>
           <div class="columnCont">
               <?php echo $blog->giveSignPrompt(); ?>
-              <div class="bannerBlock ">
-                <div clas="buser-pp-squareCont">
-                  <div class="circle">
-                    <img alt="banner image" class="inBanner" id="bannerBlock" src=""/>
+              <div class="crumbs">
+                <a href="/blog/profile?<?php echo $blog->profileInset; ?>">Profile</a> - Edit
+              </div>
+              <h1>Edit Profile</h1>
+              <div class="blogForm imageform">
+                <div class="pp-upload-cont">
+                  <div class="bannerBlock two">
+                    <div class="buser-pp-squareCont">
+                      <div class="circle">
+                        <img alt="profile image" id="bannerBlock" src="<?php echo $buserInfo["info"]["pp"]; ?>"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="uploadable">
+                      <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                       Select Profile Picture<br> (max 450kb)
+                       <input type="file" onchange="newPP(this);" class="fileInput" id="image-pp" value="null" name = "pp" accept=".png, .jpg"/>
                   </div>
                 </div>
               </div>
-              <div class="uploadable bannerUploadCont">
-                  <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                   Select Banner (optional, max 2mb)
-                   <input type="file" onchange="readURL(this);" class="fileInput" id="image" value="null" name = "banner" accept=".png, .jpg"/>
-              </div>
-
-
+              <form action="makeProfileEdit.php" method="POST" class="blogForm">
+                <input type="text" placeholder="Username" name="buname" value="<?php echo $buserInfo["info"]["uname"]; ?>" />
+                <textarea rows="5" placeholder="Description: What do you post about?" name="description"><?php echo $buserInfo["info"]["description"]; ?></textarea>
+                <input type="text" style="display:none;opacity:0;" name="profile" value="<?php echo $blog->profileInset; ?>" />
+                <?php if (!$blog->partnerVersion) {
+                  echo '<div class="checkbox-block"><input type="checkbox" name="follow_notifs" '.$blog->giveRadiobutInset($buserInfo["info"]["setEmailNotifs"]).'/>
+                  <label for="follow_notifs">Receive email notifications from people I follow</label></div>';
+                }
+                ?>
+                <div class="checkbox-block">
+                  <input type="checkbox" name="public" <?php echo $blog->giveRadiobutInset($buserInfo["info"]["setPublic"])?> />
+                  <label for="public">Show up on explore feed</label>
+                </div>
+                <div class="submitBlocc">
+                  <button type="submit" class="blogButton independent">Save</button>
+                </div>
+              </form>
           </div>
         </div>
     </div>
@@ -59,7 +96,39 @@ $buserInfo = $blog->fetchBuserInfo();
 <script>
 var urlParams = new URLSearchParams(window.location.search);
 var why = urlParams.get('i');
-if (why == "pubbed"){
-    createPopup("d:gen;txt:Post successfully published!");
+if (why == "updatedSucc"){
+    createPopup("d:gen;txt:Profile successfully saved!");
+}
+else if (why == "updatedFail"){
+    createPopup("d:gen;txt:Error. Profile couldn't be saved.");
+}
+
+function newPP(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.readAsDataURL(input.files[0]);
+
+    getFile = encodeURI("uploadPP.php");
+    var xhttp = new XMLHttpRequest();
+    var formData = new FormData();
+    formData.append("file", input.files[0]);
+    xhttp.onreadystatechange = async function () {
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+          if (this.responseText.includes("error") || this.responseText==""){
+            createPopup("d:gen;txt:Error. Image could not be uploaded");
+          }
+          else {
+            createPopup("d:gen;txt:Profile picture uploaded");
+            document.getElementById("bannerBlock").setAttribute("src", this.responseText);
+          }
+        }
+        else if (this.readyState == 4) {
+          createPopup("d:gen;txt:Error. Image could not be uploaded");
+        }
+    };
+    xhttp.open("POST", getFile, true);
+    xhttp.send(formData);
+  }
 }
 </script>

@@ -3,7 +3,7 @@
 require_once("g/blogEngine.php");
 $blog = new blogEngine("Post");
 $blog->userCheck();
-
+$buserInfo = $blog->fetchBuserInfo();
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,7 +27,9 @@ $blog->userCheck();
           <div class="columnCont">
             <h1>Create a Post</h1>
 
-            <form action="makePost.php" method="POST" enctype="multipart/form-data" class="postForm">
+            <form action="makePost.php" method="POST" enctype="multipart/form-data" class="blogForm">
+              <?php echo $blog->genProfileBlock(); ?>
+
               <div class="bannerBlock" >
                 <img alt="banner image" class="inBanner" id="bannerBlock" src=""/>
               </div>
@@ -45,9 +47,13 @@ $blog->userCheck();
                 <option value="Fan Theory" />
                 <option value="Project" />
               </datalist>
-              <textarea rows="10" placeholder="Text" name="text" style="resize:vertical" required></textarea>
-              <input type="checkbox" name="comments" checked/>
-              <label for="comments">Allow comments</label>
+              <textarea rows="10" placeholder="Text" name="text" required></textarea>
+              <div class="checkbox-block">
+                <input type="checkbox" name="comments" checked/><label for="comments">Allow comments</label>
+              </div>
+              <div class="checkbox-block">
+                <input type="checkbox" name="notify" checked/><label for="notify">Send email notification to my followers</label>
+              </div>
               <div class="submitBlocc">
                 <a href="/blog/feed"><button type="button" class="blogButton independent grey">Discard</button></a>
                 <button type="submit" class="blogButton independent">Publish</button>
@@ -55,6 +61,7 @@ $blog->userCheck();
             </form>
             <p>
               The text body takes <a href="/docs/24/Markdown" target="_blank">markdown</a>.
+              You can also use <a href="/docs/81/Embed_Links" target="_blank">embedded links</a>.
             </p>
           </div>
         </div>
@@ -80,4 +87,5 @@ function readURL(input) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
 </script>

@@ -1,10 +1,7 @@
 ﻿<?php
 
 require_once("g/blogEngine.php");
-$blog = new blogEngine("Feed");
-$blog->userCheck();
-$userInfo = $blog->fetchBuserInfo();
-$following = json_encode($userInfo["following"]);
+$blog = new blogEngine("Explore");
 
 ?>
 <!DOCTYPE html>
@@ -12,7 +9,7 @@ $following = json_encode($userInfo["following"]);
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8" />
-    <title>Feed | Blogs</title>
+    <title>Explore | Blogs</title>
     <?php echo $blog->styles(); ?>
 </head>
 <style>
@@ -27,10 +24,9 @@ $following = json_encode($userInfo["following"]);
         <div class='column'>
           <div class="columnCont">
             <?php echo $blog->giveSignPrompt(); ?>
-            <h1>Personal Feed</h1>
-            <p>Posts from people you follow.</p>
+            <h1>Explore Blogs</h1>
             <?php echo $blog->genSortCont("explore-feed"); ?>
-            <section class="feed"  blog-feed blog-feed-user='<?php echo $following; ?>' id="explore-feed">
+            <section class="feed"  blog-feed blog-feed-settings='{"explore":1}' id="explore-feed">
             </section>
           </div>
         </div>
@@ -47,10 +43,14 @@ $following = json_encode($userInfo["following"]);
 <script>
 var urlParams = new URLSearchParams(window.location.search);
 var why = urlParams.get('i');
-if (why == "postDeleted"){
-    createPopup("d:gen;txt:Post successfully deleted.");
+if (why == "notfound"){
+  createPopup("d:gen;txt:Error. Page could not be found.");
 }
-
-
+else if (why == "unsigned"){
+ createPopup("d:gen;txt:You need to sign in to access this.");
+}
+else if (why == "unconf"){
+ createPopup("d:gen;txt:You need to confirm your email first.");
+}
 
 </script>

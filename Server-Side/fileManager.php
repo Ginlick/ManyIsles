@@ -95,7 +95,7 @@ trait fundamentals {
     "bigAudio" => ["size"=>1200000, "types"=>["wav", "mp3", "pcm"], "likesImg"=>false]
   ];
   public $regArrayR = [
-      "basic" => "/[^A-Za-z0-9]/",
+      "basic" => "/[^A-Za-z0-9_]/",
   ];
   function purate($input, $regex = "basic") {
     $input = str_replace(" ", "_", $input);
@@ -106,11 +106,13 @@ trait fundamentals {
       $file = $oldOption.$file;
     }
 
-    if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
-      $file = "https://media.manyisles.ch".$file;
-    }
-    else {
-      $file = "http://25.36.111.17:8080".$file;
+    if (!preg_match("/^http/", $file)){
+      if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
+        $file = "https://media.manyisles.ch".$file;
+      }
+      else {
+        $file = "http://25.36.111.17:8080".$file;
+      }
     }
     return $file;
   }

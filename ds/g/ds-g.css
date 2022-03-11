@@ -489,6 +489,7 @@ hr.solid {
             width: 100%;
             display: block;
             max-width: unset !important;
+            position: relative !important;
         }
 
         .column {

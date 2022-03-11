@@ -258,7 +258,10 @@
         document.getElementById("createAccountP").innerHTML = "Our spam block interrupted your account creation. Please try again tomorrow.";
     }
     else if (error == "creatingAcc") {
-      createPopup("d:acc,txt:Sorry, there was an error creating your account.");
+      createPopup("d:acc;txt:Sorry, there was an error creating your account.");
+    }
+    else if (error == "deleted") {
+      createPopup("d:acc;txt:Account deleted.");
     }
 
     if (add != null) {

@@ -62,8 +62,9 @@ class parse {
             $body = str_replace("[wide]", "<div class='wide'>", $body);
             $body = preg_replace("/\[note([a-zA-Z ]*)\]/", "<div class='note $1'>", $body);
             $body = str_replace("[/gallery]", "</div>", $body);
-            $body = preg_replace("/\[\/[a-z]+\]/", "</div>", $body);
             $body = str_replace("[/wide]", "</div>", $body);
+            $body = str_replace("[/note]", "</div>", $body);
+            //$body = preg_replace("/\[\/[a-z]+\]/", "</div>", $body);
         }
 
         $body = txtUnparse($body, 0);
