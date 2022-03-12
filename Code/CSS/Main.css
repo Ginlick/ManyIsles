@@ -33,6 +33,7 @@
     --gen-fontfams-headers: 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     --gen-fontfams-base: Arial, Helvetica, sans-serif;
     --gen-fontfams-code: Courier New, Courier, monospace;
+    --doc-neatshadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
 
 * {
@@ -400,3 +401,54 @@ span.dsp {
   border-style: solid;
   border-color: transparent transparent var(--all-color-albord) transparent;
 }
+.sideimg {
+    float: right;
+    width: 30%;
+    max-width: 400px;
+    min-width: 100px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+    .sideimg.medium {
+        max-width: 600px;
+        width: 39%;
+    }
+    .sideimg.landscape {
+        max-width: 800px;
+        width: 55%;
+    }
+
+    .sideimg img {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        max-height: 500px;
+        margin: auto;
+    }
+
+    .sideimg p {
+        font-style: italic;
+        margin: 0;
+        line-height: 1.1;
+    }
+
+.gallery {
+    text-align: center;
+}
+    .gallery .sideimg {
+        float: unset;
+        display: inline-block;
+        position: relative;
+        vertical-align: top;
+        max-width: 200px;
+        margin: 10px;
+    }
+    .gallery .sideimg.medium{
+        max-width: 350px;
+    }
+        .gallery .sideimg.landscape {
+            max-width: 500px;
+        }

@@ -96,9 +96,10 @@ a, .fakelink {
     display: block;
     margin: 0;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    transition: .1s ease;
 }
 
-    .Bar:hover, .bottomFAQ .Bar:hover {
+    .Bar:hover {
         color: #f0c026;
     }
 
@@ -488,6 +489,7 @@ hr.solid {
             width: 100%;
             display: block;
             max-width: unset !important;
+            position: relative !important;
         }
 
         .column {

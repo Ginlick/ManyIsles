@@ -6,7 +6,7 @@ $id = $user->user;
 $conn = $user->conn;
 $uname = $user->uname;
 
-if (!$user->checkInputPsw($_POST['password'])){header("Location: SignedIn.php?show=wrongPassword");exit();}
+if (!$user->checkInputPsw($_POST['psw'])){header("Location: SignedIn.php?show=wrongPassword");exit();}
 
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
@@ -66,7 +66,7 @@ if ($result=$conn->query($query)) {
     if ($conn->query($query)){
         $query = 'UPDATE partners SET status = "suspended", account = "none" WHERE account = "'.$uname.'"';
         $conn->query($query);
-        mail($to, $subject, $message, $headers);
+        mail($user->email, $subject, $message, $headers);
     }
     $query = "DELETE FROM spelllists WHERE id = ".$id;
     $conn->query($query);
@@ -76,32 +76,25 @@ if ($result=$conn->query($query)) {
     $conn->query($query);
     session_destroy();
 
+    //blogs
+    require($_SERVER['DOCUMENT_ROOT']."/blog/g/blogEngine.php");
+    $blog = new blogEngine();
+    $blog->deleteBuser();
+
     //money part
-    $query = "SELECT * FROM global_credit WHERE id = $id";
-    if ($result = $moneyconn->query($query)){
-        if ($result->num_rows > 0){
-            while ($row = $result->fetch_assoc()){
-                $userCredit = $row["credit"];
-                $userReference = $row["reference"];
-
-                $query = "INSERT INTO transfers_$userReference (motive, source, amount) VALUES ('Account Deletion', '$uname', '-$userCredit')";
-                $moneyconn->query($query);
-                $query = "INSERT INTO transfers_1422222222 (motive, source, amount) VALUES ('Account $id Deleted', '$uname', '$userCredit')";
-                $moneyconn->query($query);
-
-                $query = "UPDATE global_credit SET credit = 0 WHERE reference = $userReference";
-                $moneyconn->query($query);
-                $query = "UPDATE global_credit SET credit = credit + $userCredit WHERE reference = 1422222222";
-                $moneyconn->query($query);
-            }
-        }
+    require($_SERVER['DOCUMENT_ROOT']."/Server-Side/transactions.php");
+    $userCredit = new transaction($moneyconn, $id);
+    $panthCredit = new transaction($moneyconn, 14);
+    if ($userCredit->new(-$userCredit->total_credit, $uname, "Account Deletion")){
+      $panthCredit->new($userCredit->total_credit, $uname, "Account $id Deleted");
     }
 
     mail("godsofmanyisles@gmail.com", "Account Deleted", "yep, it's sad to say, ".$uname, $headers);
+    mail($user->email, $subject2, $message2, $headers);
     setcookie("loggedIn", "", time() -3600, "/");
     setcookie("loggedCode", "", time() -3600, "/");
     echo "Done";
-    header("Location: Account.html");
+    header("Location: Account?error=deleted");
 }
 
 $conn->close();

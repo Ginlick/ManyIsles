@@ -50,7 +50,7 @@ function equipDom($gen, $domain = "fandom"){
     ];
     $gen->styles = ["Fandom"];
     $gen->defaultStyle = "Fandom";
-    $gen->baseImage = "/Imgs/docs.png";
+    $gen->baseImage = "/IndexImgs/GMTips.png";
 
     $gen->editable = [];
 

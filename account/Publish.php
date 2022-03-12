@@ -184,6 +184,25 @@ padding:0;
     </div>
     ';
     }
+
+    if (!$dl->hasBlogs()) {
+        echo '
+     <div class="contentBlock">
+        <h1>Blog Extension</h1>
+        <p>Activate the blog extension and create a <a href="/blog/explore" target="_blank">Many Isles blogs</a> profile.<br>Note that this cannot be undone. <a href="/docs/79/Blog_Extension" target="_blank">More info</a></p>
+        <a href="/blog/g/activateP.php"><button><i class="fas fa-arrow-right"></i> Activate</button></a>
+    </div>
+    ';
+    }
+    else {
+      echo '
+     <div class="contentBlock">
+        <h1>Blog Profile </h1>
+        <p>View you partnership\'s blog profile. <a href="/docs/79/Blog_Extension" target="_blank">More info</a></p>
+        <a href="/blog/profile?p"><button><i class="fas fa-arrow-right"></i> View Profile</button></a>
+    </div>
+    ';
+    }
     ?>
 
   <!--  <div class="contentBlock">
@@ -241,5 +260,8 @@ else if (why == "notrequ") {
 }
 else if (why == "405") {
   createPopup("d:pub;txt:Error. You aren't allowed to do that.");
+}
+else if (why == "notExtend") {
+  createPopup("d:pub;txt:Error. Extension couldn't be activated.");
 }
 </script>

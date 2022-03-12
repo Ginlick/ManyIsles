@@ -33,7 +33,7 @@ class transaction {
         }
     }
     function new(int $amount, $source, $desc){
-        if ($amount != null AND $amount != 0 AND $this->total_credit + $amount > 0){
+        if ($amount != null AND $amount != 0 AND $this->total_credit + $amount >= 0){
             $query = "UPDATE global_credit SET credit = credit + $amount WHERE reference = $this->reference";
             if ($this->moneyconn->query($query)){
                 $query = 'INSERT INTO transfers_'.$this->reference.' (motive, source, amount) VALUES ("'.$desc.'", "'.$source.'", '.$amount.')';

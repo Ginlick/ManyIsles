@@ -313,7 +313,7 @@ class dlengine {
             }
         }
     }
-    function prodItemR($row) {
+    function prodItemR($row, $return = "tab") {
       $partner = $row["partner"];
       if (!isset($this->partners[$partner]) OR $this->partners[$partner]!="active") {return "";}
       if ($row["status"]!="active"){return "";}
@@ -376,6 +376,16 @@ class dlengine {
           while ($row = $toprow->fetch_assoc()) {
               if ($row["partner"]==$partId){return true;}
           }
+      }
+      return false;
+    }
+    function hasBlogs() {
+      require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_blogs.php");
+      $query = "SELECT * FROM busers WHERE type = 'partnership' AND user = ".$this->user->user;
+      if ($result = $blogconn->query($query)) {
+        if (mysqli_num_rows($result) != 0) {
+          return true;
+        }
       }
       return false;
     }

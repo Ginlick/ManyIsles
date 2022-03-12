@@ -1,6 +1,19 @@
 <?php
-//requires checkpsw, two cookies
+//DISCONTINUED: use promote.php's $user->check() instead!
 
+
+require($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+$user = new adventurer();
+if (!$user->check(true, true)){
+  if (isset($redirect) && $redirect != ""){
+    header("Location: ".$redirect);exit();
+  }
+  else {
+    header("Location: /account/Account=error=notSignedIn");exit();
+  }
+}
+
+/*
 function doJs() {
     echo '<script>
     if (document.cookie.indexOf("loggedIn=") == -1) { window.location.replace("Account.html"); }
@@ -27,5 +40,5 @@ else {
     if (!isset($_COOKIE["loggedIn"]) OR !isset($_COOKIE["loggedP"])) {exit();}
     if (password_verify($psw, $checkpsw)!=1){setcookie("loggedP", "", time() -3600, "/");setcookie("loggedIn", "", time() -3600, "/");exit();}
 }
-
+*/
 ?>

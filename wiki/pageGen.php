@@ -1805,19 +1805,29 @@ class article {
     public $details = [];
     public $gen = null;
 
-    function __construct($gen) {
+    function __construct($gen, $conn = null) {
+      if (gettype($gen)=="array"){
+        $this->conn = $conn;
+        $this->page = $gen["id"];
+        $this->root = 2;
+        $this->writingNew = false;
+        $this->database = "pages";
+        $this->banner = "fandom.png";
+        $this->domainType = "fandom";
+      }
+      else {
         $this->conn = $gen->dbconn;
         $this->page = $gen->page;
         $this->root = $gen->parentWiki;
         $this->writingNew = $gen->writingNew;
         $this->database = $gen->database;
         $this->banner = $gen->defaultBanner;
-        $this->gen = $gen;
-        $this->getInfo(0);
-        $this->banners = json_decode('[{"src":"fandom.png","name":"Fandom"},{"src":"lore.png","name":"Lore default"},{"src":"manyisles.png","name":"Many Isles"},{"src":"starry.png","name":"Star Sky"},{"src":"icehall.jpg","name":"Ice Hall"},{"src":"snowycliff.jpg","name":"Snowy Cliff"},{"src":"mounts.png","name":"Mountains"},{"src":"stones.jpg","name":"Stone Mountains"},{"src":"desertcanyon.jpg","name":"Desert Canyon"},{"src":"dunes.png","name":"Dunes"},{"src":"lava.jpg","name":"Lava Landscape"},{"src":"fire.jpg","name":"Flames"},{"src":"caves.png","name":"Cave"},{"src":"dark.png","name":"Dark Woods"},{"src":"plains.png","name":"Plains"},{"src":"flowersvillage.jpg","name":"Flowers Village"},{"src":"waterfallforest.jpg","name":"Forest Waterfall"},{"src":"trees.png","name":"Trees"},{"src":"woodssunset.jpg","name":"Forest Sunset"},{"src":"goldleaves.jpg","name":"Sun and Leaves"},{"src":"swamphuts.jpg","name":"Swamp Huts"},{"src":"sunsetships.jpg","name":"Sunset Ships"},{"src":"coast.jpg","name":"Coast"},{"src":"sea.jpg","name":"Fantastic Sea"},{"src":"sailship.jpg","name":"Ship"},{"src":"city1.jpg","name":"City #1"},{"src":"city2.jpg","name":"City #2"},{"src":"battlefield.png","name":"Battlefield"},{"src":"war.png","name":"War"}]',
-            true);
+        $this->domainType = $gen->domainType;
+      }
+      $this->getInfo(0);
+      $this->banners = json_decode('[{"src":"fandom.png","name":"Fandom"},{"src":"lore.png","name":"Lore default"},{"src":"manyisles.png","name":"Many Isles"},{"src":"starry.png","name":"Star Sky"},{"src":"icehall.jpg","name":"Ice Hall"},{"src":"snowycliff.jpg","name":"Snowy Cliff"},{"src":"mounts.png","name":"Mountains"},{"src":"stones.jpg","name":"Stone Mountains"},{"src":"desertcanyon.jpg","name":"Desert Canyon"},{"src":"dunes.png","name":"Dunes"},{"src":"lava.jpg","name":"Lava Landscape"},{"src":"fire.jpg","name":"Flames"},{"src":"caves.png","name":"Cave"},{"src":"dark.png","name":"Dark Woods"},{"src":"plains.png","name":"Plains"},{"src":"flowersvillage.jpg","name":"Flowers Village"},{"src":"waterfallforest.jpg","name":"Forest Waterfall"},{"src":"trees.png","name":"Trees"},{"src":"woodssunset.jpg","name":"Forest Sunset"},{"src":"goldleaves.jpg","name":"Sun and Leaves"},{"src":"swamphuts.jpg","name":"Swamp Huts"},{"src":"sunsetships.jpg","name":"Sunset Ships"},{"src":"coast.jpg","name":"Coast"},{"src":"sea.jpg","name":"Fantastic Sea"},{"src":"sailship.jpg","name":"Ship"},{"src":"city1.jpg","name":"City #1"},{"src":"city2.jpg","name":"City #2"},{"src":"battlefield.png","name":"Battlefield"},{"src":"war.png","name":"War"}]',
+          true);
     }
-
     function getInfo($level) {
         if (!$this->writingNew) {
             $query = "SELECT * FROM $this->database WHERE id = $this->page ORDER BY v DESC LIMIT $level, 1";
@@ -1827,7 +1837,7 @@ class article {
                       $this->name = $row["name"];
                       $this->parentWiki = $row["parentWiki"];
                       $this->version = $row["v"];
-                      if ($this->gen->domainType != "spells"){
+                      if ($this->domainType != "spells"){
                         $this->status = $row["status"];
                         if ($this->status == "reverted"){$this->revertees = true; return $this->getInfo($level + 1);}
                         $this->shortName = $row["shortName"];

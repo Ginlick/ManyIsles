@@ -37,7 +37,6 @@ class adventurer {
         $this->user = preg_replace("/[^0-9]/", "", $user);
         $this->signedIn = false;
         if ($this->user == null){$this->user = 0;}
-
         $query = "SELECT title, tier, uname, password, email, emailConfirmed FROM accountsTable WHERE id = $user";
         if ($result = $this->conn->query($query)) {
             if (mysqli_num_rows($result) > 0) {
@@ -80,7 +79,7 @@ class adventurer {
       if ($this->signedIn OR $mod){
         if ($emailConfirmedMatters){
           if (!$this->emailConfirmed){
-            $this->signOut(); return false;
+            return false;
           }
         }
         if (isset($_COOKIE["loggedIn"]) AND isset($_COOKIE["loggedCode"])){
@@ -94,7 +93,8 @@ class adventurer {
             }
           }
         }
-        $this->signOut(); return false;
+        $this->signOut();
+        return false;
       }
       return true;
     }

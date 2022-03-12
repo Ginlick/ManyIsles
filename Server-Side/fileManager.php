@@ -80,10 +80,15 @@ class smolengine {
 
 trait fundamentals {
   public $root = ""; public $mediaDir = "";
+  public $accentedCharacters = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū";
 
   public function giveBasis() {
     $this->root = dirname($_SERVER['DOCUMENT_ROOT']);
     $this->mediaDir = $this->root."/media";
+    $this->regArrayR = [
+      "basic" => "/[^A-Za-z0-9_]/",
+      "full" => "/[^A-Za-z0-9_&\/, ]/"
+    ];
   }
 
   public $fileRequs = [
@@ -94,11 +99,11 @@ trait fundamentals {
     "dl3d" => ["size"=>22000000, "types"=>["stl", "fbx", "obj", "usd", "usdz"], "likesImg"=>false],
     "bigAudio" => ["size"=>1200000, "types"=>["wav", "mp3", "pcm"], "likesImg"=>false]
   ];
-  public $regArrayR = [
-      "basic" => "/[^A-Za-z0-9]/",
-  ];
   function purate($input, $regex = "basic") {
     $input = str_replace(" ", "_", $input);
+    return preg_replace($this->regArrayR[$regex], "", $input);
+  }
+  function purify($input, $regex = "basic") {
     return preg_replace($this->regArrayR[$regex], "", $input);
   }
   function clearmage($file, $oldOption = "") {
@@ -106,11 +111,13 @@ trait fundamentals {
       $file = $oldOption.$file;
     }
 
-    if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
-      $file = "https://media.manyisles.ch".$file;
-    }
-    else {
-      $file = "http://25.36.111.17:8080".$file;
+    if (!preg_match("/^http/", $file)){
+      if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
+        $file = "https://media.manyisles.ch".$file;
+      }
+      else {
+        $file = "http://25.36.111.17:8080".$file;
+      }
     }
     return $file;
   }

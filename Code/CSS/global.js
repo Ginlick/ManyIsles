@@ -122,6 +122,24 @@ function responsive(fileName, ifWhich) {
     }
 }
 
+//remove parameters
+function removeParam(key, sourceURL) {
+    var rtn = sourceURL.split("?")[0],
+        param,
+        params_arr = [],
+        queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+    if (queryString !== "") {
+        params_arr = queryString.split("&");
+        for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+            param = params_arr[i].split("=")[0];
+            if (param === key) {
+                params_arr.splice(i, 1);
+            }
+        }
+        if (params_arr.length) rtn = rtn + "?" + params_arr.join("&");
+    }
+    return rtn;
+}
 
 //pBars
 
@@ -174,7 +192,7 @@ function createPopup(popup) {
     popupBar.setAttribute("class", "popupBar");
     let popupImage = document.createElement("img");
     popupImage.setAttribute("src", imgOArray[idom]);
-    popupImage.setAttribute("alt", "domain");
+    popupImage.setAttribute("alt", idom);
     let popupP = document.createElement("p");
     popupP.innerHTML = txt;
     if (popupArray["b"] == 1) {
@@ -299,9 +317,11 @@ function getCookie(cname) {
 function signOut(yeah = null) {
     document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "loggedCode=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    let newpath = removeParam("i", window.location.href);
+
     if (yeah == "friendly") { window.location.href = "/account/Account?error=signIn"; }
     else if (yeah == "baddie") { window.location.href = "/account/Account?error=notSignedIn";}
-    else {window.location.reload(true);}
+    else {window.location.href = newpath;}
 }
 function seekMaker(returner) {
   if (returner == "dl"){returner = "/dl/home";}

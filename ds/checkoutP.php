@@ -1,31 +1,19 @@
 ﻿<?php
-if(!isset($_COOKIE["loggedP"])) {header("Location: checkout.html");setcookie("loggedIn", "", time() -3600, "/");exit();}
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/ds-actcode.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/subs/subHandler.php');
 
-$id = $_COOKIE["loggedIn"];
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-        $uname = $row["uname"];
-        $customer_title = $row["title"];
-        $checkpsw = $row["password"];
-        $confirmed = $row["emailConfirmed"];
-        $customer_email = $row["email"];
-    }
+$user = new adventurer();
+if (!$user->check(true, true)){
+  if ($user->signedIn){
+    header("Location: checkoutw");exit();
+  }
+  header("Location: checkout");exit();
 }
-
-
-$redirect = "checkout.html";
-include("../Server-Side/checkPsw.php");
-
-if ($confirmed == NULL){header("Location: checkoutw.php");exit();}
-
+$id = $user->user;
 $custTran = new transaction($moneyconn, $id);
 
 session_start();
@@ -90,7 +78,7 @@ if ($basketed->type == "items"){
     }
 
     $oMotive = "Digital Store Order #$clid";
-    if (!$custTran->new(0 - $permTotalPrice, $customer_title." ".$uname, $oMotive)){
+    if (!$custTran->new(0 - $permTotalPrice, $user->fullName, $oMotive)){
             echo "<script>window.location.replace('checkout2')</script>";exit();
     }
 
@@ -100,7 +88,7 @@ if ($basketed->type == "items"){
 }
 else if ($basketed->type == "subs") {
     $oMotive = "Subscription Payment";
-    if (!$custTran->new(0 - $permTotalPrice, $customer_title." ".$uname, $oMotive)){
+    if (!$custTran->new(0 - $permTotalPrice, $user->fullName, $oMotive)){
             echo "<script>window.location.replace('checkout2')</script>";exit();
     }
 
