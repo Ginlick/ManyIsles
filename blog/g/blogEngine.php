@@ -88,7 +88,7 @@ class blogEngine {
 
             $info = $this->getArray($row["info"]);
             if ($result["type"]=="partnership"){
-              $query = "SELECT * FROM partners WHERE user = ".$this->user->user;
+              $query = "SELECT * FROM partners WHERE user = ".$targetBuserUser->user;
               if ($toprow = $this->conn->query($query)) {
                 if (mysqli_num_rows($toprow) > 0) {
                   while ($row2 = $toprow->fetch_assoc()) {

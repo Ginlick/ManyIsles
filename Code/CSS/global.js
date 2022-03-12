@@ -162,12 +162,13 @@ var img2Array = {
     "spells": "/Imgs/PopupSpells.png"
 }
 function createPopup(popup) {
-    let bigArr = popup.split(";");
+    let bigArr = popup.match(/([^\\\][^;]|\\;)+/g);
     let popupArray = {};
     for (let pair in bigArr) {
-        let currArr = bigArr[pair].split(":");
+        let currArr = bigArr[pair].match(/([^\\\][^:]|\\:)+/g);
         popupArray[currArr[0]] = currArr[1];
     }
+    console.log(popupArray);
     if (popupArray["d"] == null) {
         idom = "gen";
     }
@@ -198,17 +199,22 @@ function createPopup(popup) {
     if (popupArray["b"] == 1) {
         let popupButton = document.createElement("span");
         popupButton.setAttribute("class", idom);
-        if (popupArray["bHref"] == null) {
-            popupButton.setAttribute("onclick", "hidePopup(this.parentElement.parentElement);");
-            if (popupArray["dur"] == null) { dur = 22000; }
-            popupButton.innerHTML = popupArray["bTxt"];
+        if (popupArray["bHref"] != null) {
+          let pButtA = document.createElement("a");
+          pButtA.setAttribute("href", popupArray["bHref"]);
+          pButtA.innerHTML = popupArray["bTxt"];
+          popupButton.appendChild(pButtA);
+          if (popupArray["dur"] == null) { dur = 8000; }
+        }
+        else if (popupArray["bAct"] != null) {
+          popupButton.setAttribute("onclick", "hidePopup(this.parentElement.parentElement);"+popupArray["bAct"]);
+          popupButton.setAttribute("onclick", );
+          popupButton.innerHTML = popupArray["bTxt"];
         }
         else {
-            let pButtA = document.createElement("a");
-            pButtA.setAttribute("href", popupArray["bHref"]);
-            pButtA.innerHTML = popupArray["bTxt"];
-            popupButton.appendChild(pButtA);
-            if (popupArray["dur"] == null) { dur = 8000; }
+          popupButton.setAttribute("onclick", "hidePopup(this.parentElement.parentElement);");
+          if (popupArray["dur"] == null) { dur = 22000; }
+          popupButton.innerHTML = popupArray["bTxt"];
         }
         popupP.appendChild(popupButton);
     }
@@ -328,4 +334,13 @@ function seekMaker(returner) {
   else if (returner == "ds"){returner = "/ds/store";}
   else if (returner == "publish"){returner = "/ds/Publish";}
   document.cookie='seeker='+returner;
+}
+
+
+//cookie accepted checker
+if (getCookie("cookiesAccepted")==""){
+  createPopup("txt:We use cookies to recognize users and their preferences.;b:1;bTxt:accept;dur:55000;bAct:acceptCookies();'")
+}
+function acceptCookies() {
+  document.cookie = "acceptCookies=1; expires= 17 Jan 2038 00:00:00 UTC; path=/;";
 }
