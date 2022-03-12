@@ -2,14 +2,12 @@
 require($_SERVER['DOCUMENT_ROOT']."/blog/g/blogEngine.php");
 $blog = new blogEngine;
 if (!$blog->partner) {
-  require($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
-  $dl = new dlengine($blog->conn);
-  $dl->partner(true);
+  $blog->dlEngine->partner(true);
 
   $info = [];
-  $info["uname"] = $dl->partName;
-  $info["pp"] = $dl->partImage;
-  $info["description"] = $dl->partDesc;
+  $info["uname"] = $blog->dlEngine->partName;
+  $info["pp"] = $blog->dlEngine->partImage;
+  $info["description"] = $blog->dlEngine->partDesc;
   $info = json_encode($info, JSON_HEX_APOS);
 
   $query = "INSERT INTO busers (user, type, info) VALUES ('".$blog->user->user."', 'partnership', '$info')";
