@@ -2,9 +2,11 @@
   --blog-b-deepblue: #4ca0e0;
   --blog-b-darkygray: #c2bdbd;
   --blog-b-red: #c12f2f;
+  --blog-b-lightestgrey: #f6f6f6;
 
   --blog-lightgrey: var(--all-color-albord);
   --blog-lightergrey: var(--col-lightwite);
+  --blog-lightestgrey: var(--blog-b-lightestgrey);
   --blog-darkygray: var(--blog-b-darkygray);
   --blog-link: var(--gen-color-bblue);
   --blog-linkhover: var(--blog-b-deepblue);
@@ -124,6 +126,17 @@ button:hover, .wikiButton:hover, .blogButton:hover {
 
 .hidden {
   display: none !important;
+}
+
+.genreList {
+  min-height:20px;
+  padding-top: 5px;
+}
+.tag-element {
+  padding: 2px 7px;
+  background-color: var(--blog-lightestgrey);
+  margin: 0 5px;
+  border-radius: 100px;
 }
 
 /*suggestions*/
@@ -318,10 +331,7 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   }
   .main-post-content, .bottom-infos {padding: 5px 10px;}
   .main-post-title {
-    margin: 0 0 10px;
-    font-size: var(--all-fonts-larg);
-    font-family: "Montserrat", sans-serif;
-    font-weight: bold;
+    margin-bottom: 0;
   }
   .genreTab {
     color: var(--blog-lightgrey);

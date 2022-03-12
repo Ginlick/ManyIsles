@@ -4,7 +4,7 @@ $blog = new blogEngine;
 
 $mode = "new"; $type = "posts";
 if (isset($_POST["m"])){$mode = preg_replace("/[^a-z]/", "", $_POST['m']);}
-$buser = 0;$severalBusers = false;$reference = "";$offset = 0;$settings = [];
+$buser = 0;$severalBusers = false;$reference = "";$offset = 0; $tags = []; $settings = [];
 if (isset($_POST["u"])){
   if (preg_match("/^[0-9]$/", $_POST['u'])){
     $buser = $_POST['u'];
@@ -22,7 +22,9 @@ if ($type != "comments"){$type = "posts";}
 if (isset($_POST["r"])){$reference = $blog->baseFiling->purate($_POST["r"]);}
 if (isset($_POST["o"])){$offset = preg_replace("/[^0-9]/", "", $_POST['o']);}
 if (isset($_POST["s"])){$settings = $blog->getArray($_POST["s"]);}
+if (isset($_POST["t"])){$tags = $blog->getCommaArr($_POST["t"]);}
 
+$hasWhere = true;
 $query = "SELECT * FROM $type ";
 if ($reference != ""){
   $query .= " WHERE refPost = '$reference' ";
@@ -44,6 +46,30 @@ else if ($buser != 0 AND $buser != ""){
     $query .= " WHERE (buser = $buser) ";
   }
 }
+else {$hasWhere = false;}
+
+//tags
+if (count($tags) > 0) {
+  $addition = "";
+  $dontDo = true;
+  foreach ($tags as $tag){if ($tag != ""){$dontDo = false;}}
+  if (!$dontDo){
+    if (!$hasWhere){
+      $addition = " WHERE ("; $hasWhere = true;
+    }
+    else {
+      $addition = " AND (";
+    } $first = true;
+    foreach ($tags as $tag){
+      if ($tag == ""){continue;}
+      if ($first){$first = false;}else {$addition .= " OR ";}
+      $addition .= ' (genre LIKE \'%"'.$tag.'",%\') ';
+    }
+    $addition .= ")";
+  }
+}
+$query .= $addition;
+
 if ($mode == "likes"){
   $query .= " ORDER BY likes DESC";
 }
@@ -62,7 +88,7 @@ if ($mode == "random"){
 else {
   $query .= " LIMIT $offset, 8";
 }
-
+//echo $query; exit;
 
 $total = 0;
 if ($toprow = $blog->blogconn->query($query)) {

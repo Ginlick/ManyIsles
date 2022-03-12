@@ -39,7 +39,6 @@ $buserInfo = $blog->fetchBuserInfo();
                    <input type="file" onchange="readURL(this);" class="fileInput" id="image" value="null" name = "banner" accept=".png, .jpg"/>
               </div>
               <input type="text" placeholder="Title" name="title" required/>
-              <input type="text" placeholder="Genre" name="genre" list="genreSugg" required/>
               <datalist id="genreSugg" />
                 <option value="Lore" />
                 <option value="News" />
@@ -48,6 +47,7 @@ $buserInfo = $blog->fetchBuserInfo();
                 <option value="Project" />
               </datalist>
               <textarea rows="10" placeholder="Text" name="text" required></textarea>
+              <input type="text" placeholder="Tags (eg. d&d, news, release)" name="genre" list="genreSugg" />
               <div class="checkbox-block">
                 <input type="checkbox" name="comments" checked/><label for="comments">Allow comments</label>
               </div>

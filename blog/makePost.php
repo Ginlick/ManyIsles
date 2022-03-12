@@ -5,8 +5,8 @@ $blog = new blogEngine();
 $filing = $blog->fileEngine();
 
 if (!isset($_POST['profile'])){$_POST['profile']=0;}
-$ptitle = substr(preg_replace("/[^A-Za-z0-9\(\)\&\'\- ]/", "", $_POST['title']), 0, 70);
-$pgenre = substr(preg_replace("/[^A-Za-z0-9\(\)\&\'\- ]/", "", $_POST['genre']), 0, 22);
+$ptitle = substr($blog->baseFiling->purify($_POST['title'], "full"), 0, 70);
+$pgenre = ""; if (isset($_POST['genre'])) {$pgenre = substr($_POST['genre'], 0, 1500);}
 $profile = substr(preg_replace("/[^0-9]/", "", $_POST['profile']), 0, 22);
 $ptext = substr(str_replace('"', '%double_quote%', $_POST['text']), 0, 10000);
 $pcomments = 0; if (isset($_POST['comments']) AND $_POST['comments'] == "on"){$pcomments = 1;}
@@ -32,8 +32,12 @@ $settings = [];
 $settings["comments"]=$pcomments;
 $settings = json_encode($settings);
 
+$pgenre = $blog->getCommaArr($pgenre);
+$blog->addTags($pgenre);
+$pgenre = json_encode($pgenre, JSON_HEX_APOS|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+
 $query = 'INSERT INTO posts (code, buser, title, genre, banner, text, settings) VALUES (
-  "'.$postCode.'", "'.$profile.'", "'.$ptitle.'", "'.$pgenre.'", "'.$placedI.'", "'.$ptext.'", \''.$settings.'\'
+  "'.$postCode.'", "'.$profile.'", "'.$ptitle.'", \''.$pgenre.'\', "'.$placedI.'", "'.$ptext.'", \''.$settings.'\'
 )';
 
 //echo $query; exit;

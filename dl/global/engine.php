@@ -381,7 +381,7 @@ class dlengine {
     }
     function hasBlogs() {
       require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_blogs.php");
-      $query = "SELECT * FROM busers WHERE type = 'partnership' AND id = ".$this->user->user;
+      $query = "SELECT * FROM busers WHERE type = 'partnership' AND user = ".$this->user->user;
       if ($result = $blogconn->query($query)) {
         if (mysqli_num_rows($result) != 0) {
           return true;

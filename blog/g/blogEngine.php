@@ -147,6 +147,11 @@ class blogEngine {
           if ($this->blogconn->query($query)) {
             $query = "DELETE FROM busers WHERE id = ".$this->buserId;
             if ($this->blogconn->query($query)) {
+              foreach ($this->profiles as $profile){
+                foreach ($profile["following"] as $following){
+                  $this->follow($profile["id"], $following, 0);
+                }
+              }
               return true;
             }
           }
@@ -195,7 +200,8 @@ class blogEngine {
           <div class="suggestions" id="suggest-this"></div>
         </div>
         <a class="left-menu-a" href="/blog/explore"><i class="fa-solid fa-house"></i> Explore</a>
-        <a class="left-menu-a" href="/blog/feed"><i class="fa-solid fa-hashtag"></i> My Feed</a>
+        <a class="left-menu-a" href="/blog/search"><i class="fa-solid fa-hashtag"></i> Search by Tags</a>
+        <a class="left-menu-a" href="/blog/feed"><i class="fa-regular fa-comment"></i> My Feed</a>
         profile-line
       </div>
 
@@ -208,11 +214,11 @@ class blogEngine {
       </ul>
       HAIL;
       $return = str_replace("current-information-place", $this->curPage, $return);
-      $insert = '<a class="left-menu-a" href="/account/Account?error=signIn" target="_blank"><i class="fa-solid fa-user-large"></i> Sign In</a>';
+      $insert = '<a class="left-menu-a" href="/account/Account?error=signIn" target="_blank"><i class="fa-regular fa-user"></i> Sign In</a>';
       if ($this->user->signedIn){
-        $insert = '<a class="left-menu-a" href="/blog/profile"><i class="fa-solid fa-user-large"></i> Profile</a>';
+        $insert = '<a class="left-menu-a" href="/blog/profile"><i class="fa-solid fa-user"></i> Profile</a>';
         if ($this->partner){
-          $insert .= '<a class="left-menu-a" href="/blog/profile?p"><i class="fa-solid fa-user-large"></i> Partnership Profile</a>';
+          $insert .= '<a class="left-menu-a" href="/blog/profile?p"><i class="fa-solid fa-user-pen"></i> Partnership Profile</a>';
         }
       }
       $return = str_replace("profile-line", $insert, $return);
@@ -294,6 +300,24 @@ class blogEngine {
       }
       return false;
     }
+    //Tags
+    function addTags(array $tagArr){
+      foreach ($tagArr as $tag){
+        $query = "SELECT id FROM tags WHERE tag = '$tag'";
+        if ($result = $this->blogconn->query($query)){
+          if (mysqli_num_rows($result) > 0) {
+            while ($row = $result->fetch_assoc()){
+              $id = $row["id"];
+              $query2 = "UPDATE tags SET uses = uses + 1 WHERE id = $id";
+            }
+          }
+          else {
+            $query2 = "INSERT INTO tags (tag, uses) VALUES ('$tag', 1)";
+          }
+          $this->blogconn->query($query2);
+        }
+      }
+    }
 
     //posts
     function genPost($prow, $extent = 0, $public = false){
@@ -304,7 +328,10 @@ class blogEngine {
       $postAge = $this->givePostAge($row["reg_date"]);
       $postText = $this->parse->bodyParser($row["text"], 1);
       if ($public AND $postBuserInfo["info"]["setPublic"]==0){return false;}
-
+      $tags = $this->getArray($row["genre"]); $tagList = "";
+      foreach ($tags as $tag){
+        $tagList .= "<a href='/blog/search?t=$tag'><span class='tag-element fakelink'>#$tag</span></a>";
+      }
       $post = str_replace("post-imagge%%", $this->genPP($postBuserInfo["info"]["pp"], $postBuserInfo["info"]["pptype"]), $post);
       $post = str_replace("post-title-url", urlencode($row["title"]), $post);
       $post = str_replace("post-buser-buname-url", urlencode($postBuserInfo["info"]["uname"]), $post);
@@ -315,8 +342,8 @@ class blogEngine {
       $post = str_replace("post-buser-id", $postBuserInfo["id"], $post);
       $post = str_replace("post-buser-fullName", $postBuserInfo["username"], $post);
       $post = str_replace("post-age", $postAge, $post);
-      $post = str_replace("post-title", $row["title"], $post);
-      $post = str_replace("post-genre", $row["genre"], $post);
+      $post = str_replace("%post-title", $row["title"], $post);
+      $post = str_replace("%post-genre", $tagList, $post);
       $post = str_replace("post-likes", $row["likes"], $post);
       $post = str_replace("%post-comments", $this->fetchPostCommentNum($row["code"]), $post);
       if (!$this->arrAllows($row["settings"], "comments")){$post = str_replace("ALLOWS%COMMENTS", "hidden", $post);}
@@ -391,16 +418,16 @@ class blogEngine {
       $sortCont = <<<MAC
       <div class="sort-cont rectangle" id="sortcont$feed" target-feed="$feed" onload="sortify(this, '$feed')" >
         <div class="sort-tab selected" sort-by="new">
-          <i class="fa-solid fa-sun-bright"></i> New
+          <i class="fa-regular fa-sun"></i> New
         </div>
         <div class="sort-tab" sort-by="likes">
-          <i class="fas fa-heart"></i> Liked
+          <i class="fa-regular fa-heart"></i> Liked
         </div>
         <div class="sort-tab" sort-by="random">
           <i class="fas fa-dice-d20"></i> Random
         </div>
         <div class="sort-tab" sort-by="old">
-          <i class="fa-solid fa-moon-stars"></i> Old
+          <i class="fa-regular fa-moon"></i> Old
         </div>
       </div>
       <div class="returnToTopEr fakelink" onclick="backToTop('sortcont$feed')" id='backToTop'>
@@ -549,13 +576,20 @@ class blogEngine {
       $followers = [];
       $arr = preg_replace('/[\r]/', '\n', $arr);
       $arr = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $arr);
-      $arr = json_decode($arr, true, 22, JSON_INVALID_UTF8_SUBSTITUTE); if (gettype($arr)=="array"){
+      $arr = json_decode($arr, true, 22, JSON_INVALID_UTF8_SUBSTITUTE);
+      if (gettype($arr)=="array"){
         foreach ($arr as $k=>$value) {
-          $arr[$k]=str_replace("u0027", "'", $value);
+          $arr[$k]=utf8_decode($value);
         }
         $followers = $arr;
       }
       return $followers;
+    }
+    function getCommaArr($arr) {
+      $pgenre = $this->baseFiling->purify($arr, "full");
+      $pgenre = explode(", ", $pgenre);
+      $pgenre = array_slice($pgenre, 0, 22);
+      return $pgenre;
     }
     function arrAllows($arr, $key) {
       if (gettype($arr)!="array"){
@@ -600,7 +634,10 @@ class blogEngine {
         <div class="main-post-banner" load-image="post-banner%%">
         </div>
         <div class="main-post-content">
-          <h3 class="main-post-title">post-title <span class="genreTab"> &#183; post-genre</span></h3>
+          <h3 class="main-post-title">%post-title</h3>
+          <div class="genreList">
+            %post-genre
+          </div>
           <div>
             post-text
           </div>
@@ -615,7 +652,7 @@ class blogEngine {
             <span id="likenumberpost-code">post-likes</span>
           </div>
           <div class="smolinfo ALLOWS%COMMENTS">
-            <i class="fa-solid fa-message"></i>
+            <i class="fa-regular fa-message"></i>
             <span>%post-comments</span>
           </div>
         </div>

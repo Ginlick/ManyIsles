@@ -2,11 +2,12 @@ var allFeeds = [];
 function fillFeed(feed, offset = 0) {
   if (!feed.hasAttribute("blog-feed")){return;}
   let mode = "new";
-  let buser = 0; let type = "posts"; let reference = ""; let moreinfo = "";
+  let buser = 0; let type = "posts"; let reference = ""; let tags = ""; let moreinfo = "";
   if (feed.hasAttribute("blog-feed-user")){buser = feed.getAttribute("blog-feed-user");}
   if (feed.hasAttribute("blog-feed-sort")){mode = feed.getAttribute("blog-feed-sort");}
   if (feed.hasAttribute("blog-feed-type")){type = feed.getAttribute("blog-feed-type");}
   if (feed.hasAttribute("blog-feed-reference")){reference = feed.getAttribute("blog-feed-reference");}
+  if (feed.hasAttribute("blog-feed-tags")){tags = feed.getAttribute("blog-feed-tags");}
   if (feed.hasAttribute("blog-feed-settings")){moreinfo = feed.getAttribute("blog-feed-settings");}
   let form = new FormData();
   form.append("u", buser); //string array of who to draw from
@@ -14,6 +15,7 @@ function fillFeed(feed, offset = 0) {
   form.append("t", type); //posts or comments
   form.append("r", reference); //for comments: which post to draw from
   form.append("o", offset); //where to start offset
+  form.append("t", tags); //any tag restrictions
   form.append("s", moreinfo); //string array with more settings
   let file = "/blog/g/fetchFeed.php";
   if (file) {
@@ -21,13 +23,12 @@ function fillFeed(feed, offset = 0) {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
           if (this.status == 200) {
-            console.log("Current offset: " + offset + ", Current mode: " + mode);
+            console.log("Current offset: " + offset + ", mode: " + mode + ", tags: " + tags);
             let exhausted = false; let overwrite = false;
             feedId = feed.getAttribute("id");
             if (this.responseText.includes("No more posts")){exhausted = true;}
-            if (feedId in allFeeds && allFeeds[feedId]["mode"]!=mode){overwrite = true;}
-            allFeeds[feedId] = {"offset":offset, "exhausted":exhausted, "mode":mode};
-
+            if (feedId in allFeeds && (allFeeds[feedId]["mode"]!=mode || allFeeds[feedId]["tags"]!=tags)){overwrite = true;}
+            allFeeds[feedId] = {"offset":offset, "exhausted":exhausted, "mode":mode, "tags":tags};
             if (!exhausted) {
               if (overwrite){
                 feed.innerHTML = this.responseText;
@@ -145,7 +146,7 @@ function toggleLike(elmnt, postId) {
             elmnt.classList.add("fa-solid");
             document.getElementById("likenumber"+postId).innerHTML = likeNum + 1;
           }
-          else {
+          else if (this.responseText.includes("success-")) {
             elmnt.classList.remove("active");
             elmnt.classList.add("fa-regular");
             elmnt.classList.remove("fa-solid");
@@ -160,26 +161,32 @@ function toggleLike(elmnt, postId) {
 }
 
 
-function suggestPosts(elmnt) {
-  document.getElementById("suggest-this").style.display="block";
+function suggestPosts(elmnt, mode = "posts") {
+  var smolInset = "this"; var fileName = "suggest.php";
+  if (mode == "tags"){smolInset = "tags"; fileName = "suggestTags.php";}
+  document.getElementById("suggest-"+smolInset).style.display="block";
   query = elmnt.value;
-  let file = "/blog/g/suggest.php?q="+query;
-  console.log(file);
+  let file = "/blog/g/"+fileName+"?q="+query;
   if (file) {
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4) {
-        console.log(this.responseText);
-        document.getElementById("suggest-this").innerHTML = this.responseText;
+        document.getElementById("suggest-"+smolInset).innerHTML = this.responseText;
       }
     }
     xhttp.open("GET", file, true);
     xhttp.send();
   }
 }
+function suggestTags(elmnt) {
+  suggestPosts(elmnt, "tags");
+}
 function hideSuggest() {
   setTimeout(function () {
-    document.getElementById("suggest-this").style.display="none";
+    let list = document.getElementsByClassName("suggestions");
+    for (let sugg of list){
+      sugg.style.display="none";
+    }
   }, 220);
 }
 

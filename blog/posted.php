@@ -61,16 +61,18 @@ if ($blog->hasProfile($pOwner)){
               ?>
             </section>
             <section class="<?php if (!$blog->arrAllows($pRow["settings"], "comments")){echo "hidden"; } ?>">
-              <h2 id="commentSectionHeader">Write Comment</h2>
-              <div class="userComment">
-                <form action="/blog/g/makeComment.php" method="POST">
-                  <?php echo $blog->genProfileBlock(1); ?>
-                  <div class="userComment-input">
-                    <textarea rows="4" placeholder="Write a comment..." name="text" required></textarea>
-                    <input name="code" value="<?php echo $pCode; ?>" style="display: none;" />
-                    <button class="blogButton lesser" type="submit">Comment</button>
-                  </div>
-                </form>
+              <div class="<?php if (!$blog->user->signedIn){echo "hidden"; } ?>">
+                <h2 id="commentSectionHeader">Write Comment</h2>
+                <div class="userComment">
+                  <form action="/blog/g/makeComment.php" method="POST">
+                    <?php echo $blog->genProfileBlock(1); ?>
+                    <div class="userComment-input">
+                      <textarea rows="4" placeholder="Write a comment..." name="text" required></textarea>
+                      <input name="code" value="<?php echo $pCode; ?>" style="display: none;" />
+                      <button class="blogButton lesser" type="submit">Comment</button>
+                    </div>
+                  </form>
+                </div>
               </div>
               <h2>Comments <span class="secondname">&#183; <?php echo $commentNumber; ?></span></h2>
               <div class="comment-feed">
