@@ -576,6 +576,7 @@ class blogEngine {
       $followers = [];
       $arr = preg_replace('/[\r]/', '\n', $arr);
       $arr = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $arr);
+      $arr = str_replace("u0027", "'", $arr);
       $arr = json_decode($arr, true, 22, JSON_INVALID_UTF8_SUBSTITUTE);
       if (gettype($arr)=="array"){
         foreach ($arr as $k=>$value) {
