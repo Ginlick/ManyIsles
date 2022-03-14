@@ -28,6 +28,23 @@ if ($banner != null) {
   }
 }
 
+//user references
+if (preg_match_all("/@([^ ]+)/m", $ptext, $lineMatches)){
+  foreach ($lineMatches[1] as $userrefo){
+    $userref = $blog->baseFiling->purify(strtolower($userrefo));
+    $query = 'SELECT id FROM busers WHERE LOWER(REGEXP_REPLACE(username, " ", "")) = "'.$userref.'"';
+    if ($toprow = $blog->blogconn->query($query)) {
+      if (mysqli_num_rows($toprow) > 0) {
+        while ($row = $toprow->fetch_assoc()) {
+          $replaceWith = "@u".$row["id"];
+          $ptext = str_replace("@$userrefo", $replaceWith, $ptext);
+          $blog->notify($postCode, $row["id"], "mention");
+        }
+      }
+    }
+  }
+}
+
 $settings = [];
 $settings["comments"]=$pcomments;
 $settings = json_encode($settings);

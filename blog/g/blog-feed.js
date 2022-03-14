@@ -12,22 +12,25 @@ function fillFeed(feed, offset = 0) {
   let form = new FormData();
   form.append("u", buser); //string array of who to draw from
   form.append("m", mode); //sort mode (eg. new, liked... )
-  form.append("t", type); //posts or comments
+  form.append("ty", type); //posts or comments
   form.append("r", reference); //for comments: which post to draw from
   form.append("o", offset); //where to start offset
-  form.append("t", tags); //any tag restrictions
+  form.append("tags", tags); //any tag restrictions
   form.append("s", moreinfo); //string array with more settings
+
   let file = "/blog/g/fetchFeed.php";
   if (file) {
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
           if (this.status == 200) {
+            let file = "/blog/g/fetchFeed.php";
             console.log("Current offset: " + offset + ", mode: " + mode + ", tags: " + tags);
             let exhausted = false; let overwrite = false;
             feedId = feed.getAttribute("id");
             if (this.responseText.includes("No more posts")){exhausted = true;}
             if (feedId in allFeeds && (allFeeds[feedId]["mode"]!=mode || allFeeds[feedId]["tags"]!=tags)){overwrite = true;}
+            console.log(exhausted);
             allFeeds[feedId] = {"offset":offset, "exhausted":exhausted, "mode":mode, "tags":tags};
             if (!exhausted) {
               if (overwrite){
@@ -38,13 +41,16 @@ function fillFeed(feed, offset = 0) {
               }
               getIndexImgs();
             }
+            else if (overwrite) {
+              feed.innerHTML = "No posts found.";
+            }
           }
           else {
             feed.innerHTML = this.status + ". Failed to load.";
           }
         }
     }
-    xhttp.open("POST", file, true);
+    xhttp.open("POST", file, false);
     xhttp.send(form);
   }
 }
@@ -135,7 +141,7 @@ function toggleLike(elmnt, postId) {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4) {
         console.log(this.responseText);
-        if (this.responseText.includes("error")){
+        if (this.status != 200 && this.responseText.includes("error")){
           createPopup("d:gen;txt:Error. Could not like post.");
         }
         else {
@@ -192,4 +198,16 @@ function hideSuggest() {
 
 function backToTop(id) {
   document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "end" });
+}
+
+var menus = document.getElementsByClassName("left-col");
+function showMenu() {
+  for (let menu of menus){
+    if (menu.style.display == "block") {
+      menu.style.display = "none";
+    }
+    else {
+      menu.style.display = "block";
+    }
+  }
 }

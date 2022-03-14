@@ -1,6 +1,7 @@
 <?php
 require($_SERVER['DOCUMENT_ROOT']."/blog/g/blogEngine.php");
 $blog = new blogEngine;
+$blog->killCache();
 
 $postId = 0;
 if (isset($_GET["p"])){$postId = $blog->baseFiling->purate($_GET['p']);}

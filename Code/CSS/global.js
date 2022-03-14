@@ -168,7 +168,6 @@ function createPopup(popup) {
         let currArr = bigArr[pair].match(/([^\\\][^:]|\\:)+/g);
         popupArray[currArr[0]] = currArr[1];
     }
-    console.log(popupArray);
     if (popupArray["d"] == null) {
         idom = "gen";
     }
@@ -208,7 +207,6 @@ function createPopup(popup) {
         }
         else if (popupArray["bAct"] != null) {
           popupButton.setAttribute("onclick", "hidePopup(this.parentElement.parentElement);"+popupArray["bAct"]);
-          popupButton.setAttribute("onclick", );
           popupButton.innerHTML = popupArray["bTxt"];
         }
         else {
@@ -327,7 +325,15 @@ function signOut(yeah = null) {
 
     if (yeah == "friendly") { window.location.href = "/account/Account?error=signIn"; }
     else if (yeah == "baddie") { window.location.href = "/account/Account?error=notSignedIn";}
-    else {window.location.href = newpath;}
+    else {
+      if (window.location.href != newpath){
+        window.location.href = newpath;
+      }
+      else {
+        window.location.reload();
+      }
+    }
+
 }
 function seekMaker(returner) {
   if (returner == "dl"){returner = "/dl/home";}
@@ -338,9 +344,9 @@ function seekMaker(returner) {
 
 
 //cookie accepted checker
-if (getCookie("cookiesAccepted")==""){
+if (getCookie("acceptCookies")==""){
   createPopup("txt:We use cookies to recognize users and their preferences.;b:1;bTxt:accept;dur:55000;bAct:acceptCookies();'")
 }
 function acceptCookies() {
-  document.cookie = "acceptCookies=1; expires= 17 Jan 2038 00:00:00 UTC; path=/;";
+  document.cookie = "acceptCookies=1; path=/;";
 }

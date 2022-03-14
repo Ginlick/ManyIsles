@@ -150,7 +150,7 @@ MYGREATMAIL;
 $headers = "From: pantheon@manyisles.ch" . "\r\n";
 $headers .= "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-$message =  str_replace("massiveTreeofLife", $conCode, $message);
+$message =  str_replace("massiveTreeofLife", urlencode($conCode), $message);
 
 if (isset($_POST['wanttoPublish']) AND $_POST['wanttoPublish'] =="1"){
     $return = "SignedIn.php?show=notConfirmed";

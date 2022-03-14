@@ -58,6 +58,7 @@ class blogEngine {
         $red = "?i=unsigned";
         if ($this->user->signedIn){$red = "?i=unconf";}
         if ($return) {
+          $this->killCache();
           $this->go($return.$red);
         }
         echo "error credentials";
@@ -103,6 +104,7 @@ class blogEngine {
             if (!isset($info["uname"]) OR $info["uname"]==""){$info["uname"]=$targetBuserUser->uname;}
             if (!isset($info["description"])){$info["description"]="";}
             if (!isset($info["setEmailNotifs"])){$info["setEmailNotifs"]=1;}
+            if (!isset($info["setMentionNotifs"])){$info["setMentionNotifs"]=1;}
             if (!isset($info["setPublic"])){$info["setPublic"]=1;}
             if (!$reusable){
               if (!isset($info["pp"]) OR $info["pp"]==""){$info["pp"]=$targetBuserUser->image(2);$info["pptype"]="full";}
@@ -186,7 +188,10 @@ class blogEngine {
     }
 
     function giveTopnav() {
-      return '<div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl="true"></div>';
+      return '<div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl="true"></div>
+      <div class="showBGer" onclick="showMenu(this)" id="barsBoi">
+          <i class="fas fa-bars" > </i >
+      </div >';
     }
     function giveLeftcol() {
       $return = <<<HAIL
@@ -224,14 +229,17 @@ class blogEngine {
       $return = str_replace("profile-line", $insert, $return);
       return $return;
     }
-    function giveSignPrompt($return = "/blog/feed") {
+    function giveSignPrompt($return = "/blog/explore") {
       return $this->user->signPrompt($return);
     }
     function giveFooter() {
       return '<div w3-include-html="/blog/g/footer.html" w3-create-newEl="true"></div>';
     }
 
-    function styles($dom = "base") {
+    function styles($cachable = true) {
+      if (!$cachable){
+        $this->killCache();
+      }
       $return = <<<MAGDA
         <meta charset="UTF-8" />
         <link rel="icon" href="/Imgs/Favicon.png">
@@ -242,7 +250,7 @@ class blogEngine {
       MAGDA;
       return $return;
     }
-    function scripts($dom = "dl") {
+    function scripts() {
       $return = <<<MAGDA
         <script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
         <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -251,6 +259,11 @@ class blogEngine {
         <script src="/blog/g/blog-feed.js"></script>
       MAGDA;
       return $return;
+    }
+    function killCache() {
+      header("Cache-Control: no-cache, must-revalidate"); //HTTP 1.1
+      header("Pragma: no-cache"); //HTTP 1.0
+      header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     }
 
     //follow
@@ -330,6 +343,7 @@ class blogEngine {
       if ($public AND $postBuserInfo["info"]["setPublic"]==0){return false;}
       $tags = $this->getArray($row["genre"]); $tagList = "";
       foreach ($tags as $tag){
+        if ($tag == ""){continue;}
         $tagList .= "<a href='/blog/search?t=$tag'><span class='tag-element fakelink'>#$tag</span></a>";
       }
       $post = str_replace("post-imagge%%", $this->genPP($postBuserInfo["info"]["pp"], $postBuserInfo["info"]["pptype"]), $post);
@@ -369,7 +383,7 @@ class blogEngine {
               $allEmbeds .= $embedded;
             }
           }
-          if (preg_match("/\/dl\/item\/([0-9]+)\/.*/", $link, $match)){
+          else if (preg_match("/\/dl\/item\/([0-9]+)\/.*/", $link, $match)){
             $id = $match[1];
             if (class_exists("dlengine")){
               $query = "SELECT * FROM products WHERE id = ".$id;
@@ -387,10 +401,52 @@ class blogEngine {
               }
             }
           }
+          else if (preg_match("/\/ds\/([0-9]+)\/.*/", $link, $match)){
+            $id = $match[1];
+            $query = "SELECT * FROM dsprods WHERE id = ".$id;
+            if ($toprow = $this->conn->query($query)) {
+              if (mysqli_num_rows($toprow) > 0) {
+                while ($row2 = $toprow->fetch_assoc()) {
+                  $embedded = $this->embedStencil;
+                  $embedded = str_replace("%%embed_image", $row2["thumbnail"], $embedded);
+                  $embedded = str_replace("%%embed_title", $row2["name"], $embedded);
+                  $embedded = str_replace("%%embed_link", $link, $embedded);
+                  $embedded = str_replace("%%embed_place", "Digital store product", $embedded);
+                  $allEmbeds .= $embedded;
+                }
+              }
+            }
+          }
         }
       }
       $postText = preg_replace("/^(.*)\[embed\].+\[\/embed\](.*)$/m", "$1$2", $postText);
       $post = str_replace("ADDEMBEDS*", $allEmbeds, $post);
+      //user references
+      if (preg_match_all("/@u([0-9]+)/m", $postText, $lineMatches)){
+        foreach ($lineMatches[1] as $userref){
+          $userrefInfo = $this->fetchBuserInfo($userref);
+          $newInset = "<a href='/blog/profile?u=$userref'>@".$userrefInfo["info"]["uname"]."</a>";
+          $postText = str_replace("@u$userref", $newInset, $postText);
+        }
+      }
+      //tag references
+      $allTags = [];
+      /*if (preg_match_all("/#([^\"'<\[#]+)#/m", $postText, $lineMatches)){
+        foreach ($lineMatches[1] as $tag){
+          if (!in_array($tag, $allTags)){$allTags[] = $tag;}else {continue;}
+          $insert = "<a href='/blog/search?t=$tag' class='tag-element'>#".$tag."</a>";
+          echo $insert;
+          $postText = str_replace("#$tag#", $insert, $postText);
+        }
+      }*/
+      if (preg_match_all("/#([^ ]+)/m", $postText, $lineMatches)){
+        foreach ($lineMatches[1] as $tag){
+          if (!in_array($tag, $allTags)){$allTags[] = $tag;}else {continue;}
+          if (str_contains("'", $tag)){continue;}
+          $insert = "<a href='/blog/search?t=$tag' class='tag-element'>#".$tag."</a>";
+          $postText = preg_replace("/([^>])#$tag/", "$1".$insert, $postText);
+        }
+      }
 
       $post = str_replace("post-text", $postText, $post);
       return $post;
@@ -482,7 +538,7 @@ class blogEngine {
     }
 
     //actions
-    function notify($postCode, $postBuserId) {
+    function notify($postCode, $postBuserId, $concerns = "follow", $targetBuserId = 0) {
       $postBuser = $this->fetchBuserInfo($postBuserId);
       $query = "SELECT * FROM posts WHERE code = '$postCode'";
       if ($result = $this->blogconn->query($query)) {
@@ -497,26 +553,42 @@ class blogEngine {
       $email = str_replace("%%POSTTEXT", $postText, $email);
       $email = str_replace("%%POSTAUTHOR", $postBuser["info"]["uname"], $email);
       $email = str_replace("%%POSTAUTHLINK", "https://manyisles.ch/blog/profile?u=".$postBuserId, $email);
-      $email = str_replace("%%POSTLINK", "https://manyisles.ch/blog/".$postCode."/".$this->baseFiling->purate($postTitle), $email);
+      $email = str_replace("%%POSTLINK", "https://manyisles.ch/blog/post/".$postCode."/".$this->baseFiling->purate($postTitle), $email);
       $headers = "From: pantheon@manyisles.ch" . "\r\n";
       $headers .= "MIME-Version: 1.0" . "\r\n";
       $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-      $subject = $postBuser["info"]["uname"].' posted something';
-      foreach ($postBuser["followers"] as $followerId){
-        $follower = $this->fetchBuserInfo($followerId);
-        if ($follower["info"]["setEmailNotifs"]==0){continue;}
-        $query = "SELECT * FROM accountsTable WHERE id = ".$follower["user"];
-        if ($result = $this->conn->query($query)) {
-          while ($row = $result->fetch_assoc()) {
-            $followerEmail = $row["email"];
-          }
+      if ($concerns == "mention"){
+        if ($postBuserId == $targetBuserId){return true;}
+        $subject = $postBuser["info"]["uname"].' mentioned you';
+        $targetBuser = $this->fetchBuserInfo($targetBuserId);
+        if ($targetBuser["info"]["setMentionNotifs"]==0){return;}
+        $email = str_replace("%%POSTWHATSUP", "You've been mentioned in this post", $email);
+        $this->notifySendmail($email, $targetBuser);
+      }
+      else {
+        $subject = $postBuser["info"]["uname"].' posted something';
+        foreach ($postBuser["followers"] as $followerId){
+          $follower = $this->fetchBuserInfo($followerId);
+          if ($follower["info"]["setEmailNotifs"]==0){continue;}
+          $email = str_replace("%%POSTWHATSUP", "There's a new post for you", $email);
+          $this->notifySendmail($email, $follower);
         }
-        $specEmail = $email;
-        $specEmail = str_replace("%%USERIMG", $follower["info"]["pp"], $specEmail);
-        $specEmail = str_replace("%%USERNAME", $follower["username"], $specEmail);
-        mail($followerEmail, $subject, $specEmail, $headers);
       }
       return true;
+    }
+    function notifySendmail($specEmail, $follower) {
+      $specEmail = str_replace("%%USERIMG", $follower["info"]["pp"], $specEmail);
+      $specEmail = str_replace("%%USERNAME", $follower["username"], $specEmail);
+      mail($this->giveBuserEmail($followerId), $subject, $specEmail, $headers);
+    }
+    function giveBuserEmail($buserId) {
+      $query = "SELECT * FROM accountsTable WHERE id = ".$buserId;
+      if ($result = $this->conn->query($query)) {
+        while ($row = $result->fetch_assoc()) {
+          return $row["email"];
+        }
+      }
+      return "";
     }
 
     //miscellaneous tools
@@ -728,7 +800,7 @@ class blogEngine {
                 <p style="margin:0;line-height: 80px;font-family:arial">%%USERNAME</p>
           </div>
           <div>
-            <h1 style="font-family:arial">There's a new post for you</h1>
+            <h1 style="font-family:arial">%%POSTWHATSUP</h1>
             <div style="border:1px solid #ddd;padding:10px;border-radius:6px;">
               <h3 style="margin-bottom:5px;">%%POSTTITLE</h3>
               <p style="margin-top:0;"><i>by <a href="%%POSTAUTHLINK">%%POSTAUTHOR</a></i></p>

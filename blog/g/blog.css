@@ -3,11 +3,13 @@
   --blog-b-darkygray: #c2bdbd;
   --blog-b-red: #c12f2f;
   --blog-b-lightestgrey: #f6f6f6;
+  --blog-b-quote: #f6f6f6;
 
   --blog-lightgrey: var(--all-color-albord);
   --blog-lightergrey: var(--col-lightwite);
   --blog-lightestgrey: var(--blog-b-lightestgrey);
   --blog-darkygray: var(--blog-b-darkygray);
+  --blog-quote: var(--ds-gold);
   --blog-link: var(--gen-color-bblue);
   --blog-linkhover: var(--blog-b-deepblue);
   --blog-text: black;
@@ -34,6 +36,22 @@ a, .fakelink {
 }
 a:hover, .fakelink:hover,  .Bar:hover {
     color: var(--blog-linkhover);
+}
+blockquote {
+  font-style: italic;
+  margin: 10px 0 10px 5px;
+  color: var(--blog-quote);
+}
+.sideimg {
+  float: none;
+  width: 100%;
+  max-width: none;
+}
+
+.sideimg img {
+  display: block;
+  max-height: 900px;
+  align-self: center;
 }
 .Bar:hover {
   color:  var(--blog-link);
@@ -247,6 +265,7 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   .buser-pp {
     width: 20%;
     max-width: 90px;
+    min-width: 50px;
   }
   .buser-pp-squareCont {
     width: 100%;
@@ -387,6 +406,9 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   .embed-thumbnail .circle img {
     object-fit: cover;
   }
+  .embedded .main-post-title {
+    margin: 0;
+  }
 
   .rectangle {
     margin: 5px;
@@ -416,7 +438,7 @@ button:hover, .wikiButton:hover, .blogButton:hover {
     background-color: var(--blog-lightergrey);
   }
   .returnToTopEr {
-    z-index: 5;
+    z-index: 3;
     position: fixed;
     bottom: 50px;
     right: max(30px, 5vw);
@@ -484,3 +506,33 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   .profilesBlock.small .mainname {
     font-size: var(--all-fonts-med);
   }
+
+  /*mobile*/
+
+@media only screen and (max-width: 900px), (max-aspect-ratio: 3 / 4) {
+  .left-col {
+    position: fixed !important;
+    z-index: 4;
+    top: 0px;left:0;
+    width:100%;
+    height: 100%;
+    background-color: var(--blog-base);
+    padding-top: 50px;
+    overflow: auto;
+    display: none;
+  }
+  .showBGer {
+    display: block;
+    background-color: var(--blog-link);
+  }
+  .showBGer:hover {
+    background-color: var(--blog-linkhover);
+  }
+
+  .columnCont {
+    width: 95%;
+  }
+  .buser-info-names, .buser-pp {
+    padding: 10px;
+  }
+}

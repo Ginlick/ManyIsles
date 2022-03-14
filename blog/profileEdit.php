@@ -1,5 +1,6 @@
 ﻿<?php
 require_once("g/blogEngine.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
 $blog = new blogEngine("Profile");
 $blog->userCheck();
 $targetBuser = $blog->buserId;
@@ -13,7 +14,7 @@ $buserInfo = $blog->fetchBuserInfo($targetBuser);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8" />
     <title> Edit Profile | Blogs</title>
-    <?php echo $blog->styles(); ?>
+    <?php echo $blog->styles(false); ?>
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
 </head>
 <style>
@@ -66,13 +67,17 @@ $buserInfo = $blog->fetchBuserInfo($targetBuser);
               </div>
               <form action="makeProfileEdit.php" method="POST" class="blogForm">
                 <input type="text" placeholder="Username" name="buname" value="<?php echo $buserInfo["info"]["uname"]; ?>" />
-                <textarea rows="5" placeholder="Description: What do you post about?" name="description"><?php echo $buserInfo["info"]["description"]; ?></textarea>
+                <textarea rows="5" placeholder="Description: What do you post about?" name="description"><?php echo txtUnparse($buserInfo["info"]["description"]); ?></textarea>
                 <input type="text" style="display:none;opacity:0;" name="profile" value="<?php echo $blog->profileInset; ?>" />
                 <?php if (!$blog->partnerVersion) {
                   echo '<div class="checkbox-block"><input type="checkbox" name="follow_notifs" '.$blog->giveRadiobutInset($buserInfo["info"]["setEmailNotifs"]).'/>
                   <label for="follow_notifs">Receive email notifications from people I follow</label></div>';
                 }
                 ?>
+                <div class="checkbox-block">
+                  <input type="checkbox" name="mention_notifs" <?php echo $blog->giveRadiobutInset($buserInfo["info"]["setMentionNotifs"])?> />
+                  <label for="mention_notifs">Receive email notifications when I'm mentioned</label>
+                </div>
                 <div class="checkbox-block">
                   <input type="checkbox" name="public" <?php echo $blog->giveRadiobutInset($buserInfo["info"]["setPublic"])?> />
                   <label for="public">Show up on explore feed</label>

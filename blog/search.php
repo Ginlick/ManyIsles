@@ -92,7 +92,7 @@ if (tagBlock != null){
     feedling.setAttribute("blog-feed-tags", tags.join(", "));
     fillFeeds();
   }
-  updateFeed();
 }
+updateFeed();
 
 </script>

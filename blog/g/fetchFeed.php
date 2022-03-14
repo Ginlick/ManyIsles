@@ -17,12 +17,12 @@ if (isset($_POST["u"])){
     }
   }
 }
-if (isset($_POST["t"])){$type = preg_replace("/[^a-z]/", "", $_POST['t']);}
+if (isset($_POST["ty"])){$type = preg_replace("/[^a-z]/", "", $_POST['ty']);}
 if ($type != "comments"){$type = "posts";}
 if (isset($_POST["r"])){$reference = $blog->baseFiling->purate($_POST["r"]);}
 if (isset($_POST["o"])){$offset = preg_replace("/[^0-9]/", "", $_POST['o']);}
 if (isset($_POST["s"])){$settings = $blog->getArray($_POST["s"]);}
-if (isset($_POST["t"])){$tags = $blog->getCommaArr($_POST["t"]);}
+if (isset($_POST["tags"])){$tags = $blog->getCommaArr($_POST["tags"]);}
 
 $hasWhere = true;
 $query = "SELECT * FROM $type ";
@@ -59,11 +59,12 @@ if (count($tags) > 0) {
     }
     else {
       $addition = " AND (";
-    } $first = true;
+    }
+    $first = true;
     foreach ($tags as $tag){
       if ($tag == ""){continue;}
-      if ($first){$first = false;}else {$addition .= " OR ";}
-      $addition .= ' (genre LIKE \'%"'.$tag.'",%\') ';
+      if ($first){$first = false;}else {$addition .= " AND ";}
+      $addition .= ' (genre LIKE \'%"'.$tag.'"%\') ';
     }
     $addition .= ")";
   }
@@ -88,6 +89,8 @@ if ($mode == "random"){
 else {
   $query .= " LIMIT $offset, 8";
 }
+
+//echo $query;
 //echo $query; exit;
 
 $total = 0;

@@ -29,7 +29,7 @@ if ($firstrow = $conn->query($query)) {
         $artStatus = $row["status"];
         if ($row["digital"]==1){$digital = true;}
         if ($row["link"] != null){header("Location: ".$row["link"]);exit();}
-        $artLink = "$artId/".str_replace(" ", "/", $artName);
+        $artLink = "$artId/".str_replace(" ", "_", $artName);
         if ($artStatus == "deleted"){header("Location: /ds/store?why=itemDeleted");exit();}
     }
 }
@@ -357,6 +357,7 @@ butonge;
 if ($artStatus == "paused") {echo '<p class="warning blue">this article is paused and cannot currently be purchased</p>';}
 echo '<p class="warning red" id="warningNone" style="display: none">out of stock!<br>please check back later</p>';
                        echo "  </div>";
+
 ?>
                     </div>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/ds/<?php echo $artLink; ?>" target="_blank" class="fa fa-facebook"></a>

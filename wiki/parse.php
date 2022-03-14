@@ -23,6 +23,8 @@ class parse {
     }
 
     function bodyParser($body, $extent = 0, $database = "pages") {
+        $this->insertArray = [];
+
         $Parsedown = new Parsedown();
         $this->database = $database;
         if ($this->parseClear) {$Parsedown->setSafeMode(false);} else {$Parsedown->setSafeMode(true);}

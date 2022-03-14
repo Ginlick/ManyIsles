@@ -87,7 +87,8 @@ trait fundamentals {
     $this->mediaDir = $this->root."/media";
     $this->regArrayR = [
       "basic" => "/[^A-Za-z0-9_]/",
-      "full" => "/[^A-Za-z0-9_&\/,\(\)\. ]/"
+      "quotes" => "/[\"']/",
+      "full" => "/[^A-Za-z0-9_&\/,\(\)\.\- ]/"
     ];
   }
 

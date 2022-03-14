@@ -46,7 +46,7 @@ $buserInfo = $blog->fetchBuserInfo();
                 <option value="Fan Theory" />
                 <option value="Project" />
               </datalist>
-              <textarea rows="10" placeholder="Text" name="text" required></textarea>
+              <textarea rows="10" placeholder="Text" name="text" id="textBody" required></textarea>
               <input type="text" placeholder="Tags (eg. d&d, news, release)" name="genre" list="genreSugg" />
               <div class="checkbox-block">
                 <input type="checkbox" name="comments" checked/><label for="comments">Allow comments</label>
@@ -61,7 +61,7 @@ $buserInfo = $blog->fetchBuserInfo();
             </form>
             <p>
               The text body takes <a href="/docs/24/Markdown" target="_blank">markdown</a>.
-              You can also use <a href="/docs/81/Embed_Links" target="_blank">embedded links</a>.
+              You can also use <a href="/docs/81/Special_Markdown" target="_blank">embedded links</a> and <a href="/docs/81/Special_Markdown" target="_blank">user references</a>.
             </p>
           </div>
         </div>

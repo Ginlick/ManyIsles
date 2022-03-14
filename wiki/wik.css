@@ -911,22 +911,9 @@ a:hover .aHoverDiv, span:hover .aHoverDiv {
 
 /*responsive parts*/
 .showBGer {
-    font-size: 7vw;
-    padding: 0.5vw 2.2vw;
-    border-radius: 3px;
     background-color: var(--wiki-color-buttback);
-    vertical-align: bottom;
-    position: fixed;
-    bottom: 3vw;
-    right: 3vw;
     color: var(--doc-text-color);
-    display: none;
-    z-index: 10;
 }
-    .showBGer i {
-        transition: .2s ease;
-    }
-
     .showBGer:hover {
         background-color: var(--wiki-color-buttback-hover);
     }
@@ -1174,3 +1161,23 @@ h1 {
         .gallery .sideimg.landscape {
             max-width: 500px;
         }
+  .showBGer {
+      font-size: 7vw;
+      padding: 0.5vw 2.2vw;
+      border-radius: 3px;
+      background-color: var(--wiki-color-buttback);
+      vertical-align: bottom;
+      position: fixed;
+      bottom: 3vw;
+      right: 3vw;
+      color: var(--doc-text-color);
+      display: none;
+      z-index: 10;
+  }
+      .showBGer i {
+          transition: .2s ease;
+      }
+
+      .showBGer:hover {
+          background-color: var(--wiki-color-buttback-hover);
+      }
