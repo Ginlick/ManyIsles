@@ -73,6 +73,7 @@ $flws = "<span id='followNum'>".$targetBuserInfo["followNum"]."</span> follower"
                   <div class="rightsquare">
                     <p class="mainname"><?php echo $targetBuserInfo["info"]["uname"];?></p>
                     <p class="secondname"><?php echo $targetBuserInfo["username"];?> (<?php echo $targetBuserInfo["userFullid"];?>)</p>
+                    <?php if ($targetBuserInfo["type"]=="adventurer" AND $targetBuserInfo["info"]["setShowDiscord"]==1 AND $targetBuserInfo["userDiscname"]!="") {echo '<p class="secondname">Discord: '.$targetBuserInfo["userDiscname"].'</p>'; }?>
                     <div class="blogSharerCont">
                       <a href="http://www.reddit.com/submit?title=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!&url=https://manyisles.ch/blog/profile%3Fu%3D<?php echo $targetBuser; ?>" target="_blank" class="fa fa-reddit"></a>
                       <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!%0A&url=https://manyisles.ch/blog/profile?u=<?php echo $targetBuser; ?>&hashtags=manyisles" target="_blank" class="fa fa-twitter"></a>

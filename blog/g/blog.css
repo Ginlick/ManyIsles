@@ -42,16 +42,15 @@ blockquote {
   margin: 10px 0 10px 5px;
   color: var(--blog-quote);
 }
-.sideimg {
+
+.sideimg.landscape {
   float: none;
   width: 100%;
   max-width: none;
 }
-
-.sideimg img {
+.sideimg.landscape img {
   display: block;
   max-height: 900px;
-  align-self: center;
 }
 .Bar:hover {
   color:  var(--blog-link);
@@ -399,6 +398,8 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   }
   .embeddedCont {
     padding: 5px;
+    max-width: 85%;
+    overflow: hidden;
   }
   .embed-thumbnail .circle {
     border-radius: 5px;

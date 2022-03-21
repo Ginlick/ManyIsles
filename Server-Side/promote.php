@@ -1,10 +1,13 @@
 <?php
-
+require($_SERVER['DOCUMENT_ROOT']."/Server-Side/allBase.php");
 class adventurer {
+    use allBase;
     public $conn;
     public $user;
     public $title = "Adventurer";
     public $uname = "Hansfried";
+    public $email = "";
+    public $discname = "";
     public $cpsw = "";
     public $tier = 0;
     public $signedIn = false;
@@ -37,7 +40,7 @@ class adventurer {
         $this->user = preg_replace("/[^0-9]/", "", $user);
         $this->signedIn = false;
         if ($this->user == null){$this->user = 0;}
-        $query = "SELECT title, tier, uname, password, email, emailConfirmed FROM accountsTable WHERE id = $user";
+        $query = "SELECT * FROM accountsTable WHERE id = $user";
         if ($result = $this->conn->query($query)) {
             if (mysqli_num_rows($result) > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -46,6 +49,7 @@ class adventurer {
                     $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
                     $this->uname = $row["uname"];
                     $this->email = $row["email"];
+                    $this->discname = $row["discname"];
                     $this->cpsw = $row["password"];
                     if ($row["emailConfirmed"]==1){$this->emailConfirmed = true;}
                 }
@@ -64,7 +68,7 @@ class adventurer {
 
             $this->user = $row["id"];
             $code = $this->generateRandomString(22);
-            $query = "DELETE FROM signCodes WHERE user = ".$this->user; $this->conn->query($query);
+            $query = "DELETE FROM signCodes WHERE (reg_date < now() - interval 22 DAY) AND user = ".$this->user; $this->conn->query($query);
             $query = "INSERT INTO signCodes (user, code) VALUES ('$this->user', '$code')"; $this->conn->query($query);
             setcookie("loggedIn", $this->user, time()+1900800, "/");
             setcookie("loggedCode", $code, time()+1900800, "/");
@@ -170,20 +174,15 @@ class adventurer {
       return $signPormpt;
     }
     function signOut() {
-      setcookie("loggedIn", "", time()-22, "/");
-      setcookie("loggedCode", "", time()-22, "/");
-      $query = "DELETE FROM signCodes WHERE user = ".$this->user; $this->conn->query($query);
+      $query = "DELETE FROM signCodes WHERE user = ".$this->user;
+      if (isset($_COOKIE["loggedCode"])){
+        $loggedCode = $this->purify($_COOKIE["loggedCode"], "quotes");
+        $query.= " AND code = '$loggedCode'";
+      }
+      $this->conn->query($query);
+      setcookie("loggedIn", "", time()-222222, "/");
+      setcookie("loggedCode", "", time()-222222, "/");
       $this->signedIn = false;
-    }
-
-    function generateRandomString($length = 10) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        return $randomString;
     }
 }
 

@@ -52,17 +52,15 @@ class gen {
         require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
         $this->userMod = new adventurer($this->conn);
 
-        $nokill = true;
         if ($mode == "edit" OR $mode == "act"){
-          $nokill = $this->userMod->check(true);
+          if (!$this->userMod->check(true)) {
+            echo "<script>window.location.replace('/account/Account?error=notSignedIn');</script>";exit();
+          }
         }
         else {
-          $nokill = $this->userMod->check(false);
+          $this->userMod->check(false);
         }
 
-        if (!$nokill){
-          echo "<script>window.location.replace('/account/Account?error=notSignedIn');</script>";exit();
-        }
         $this->signedIn = $this->userMod->signedIn;
 
         require($_SERVER['DOCUMENT_ROOT']."/wiki/engine.php");

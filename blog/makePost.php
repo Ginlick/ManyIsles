@@ -5,7 +5,8 @@ $blog = new blogEngine();
 $filing = $blog->fileEngine();
 
 if (!isset($_POST['profile'])){$_POST['profile']=0;}
-$ptitle = substr($blog->baseFiling->purify($_POST['title'], "full"), 0, 70);
+$ptitle = $blog->baseFiling->replaceSpecChar($_POST['title']);
+$ptitle = substr($blog->baseFiling->purify($ptitle, "full"), 0, 70);
 $pgenre = ""; if (isset($_POST['genre'])) {$pgenre = substr($_POST['genre'], 0, 1500);}
 $profile = substr(preg_replace("/[^0-9]/", "", $_POST['profile']), 0, 22);
 $ptext = substr(str_replace('"', '%double_quote%', $_POST['text']), 0, 10000);

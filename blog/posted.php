@@ -36,6 +36,10 @@ if ($blog->hasProfile($pOwner)){
     <?php echo $blog->styles(); ?>
 </head>
 <style>
+.userComment {
+  padding-bottom: 12px;
+  border-bottom: var(--blog-standardborder);
+}
 .userComment-input {
   text-align: right;
 }
