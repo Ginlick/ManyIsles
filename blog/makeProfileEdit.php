@@ -17,6 +17,8 @@ $public = 0;
 if (isset($_POST['public']) AND $_POST['public']=="on"){$public = 1;}
 $mentionNotifs = 0;
 if (isset($_POST['mention_notifs']) AND $_POST['mention_notifs']=="on"){$mentionNotifs = 1;}
+$show_discord = 0;
+if (isset($_POST['show_discord']) AND $_POST['show_discord']=="on"){$show_discord = 1;}
 
 $targetBuserId = $blog->buserId;
 if ($profileType == "partnership"){$targetBuserId = $blog->partner;}
@@ -28,6 +30,7 @@ $newBuserInfo["description"] = $description;
 $newBuserInfo["setEmailNotifs"] = $emailNotifs;
 $newBuserInfo["setMentionNotifs"] = $mentionNotifs;
 $newBuserInfo["setPublic"] = $public;
+$newBuserInfo["setShowDiscord"] = $show_discord;
 $newBuserInfo = json_encode($newBuserInfo);
 
 $query = "UPDATE busers SET info = '$newBuserInfo', username = \"$buname\" WHERE id = ".$targetBuserId;

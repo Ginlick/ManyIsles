@@ -35,6 +35,11 @@ class blogEngine {
       $this->buserId = $this->fetchBuserId();
       $this->loadProfiles();
       $this->partner();
+
+      if (isset($_GET["i"])){
+        //escape improper updates
+        $this->user->killCache();
+      }
     }
     function createBuser() {
       $query = "INSERT INTO busers (user, type) VALUES ('".$this->user->user."', 'adventurer')";
@@ -58,7 +63,7 @@ class blogEngine {
         $red = "?i=unsigned";
         if ($this->user->signedIn){$red = "?i=unconf";}
         if ($return) {
-          $this->killCache();
+          $this->user->killCache();
           $this->go($return.$red);
         }
         echo "error credentials";
@@ -79,6 +84,7 @@ class blogEngine {
             $result["user"] = $row["user"];
             $result["userFullid"] = "u#".$targetBuserUser->user;
             $result["username"] = $targetBuserUser->fullName;
+            $result["userDiscname"] = $targetBuserUser->discname;
 
             $result["status"] = $row["status"];
             $result["actions"] = $row["actions"];
@@ -106,6 +112,7 @@ class blogEngine {
             if (!isset($info["setEmailNotifs"])){$info["setEmailNotifs"]=1;}
             if (!isset($info["setMentionNotifs"])){$info["setMentionNotifs"]=1;}
             if (!isset($info["setPublic"])){$info["setPublic"]=1;}
+            if (!isset($info["setShowDiscord"])){$info["setShowDiscord"]=1;}
             if (!$reusable){
               if (!isset($info["pp"]) OR $info["pp"]==""){$info["pp"]=$targetBuserUser->image(2);$info["pptype"]="full";}
               else {$info["pp"]=$this->baseFiling->clearmage($info["pp"]);}
@@ -210,7 +217,7 @@ class blogEngine {
         profile-line
       </div>
 
-      <a href="/blog/post"><div class="blogButton">Post</div></a>
+      <a href="/blog/post?u=1"><div class="blogButton">Post</div></a>
 
       <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
       <ul class="myMenu bottomFAQ">
@@ -218,6 +225,7 @@ class blogEngine {
         <li><a class="Bar" href="/docs/80/Blogs" target="_blank">Blog Help</a></li>
       </ul>
       HAIL;
+      $return = str_replace("?u=1", "?u=".$this->buserId, $return);
       $return = str_replace("current-information-place", $this->curPage, $return);
       $insert = '<a class="left-menu-a" href="/account/Account?error=signIn" target="_blank"><i class="fa-regular fa-user"></i> Sign In</a>';
       if ($this->user->signedIn){
@@ -238,7 +246,7 @@ class blogEngine {
 
     function styles($cachable = true) {
       if (!$cachable){
-        $this->killCache();
+        $this->user->killCache();
       }
       $return = <<<MAGDA
         <meta charset="UTF-8" />
@@ -259,11 +267,6 @@ class blogEngine {
         <script src="/blog/g/blog-feed.js"></script>
       MAGDA;
       return $return;
-    }
-    function killCache() {
-      header("Cache-Control: no-cache, must-revalidate"); //HTTP 1.1
-      header("Pragma: no-cache"); //HTTP 1.0
-      header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     }
 
     //follow
@@ -333,6 +336,14 @@ class blogEngine {
     }
 
     //posts
+    function genPostEmbed($image, $title, $link, $place) {
+      $embedded = $this->embedStencil;
+      $embedded = str_replace("%%embed_image", $image, $embedded);
+      $embedded = str_replace("%%embed_title", $title, $embedded);
+      $embedded = str_replace("%%embed_link", $link, $embedded);
+      $embedded = str_replace("%%embed_place", $place, $embedded);
+      return $embedded;
+    }
     function genPost($prow, $extent = 0, $public = false){
       $row = $prow;
       $post = $this->postStencil;
@@ -356,7 +367,7 @@ class blogEngine {
       $post = str_replace("post-buser-id", $postBuserInfo["id"], $post);
       $post = str_replace("post-buser-fullName", $postBuserInfo["username"], $post);
       $post = str_replace("post-age", $postAge, $post);
-      $post = str_replace("%post-title", $row["title"], $post);
+      $post = str_replace("%post-title", $this->baseFiling->placeSpecChar($row["title"]), $post);
       $post = str_replace("%post-genre", $tagList, $post);
       $post = str_replace("post-likes", $row["likes"], $post);
       $post = str_replace("%post-comments", $this->fetchPostCommentNum($row["code"]), $post);
@@ -367,20 +378,17 @@ class blogEngine {
         $post = str_replace("ADDMAINPOSTCLASS", "bigpost", $post);
       }
       //embedded links
-      $allEmbeds = "";
+      $allEmbeds = "";$embedNum = 0;
       if (preg_match_all("/^.*\[embed\](.+)\[\/embed\].*$/m", $postText, $lineMatches)){
         foreach ($lineMatches[1] as $link){
+          if ($embedNum == 5){break;}
+          $embedNum++;
           if (preg_match("/\/fandom\/wiki\/([0-9]+)\/.*/", $link, $match)){
             $id = $match[1];
             if (class_exists("article")){
               $articleInfo = new article(["id"=>$id], $this->conn);
-              $embedded = $this->embedStencil;
               if (preg_match("/^http.*$/", $articleInfo->banner)){$image = $articleInfo->banner;}else{$image = "/wikimgs/banners/".$articleInfo->banner;}
-              $embedded = str_replace("%%embed_image", $image, $embedded);
-              $embedded = str_replace("%%embed_title", $articleInfo->name, $embedded);
-              $embedded = str_replace("%%embed_link", $link, $embedded);
-              $embedded = str_replace("%%embed_place", "Fandom wiki article", $embedded);
-              $allEmbeds .= $embedded;
+              $allEmbeds .= $this->genPostEmbed($image, $articleInfo->name, $link, "Fandom wiki article");
             }
           }
           else if (preg_match("/\/dl\/item\/([0-9]+)\/.*/", $link, $match)){
@@ -390,12 +398,7 @@ class blogEngine {
               if ($toprow = $this->dlEngine->dlconn->query($query)) {
                 if (mysqli_num_rows($toprow) > 0) {
                   while ($row2 = $toprow->fetch_assoc()) {
-                    $embedded = $this->embedStencil;
-                    $embedded = str_replace("%%embed_image", $this->dlEngine->clearmage($row2["image"]), $embedded);
-                    $embedded = str_replace("%%embed_title", $row2["name"], $embedded);
-                    $embedded = str_replace("%%embed_link", $link, $embedded);
-                    $embedded = str_replace("%%embed_place", "Digital library publication", $embedded);
-                    $allEmbeds .= $embedded;
+                    $allEmbeds .= $this->genPostEmbed($this->dlEngine->clearmage($row2["image"]), $row2["name"], $link, "Digital library publication");
                   }
                 }
               }
@@ -407,15 +410,15 @@ class blogEngine {
             if ($toprow = $this->conn->query($query)) {
               if (mysqli_num_rows($toprow) > 0) {
                 while ($row2 = $toprow->fetch_assoc()) {
-                  $embedded = $this->embedStencil;
-                  $embedded = str_replace("%%embed_image", $row2["thumbnail"], $embedded);
-                  $embedded = str_replace("%%embed_title", $row2["name"], $embedded);
-                  $embedded = str_replace("%%embed_link", $link, $embedded);
-                  $embedded = str_replace("%%embed_place", "Digital store product", $embedded);
-                  $allEmbeds .= $embedded;
+                  $allEmbeds .= $this->genPostEmbed($row2["thumbnail"], $row2["name"], $link, "Digital store item");
                 }
               }
             }
+          }
+          else {
+            $name = $link; if (preg_match("/^.*\/([^\/\?]+).*$/", $link, $match)){$name = $match[1];}
+            $name = substr($name, 0, 44);
+            $allEmbeds .= $this->genPostEmbed("/Imgs/docs.png", $name, $link, "Link");
           }
         }
       }
@@ -563,7 +566,7 @@ class blogEngine {
         $targetBuser = $this->fetchBuserInfo($targetBuserId);
         if ($targetBuser["info"]["setMentionNotifs"]==0){return;}
         $email = str_replace("%%POSTWHATSUP", "You've been mentioned in this post", $email);
-        $this->notifySendmail($email, $targetBuser);
+        $this->notifySendmail($email, $targetBuser, $targetBuserId, $subject, $headers);
       }
       else {
         $subject = $postBuser["info"]["uname"].' posted something';
@@ -571,12 +574,12 @@ class blogEngine {
           $follower = $this->fetchBuserInfo($followerId);
           if ($follower["info"]["setEmailNotifs"]==0){continue;}
           $email = str_replace("%%POSTWHATSUP", "There's a new post for you", $email);
-          $this->notifySendmail($email, $follower);
+          $this->notifySendmail($email, $follower, $followerId, $subject, $headers);
         }
       }
       return true;
     }
-    function notifySendmail($specEmail, $follower) {
+    function notifySendmail($specEmail, $follower, $followerId, $subject, $headers) {
       $specEmail = str_replace("%%USERIMG", $follower["info"]["pp"], $specEmail);
       $specEmail = str_replace("%%USERNAME", $follower["username"], $specEmail);
       mail($this->giveBuserEmail($followerId), $subject, $specEmail, $headers);
@@ -615,7 +618,7 @@ class blogEngine {
           return $text;
         }
       }
-      return "Just Published";
+      return "Just Posted";
     }
     function givePostDB($postCode) {
       $db = "posts";
@@ -641,8 +644,7 @@ class blogEngine {
     }
 
     function go($place, $dom = "/blog/") {
-      echo "<script>window.location.replace('$dom$place');</script>";
-      exit;
+      $this->user->go($dom.$place);
     }
     function getArray($arr) {
       $followers = [];

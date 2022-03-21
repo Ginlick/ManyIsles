@@ -1136,6 +1136,7 @@ h1 {
         object-fit: contain;
         max-height: 500px;
         margin: auto;
+        align-self: center;
     }
 
     .sideimg p {

@@ -6,7 +6,6 @@ $blog->userCheck();
 $targetBuser = $blog->buserId;
 $blog->isPartnerVersion($targetBuser);
 $buserInfo = $blog->fetchBuserInfo($targetBuser);
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -82,6 +81,11 @@ $buserInfo = $blog->fetchBuserInfo($targetBuser);
                   <input type="checkbox" name="public" <?php echo $blog->giveRadiobutInset($buserInfo["info"]["setPublic"])?> />
                   <label for="public">Show up on explore feed</label>
                 </div>
+                <?php if ($blog->user->discname != "" AND !$blog->partnerVersion) {
+                  echo '<div class="checkbox-block"><input type="checkbox" name="show_discord" '.$blog->giveRadiobutInset($buserInfo["info"]["setShowDiscord"]).'/>
+                  <label for="follow_notifs">Show discord username on profile page</label></div>';
+                }
+                ?>
                 <div class="submitBlocc">
                   <button type="submit" class="blogButton independent">Save</button>
                 </div>
