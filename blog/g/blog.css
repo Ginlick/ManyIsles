@@ -68,7 +68,7 @@ blockquote {
 .dsFooter {
   border-top: var(--blog-standardborder);
 }
-.dsFooter p {
+.dsFooter p, .dsFooter a {
   color: var(--blog-text);
   text-align: center;
 }
@@ -146,8 +146,14 @@ button:hover, .wikiButton:hover, .blogButton:hover {
 }
 
 .genreList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   min-height:20px;
   padding-top: 5px;
+}
+.genreList a {
+  margin: 4px 0;
 }
 .tag-element {
   padding: 2px 7px;
@@ -349,7 +355,7 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   }
   .main-post-content, .bottom-infos {padding: 5px 10px;}
   .main-post-title {
-    margin-bottom: 0;
+    margin: 10px 0 0;
   }
   .genreTab {
     color: var(--blog-lightgrey);

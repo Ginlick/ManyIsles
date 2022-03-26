@@ -201,7 +201,9 @@ a, .fakelink {
         margin: auto;
         font-size: calc(11px + .1vw);
         padding: 20px;
-        color: white;
+    }
+    .dsFooter a, .dsFooter p {
+      color: white;
     }
 
 input, textarea, select {

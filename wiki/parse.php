@@ -269,6 +269,7 @@ class parse {
             else {$img = [];}
 
             if (!isset($img["class"]) OR !checkRegger("basic", $img["class"])){$img["class"] = "sideimg";}
+            if ($img["class"]=="landscape"){$img["class"]="sideimg landscape";}
             if (!isset($img["caption"]) OR !checkRegger("cleanText", $img["caption"])){$img["caption"] = "";}
             if (!isset($img["src"]) OR !checkRegger("cleanText", $img["src"])){$img["src"] = "";}
             if (!isset($img["style"]) OR !checkRegger("cleanText", $img["style"])){$img["style"] = "";}

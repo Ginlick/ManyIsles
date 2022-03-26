@@ -40,7 +40,7 @@ $pureDigit = true;
 if ($_SESSION["basket"] != ""){
     foreach ($inbasket as $x => $value) {
         if (stripos($value, ":")) {
-            $shortitem = substr($value, 0, strpos($value, ":"));       
+            $shortitem = substr($value, 0, strpos($value, ":"));
         }
         else {$shortitem = $value;}
 
@@ -73,16 +73,15 @@ if ($conn->query($query) ){
     echo $query;
     if ($conn->query($query)) {
         echo "<br>Yay";
-        header("Location:checkout2.php");exit();
+        header("Location:checkout2");exit();
     }
 }
 
 if ($pureDigit == true){
-    header("Location:checkout2.php");
+    header("Location:checkout2");
 }
 else {
-    header("Location:checkout1.php");exit();
+    header("Location:checkout1");exit();
 }
 
 ?>
-

@@ -69,17 +69,19 @@ function expandFeed(){
     fillFeed(feed, offset);
   }
 }
-window.onscroll = function(ev) {
-    if (window.scrollY>3000){
-      document.getElementById("backToTop").style.display = "block";
-    }
-    else {
-      document.getElementById("backToTop").style.display = "none";
-    }
-    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 1200)) {
-      expandFeed("explore-feed");
-    }
-};
+if (document.getElementById("backToTop")!=null){
+  window.onscroll = function(ev) {
+      if (window.scrollY>3000){
+        document.getElementById("backToTop").style.display = "block";
+      }
+      else {
+        document.getElementById("backToTop").style.display = "none";
+      }
+      if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 1200)) {
+        expandFeed("explore-feed");
+      }
+  };
+}
 
 var allSortcons = document.getElementsByTagName("*");
 for (let sortcon of allSortcons) {

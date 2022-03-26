@@ -12,7 +12,7 @@ if ($toprow = $blog->blogconn->query($query)) {
       $notfound = false;
       $pRow = $row;
       $pParsed = $blog->genPost($pRow, 1);
-      $pShortName = $row["title"];
+      $pShortName = $blog->giveBlogTitle($row["title"])["title"];
       $pCode = $row["code"];
       $pOwner = $row["buser"];
     }

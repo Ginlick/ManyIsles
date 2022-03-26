@@ -110,14 +110,7 @@ select {
 .icon {
     display:none;
 }
-.inputErr {
-    font-size: calc(9px + .3vw);
-    color: red;
-    text-align:left;
-    margin:0;
-    padding-left:.4vw;
-    display:none;
-}
+
 .spelly {
     background-color: #cb57e0;
     color: #d10e04;
@@ -157,3 +150,13 @@ select {
         #SLoptions a:hover {
             color: #666666;
         }
+
+/*discontinued*/
+.inputErr {
+    font-size: calc(9px + .3vw);
+    color: red;
+    text-align:left;
+    margin:0;
+    padding-left:.4vw;
+    display:none;
+}

@@ -13,6 +13,14 @@ $buserInfo = $blog->fetchBuserInfo();
     <title>New Post | Blogs</title>
     <?php echo $blog->styles(); ?>
     <style>
+    .inputErr {
+        font-size: min(calc(9px + .3vw), 14px);
+        color: red;
+        text-align:left;
+        margin:0;
+        padding-left:.4vw;
+        display:none;
+    }
     </style>
 </head>
 <body>
@@ -38,7 +46,7 @@ $buserInfo = $blog->fetchBuserInfo();
                    Select Banner (optional, max 2mb)
                    <input type="file" onchange="readURL(this);" class="fileInput" id="image" value="null" name = "banner" accept=".png, .jpg"/>
               </div>
-              <input type="text" placeholder="Title" name="title" required/>
+              <input type="text" placeholder="Title (Optional)" name="title"/>
               <datalist id="genreSugg" />
                 <option value="Lore" />
                 <option value="News" />
@@ -46,7 +54,8 @@ $buserInfo = $blog->fetchBuserInfo();
                 <option value="Fan Theory" />
                 <option value="Project" />
               </datalist>
-              <textarea rows="10" placeholder="Text" name="text" id="textBody" required></textarea>
+              <textarea rows="10" placeholder="Text" name="text" id="textBody" oninput="setWarning();" required></textarea>
+              <p id="charWarn" class="inputErr">Too many characters!</p>
               <input type="text" placeholder="Tags (eg. d&d, news, release)" name="genre" list="genreSugg" />
               <div class="checkbox-block">
                 <input type="checkbox" name="comments" checked/><label for="comments">Allow comments</label>
@@ -88,4 +97,19 @@ function readURL(input) {
   }
 }
 
+var textBody = document.getElementById("textBody");
+var showing = false;
+function setWarning() {
+  fullNum = textBody.value.length;
+  if (fullNum > 22){
+    if (!showing) {
+      document.getElementById("charWarn").style.display = "block";
+      showing = true;
+    }
+  }
+  else if (showing) {
+    document.getElementById("charWarn").style.display = "none";
+    showing = false;
+  }
+}
 </script>

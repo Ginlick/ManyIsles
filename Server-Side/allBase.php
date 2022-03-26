@@ -4,7 +4,7 @@ if (!trait_exists("allBase")){
     public $regArrayR = [
       "basic" => "/[^A-Za-z0-9_]/",
       "quotes" => "/[\"']/",
-      "full" => "/[^A-Za-z0-9_&\/,\(\)\.\-% ]/"
+      "full" => "/[^A-Za-z0-9_&\/,\(\)\.\-%:\? ]/"
     ];
 
     function construct() {

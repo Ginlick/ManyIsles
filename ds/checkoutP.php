@@ -14,6 +14,7 @@ if (!$user->check(true, true)){
   header("Location: checkout");exit();
 }
 $id = $user->user;
+$conn = $user->conn;
 $custTran = new transaction($moneyconn, $id);
 
 session_start();
