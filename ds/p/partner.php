@@ -35,6 +35,7 @@ if ($firstrow = $conn->query($query)) {
 
 $date_array = date_parse($pRegDate);
 $pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
+require_once("../g/sideBasket.php");
 
 ?>
 <!DOCTYPE html>
@@ -78,8 +79,7 @@ $pRegDate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
                     <li><a class="Bar" href="../home.php">Browse</a></li>
                 </ul>
                 <?php
-                    $specRoot = "../";
-                    include('../g/sideBasket.php');
+                    doSideBasket();
                 ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">

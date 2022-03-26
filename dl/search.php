@@ -22,22 +22,22 @@ $query = "";
 $genre = 1;
 $subgenre = "";
 $gsystem = 0;
-if (isset($_POST["query"])) {
-  $query = preg_replace("/[^A-Za-z0-9' ]*$/", "", $_POST["query"]);
+if (isset($_GET["query"])) {
+  $query = preg_replace("/[^A-Za-z0-9' ]*$/", "", $_GET["query"]);
 }
-if (isset($_POST["genre"])) {
-  if (preg_match("/^[0-9]*$/", $_POST["genre"])==1){
-    $genre = $_POST["genre"];
+if (isset($_GET["genre"])) {
+  if (preg_match("/^[0-9]*$/", $_GET["genre"])==1){
+    $genre = $_GET["genre"];
   }
 }
-if (isset($_POST["subgenre"])) {
-  if (preg_match("/^[a-z]*$/", $_POST["subgenre"])==1){
-    $subgenre = $_POST["subgenre"];
+if (isset($_GET["subgenre"])) {
+  if (preg_match("/^[a-z]*$/", $_GET["subgenre"])==1){
+    $subgenre = $_GET["subgenre"];
   }
 }
-if (isset($_POST["gsystem"])) {
-  if (preg_match("/^[0-9]*$/", $_POST["gsystem"])==1){
-    $gsystem = $_POST["gsystem"];
+if (isset($_GET["gsystem"])) {
+  if (preg_match("/^[0-9]*$/", $_GET["gsystem"])==1){
+    $gsystem = $_GET["gsystem"];
   }
 }
 

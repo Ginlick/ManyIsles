@@ -148,7 +148,7 @@ typeValue(type);
 
 function goSearch(oldform) {
   var form = document.createElement("form");
-  form.method = "POST";
+  form.method = "GET";
   form.action = "/dl/search";
 
   var element1 = document.createElement("input");

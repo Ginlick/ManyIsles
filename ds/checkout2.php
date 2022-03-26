@@ -39,9 +39,9 @@ else {  $backURL = "checkout1.php";
     else {
         $query = "SELECT Country FROM address WHERE id = ".$id;
         $result = $conn->query($query);
-        if (mysqli_num_rows($result) == 0) { header("Location: checkout.html");exit(); }
+        if (mysqli_num_rows($result) == 0) { header("Location: checkout1");exit(); }
         while ($row = $result->fetch_assoc()) {
-            if (!isset($basketed->deliverableCountries[$row["Country"]])) { header("Location: checkout1.php");exit();}
+            if (!isset($basketed->deliverableCountries[$row["Country"]])) { header("Location: checkout1");exit();}
         }
     }
 }

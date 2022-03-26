@@ -234,7 +234,7 @@ class dlengine {
     }
     function prodRow($mode, $limit = 22) {
         $return = "";
-        $query = "SELECT * FROM products";
+        $query = "SELECT * FROM products WHERE status = 'active' ";
         if ($mode == "popular"){
             $query .= " ORDER BY popularity DESC";
         }

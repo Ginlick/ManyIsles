@@ -13,7 +13,7 @@ if (!$blog->hasProfile($profile)){
 }
 
 $comCode = "c".$profile.time().$blog->user->generateRandomString(2);
-
+$text = $blog->prepareText($text, $postCode, "comment");
 
 $query = 'INSERT INTO comments (code, buser, refPost, text) VALUES (
   "'.$comCode.'", "'.$profile.'", "'.$postCode.'", "'.$text.'"

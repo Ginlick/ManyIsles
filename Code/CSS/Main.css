@@ -85,6 +85,15 @@ input, textarea, select {
   width: 100%;
   text-align: left;
 }
+.inputErr {
+    font-size: min(calc(9px + .3vw), 14px);
+    color: red;
+    text-align:left;
+    margin:0;
+    padding-left:.4vw;
+    display:none;
+}
+
 a, .fakelink {
     text-decoration: none;
     color: var(--gen-color-link);

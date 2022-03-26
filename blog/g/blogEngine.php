@@ -344,40 +344,7 @@ class blogEngine {
       $embedded = str_replace("%%embed_place", $place, $embedded);
       return $embedded;
     }
-    function genPost($prow, $extent = 0, $public = false){
-      $row = $prow;
-      $post = $this->postStencil;
-      $postBuser = $row["buser"];
-      $postBuserInfo = $this->fetchBuserInfo($postBuser);
-      $postAge = $this->givePostAge($row["reg_date"]);
-      $postText = $this->parse->bodyParser($row["text"], 1);
-      if ($public AND $postBuserInfo["info"]["setPublic"]==0){return false;}
-      $tags = $this->getArray($row["genre"]); $tagList = "";
-      foreach ($tags as $tag){
-        if ($tag == ""){continue;}
-        $tagList .= "<a href='/blog/search?t=$tag'><span class='tag-element fakelink'>#$tag</span></a>";
-      }
-      $post = str_replace("post-imagge%%", $this->genPP($postBuserInfo["info"]["pp"], $postBuserInfo["info"]["pptype"]), $post);
-      $post = str_replace("post-title-url", urlencode($row["title"]), $post);
-      $post = str_replace("post-buser-buname-url", urlencode($postBuserInfo["info"]["uname"]), $post);
-      $post = str_replace("post-link", "blog/post/".$row["code"]."/".urlencode(substr(str_replace(" ", "_", $row["title"]),0,22)), $post);
-      $post = str_replace("post-code", $row["code"], $post);
-      $post = str_replace("post-banner%%", $this->baseFiling->clearmage($row["banner"]), $post);
-      $post = str_replace("post-buser-buname", $postBuserInfo["info"]["uname"], $post);
-      $post = str_replace("post-buser-id", $postBuserInfo["id"], $post);
-      $post = str_replace("post-buser-fullName", $postBuserInfo["username"], $post);
-      $post = str_replace("post-age", $postAge, $post);
-      $post = str_replace("%post-title", $this->baseFiling->placeSpecChar($row["title"]), $post);
-      $post = str_replace("%post-genre", $tagList, $post);
-      $post = str_replace("post-likes", $row["likes"], $post);
-      $post = str_replace("%post-comments", $this->fetchPostCommentNum($row["code"]), $post);
-      if (!$this->arrAllows($row["settings"], "comments")){$post = str_replace("ALLOWS%COMMENTS", "hidden", $post);}
-      if (in_array($row["code"], $this->profiles["adventurer"]["liked"])){$post = str_replace("likeable fa-regular", "likeable fa-solid active", $post);}
-
-      if ($extent > 0){
-        $post = str_replace("ADDMAINPOSTCLASS", "bigpost", $post);
-      }
-      //embedded links
+    function giveEmbeds(&$postText) {
       $allEmbeds = "";$embedNum = 0;
       if (preg_match_all("/^.*\[embed\](.+)\[\/embed\].*$/m", $postText, $lineMatches)){
         foreach ($lineMatches[1] as $link){
@@ -423,7 +390,9 @@ class blogEngine {
         }
       }
       $postText = preg_replace("/^(.*)\[embed\].+\[\/embed\](.*)$/m", "$1$2", $postText);
-      $post = str_replace("ADDEMBEDS*", $allEmbeds, $post);
+      return $allEmbeds;
+    }
+    function giveReferences(&$postText) {
       //user references
       if (preg_match_all("/@u([0-9]+)/m", $postText, $lineMatches)){
         foreach ($lineMatches[1] as $userref){
@@ -450,6 +419,45 @@ class blogEngine {
           $postText = preg_replace("/([^>])#$tag/", "$1".$insert, $postText);
         }
       }
+    }
+    function genPost($prow, $extent = 0, $public = false){
+      $row = $prow;
+      $post = $this->postStencil;
+      $postBuser = $row["buser"];
+      $postBuserInfo = $this->fetchBuserInfo($postBuser);
+      $postAge = $this->givePostAge($row["reg_date"]);
+      $postText = $this->parse->bodyParser($row["text"], 1);
+      $postTitleInf = $this->giveBlogTitle($row["title"], $postBuserInfo["info"]["uname"]); $postTitle = $postTitleInf["title"];
+      if ($public AND $postBuserInfo["info"]["setPublic"]==0){return false;}
+      $tags = $this->getArray($row["genre"]); $tagList = "";
+      foreach ($tags as $tag){
+        if ($tag == ""){continue;}
+        $tagList .= "<a href='/blog/search?t=$tag'><span class='tag-element fakelink'>#$tag</span></a>";
+      }
+      $post = str_replace("post-imagge%%", $this->genPP($postBuserInfo["info"]["pp"], $postBuserInfo["info"]["pptype"]), $post);
+      $post = str_replace("post-title-url", urlencode($postTitle), $post);
+      $post = str_replace("post-buser-buname-url", urlencode($postBuserInfo["info"]["uname"]), $post);
+      $post = str_replace("post-link", "blog/post/".$row["code"]."/".urlencode(substr(str_replace(" ", "_", $this->baseFiling->purate($postTitle)),0,22)), $post);
+      $post = str_replace("post-code", $row["code"], $post);
+      $post = str_replace("post-banner%%", $this->baseFiling->clearmage($row["banner"]), $post);
+      $post = str_replace("post-buser-buname", $postBuserInfo["info"]["uname"], $post);
+      $post = str_replace("post-buser-id", $postBuserInfo["id"], $post);
+      $post = str_replace("post-buser-fullName", $postBuserInfo["username"], $post);
+      $post = str_replace("post-age", $postAge, $post);
+      if ($postTitleInf["hasTitle"]){$post = str_replace("%post-title", $postTitle, $post);} else {$post = str_replace("%post-title", "", $post);}
+      $post = str_replace("%post-genre", $tagList, $post);
+      $post = str_replace("post-likes", $row["likes"], $post);
+      $post = str_replace("%post-comments", $this->fetchPostCommentNum($row["code"]), $post);
+      if (!$this->arrAllows($row["settings"], "comments")){$post = str_replace("ALLOWS%COMMENTS", "hidden", $post);}
+      if (in_array($row["code"], $this->profiles["adventurer"]["liked"])){$post = str_replace("likeable fa-regular", "likeable fa-solid active", $post);}
+
+      if ($extent > 0){
+        $post = str_replace("ADDMAINPOSTCLASS", "bigpost", $post);
+      }
+      //embedded links
+      $post = str_replace("ADDEMBEDS*", $this->giveEmbeds($postText), $post);
+      //references
+      $this->giveReferences($postText);
 
       $post = str_replace("post-text", $postText, $post);
       return $post;
@@ -469,6 +477,9 @@ class blogEngine {
       $post = str_replace("%post-age", $postAge, $post);
       $post = str_replace("%post-likes", $row["likes"], $post);
       if (in_array($row["code"], $this->profiles["adventurer"]["liked"])){$post = str_replace("likeable fa-regular", "likeable fa-solid active", $post);}
+
+      $post = str_replace("ADDEMBEDS*", $this->giveEmbeds($postText), $post);
+      $this->giveReferences($postText);
 
       $post = str_replace("%post-text", $postText, $post);
       return $post;
@@ -539,9 +550,22 @@ class blogEngine {
       $pp = str_replace("specclasses", $classes, $pp);
       return $pp;
     }
+    function giveBlogTitle($rawtitle, $buserUname = "") {
+      $title = $this->baseFiling->placeSpecChar($rawtitle); $hasTitle = true;
+      if ($title == ""){
+        $title = "Post";
+        $hasTitle = false;
+        if ($buserUname != ""){
+          $title .= " by ".$buserUname;
+        }
+      }
+      return ["title"=>$title, "hasTitle"=>$hasTitle];
+    }
 
     //actions
     function notify($postCode, $postBuserId, $concerns = "follow", $targetBuserId = 0) {
+      $concArr = []; if (gettype($concerns)=="array"){$concArr = $concerns;$concerns = $concArr["concerns"];}
+
       $postBuser = $this->fetchBuserInfo($postBuserId);
       $query = "SELECT * FROM posts WHERE code = '$postCode'";
       if ($result = $this->blogconn->query($query)) {
@@ -565,7 +589,8 @@ class blogEngine {
         $subject = $postBuser["info"]["uname"].' mentioned you';
         $targetBuser = $this->fetchBuserInfo($targetBuserId);
         if ($targetBuser["info"]["setMentionNotifs"]==0){return;}
-        $email = str_replace("%%POSTWHATSUP", "You've been mentioned in this post", $email);
+        if (isset($concArr["textType"]) AND $concArr["textType"] == "comment"){$mentText = "You've been mentioned in a comment";}else {$mentText = "You've been mentioned in this post";}
+        $email = str_replace("%%POSTWHATSUP", $mentText, $email);
         $this->notifySendmail($email, $targetBuser, $targetBuserId, $subject, $headers);
       }
       else {
@@ -582,16 +607,34 @@ class blogEngine {
     function notifySendmail($specEmail, $follower, $followerId, $subject, $headers) {
       $specEmail = str_replace("%%USERIMG", $follower["info"]["pp"], $specEmail);
       $specEmail = str_replace("%%USERNAME", $follower["username"], $specEmail);
-      mail($this->giveBuserEmail($followerId), $subject, $specEmail, $headers);
+      mail($this->giveBuserEmail($follower["user"]), $subject, $specEmail, $headers);
     }
     function giveBuserEmail($buserId) {
-      $query = "SELECT * FROM accountsTable WHERE id = ".$buserId;
+      $query = "SELECT email FROM accountsTable WHERE id = ".$buserId;
       if ($result = $this->conn->query($query)) {
         while ($row = $result->fetch_assoc()) {
           return $row["email"];
         }
       }
       return "";
+    }
+    function prepareText($ptext, $postCode, $textType = "post") {
+      if (preg_match_all("/@([^ ]+)/m", $ptext, $lineMatches)){
+        foreach ($lineMatches[1] as $userrefo){
+          $userref = $this->baseFiling->purify(strtolower($userrefo));
+          $query = 'SELECT id FROM busers WHERE LOWER(REGEXP_REPLACE(username, " ", "")) = "'.$userref.'"';
+          if ($toprow = $this->blogconn->query($query)) {
+            if (mysqli_num_rows($toprow) > 0) {
+              while ($row = $toprow->fetch_assoc()) {
+                $replaceWith = "@u".$row["id"];
+                $ptext = str_replace("@$userrefo", $replaceWith, $ptext);
+                $this->notify($postCode, $row["id"], ["concerns"=>"mention","textType"=>$textType]);
+              }
+            }
+          }
+        }
+      }
+      return $ptext;
     }
 
     //miscellaneous tools
@@ -754,6 +797,7 @@ class blogEngine {
           </div>
         </div>
       </div>
+      ADDEMBEDS*
       <div class="bottom-infos">
         <div class="bottom-infos-left">
           <div class="smolinfo">
