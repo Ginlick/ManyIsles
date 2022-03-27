@@ -181,7 +181,7 @@ function newAutoLink(name, reference, wiki = 0) {
         if (typeof autoLinks !== 'undefined') {
             autoLinks[name.toLowerCase()] = { "href": reference };
         }
-        file = "/mystral/newAutoLink.php?name=" + name + "&reference=" + reference + "&wiki=" + wiki; console.log(file)
+        file = "/mystral/newAutoLink.php?name=" + name + "&reference=" + reference + "&wiki=" + wiki;
         console.log(file);
         xhttp.open("GET", file, true);
         xhttp.send();

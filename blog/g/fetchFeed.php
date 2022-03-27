@@ -78,10 +78,10 @@ else if ($mode == "random") {
   $query .= " ORDER BY RAND()";
 }
 else if ($mode == "old"){
-  $query .= " ORDER BY id ASC";
+  $query .= " ORDER BY reg_date ASC";
 }
 else {
-  $query .= " ORDER BY id DESC";
+  $query .= " ORDER BY reg_date DESC";
 }
 if ($mode == "random"){
   $query .= " LIMIT 8";

@@ -1,6 +1,5 @@
 <?php
 
-
 class gen {
     public $conn;
     public $article;
@@ -238,8 +237,10 @@ class gen {
         }
         if ($this->mode == "act" AND $this->domain == "fandom" AND $fillIt){
             $uid = $this->user;
+            $id = $this->page;
             $power = $this->power;
             $conn = $this->conn;
+            $uname = $this->userMod->uname;
             require($_SERVER['DOCUMENT_ROOT']."/fandom/slotChecker.php");
         }
 
@@ -375,7 +376,7 @@ class gen {
         </div >
         <div id="modal" class="modal" onclick="removePops()"></div>
 
-        <script src="/Code/CSS/global.js"></script>
+        <script src="/Code/CSS/global.js?2"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
         <script src="/wiki/wiki.js"></script>
         <script>
@@ -1235,7 +1236,7 @@ MAIN;
             $basetext = "<h1>Banned</h1><p>Sorry, you've been <a href='/docs/26/User_Roles'>banned</a> by the $this->wikiName wiki moderators or by the Pantheon. You can't participate to this wiki until you're cleared.</p>";
         }
         else if ($this->ediProblem == "Slots") {
-            $basetext = "<h1>Slots Full</h1><p>Sorry, your slots are full - you'll have to wait a moment for the Pantheon to clear them. <a href='/docs/21/Edit_and_Write>more info</a><br>
+            $basetext = "<h1>Slots Full</h1><p>Sorry, your slots are full - you'll have to wait a moment for the Pantheon to clear them. <a href='/docs/21/Edit_and_Write'>more info</a><br>
                             You can <a href='/docs/37/more_slots'>ask</a> the $this->wikiName moderators to curate you, granting you unlimited editing powers.</p>";
         }
         else if ($this->ediProblem == "Reverted") {

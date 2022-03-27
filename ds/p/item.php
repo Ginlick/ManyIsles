@@ -3,7 +3,7 @@ if (isset($_GET["id"])) {if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("L
 
 $redirect = "../home.php";
 require_once("security.php");
-
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/createMarkdown.php");
 
 if ($artId != 0) {
     $query = "SELECT * FROM dsprods WHERE id = $artId";
@@ -31,8 +31,6 @@ if ($artId != 0) {
         }
     }
     if ($artPublisherId != $pId) {header("Location: hub.php");exit();}
-
-
 
     //only backup, if old format is used
     if (strpos($artPrice, ",")) {
@@ -284,8 +282,8 @@ else {
                 </div>
                 <h2>Descriptive</h2>
                 <div class="inputCont">
-                    <label for="description">Description <span>*</span> <a href="/wiki/h/fandom/markdown.html" target="_blank"><span class="roundInfo">Takes Markdown</span></a></label>
-                    <textarea rows="6" name="description"  placeholder="The *Rise of Humankind* is a history book covering the first half of human history in the [Many Isles](https://manyisles.ch) setting, with lore for all readers that enjoy fantasy and worldbuilding." autocomplete="off" required><?php echo $artDescription; ?></textarea>
+                    <label for="description">Description <span>*</span> <a href="/docs/24/Markdown" target="_blank"><span class="roundInfo">Takes Markdown</span></a></label>
+                    <textarea markdownable rows="6" name="description"  placeholder="The *Rise of Humankind* is a history book covering the first half of human history in the [Many Isles](https://manyisles.ch) setting, with lore for all readers that enjoy fantasy and worldbuilding." autocomplete="off" required><?php echo $artDescription; ?></textarea>
                     <p class="inputErr info" default=" A detailed description of your item, so customers know exactly what they're buying."></p>
                 </div>
                 <div class="inputCont complete">
@@ -456,7 +454,7 @@ BIGTEMPLE;
         </div>
     </div>
 
-
+<?php echo markdownTabs(); ?>
     <div w3-include-html="../g/GFooter.html" w3-create-newEl="true"></div>
 
 
@@ -465,6 +463,7 @@ BIGTEMPLE;
 <script src="/Code/CSS/global.js"></script>
 <script src="/Server-Side/parseTxt.js"></script>
 <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<?php echo markdownScript(); ?>
 <script>
 
 var urlParams = new URLSearchParams(window.location.search);

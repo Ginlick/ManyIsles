@@ -1,0 +1,126 @@
+﻿.modCol {
+    display: none;
+    z-index: 24;
+    height: 100%;
+    overflow: auto;
+    position: fixed;
+    top: 0;
+    width: 80%;
+    left: 10%;
+    pointer-events: none;
+}
+.modCol p {
+    padding:5px;
+}
+@media only screen and (min-width: 1300px), (min-aspect-ratio:17/20) {
+    .modCol {
+        width: 60%;
+        left: 20%;
+    }
+}
+
+.modContent {
+    font-family: Arial, Helvetica, sans-serif;
+    display: block;
+    position: relative;
+    width: 100%;
+    max-height: 90%;
+    background-image: none;
+    background-color: white;
+    margin: 10vh 0 0 0;
+    border-radius: 16px;
+    text-align: center;
+    padding-bottom: 20px;
+    overflow: auto;
+    pointer-events: all;
+}
+    .modContent.smol {
+        max-width: 800px;
+        overflow: visible;
+        padding: 12px 20px;
+        margin: 20vh auto;
+    }
+
+.modContent h1, .modContent h2, .modContent h3, .modContent p {
+    padding: 5px 0;
+    margin: 5px 0;
+}
+.modContent ul {
+    list-style-type: none;
+    padding: 0;
+}
+.popupButton {
+    padding: 10px;
+    display: block;
+    border: none;
+    background-color: red;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    font-size: 20px;
+    margin: auto;
+    margin-bottom:1%;
+}
+    .popupButton:hover {
+        background-color: #d40000;
+        color: white;
+    }
+.modal {
+    display: none;
+    position: fixed; /* Stay in place */
+    z-index: 21;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+    overflow-y: hidden;
+}
+
+.modCol.new {
+    position: fixed;
+    top: 100px; left: 0;
+    width: 80%;
+    max-width: 1100px;
+    padding: 0;
+    z-index: 22;
+    height: auto;
+    margin: 0 auto;
+}
+.nmodImg {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: inline-block
+}
+.nmodBody {
+    padding: 10px;
+    text-align: center;
+}
+.nmodBody p, h1, h2, h3 {
+  text-align: center;
+}
+.nmodBody button {
+  margin: 30px auto 20px;
+}
+.closer {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: var(--gen-color-link);
+    font-size: var(--all-fonts-larg);
+}
+    .closer:hover {
+        color: var(--gen-color-hlink);
+    }
+
+.typeTab.tiny {
+    border-radius: 50px;
+    border: 1px solid #ccc;
+    padding: 3px;
+    display: inline-block;
+}

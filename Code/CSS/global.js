@@ -103,7 +103,7 @@ else if (window.location.href.includes("/SignedIn.php")) {
     addCss("https://fonts.gstatic.com", "preconnect");
     addCss("https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap", "css");
 }
-
+addCss("/Code/CSS/pop.2.css", "css");
 
 addCss("https://kit.fontawesome.com/1f4b1e9440.js", "js");
 addCss("https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js", "js");
@@ -111,7 +111,6 @@ addCss("https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"
 addCss("https://fonts.googleapis.com", "preconnect");
 addCss("https://fonts.gstatic.com", "preconnect");
 addCss("https://fonts.googleapis.com/css2?family=Roboto&display=swap", "css");
-addCss("//cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js", "js");
 
 function responsive(fileName, ifWhich) {
     if (ifWhich == "big") {
@@ -242,63 +241,100 @@ document.body.appendChild(neatContContCont);
 
 //newPop
 
-function newpop(x) {
-    if (x == "ded") {
-        for (let modal of document.getElementsByClassName("modal")) {
-            modal.style.display = "none";
+function newpop(x = "ded") {
+  if (x == "ded") {
+      for (let modal of document.getElementsByClassName("modal")) {
+          modal.style.display = "none";
+      }
+      for (let pop of document.getElementsByClassName("modCol")) {
+        if (pop.classList.contains("killable")){
+          pop.remove();
         }
-        for (let pop of document.getElementsByClassName("modCol")) {
-            pop.style.display = "none";
-        }
-    }
-    else {
-        for (let modal of document.getElementsByClassName("modal")) {
-            modal.style.display = "block";
-        }
-        if (typeof (x) == "object") { x.style.display = "block"; }
         else {
-            document.getElementById(x).style.display = "block";
+          pop.style.display = "none";
         }
+      }
+      if (typeof myField !== "undefined" && myField != null) {
+        myField.focus();
+      }
+  }
+  else {
+    for (let modal of document.getElementsByClassName("modal")) {
+        modal.style.display = "block";
     }
+    if (typeof (x) == "object") { x.style.display = "block"; }
+    else {
+        document.getElementById(x).style.display = "block";
+    }
+  }
+}
+function killpop() {
+  newpop("ded");
 }
 whenAvailable("Mousetrap", function () {
-    Mousetrap.bind("esc", function () {
-        newpop("ded");
-    });
+  Mousetrap.bind("esc", function () {
+      newpop("ded");
+  });
+  Mousetrap.stopCallback = function () {
+  }
 });
 
-/*let moddal = document.createElement("DIV");
+let moddal = document.createElement("DIV");
 moddal.classList.add("modal");
+moddal.addEventListener("click", killpop);
 document.body.appendChild(moddal);
-moddal.addEventListener("click",newpop("ded"), false);
 
 function createModal(popupArray) {
-    if (popupArray["cont"] == null) {
-        return false;
-    }
-    if (popupArray["d"] == null) {
-        popupArray["d"] = "gen";
-    }
+    if (popupArray["cont"] == null) {return false;}
+    if (popupArray["d"] == null) {popupArray["d"] = "gen";}
+    if (popupArray["type"] == null) {popupArray["type"] = "standard";}
+    var nmodCol = document.createElement("DIV");
+    nmodCol.classList.add("modCol");
     var nmodCont = document.createElement("DIV");
-    nmodCont.classList.add("modCol");
     nmodCont.classList.add("modContent");
+    nmodCont.classList.add(popupArray["type"]);
     nmodCont.classList.add("new");
-    nmodCont.innerHTML = ' <img src="' + img2Array[popupArray["d"]] + '" alt="image" class="nmodImg" /> ';
+    if (popupArray["id"]==""){nmodCol.classList.add("killable");}
+    else {nmodCont.setAttribute("id", popupArray["id"]);}
+    if (popupArray["type"]=="standard"){
+      nmodCont.innerHTML = ' <img src="' + img2Array[popupArray["d"]] + '" alt="image" class="nmodImg" /> ';
+    }
     var nmodBody = document.createElement("DIV");
     nmodBody.classList.add("nmodBody");
     nmodBody.innerHTML = popupArray["cont"];
     nmodCont.appendChild(nmodBody);
-    var cross = "<div class='closer' onclick='newpop(\"ded\")'><i class='fas fa-times'></i></div>";
-    var parser = new DOMParser();
-    var cross = parser.parseFromString(cross, 'text/html');
-    nmodCont.appendChild(cross.firstChild);
-    document.body.appendChild(nmodCont);
-    newpop(nmodCont);
+    var cross = document.createElement("DIV");
+    cross.classList.add("closer");
+    cross.addEventListener("click", killpop);
+    cross.innerHTML = "<i class='fas fa-times'></i>";
+    nmodCont.appendChild(cross);
+    nmodCol.appendChild(nmodCont);
+    document.body.appendChild(nmodCol);
+    newpop(nmodCol);
 }
-function contact() {
+/*function contact() {
     let content = { "cont": "<p>Give us a heads up, feedback, or suggestions to make the Many Isles greater!</p>" };
     createModal(content);
 }*/
+
+function getSelectionText() {
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
+}
+function insertText(myField, myText) {
+    var startPos = myField.selectionStart;
+    var endPos = myField.selectionEnd;
+    myField.value = myField.value.substring(0, startPos)
+        + myText
+        + myField.value.substring(endPos, myField.value.length);
+    endPos += startPos - endPos;
+    myField.setSelectionRange(endPos + myText.length, endPos + myText.length);
+}
 
 //cookies
 function getCookie(cname) {
