@@ -39,7 +39,7 @@ $settings = json_encode($settings);
 $pgenre = $blog->getCommaArr($pgenre);
 $blog->addTags($pgenre);
 $pgenre = json_encode($pgenre, JSON_HEX_APOS|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
-$ptext = $blog->baseFiling->placeSpecChar($ptext);
+$ptext = $blog->baseFiling->replaceSpecChar($ptext);
 
 $query = 'INSERT INTO posts (code, buser, title, genre, banner, text, settings) VALUES (
   "'.$postCode.'", "'.$profile.'", "'.$ptitle.'", \''.$pgenre.'\', "'.$placedI.'", "'.$ptext.'", \''.$settings.'\'
