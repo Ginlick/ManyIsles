@@ -21,8 +21,8 @@ class blogEngine {
       $key = 0; if (isset($_COOKIE["loggedIn"])){$key = $_COOKIE["loggedIn"];}
       $this->user = new adventurer($this->conn, $key);
 
-      require($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
-      $this->parse = new parse($this->conn, 0, 0);
+      require($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
+      $this->parse = new parser;
 
       require($_SERVER['DOCUMENT_ROOT']."/Server-Side/fileManager.php");
       $this->baseFiling = new smolengine;
@@ -204,7 +204,7 @@ class blogEngine {
       $return = <<<HAIL
       <div class="titleblock">
         <h1 class="leftColH1">current-information-place</h1>
-        <a href="/blog/feed"><h2 class="leftColH2">Many Isles Blogs</h2></a>
+        <a href="/blog/explore"><h2 class="leftColH2">Many Isles Blogs</h2></a>
       </div>
       <div class="left-menu">
         <div class="search-box">
@@ -252,7 +252,6 @@ class blogEngine {
         <meta charset="UTF-8" />
         <link rel="icon" href="/Imgs/Favicon.png">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-        <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
         <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
         <link rel="stylesheet" type="text/css" href="/blog/g/blog.css">
       MAGDA;
@@ -263,7 +262,7 @@ class blogEngine {
         <script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
         <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-        <script src="/Code/CSS/global.js"></script>
+        <script src="/Code/CSS/global.js?2"></script>
         <script src="/blog/g/blog-feed.js"></script>
       MAGDA;
       return $return;
@@ -426,7 +425,7 @@ class blogEngine {
       $postBuser = $row["buser"];
       $postBuserInfo = $this->fetchBuserInfo($postBuser);
       $postAge = $this->givePostAge($row["reg_date"]);
-      $postText = $this->parse->bodyParser($row["text"], 1);
+      $postText = $this->parse->parse($row["text"], 1);
       $postTitleInf = $this->giveBlogTitle($row["title"], $postBuserInfo["info"]["uname"]); $postTitle = $postTitleInf["title"];
       if ($public AND $postBuserInfo["info"]["setPublic"]==0){return false;}
       $tags = $this->getArray($row["genre"]); $tagList = "";
@@ -467,7 +466,7 @@ class blogEngine {
       $postBuser = $row["buser"];
       $postBuserInfo = $this->fetchBuserInfo($postBuser);
       $postAge = $this->givePostAge($row["reg_date"]);
-      $postText = $this->parse->bodyParser($row["text"], 1);
+      $postText = $this->parse->parse($row["text"], 1);
 
       $post = str_replace("post-imagge%%", $this->genPP($postBuserInfo["info"]["pp"], $postBuserInfo["info"]["pptype"]), $post);
       $post = str_replace("%post-code", $row["code"], $post);
@@ -571,7 +570,7 @@ class blogEngine {
       if ($result = $this->blogconn->query($query)) {
         while ($row = $result->fetch_assoc()) {
           $postTitle = $row["title"];
-          $postText = substr($this->parse->bodyParser(preg_replace("/[\n\r]/", "", $row["text"]), 1), 0, 88)."...";
+          $postText = substr($this->parse->parse(preg_replace("/[\n\r]/", "", $row["text"]), 1), 0, 88)."...";
         }
       }
       if (!isset($postTitle)){return false;}
@@ -641,8 +640,12 @@ class blogEngine {
     function givePostAge($regdate){
       $now = new DateTime();
       $ago = new DateTime($regdate);
-      $diff = $now->diff($ago);
+      //see if just give date
+      $absdiff = $now->diff($ago)->format("%a");
+      if ($absdiff > 7) {return $ago->format("dS F Y");}
 
+      //fancy days
+      $diff = $now->diff($ago);
       $diff->w = floor($diff->d / 7);
       $diff->d -= $diff->w * 7;
 

@@ -222,7 +222,7 @@ $dl->dlconn->query($query);
                           else {
                             echo "<p class='iShipping premium'><i class='fas fa-times'></i> $tierMsg required</p>";
                           }
-                          if ($artDl > 9){
+                          if ($artDl > 4){
                             echo "<p>Downloaded $artDl times</p>";
                           }
                         ?>

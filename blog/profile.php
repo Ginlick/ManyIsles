@@ -89,7 +89,7 @@ $flws = "<span id='followNum'>".$targetBuserInfo["followNum"]."</span> follower"
                   <p class="secondname">
                     <?php echo $tbp.", ".$flws; ?>
                   </p>
-                  <?php echo $blog->parse->bodyParser($targetBuserInfo["info"]["description"], 1);?>
+                  <?php echo $blog->parse->parse($targetBuserInfo["info"]["description"], 1);?>
                 </div>
                 <?php
                   if ($isTargetBuser) {

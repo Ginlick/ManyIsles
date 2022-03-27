@@ -4,7 +4,10 @@ if (!trait_exists("allBase")){
     public $regArrayR = [
       "basic" => "/[^A-Za-z0-9_]/",
       "quotes" => "/[\"']/",
-      "full" => "/[^A-Za-z0-9_&\/,\(\)\.\-%:\? ]/"
+      "full" => "/[^A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū_&\/,\(\)\.\-%:\? ]/",
+      "cleanText" => "/^[^\"<>]+$/",
+      "cleanText2" => "/^[^\"'<>]+$/",
+      "wikiName" => "/^[A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū',():\- ]{2,}$/",
     ];
 
     function construct() {
@@ -21,14 +24,39 @@ if (!trait_exists("allBase")){
       //for sql cleaning & more
       return preg_replace($this->regArrayR[$regex], "", $input);
     }
-    function replaceSpecChar($input) {
+    function replaceSpecChar($input, $level = 1) {
       $input = str_replace("'", "%single_quote%", $input);
       $input = str_replace('"', "%double_quote%", $input);
+      if ($level > 1) {
+          $input = str_replace(":", '%colon%', $input);
+          $input = str_replace(";", '%pcolon%', $input);
+          $input = str_replace("-", '%hyphon%', $input);
+          $input = str_replace(",", '%comma%', $input);
+          $input = str_replace("[", '%sqbrak_left%', $input);
+          $input = str_replace("]", '%sqbrak_right%', $input);
+          if ($level > 2){
+            $input = str_replace("'", '', $input);
+          }
+      }
       return $input;
     }
-    function placeSpecChar($input) {
-      $input = str_replace("%single_quote%", "'", $input);
-      $input = str_replace( "%double_quote%", '"', $input);
+    function placeSpecChar($input, $level = 1) {
+      if ($level < 1){
+        $input = str_replace('%double_quote%', '', $input);
+        $input = str_replace("%single_quote%", "", $input);
+      }
+      else {
+        $input = str_replace("%single_quote%", "'", $input);
+        $input = str_replace("%double_quote%", '"', $input);
+        $input = str_replace("%colon%", ':', $input);
+        $input = str_replace("%pcolon%", ';', $input);
+        $input = str_replace("%hyphon%", '-', $input);
+        $input = str_replace("%comma%", ',', $input);
+        $input = str_replace("%sqbrak_left%", '[', $input);
+        $input = str_replace("%sqbrak_right%", ']', $input);
+        $input = str_replace("%qbrak_left%", '{', $input);
+        $input = str_replace("%qbrak_right%", '}', $input);
+      }
       return $input;
     }
     function generateRandomString($length = 10) {
@@ -52,6 +80,9 @@ if (!trait_exists("allBase")){
     }
   }
 }
-
-
+if (!class_exists("useBase")){
+  class useBase {
+    use allBase;
+  }
+}
 ?>

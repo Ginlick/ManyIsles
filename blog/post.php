@@ -1,6 +1,7 @@
 ﻿<?php
 
 require_once("g/blogEngine.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/createMarkdown.php");
 $blog = new blogEngine("Post");
 $blog->userCheck();
 $buserInfo = $blog->fetchBuserInfo();
@@ -54,7 +55,7 @@ $buserInfo = $blog->fetchBuserInfo();
                 <option value="Fan Theory" />
                 <option value="Project" />
               </datalist>
-              <textarea rows="10" placeholder="Text" name="text" id="textBody" oninput="setWarning();" required></textarea>
+              <textarea rows="10" placeholder="Text" name="text" id="textBody" oninput="setWarning();" required markdownable></textarea>
               <p id="charWarn" class="inputErr">Too many characters!</p>
               <input type="text" placeholder="Tags (eg. d&d, news, release)" name="genre" list="genreSugg" />
               <div class="checkbox-block">
@@ -75,7 +76,7 @@ $buserInfo = $blog->fetchBuserInfo();
           </div>
         </div>
     </div>
-    <?php echo $blog->giveFooter(); ?>
+    <?php echo $blog->giveFooter(); echo markdownTabs(); ?>
 
 </div>
 
@@ -83,7 +84,7 @@ $buserInfo = $blog->fetchBuserInfo();
 
 </body>
 </html>
-<?php echo $blog->scripts(); ?>
+<?php echo $blog->scripts(); echo markdownScript(); ?>
 <script>
 
 function readURL(input) {
@@ -101,7 +102,7 @@ var textBody = document.getElementById("textBody");
 var showing = false;
 function setWarning() {
   fullNum = textBody.value.length;
-  if (fullNum > 22){
+  if (fullNum > 10000){
     if (!showing) {
       document.getElementById("charWarn").style.display = "block";
       showing = true;

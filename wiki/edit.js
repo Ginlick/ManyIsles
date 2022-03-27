@@ -69,14 +69,25 @@ function switchSupport(parentname) {
     }
 }
 
-function insertText(myField, myText) {
-    var startPos = myField.selectionStart;
-    var endPos = myField.selectionEnd;
-    myField.value = myField.value.substring(0, startPos)
-        + myText
-        + myField.value.substring(endPos, myField.value.length);
-    endPos += startPos - endPos;
-    myField.setSelectionRange(endPos + myText.length, endPos + myText.length);
+function addChar(myText) {
+  var myField = document.activeElement;
+
+    //IE support
+    if (document.selection) {
+      document.myField.focus();
+      sel = document.selection.createRange();
+      sel.text = myText;
+    }
+    //MOZILLA and others
+    else if (myField.selectionStart || myField.selectionStart == "0") {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, startPos)
+            + myText
+            + myField.value.substring(endPos, myField.value.length);
+    } else {
+        myField.value += myText;
+    }
 }
 function insertImage(link, what) {
     var myField = textareaToFill;
@@ -196,15 +207,6 @@ function insLink() {
 Mousetrap.bind("ctrl+shift+k", function (e) {
     return insLink();
 });
-function getSelectionText() {
-    var text = "";
-    if (window.getSelection) {
-        text = window.getSelection().toString();
-    } else if (document.selection && document.selection.type != "Control") {
-        text = document.selection.createRange().text;
-    }
-    return text;
-}
 Mousetrap.bind("ctrl+shift+j", function (e) {
     e.preventDefault();
     startCategging();
@@ -241,8 +243,7 @@ Mousetrap.bind("esc", function () {
     removePops();
     return false;
 });
-Mousetrap.stopCallback = function () {
-}
+
 function startCategging() {
     if (!newWiki) {
         document.getElementById("modal").style.display = "block";
@@ -336,26 +337,6 @@ Mousetrap.bind("ctrl+shift+r", function (e) {
     addChar("%sqbrak_right%");
 });
 
-function addChar(myText) {
-    var myField = document.activeElement;
-    //IE support
-    if (document.selection) {
-        document.myField.focus();
-        sel = document.selection.createRange();
-        sel.text = myText;
-    }
-    //MOZILLA and others
-    else if (myField.selectionStart || myField.selectionStart == "0") {
-        var startPos = myField.selectionStart;
-        var endPos = myField.selectionEnd;
-        myField.value = myField.value.substring(0, startPos)
-            + myText
-            + myField.value.substring(endPos, myField.value.length);
-    } else {
-        myField.value += myText;
-    }
-}
-
 var allCompletes = document.getElementsByClassName("complete");
 var allFlipCompletes = document.getElementsByClassName("flipcomplete");
 function differComplic(check, target = "preferFullEdit") {
@@ -411,21 +392,24 @@ function autoLinkage() {
         }
     }
 }
-function doStuff(word, firstHalf, lastHalf) {
-    if (allDoneLinks[textareaToFill.id] == undefined) { allDoneLinks[textareaToFill.id] = [];}
 
-    if (word.match(/.*s/)) { word.slice(0, -1); }
-    if (allDoneLinks[textareaToFill.id].includes(word)) { return; }
-    if (autoLinks.hasOwnProperty(word.toLowerCase())) {
-        let autoLinkWiki = autoLinks[word.toLowerCase()]["wiki"];
-        if (autoLinkWiki != null && autoLinkWiki != 0){
-          if (autoLinkWiki != parentWiki){return;}
-        }
-        console.log("triggered");
-        let coolLink = "[" + word + "](" + autoLinks[word.toLowerCase()]["href"] + ") ";
-        let firstPos = firstHalf.length - word.length - 1;
-        textareaToFill.value = firstHalf.substr(0, firstPos) + coolLink + lastHalf;
-        textareaToFill.setSelectionRange(firstPos + coolLink.length, firstPos + coolLink.length);
-        allDoneLinks[textareaToFill.id].push(word);
+function doStuff(word, firstHalf, lastHalf) {
+  usableLinks = autoLinks[0];
+  if (autoLinks[parentWiki]!=undefined){usableLinks = [...usableLinks, ...autoLinks[parentWiki]];}
+
+  if (allDoneLinks[textareaToFill.id] == undefined) { allDoneLinks[textareaToFill.id] = [];}
+
+  if (word.match(/.*s/)) { word.slice(0, -1); }
+  if (allDoneLinks[textareaToFill.id].includes(word)) { return; }
+  for (let autolink of usableLinks){
+    if (autolink["name"] == word.toLowerCase()){
+      console.log("triggered");
+      let coolLink = "[" + word + "](" + autolink["href"] + ") ";
+      let firstPos = firstHalf.length - word.length - 1;
+      textareaToFill.value = firstHalf.substr(0, firstPos) + coolLink + lastHalf;
+      textareaToFill.setSelectionRange(firstPos + coolLink.length, firstPos + coolLink.length);
+      allDoneLinks[textareaToFill.id].push(word);
+      break;
     }
+  }
 }

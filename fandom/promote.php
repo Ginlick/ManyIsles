@@ -6,14 +6,14 @@ if (preg_match("/[^0-1]/", $_GET['dir'])==1){header("Location:/fandom/home");exi
 
 $id = $_GET['id'];
 $parentWiki = $id;
-require($_SERVER['DOCUMENT_ROOT']."/fandom/quickCheck.php");
-$override = true;
-require("slotChecker.php");
-if ($admin == 0){"Location:/fandom/home";exit();}
+require($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
+$page = new gen("act", 0, $id);
+if ($page->power < 3){header("Location:/fandom/home");exit();}
 
 $dir = $_GET['dir'];
 $d = $_GET['d'];
 $who = $_GET['who'];
+$conn = $page->conn;
 
 $redirect = "/fandom/wsettings.php?w=".$id;
 
@@ -36,22 +36,22 @@ if ($d == 3){
     if ($dir == 1){if (!in_array($who, $mods)) {$mods[] = $who;}}
     else { $mods = array_diff($mods, $array = [$who]);}
     $mods = implode(",", $mods);
-    $query = "UPDATE wiki_settings SET mods = '$mods' WHERE id = $id";
-    $title = "a moderator";   
+    $myquery = "UPDATE wiki_settings SET mods = '$mods' WHERE id = $id";
+    $title = "a moderator";
 }
 else if ($d == 2) {
     if ($dir == 1){if (!in_array($who, $auths)) {$auths[] = $who;}}
     else {$auths = array_diff($auths, $array = [$who]);}
     $auths = implode(",", $auths);
-    $query = "UPDATE wiki_settings SET auths = '$auths' WHERE id = $id";
-    $title = "a curated author";   
+    $myquery = "UPDATE wiki_settings SET auths = '$auths' WHERE id = $id";
+    $title = "a curated author";
 }
 else if ($d == 0) {
     if ($dir == 1){if (!in_array($who, $banned)) {$banned[] = $who;}}
     else {$banned = array_diff($banned, $array = [$who]);}
     $banned = implode(",", $banned);
-    $query = "UPDATE wiki_settings SET banned = '$banned' WHERE id = $id";
-    $title = "banned";   
+    $myquery = "UPDATE wiki_settings SET banned = '$banned' WHERE id = $id";
+    $title = "banned";
 }
 
 if (include($_SERVER['DOCUMENT_ROOT']."/Server-Side/email.php")) {
@@ -62,12 +62,11 @@ if (include($_SERVER['DOCUMENT_ROOT']."/Server-Side/email.php")) {
             $email = $row["email"];
         }
     }
-
     $mailer = new mailer;
     $mailer->send($email, "You were Promoted", "A wiki made you $title. Congratulations! <br> <a href='https://manyisles.ch/fandom/wiki/$parentWiki/home'>view wiki</a>", "poet", "You're now $title");
 }
 
-if ($conn->query($query)){
+if ($conn->query($myquery)){
     header("Location:$redirect&i=userup");exit();
 }
 else {

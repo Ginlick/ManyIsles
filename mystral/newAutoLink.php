@@ -32,7 +32,9 @@ if ($result = $gen->dbconn->query($query)){
     }
 }
 
-if (in_array($name, $oldArr[$wiki])){exit();}
+if (isset($oldArr[$wiki])){
+  if (in_array($name, $oldArr[$wiki])){exit();}
+}
 $insArr= ["name" => $name, "href" => $href];
 $oldArr[$wiki][] = $insArr;
 $newArr = json_encode($oldArr);

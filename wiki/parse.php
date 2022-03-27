@@ -1,7 +1,7 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/engine.php");
-require_once($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/domInfo.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/fandom/getWiki.php");
 
@@ -10,7 +10,6 @@ class parse {
     protected $page = "";
     protected $parseClear = false;
 
-    public $insertArray = [];
     public $keyTracker = 0;
     public $database = "pages";
     public $parentWiki = 2;
@@ -20,57 +19,43 @@ class parse {
         if ($parseClear == 1){$this->parseClear = true;}
         equipDom($this, $domain);
         $this->parentWiki = getWiki($page, $this->database, $this->dbconn);
+
+        $this->parser = new parser($parseClear);
     }
 
     function bodyParser($body, $extent = 0, $database = "pages") {
-        $this->insertArray = [];
-
-        $Parsedown = new Parsedown();
         $this->database = $database;
-        if ($this->parseClear) {$Parsedown->setSafeMode(false);} else {$Parsedown->setSafeMode(true);}
 
-        if ($extent > 0) {
-            $lineMatches = [];
-            if (preg_match_all("/^.*{([a-z]+\[.*\]).*}.*$/m", $body, $lineMatches) != false){$body = $this->parseImg($body, $this->keyTracker, $lineMatches[0]);}
+        if ($extent > 0){
+          $wikiWork = function(&$body) {
+            if (str_contains($body, "[footnote:")){$body = $this->doSources($body);}
+              //if (preg_match_all("/^<h.+\[fold\].*$/m", $body, $newMatches) != false){$body = $this->parseFolds($body, $newMatches[0]);}
+              if (str_contains($body, "[wiki:children]")){
+                  $body = $this->addFullChildLine($body, $this->page, "full");
+              }
+              if (str_contains($body, "[wiki:children")) {
+                  $artId = substr($body, strpos($body, "[wiki:children") + 14);
+                  $artId = substr($artId, 0, strpos($artId, "]"));
+                  $body = $this->addFullChildLine($body, $artId, "spec");
+              }
+              if (str_contains($body, "[wiki:new")){$body = $this->addRecents($body, "reg_date");}
+              if (str_contains($body, "[wiki:rand")){$body = $this->addRecents($body, "RAND()");}
+              if (str_contains($body, "[wiki:pop")){$body = $this->addRecents($body);}
+              if (str_contains($body, "[wiki:genre:")){$body = $this->addGenre($body);}
+              if (str_contains($body, "[wiki:art")){$body = $this->addThumbnails($body);}
+
+              $body = preg_replace("/\[note([a-zA-Z ]*)\]/", "<div class='note $1'>", $body);
+              $body = str_replace("[/note]", "</div>", $body);
+              //$body = preg_replace("/\[\/[a-z]+\]/", "</div>", $body);
+          };
+        }
+        else {
+          $wikiWork = function(&$body) {
+            if (str_contains($body, "[footnote:")){$body = $this->doSources($body);}
+          };
         }
 
-        $body = $Parsedown->text($body);
-
-        //post-parse processing
-        if (str_contains($body, "[footnote:")){$body = $this->doSources($body);}
-        if ($extent > 0) {
-            //if (preg_match_all("/^<h.+\[fold\].*$/m", $body, $newMatches) != false){$body = $this->parseFolds($body, $newMatches[0]);}
-            if (str_contains($body, "[wiki:children]")){
-                $body = $this->addFullChildLine($body, $this->page, "full");
-            }
-            if (str_contains($body, "[wiki:children")) {
-                $artId = substr($body, strpos($body, "[wiki:children") + 14);
-                $artId = substr($artId, 0, strpos($artId, "]"));
-                $body = $this->addFullChildLine($body, $artId, "spec");
-            }
-            if (str_contains($body, "[wiki:new")){$body = $this->addRecents($body, "reg_date");}
-            if (str_contains($body, "[wiki:rand")){$body = $this->addRecents($body, "RAND()");}
-            if (str_contains($body, "[wiki:pop")){$body = $this->addRecents($body);}
-            if (str_contains($body, "[wiki:genre:")){$body = $this->addGenre($body);}
-            if (str_contains($body, "[wiki:art")){$body = $this->addThumbnails($body);}
-
-            if ($this->insertArray != null){
-                foreach ($this->insertArray as $key => $value) {
-                    $body = substr_replace($body, $value, strpos($body, "%key".$key."key%"), 0);
-                    $body = str_replace("%key".$key."key%", "", $body);
-                }
-            }
-            $body = str_replace("[gallery]", "<div class='gallery'>", $body);
-            $body = str_replace("[wide]", "<div class='wide'>", $body);
-            $body = preg_replace("/\[note([a-zA-Z ]*)\]/", "<div class='note $1'>", $body);
-            $body = str_replace("[/gallery]", "</div>", $body);
-            $body = str_replace("[/wide]", "</div>", $body);
-            $body = str_replace("[/note]", "</div>", $body);
-            //$body = preg_replace("/\[\/[a-z]+\]/", "</div>", $body);
-        }
-
-        $body = txtUnparse($body, 0);
-        return $body;
+        return $this->parser->parse($body, $extent, $wikiWork);
     }
 
 
@@ -257,35 +242,7 @@ class parse {
         if (str_contains($body, "[wiki:genre:")){return $this->addGenre($body);}
         else { return $body;}
     }
-    function parseImg($body, &$keyTracker, $lineMatches) {
-        foreach($lineMatches as $line){
-            $artId = substr($line, strpos($line, "{")+1);
-            $stringDico = substr($artId, 0, strpos($artId, "}") - 1);
-            $chunks = array_chunk(preg_split('/(\[|\])/', $stringDico), 2);
 
-            if (count(array_column($chunks, 0)) > 0 AND count(array_column($chunks, 0)) == count(array_column($chunks, 1))){
-                $img = array_combine(array_column($chunks, 0), array_column($chunks, 1));
-            }
-            else {$img = [];}
-
-            if (!isset($img["class"]) OR !checkRegger("basic", $img["class"])){$img["class"] = "sideimg";}
-            if ($img["class"]=="landscape"){$img["class"]="sideimg landscape";}
-            if (!isset($img["caption"]) OR !checkRegger("cleanText", $img["caption"])){$img["caption"] = "";}
-            if (!isset($img["src"]) OR !checkRegger("cleanText", $img["src"])){$img["src"] = "";}
-            if (!isset($img["style"]) OR !checkRegger("cleanText", $img["style"])){$img["style"] = "";}
-            $caption = $this->bodyParser(txtUnparse($img["caption"], 0), 0, $this->database);
-
-            $echoImg = '<div class="'.$img["class"].'" style="'.$img["style"].'"><a href="'.$img["src"].'" target="_blank"><img src="'.$img["src"].'" /></a><p>'.$caption.'</p></div>';
-
-            $this->insertArray[$keyTracker] = $echoImg;
-            $pos = strpos($body, "{");
-            $body = str_replace($line, "%key".$keyTracker."key%", $body);
-            $keyTracker++;
-        }
-
-        if (preg_match("/^{.*}$/", $body)){return $this->parseImg($body, $keyTracker);}
-        else {return $body;}
-    }
     /*function parseFolds($body, $lineMatches){
         foreach($lineMatches as $line){
             $header

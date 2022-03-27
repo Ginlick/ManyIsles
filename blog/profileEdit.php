@@ -1,6 +1,7 @@
 ﻿<?php
 require_once("g/blogEngine.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/createMarkdown.php");
 $blog = new blogEngine("Profile");
 $blog->userCheck();
 $targetBuser = $blog->buserId;
@@ -66,7 +67,7 @@ $buserInfo = $blog->fetchBuserInfo($targetBuser);
               </div>
               <form action="makeProfileEdit.php" method="POST" class="blogForm">
                 <input type="text" placeholder="Username" name="buname" value="<?php echo $buserInfo["info"]["uname"]; ?>" />
-                <textarea rows="5" placeholder="Description: What do you post about?" name="description"><?php echo txtUnparse($buserInfo["info"]["description"]); ?></textarea>
+                <textarea rows="5" placeholder="Description: What do you post about?" name="description" markdownable><?php echo txtUnparse($buserInfo["info"]["description"]); ?></textarea>
                 <input type="text" style="display:none;opacity:0;" name="profile" value="<?php echo $blog->profileInset; ?>" />
                 <?php if (!$blog->partnerVersion) {
                   echo '<div class="checkbox-block"><input type="checkbox" name="follow_notifs" '.$blog->giveRadiobutInset($buserInfo["info"]["setEmailNotifs"]).'/>
@@ -93,7 +94,7 @@ $buserInfo = $blog->fetchBuserInfo($targetBuser);
           </div>
         </div>
     </div>
-    <?php echo $blog->giveFooter(); ?>
+    <?php echo $blog->giveFooter(); echo markdownTabs();?>
 
 </div>
 
@@ -101,7 +102,7 @@ $buserInfo = $blog->fetchBuserInfo($targetBuser);
 
 </body>
 </html>
-<?php echo $blog->scripts(); ?>
+<?php echo $blog->scripts(); echo markdownScript();?>
 <script>
 var urlParams = new URLSearchParams(window.location.search);
 var why = urlParams.get('i');
