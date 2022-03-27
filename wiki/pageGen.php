@@ -1,5 +1,5 @@
 <?php
-
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/allBase.php");
 class gen {
     public $conn;
     public $article;
@@ -30,6 +30,8 @@ class gen {
     public $autoLinkArr = [];
     public $domainSpecs = [];
     public $full = false; //for Notebook full
+
+    use allBase;
 
     function __construct($mode = "view", $page = 0, $parentWiki = 2, $new = false, $domain = "fandom", $moreSpecs = []) {
         $this->writingNew = $new;
@@ -1682,7 +1684,7 @@ class spellGen {
         if ($parset) {
           $details["FullDesc"] = $this->parse->bodyParser($details["FullDesc"]);
           foreach ($details as $key => $detail){
-            $details[$key] = txtUnparse($detail);
+            $details[$key] = $this->placeSpecChar($detail);
           }
         }
         $subarr[$details["Level"]][] = $details;
@@ -1803,6 +1805,7 @@ class article {
     public $banners = [];
     public $details = [];
     public $gen = null;
+    use allBase;
 
     function __construct($gen, $conn = null) {
       if (gettype($gen)=="array"){
@@ -1861,9 +1864,9 @@ class article {
                         $this->parseClear = $row["parseClear"];
                         $this->regdate = $row["reg_date"];
 
-                        $this->body = txtUnparse($this->body, 2);
-                        $this->sidetabTitle = txtUnparse($this->sidetabTitle, 2);
-                        $this->sidetabText = txtUnparse($this->sidetabText, 2);
+                        $this->body = $this->placeSpecChar($this->body);
+                        $this->sidetabTitle = $this->placeSpecChar($this->sidetabTitle, 2);
+                        $this->sidetabText = $this->placeSpecChar($this->sidetabText, 2);
 
                         $date_array = date_parse($this->regdate);
                         $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];

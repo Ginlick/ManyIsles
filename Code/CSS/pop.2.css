@@ -101,7 +101,7 @@
     padding: 10px;
     text-align: center;
 }
-.nmodBody p, h1, h2, h3 {
+.nmodBody p,.nmodBody  h1,.nmodBody  h2,.nmodBody  h3 {
   text-align: center;
 }
 .nmodBody button {
