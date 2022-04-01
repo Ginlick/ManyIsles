@@ -61,7 +61,6 @@ function totalTable($method) {
         $table .= "<tr><td>Codes</td><td>-".makeHuman($basketed->fullDCodeReduction)."</td></tr>";
     }
     if (!$basketed->pureDigit){
-        if ($totalShipping === null){header("Location: checkout.html");exit();}
         $calcTotal += $totalShipping;
         $table .= "<tr><td>Shipping</td><td>".makeHuman($totalShipping)."</td></tr>";
     }
