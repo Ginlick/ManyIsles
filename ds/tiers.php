@@ -7,14 +7,8 @@ require_once("g/sideBasket.php");
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title>Tiers | Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
+    <?php echo $ds->giveHead(); ?>
     <style>
 .tierCont {
     text-align:center;
@@ -30,6 +24,9 @@ require_once("g/sideBasket.php");
     border-radius:5px;
     text-align:left;
     display:inline-block;
+}
+.tierblock h1, .tierblock h2 {
+  text-align: center;
 }
 .tierblock:hover {
     box-shadow: 0 4px 50px 0 rgba(0, 0, 0, 0.4), 0 6px 22px 0 rgba(0, 0, 0, 0.25);

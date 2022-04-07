@@ -51,14 +51,16 @@ class dlengine {
     function __construct($conn = null, $dlconn = null){
         if ($conn == null) {
             global $conn;
-            require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+            require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
         }
         $this->conn = $conn;
         if ($dlconn == null) {
             require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dl.php");
         }
         $this->dlconn = $dlconn;
-        require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+        if (!class_exists("adventurer")){
+          require($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+        }
         $key = 0; if (isset($_COOKIE["loggedIn"])){$key = $_COOKIE["loggedIn"];}
         $this->user = new adventurer($this->conn, $key);
         $query = "SELECT id, status FROM partners";

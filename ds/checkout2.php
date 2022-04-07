@@ -1,15 +1,13 @@
 ﻿<?php
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
-$codesMatter = true;
-require_once("g/sideBasket.php");
+require_once("g/dsEngine.php");
+$ds = new dsEngine(true);
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-$user = new adventurer;
-if (!$user->emailConfirmed){header("Location: checkoutw");exit();}
-else if (!$user->check(true)){header("Location: checkout");exit();}
-$conn = $user->conn; $id = $user->user;
+if (!$ds->user->check(true, true)){$ds->go("checkoutw");}
+$conn = $ds->conn; $moneyconn = $ds->moneyconn; $id = $ds->user->user;
+$basketed = $ds->basketed;
 
-if ($type == "items"){
+if ($ds->type == "items"){
     if (isset($_SESSION["basket"])) {
         if ($_SESSION["basket"] == "") {
             header("Location: home.php");exit();
@@ -18,7 +16,6 @@ if ($type == "items"){
     else {header("Location: home.php");exit();}
 }
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 $custTotal = 0;
 $query = "SELECT credit FROM global_credit WHERE id = $id";
 if ($result=$moneyconn->query($query)) {
@@ -31,52 +28,45 @@ $custTran = new transaction($moneyconn, $id);
 
 $stripeTotal = $basketed->totalPrice;
 $creditTotal = $basketed->totalPrice;
+$basketed->possibleCountries();
 if ($basketed->pureDigit) {
-    $backURL = "basket.php";
+    $backURL = "basket";
 }
-else {  $backURL = "checkout1.php";
-    if (count($basketed->deliverableCountries) == 0) {header("Location: checkout.html");exit();}
-    else {
-        $query = "SELECT Country FROM address WHERE id = ".$id;
-        $result = $conn->query($query);
-        if (mysqli_num_rows($result) == 0) { header("Location: checkout1");exit(); }
-        while ($row = $result->fetch_assoc()) {
-            if (!isset($basketed->deliverableCountries[$row["Country"]])) { header("Location: checkout1");exit();}
-        }
-    }
+else {
+  $backURL = "checkout1";
+  if (count($basketed->deliverableCountries) == 0) {$ds->go("checkout1");}
+  else if (!isset($basketed->deliverableCountries[$ds->fetchAddress()["country"]])){$ds->go("checkout1");}
 }
 
 if ($creditTotal > $custTotal OR $basketed->totalCredit > 0) {$startOn = "stripe";}
 else {$startOn = "credit";}
 
-$totalShipping = 0;
-require("g/shipping.php");
-
 function totalTable($method) {
-    global $basketed, $totalShipping, $stripeTotal, $creditTotal;
+    global $ds, $stripeTotal, $creditTotal;
+    $basketed = $ds->basketed;
+    $totalShipping = $ds->shipping();
+
     $calcTotal = $basketed->totalPrice;
-    $table = "<tr><td>Subtotal</td><td>".makeHuman($calcTotal)."</td></tr>";
+    $table = "<tr><td>Subtotal</td><td>".$ds->makeHuman($calcTotal)."</td></tr>";
     if ($basketed->codesExist AND isset($_COOKIE["ds_codes"])){
         $calcTotal += -$basketed->fullDCodeReduction;
-        $table .= "<tr><td>Codes</td><td>-".makeHuman($basketed->fullDCodeReduction)."</td></tr>";
+        $table .= "<tr><td>Codes</td><td>-".$ds->makeHuman($basketed->fullDCodeReduction)."</td></tr>";
     }
     if (!$basketed->pureDigit){
         $calcTotal += $totalShipping;
-        $table .= "<tr><td>Shipping</td><td>".makeHuman($totalShipping)."</td></tr>";
+        $table .= "<tr><td>Shipping</td><td>".$ds->makeHuman($totalShipping)."</td></tr>";
     }
     if ($method == "stripe"){
-        $stripeTax = $calcTotal*0.029;
-        $stripeTax = round($stripeTax);
-        $stripeTax = $stripeTax + 32;
+      $stripeTax = $ds->calcStripeTax($calcTotal);
         $calcTotal = $calcTotal + $stripeTax;
-        $stripeTax = makeHuman($stripeTax);
+        $stripeTax = $ds->makeHuman($stripeTax);
         $table .= "<tr><td>Transfer Fee</td><td>".$stripeTax."</td></tr>";
         $stripeTotal = $calcTotal;
     }
     else {
         $creditTotal = $calcTotal;
     }
-    $table .= "<tr><td>Total</td><td>".makeHuman($calcTotal)."</td></tr>";
+    $table .= "<tr><td>Total</td><td>".$ds->makeHuman($calcTotal)."</td></tr>";
     return $table;
 }
 
@@ -86,21 +76,13 @@ function totalTable($method) {
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title>Checkout | Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
+    <?php
+      echo $ds->giveHead();
+     ?>
     <style>
         select {
             width:40%;
-        }
-        .alert {
-            color:red;
         }
 .container {
     display:none;
@@ -160,19 +142,22 @@ function totalTable($method) {
             font-size: calc(2px + 2.4vw);
         }
     }
+    .address {
+      margin-left: 30%;
+    }
     </style>
 </head>
 <body>
-    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;z-index:22;"></div>
+  <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl = "true"></div>
 
         <div class="flex-container">
             <div class='left-col'>
-                <a href="home.php"><h1 class="menutitle">Digital Store</h1></a>
+                <a href="store"><h1 class="menutitle">Digital Store</h1></a>
                 <ul class="myMenu">
                     <li><p class="Bar" style="color:black"><?php if ($basketed->type == "subs") {echo "Purchasing subscription"; } else {echo "Checking out"; } ?></p></li>
                 </ul>
                 <?php
-                    doSideBasket();
+                    echo $ds->sideBasket();
                 ?>
 
 <?php
@@ -180,7 +165,7 @@ if ($basketed->codesExist){
     echo '<img src="/Imgs/Bar2.png" alt="GreyBar" class="separator">
     <h3 class="basketTitle">Use Codes</h3>
     <p>Validate discount codes here.</p>';
-    if ($codesMatter){
+    if ($ds->type == "items"){
         if (count($basketed->codeList)==5){
             echo "You already have 5 validated codes.";
             echo '
@@ -245,7 +230,7 @@ if ($basketed->codesExist){
             </div>
 
             <div id='content' class='column'>
-              <?php echo $user->signPrompt(); ?>
+              <?php echo $ds->user->signPrompt(); ?>
 
                 <h1>Step 3</h1>
 
@@ -298,7 +283,7 @@ if ($basketed->codesExist){
                             else {
                                 $creditIsOk = "true";
                             }
-                            echo "<br>Current balance is <b>".makeHuman($custTotal)."</b>.<br><br><a href='basket.php'>Edit order</a></p>";
+                            echo "<br>Current balance is <b>".$ds->makeHuman($custTotal)."</b>.<br><br><a href='basket.php'>Edit order</a></p>";
 
                             ?>
                         </div>
@@ -307,6 +292,12 @@ if ($basketed->codesExist){
                                 echo "<p>This amount will be charged yearly.</p>";
                             }
                         ?>
+                        <?php
+                        if (!$basketed->pureDigit) {
+                          echo "<h2>Shipping Address</h2>";
+                          echo $ds->makeAddressList();
+                        }
+                         ?>
                         <div style="text-align:center;margin-top:80px;">
                             <span class="step"><div class="hoverinfo">Account <i class="fas fa-check-circle"></i></div></span>
                             <span class="step"><div class="hoverinfo">Address <i class="fas fa-check-circle"></i></div></span>
@@ -355,6 +346,9 @@ if ($basketed->codesExist){
     }
     else if (why == "codeValidated") {
         createPopup("d:dsp;txt:Code validated");
+    }
+    else if (why == "error") {
+        createPopup("d:dsp;txt:Error making payment.");
     }
 
     var whichShown = "credit";

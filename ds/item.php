@@ -1,9 +1,8 @@
 ﻿<?php
 if (isset($_GET["id"])){if (preg_match("/[0-9]{1,}/", $_GET["id"])!=1){header("Location: /ds/store");exit();} else {$artId = $_GET["id"];} } else {header("Location: /ds/store");exit();}
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
-require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/sideBasket.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/dsEngine.php");
+$ds = new dsEngine; $conn = $ds->conn; $basketed = $ds->basketed;
 
 $digital = false;
 $query = "SELECT * FROM dsprods WHERE id = $artId";
@@ -23,7 +22,7 @@ if ($firstrow = $conn->query($query)) {
         $artDescription = $row["description"];
         $artKind = $row["artKind"];
         $artShipping = $row["shipping"];
-        $artStock = hasAnyStock($artSpecs, $row["stock"]);
+        $artStock = $ds->hasAnyStock($artSpecs, $row["stock"]);
         $artMaxAmount = $row["maxAmount"];
         $artMinPrice = $row["minPrice"];
         $artStatus = $row["status"];
@@ -61,14 +60,11 @@ if (!empty($artViewImgs)) {
 
 $artSpecsArray = json_decode($artSpecs, true);
 
-require($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
-$Parsedown = new Parsedown();
-$Parsedown->setSafeMode(true);
-
-require_once("g/clearImgUrl.php");
+require($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
+$Parsedown = new parser();
 
 foreach ($artImgsArray as &$artImg) {
-    $artImg = clearImgUrl($artImg);
+    $artImg = $ds->clearImgUrl($artImg);
 }
 
 $query = "UPDATE dsprods SET popularity = popularity + 1 WHERE id = $artId";
@@ -154,15 +150,13 @@ else {
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title><?php echo $artShortName;?> | Digital Store</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
+        <?php
+      echo $ds->giveHead();
+     ?>
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-item.css">
 </head>
 <body>
@@ -175,7 +169,7 @@ else {
                 <li><a class="Bar" href="/ds/store">Browse</a></li>
             </ul>
             <?php
-                doSideBasket();
+                echo $ds->sideBasket();
             ?>
             <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
             <ul class="myMenu bottomFAQ">
@@ -257,7 +251,7 @@ else {
 
                     </div>
                     <div class="overtail iPrice">
-                        $<span id="price"><?php echo makeHuman($artPrice); ?></span>
+                        $<span id="price"><?php echo $ds->makeHuman($artPrice); ?></span>
                     </div>
 
 <?php
@@ -266,15 +260,15 @@ echo '<div class="overtail iOvertails">';
 
 if (sizeof($artSpecsArray) != 0) {
     foreach ($artSpecsArray as $specArray){
-        echo "<h5>".txtUnparse($specArray['name'], 0);
+        echo "<h5>".$ds->placeSpecChar($specArray['name'], 0);
         if (isset($specArray['tooltip']) AND $specArray['tooltip'] != ""){
-            echo " <i class='fas fa-info-circle altStep'><span class='hoverinfo'>".txtUnparse($specArray['tooltip'], 1)."</span></i>";
+            echo " <i class='fas fa-info-circle altStep'><span class='hoverinfo'>".$ds->placeSpecChar($specArray['tooltip'], 1)."</span></i>";
         }
         echo "</h5>";
-        $selectBlock = '<select onchange="updateStuff(this);" selecter-name="'.txtUnparse($specArray["name"], 1).'">';
+        $selectBlock = '<select onchange="updateStuff(this);" selecter-name="'.$ds->placeSpecChar($specArray["name"], 1).'">';
         $currIndex = 0;
         foreach ($specArray["options"] as $option){
-            $selectBlock .= '<option value="'.$currIndex.'" price-modifier="'.$option["price"].'">'.txtUnparse($option["name"], 1).'</option>';
+            $selectBlock .= '<option value="'.$currIndex.'" price-modifier="'.$option["price"].'">'.$ds->placeSpecChar($option["name"], 1).'</option>';
             $currIndex++;
         }
         echo $selectBlock.'</select>';
@@ -363,7 +357,7 @@ echo '<p class="warning red" id="warningNone" style="display: none">out of stock
                     <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/ds/<?php echo $artLink; ?>" target="_blank" class="fa fa-facebook"></a>
                     <a href="http://www.reddit.com/submit?title=Check out <?php echo $artName; ?> on the Many Isles!&url=https://manyisles.ch/ds/<?php echo $artLink; ?>" target="_blank" class="fa fa-reddit"></a>
                     <a href="https://twitter.com/intent/tweet?text=Check out the awesome <?php echo $artName; ?> on the Many Isles!%0A&url=https://manyisles.ch/ds/<?php echo $artLink; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
-                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/ds/<?php echo $artLink; ?>&media=<?php echo clearImgUrl($artImage); ?>&description=Check out the awesome <?php echo $artName; ?> on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
+                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/ds/<?php echo $artLink; ?>&media=<?php echo $ds->clearImgUrl($artImage); ?>&description=Check out the awesome <?php echo $artName; ?> on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
                     <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://<?php echo $_SERVER["HTTP_HOST"]."/ds/".$artLink; ?> ');createPopup('d:poet;txt:Link copied!');"></a>
 
                 </section>
@@ -372,7 +366,7 @@ echo '<p class="warning red" id="warningNone" style="display: none">out of stock
             <section class="details">
                 <div>
                     <p>
-                        <?php echo $Parsedown->text($artDescription); ?>
+                        <?php echo $Parsedown->parse($artDescription); ?>
                     </p>
 <?php
 if ($artDescSpecs != ""){

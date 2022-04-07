@@ -36,7 +36,7 @@ $settings = [];
 $settings["comments"]=$pcomments;
 $settings = json_encode($settings);
 
-$pgenre = $blog->getCommaArr($pgenre);
+$pgenre = $blog->getCommaArr($pgenre, "tag");
 $blog->addTags($pgenre);
 $pgenre = json_encode($pgenre, JSON_HEX_APOS|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 $ptext = $blog->baseFiling->replaceSpecChar($ptext);
@@ -51,6 +51,8 @@ if ($blog->blogconn->query($query)){
   if ($pnotify) {
     $blog->notify($postCode, $profile);
   }
+  $blog->user->promote("Poet");
+
   $pTaitle = $blog->baseFiling->purate($ptitle);
   $blog->go("post/$postCode/$pTaitle?i=pubbed");
 }

@@ -1,34 +1,13 @@
 ﻿<?php
 if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:hub.php");exit();}
-if(!isset($_COOKIE["loggedIn"])){header("Location:../home.php");exit();}
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 
-$id = $_COOKIE["loggedIn"];
-$clid = $_GET["id"];
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-    }
-}
-
+require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/dsEngine.php");
+$ds = new dsEngine;
 $redirect = "../home.php";
-require($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw.php");
-$countries = [];
-include($_SERVER['DOCUMENT_ROOT']."/ds/g/countries.php");
+require_once("security.php");
 
-$query = 'SELECT * FROM partners WHERE account = "'.$uname.'"';
-if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $pId = $row["id"];
-      $status = $row["status"];
-
-    }
-}
-if (!isset($pId)){header("Location: /account/BePartner.php");exit();}
-//if ($status == "suspended" OR $status == "pending"){header("Location: /account/Publish.php");exit();}
+$clid = $_GET["id"];
+$countries = $ds->countries;
 
 $query = 'SELECT * FROM dsorders WHERE orderId = '.$clid.' AND seller = '.$pId;
 
@@ -89,15 +68,6 @@ $ordExplicitStatus = ordStatus($ordNStatus, 1);
     }
     .warning.red {
         color:#ff6767;
-    }
-    ul.address {
-        list-style-type: none;
-        text-align:left;
-        font-family: "Open Sans", sans-serif;
-        padding: 0;
-    }
-    ul.address li {
-       text-align:left;
     }
     .pHeader {
         text-decoration:underline;
@@ -167,27 +137,17 @@ $ordExplicitStatus = ordStatus($ordNStatus, 1);
                 <?php
                     echo "Customer Id: u#".$ordBuyer."<br>";
                     echo "Name: ".$customerTitle." ".$customerUname."<br>";
-                    echo "Contact: ".$customerEmail." <br><span class='warning red'>(try to contact the customer as little as possible)</span>";
+                    echo "Contact: ".$customerEmail." <br><span class='warning red'>try to contact the customer as little as possible!</span>";
 
                 ?>
                 </p>
+                <?php
+                  $address = $ds->fetchAddress($ordBuyer);
+                  echo $ds->makeAddressList($address, true);
 
-                <ul class="address">
-                    <li class="pHeader">Address</li>
-                    <?php
-                        $addressArray = explode(";", $ordAddress);
+                 ?>
 
-                        for ($c = 0; $c < count($addressArray) ;$c++){
-                            if ($c == count($addressArray)-1){
-                                echo "<li>".$countries["GLO"][$addressArray[$c]]." (".$addressArray[$c].")</li>";
-                            }
-                            else {
-                                echo "<li>".$addressArray[$c]."</li>";
-                            }
-                        }
 
-                    ?>
-                </ul>
                 <h3>Shipping</h3>
                 <p>Current status:  <?php echo $ordExplicitStatus; ?></p>
 

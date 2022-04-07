@@ -1,15 +1,17 @@
 ﻿<?php
 
-// requires $conn, $moneyconn, $clid, $customer_email, $mycode
+// requires $clid, $mycode
 
+
+
+require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/promote.php');
 require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/ds-actcode.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/account/prem/partAmount.php');
-if (!isset($mycode) OR $mycode != $ds_actcode){echo "invalid certification";exit();}
+$ds = new dsEngine;
+$conn = $ds->conn; $moneyconn = $ds->moneyconn;
 
-require_once("g/countries.php");
-if (!class_exists("loopBasket")){require_once("g/loopBasket.php");}
+if (!isset($mycode) OR $mycode != $ds_actcode){echo "invalid certification";exit();}
 
 $query = "SELECT * FROM dsclearing WHERE id = $clid";
 if ($result = $conn->query($query)) {
@@ -22,22 +24,15 @@ if ($result = $conn->query($query)) {
         $dsclearingTotal = $row["total"];
     }
 }
-
-$query = "SELECT * FROM accountsTable WHERE id = $customer";
-$result = $conn->query($query);
-while ($row = $result->fetch_assoc()) {
-    $customer_tier = $row["tier"];
-    $customer_name = $row["uname"];
-    $customer_title = $row["title"];
-}
+if (!isset($customer)) {echo "invalid clid";exit;}
 
 $custTran = new transaction($moneyconn, $customer);
 $custProm = new adventurer($conn, $customer);
 
 $codeCookieReplacement = $codeList;
 $purchase = explode(",", $purchase);
-$inbasket = $purchase;
-$basketed = new loopBasket($conn, $purchase, false, false, true, "items", true);
+$basketed = new loopBasket;
+$basketed->loopBasket($conn, $purchase, false, false, true, "items", true);
 
 $partnerMail = <<<MASSMAIL
 <!DOCTYPE html>
@@ -114,9 +109,7 @@ $itemLine = <<<STUDD
 STUDD;
 
 $fullLine = "";
-$sellerPayment = array(
-"Royalty" => array("paid"=>0, "shipping"=>0, "amount"=>0, "items"=>"", "digital"=>1)
-);
+$sellerPayment = array("Royalty" => array("paid"=>0, "shipping"=>0, "amount"=>0, "items"=>"", "digital"=>1));
 $ordersArray = array();
 
 $sellerPaymentRoyalty = $sellerPayment["Royalty"];
@@ -146,45 +139,23 @@ foreach ($basketed->itemArray as $item) {
   $sellerPaymentRoyalty["paid"] = $sellerPaymentRoyalty["paid"] + $royalty;
   $sellerPaymentInfo["paid"] = $sellerPaymentInfo["paid"] + $toSeller;
 
-  $sellerPaymentInfo["items"][] = detailsLine($prodname, $item["prodSpecs"]);
-  echo detailsLine($prodname, $item["prodSpecs"]);
+  $sellerPaymentInfo["items"][] = $ds->detailsLine($item["prodSpecs"], $prodname);
   if ($row["digital"] == 0){$sellerPaymentInfo["digital"] = 0;}
 
-  $artShipping = $row["shipping"];
-  $shippingCost = $item["specShipping"];
-  if ($artShipping != ""){
-      $chunks = array_chunk(preg_split('/(:|,)/', $artShipping), 2);
-      $assocDico = array_combine(array_column($chunks, 0), array_column($chunks, 1));
-      foreach ($assocDico as $key => $value) {
-          if (strlen($key) == 3){
-          //see if it's in a country array
-              $currentArray =  $countries[$key];
-              if (isset($currentArray[$country])){
-                  $shippingCost = $value;
-                  break;
-              }
-          }
-          else if (strlen($key) == 2){
-          //single country
-              if ($key==$country){
-                  $shippingCost = $value;
-                  break;
-              }
-          }
-      }
-  }
+  $artShipping = 0;
+  $shippingCost = $ds->itemShipping($item, $country);
   $sellerPaymentInfo["shipping"] += $shippingCost;
 
   $sellerPaymentInfo["amount"] += $ordiprice + $shippingCost;
   $sellerPayment[$sellerId] = $sellerPaymentInfo;
 
   //generate email line
-  $currentLine = str_replace("COOLPRICE", makeHuman($ordiprice), $itemLine);
+  $currentLine = str_replace("COOLPRICE", $ds->makeHuman($ordiprice), $itemLine);
   $currentLine = str_replace("COOLTITLE", $prodname, $currentLine);
   $currentLine = str_replace("COOLIMAGE", $prodimg, $currentLine);
   $coolAddInfo = "";
   $coolAddInfo = $coolAddInfo."Seller: ".$row["seller"]." (p#".$row['sellerId'].")"."<br>";
-  if ($row["digital"] == 0) {$coolAddInfo = $coolAddInfo."Shipping: ".makeHuman($shippingCost)."<br>";}
+  if ($row["digital"] == 0) {$coolAddInfo = $coolAddInfo."Shipping: ".$ds->makeHuman($shippingCost)."<br>";}
   foreach ($item["prodSpecs"] as $addInfo){
       $coolAddInfo .= ucfirst($addInfo)."<br>";
   }
@@ -204,7 +175,7 @@ foreach ($basketed->itemArray as $item) {
   else if ($prodId == 2){
     //credit
       $pTran = new transaction($moneyconn, $customer);
-      $pTran->new($ordiprice, $customer_title." ".$customer_name, "Pay-in");
+      $pTran->new($ordiprice, $custProm->fullName, "Pay-in");
   }
   else if ($prodId == 3) {
     //support product
@@ -219,7 +190,7 @@ foreach ($basketed->itemArray as $item) {
 
     if (isset($pId)) {
         $pTran = new transaction($moneyconn, $pId);
-        $pTran->new($ordiprice, $customer_title." ".$customer_name, "Support Payment");
+        $pTran->new($ordiprice, $custProm->fullName, "Support Payment");
         $custProm->promote("Journeyman");
     }
   }
@@ -235,7 +206,7 @@ else {
 }
 $bigMail = str_replace("PRODLINESTUDD", $fullLine, $bigMail);
 $bigMail = str_replace("COOLCLID", $clid, $bigMail);
-$bigMail = str_replace("COOLAMOUNT", makeHuman($dsclearingTotal), $bigMail);
+$bigMail = str_replace("COOLAMOUNT", $ds->makeHuman($dsclearingTotal), $bigMail);
 if ($codeList != ""){
     $bigMail = str_replace("INFOABOUTCODES", "Codes used: ".$codeList."<br>", $bigMail);
 }
@@ -249,7 +220,7 @@ $headers .= "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
 mail ("pantheon@manyisles.ch", "Order #$clid Cleared", $bigMail, $headers);
-mail ($customer_email, "Order #$clid Cleared", $bigMail, $headers);
+mail ($custProm->email, "Order #$clid Cleared", $bigMail, $headers);
 
 //pay partners
 print_r($sellerPayment);
@@ -259,7 +230,7 @@ foreach ($sellerPayment as $partner => $partnerArray) {
     $shippingPaid = $partnerArray["shipping"];
     if ($partner == "Royalty"){
         $pTran = new transaction($moneyconn, 14);
-        $pTran->new($paid, $customer_title." ".$customer_name, "Royalty on #$clid");
+        $pTran->new($paid, $custProm->fullName, "Royalty on #$clid");
     }
     else {
         //create orders
@@ -267,25 +238,25 @@ foreach ($sellerPayment as $partner => $partnerArray) {
         if ($partnerArray["digital"]==0){$ordStatus = 0;} else {$ordStatus = 2;}
         $orderItems = implode(", ", $partnerArray["items"]);
         $query = sprintf('INSERT INTO dsorders (orderId, buyer, seller, paid, shipping, items, address, amount, status, codes) VALUES ("%s", %s, %s, %s, %s, "%s", "%s", %s, %s, "%s")', $clid, $customer, $partner, $paid, $shippingPaid, $orderItems, $address, $partnerArray["amount"], $ordStatus, $codeList);
+        echo $query;
         if ($conn->query($query)){
             //pay partners
-            $query = "SELECT account FROM partners WHERE id = $partner";
+            $query = "SELECT user FROM partners WHERE id = $partner";
             if ($result = $conn->query($query)) {
                 while ($row = $result->fetch_assoc()){
-                    $partnerAccName = $row["account"];
+                    $partnerAccId = $row["user"];
                 }
             }
-            $query = 'SELECT id, email FROM accountsTable WHERE uname = "'.$partnerAccName.'"';
+            $query = 'SELECT email FROM accountsTable WHERE id = "'.$partnerAccId.'"';
             if ($result = $conn->query($query)) {
                 while ($row = $result->fetch_assoc()){
-                    $partnerAccId = $row["id"];
                     $partnerAccEmail = $row["email"];
                 }
             }
             if (isset($partnerAccId)){
                 $pTran = new transaction($moneyconn, $partnerAccId);
-                $pTran->new($paid, $customer_title." ".$customer_name, "Payment of Order #$clid");
-                $pTran->new($shippingPaid, $customer_title." ".$customer_name, "Shipping costs for Order #$clid");
+                $pTran->new($paid, $custProm->fullName, "Payment of Order #$clid");
+                $pTran->new($shippingPaid, $custProm->fullName, "Shipping costs for Order #$clid");
             }
             //inform partners
             if ($partnerArray["digital"]==0){

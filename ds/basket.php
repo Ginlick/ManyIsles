@@ -1,21 +1,14 @@
 ﻿<?php
 
-require_once("g/sideBasket.php");
-$includeDCodes = true;
+require_once("g/dsEngine.php");
+$ds = new dsEngine;
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title>Basket | Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
+    <?php echo $ds->giveHead(); ?>
     <link rel="stylesheet" type="text/css" href="g/ds-tables.css">
     <style>
             .credTable.orders {
@@ -61,7 +54,7 @@ $includeDCodes = true;
                     <li><a class="Bar" href="home.php">Browse</a></li>
                 </ul>
                 <?php
-                    doSideBasket();
+                    echo $ds->sideBasket();
                 ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
@@ -80,11 +73,12 @@ $includeDCodes = true;
 
 
 <?php
+  $basketed = $ds->basketed;
     if ($basketed->type == "subs"){
         foreach ($basketed->itemArray as $itemDetails) {
             echo "<tr>";
             echo '<td>'.$itemDetails["name"].' subscription</a></td>';
-            echo '<td>'.makeHuman($itemDetails["price"]).' / year</td>';
+            echo '<td>'.$ds->makeHuman($itemDetails["price"]).' / year</td>';
             echo "</tr>";
         }
     }
@@ -94,15 +88,15 @@ $includeDCodes = true;
             $articleName = $itemDetails["row"]["name"];
             if ($itemDetails["row"]["id"]==3){$articleName = "Support ".$itemDetails["addName"];}
             else if ($itemDetails["row"]["id"]==1){$articleName = $itemDetails["addName"]." Tier";}
-            $link = linki($itemDetails["row"]["id"],$itemDetails["row"]["link"],$itemDetails["row"]["shortname"]);
+            $link = $ds->linki($itemDetails["row"]["id"],$itemDetails["row"]["link"],$itemDetails["row"]["shortname"]);
 
-            $fullUL = detailsUL($itemDetails["prodSpecs"], $itemDetails["codeReducs"]);
+            $fullUL = $ds->detailsUL($itemDetails["prodSpecs"], $itemDetails["codeReducs"]);
 
             echo "<tr>";
-            echo '<td><img src="'.clearImgUrl($itemDetails["row"]["thumbnail"]).'" alt="thumbnail" /></td>';
+            echo '<td><img src="'.$ds->clearImgUrl($itemDetails["row"]["thumbnail"]).'" alt="thumbnail" /></td>';
             echo '<td><a href="'.$link.'">'.$articleName.'</a></td>';
             echo '<td>'.$fullUL.'</td>';
-            echo '<td>'.makeHuman($itemDetails["price"]).'</td>';
+            echo '<td>'.$ds->makeHuman($itemDetails["price"]).'</td>';
             echo '<td class="remove"><a href="trash.php?which='.$cunter.'">Remove</a>';
             echo "</tr>";
             $cunter++;

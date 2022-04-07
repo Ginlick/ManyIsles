@@ -1638,18 +1638,19 @@ MAIN;
         return $randomString;
     }
 }
-
 class spellGen {
   public $gen;
   public $parse;
   public $usableIndexes = [];
+  use allBase;
+
   function __construct($gen) {
     $this->gen = $gen;
     if ($this->gen->page == 0){$this->gen->page = 25;}
     if ($this->gen->page == 0){$this->gen->page = 25;}
 
-    require($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
-    $this->parse = new parse($gen->dbconn, 0, 0, $gen->domain);
+    require($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
+    $this->parse = new parser;
 
     $query = "SELECT * FROM wiki_settings";
     if ($found = $this->gen->dbconn->query($query)) {
@@ -1682,7 +1683,7 @@ class spellGen {
         if ($details == null) {echo $row["id"];}
         $details["id"] = $row["id"];
         if ($parset) {
-          $details["FullDesc"] = $this->parse->bodyParser($details["FullDesc"]);
+          $details["FullDesc"] = $this->parse->parse($details["FullDesc"]);
           foreach ($details as $key => $detail){
             $details[$key] = $this->placeSpecChar($detail);
           }

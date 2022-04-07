@@ -1,40 +1,33 @@
 ﻿<?php
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
+require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
+require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/ds-actcode.php");
+require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/ds/subs/subHandler.php');
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-$user = new adventurer;
-if (!$user->emailConfirmed){header("Location: checkoutw");exit();}
-else if (!$user->check(true)){header("Location: checkout");exit();}
-$conn = $user->conn; $id = $user->user;
-
-session_start();
-if (!isset($_SESSION["subbasket"]) or $_SESSION["subbasket"] == ""){
-    if (!isset($_SESSION["basket"]) or $_SESSION["basket"] == ""){
-        header("Location: basket.php");exit();
-    }
-    else {
-        $inbasket = explode(",", $_SESSION["basket"]);
-        $type = "items";
-    }
-}
-else {
-    $inbasket = $_SESSION["subbasket"];
-    $type = "subs";
+$ds = new dsEngine(true);
+if (!$ds->user->check(true, true)){
+  $ds->go("checkoutw");
 }
 
+$id = $ds->user->user;
+$conn = $ds->conn; $moneyconn = $ds->moneyconn;
+$custTran = new transaction($moneyconn, $id);
+
+$type = $ds->type;
+$basketed = $ds->basketed;
+$totalShipping = $ds->shipping();
+
+$totalPrice = $ds->totalPrice($basketed, $totalShipping);
+$totalPrice = $totalPrice + $ds->calcStripeTax($totalPrice);
+
+if (!$basketed->pureDigit){
+  if (count($basketed->deliverableCountries) == 0) {$ds->go("checkout1");}
+  else if (!isset($basketed->deliverableCountries[$ds->fetchAddress()["country"]])){$ds->go("checkout1");}
+}
+
+//generate stripe's product object
 $line_items = [];
-$totalPrice = 0;
-$fullDCodeReduction = 0;
-$sideBasket = false;
-$countriesMatter = true;
-$prodImage; $prodName;
-$priceRef = "";
-$itemId = null;
-
-require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/loopBasket.php");
-$basketed = new loopBasket($conn, $inbasket, true, false, true, $type);
 
 foreach ($basketed->itemArray as $item){
     if ($basketed->type == "subs"){
@@ -48,30 +41,6 @@ foreach ($basketed->itemArray as $item){
         $prodImage = $item["row"]["thumbnail"];
     }
 }
-
-require("g/shipping.php");
-if($totalShipping === null){exit();}
-$totalPrice = $basketed->totalPrice - $basketed->fullDCodeReduction;
-$totalPrice += $totalShipping;
-
-if (!$basketed->pureDigit){
-    if (count($basketed->deliverableCountries) == 0) {header("Location: checkout1.php");exit();}
-    else {
-        $query = "SELECT Country FROM address WHERE id = ".$id;
-        $result = $conn->query($query);
-        if (mysqli_num_rows($result) == 0) { header("Location: checkout1.php");exit(); }
-        while ($row = $result->fetch_assoc()) {
-            if (!isset($basketed->deliverableCountries[$row["Country"]])) { header("Location: checkout1.php");exit();}
-        }
-    }
-}
-
-
-$stripeTax = $totalPrice*0.029;
-$stripeTax = round($stripeTax);
-$stripeTax = $stripeTax + 32;
-$totalPrice = $totalPrice + $stripeTax;
-
 if ($basketed->prodNum>1){
     $prodName = "Multiple Products";
     $prodImage = "https://manyisles.ch/Imgs/FaviconDS.png";
@@ -100,37 +69,39 @@ $multipleArray = array_merge($multipleArray, $price_dataCont);
 array_push($line_items, $multipleArray);
 
 $mode = "payment";
-if ($basketed->type == "subs"){$mode = "subscription";$clearingId=1;}
-
+if ($basketed->type == "subs"){$mode = "subscription";$clid=1;}
 
 if ($basketed->type == "items"){
-    $query = "SELECT * FROM address WHERE id = ".$id;
-    $result = $conn->query($query);
-    $address = null;
-    while ($row = $result->fetch_assoc()) {
-        if ($row == null AND $pureDigit == false) {header("Location: checkout1.php");exit();}
-        $address = $row["fullname"].";".$row["address"].";".$row["Zip"].";".$row["city"].";".$row["Country"];
-        $country = $row["Country"];
-    }
-    if (isset($_COOKIE["ds_codes"])){
-        $codeList = $_COOKIE["ds_codes"];
-    }
-    else {
-        $codeList = "";
-    }
-    require("g/killCodes.php");
+  $query = "SELECT * FROM address WHERE id = ".$id;
+  $result = $conn->query($query);
+  $address = null;
+  while ($row = $result->fetch_assoc()) {
+  if ($row == null AND $basketed->pureDigit == false) {header("Location: checkout1.php");exit();}
+      $address = $row["fullname"].";".$row["address"].";".$row["Zip"].";".$row["city"].";".$row["Country"];
+      $country = $row["Country"];
+  }
 
-    $query = sprintf('INSERT INTO dsclearing (buyer, total, purchase, address, country, codes) VALUES (%s, %s, "%s", "%s", "%s", "%s")', $id, $totalPrice, $_SESSION["basket"], $address, $country, $codeList);
+  if ($basketed->codesExist AND isset($_COOKIE["ds_codes"])){
+      $codeList = $_COOKIE["ds_codes"];
+  }
+  else {
+      $codeList = "";
+  }
+  require("g/killCodes.php");
 
-    if ($conn->query($query)) {
-        $clearingId = $conn->insert_id;
-    }
+  $query = sprintf('INSERT INTO dsclearing (buyer, total, purchase, address, country, codes) VALUES (%s, %s, "%s", "%s", "%s", "%s")', $id, $totalPrice, implode(",", $basketed->inbasket), $address, $country, $codeList);
+  if ($conn->query($query)) {
+      $clid = $conn->insert_id;
+  }
+  else {
+    $ds->go("checkout2?why=error");
+  }
 }
 else if ($basketed->type == "subs"){
     $fullDatas = json_encode(["subId"=>$itemId, "stripeId"=> $priceRef, "paymode"=>"stripe"]);
     $query = sprintf('INSERT INTO ds_asubs (buyer, datas, status, plan) VALUES (%s, \'%s\', "pending", '.$itemId.')', $id, $fullDatas);
     if ($moneyconn->query($query)) {
-        $clearingId = $moneyconn->insert_id;
+        $clid = $moneyconn->insert_id;
     }
 }
 
@@ -155,13 +126,14 @@ require_once('stripe-php-7.75.0/init.php');
 require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/stripe-sk.php");
 header('Content-Type: application/json');
 
-$metaInfo = ["clid"=>$clearingId, "type"=>$basketed->type];
+$metaInfo = ["clid"=>$clid, "type"=>$basketed->type];
+
 $successLink = '/ds/success?type='.$basketed->type;
 
 
 \Stripe\Stripe::setApiKey($stripe_sk);
 $checkout_session = \Stripe\Checkout\Session::create([
-  'customer_email' => $user->email,
+  'customer_email' => $ds->user->email,
   'payment_method_types' => ['card'],
   'line_items' => $line_items,
   'mode' => $mode,

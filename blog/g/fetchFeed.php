@@ -49,8 +49,8 @@ else if ($buser != 0 AND $buser != ""){
 else {$hasWhere = false;}
 
 //tags
+$addition = "";
 if (count($tags) > 0) {
-  $addition = "";
   $dontDo = true;
   foreach ($tags as $tag){if ($tag != ""){$dontDo = false;}}
   if (!$dontDo){

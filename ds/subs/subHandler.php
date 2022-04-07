@@ -25,7 +25,7 @@ class subHandler {
         }
         $datas["stripe_customer"] = $this->plan->customer;
         $datas = json_encode($datas);
-        $query = "UPDATE ds_asubs SET validity =  366, fullId = '".$this->plan->subscription."', datas = '".$datass."' WHERE id = $clid";
+        $query = "UPDATE ds_asubs SET validity =  366, fullId = '".$this->plan->subscription."', datas = '".$datas."' WHERE id = $clid";
         if ($this->moneyconn->query($query)) {$this->subProfit($clid, $buyer); return true;}
     }
     function subProfit($sid, $user){
@@ -54,7 +54,7 @@ class subHandler {
         $query = "UPDATE ds_asubs SET validity = $timeSpan, status = '$status' WHERE fullId = '$clid'";
         if ($this->moneyconn->query($query)) {return true;}
     }
-    function statSub($sid, $dir = 1){ //credit 
+    function statSub($sid, $dir = 1){ //credit
         if ($dir == 1){$status = "active";}else {$status = "canceled";}
         $query = "UPDATE ds_asubs SET status = '$status' WHERE id = $sid";
         if ($this->moneyconn->query($query)){return true;}
@@ -110,4 +110,3 @@ function subPower($domain, int $account, $moneyconn = null) {
     return 0;
 }
 ?>
-

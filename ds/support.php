@@ -7,14 +7,8 @@ require_once("g/sideBasket.php");
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title>Support Creator | Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
+    <?php echo $ds->giveHead(); ?>
     <style>
         .inputErr {
             font-size: calc(9px + .3vw);

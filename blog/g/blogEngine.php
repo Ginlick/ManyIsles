@@ -18,8 +18,7 @@ class blogEngine {
       $this->blogconn = $blogconn;
 
       require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-      $key = 0; if (isset($_COOKIE["loggedIn"])){$key = $_COOKIE["loggedIn"];}
-      $this->user = new adventurer($this->conn, $key);
+      $this->user = new adventurer($this->conn);
 
       require($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
       $this->parse = new parser;
@@ -241,7 +240,7 @@ class blogEngine {
       return $this->user->signPrompt($return);
     }
     function giveFooter() {
-      return '<div w3-include-html="/blog/g/footer.html" w3-create-newEl="true"></div>';
+      return '<div w3-include-html="/blog/g/footer2.html" w3-create-newEl="true"></div>';
     }
 
     function styles($cachable = true) {
@@ -252,8 +251,8 @@ class blogEngine {
         <meta charset="UTF-8" />
         <link rel="icon" href="/Imgs/Favicon.png">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-        <link rel="stylesheet" type="text/css" href="/ds/g/ds-g.css">
-        <link rel="stylesheet" type="text/css" href="/blog/g/blog.css">
+        <link rel="stylesheet" type="text/css" href="/Code/CSS/diltou.css">
+        <link rel="stylesheet" type="text/css" href="/blog/g/blog2.css">
       MAGDA;
       return $return;
     }
@@ -289,6 +288,10 @@ class blogEngine {
       if ($creatorInfo AND $buserInfo) {
         if ($this->doChanges($buserInfo["following"], $follower, $creator, $dir, "following")) {
           $this->doChanges($creatorInfo["followers"], $creator, $follower, $dir);
+          if (count($creatorInfo["followers"])>= 21){
+            $creator = new adventurer($this->conn, $creatorInfo["user"]);
+            $creator->promote("Loremaster");
+          }
         }
       }
     }
@@ -318,6 +321,7 @@ class blogEngine {
     //Tags
     function addTags(array $tagArr){
       foreach ($tagArr as $tag){
+        if ($tag==""){continue;}
         $query = "SELECT id FROM tags WHERE tag = '$tag'";
         if ($result = $this->blogconn->query($query)){
           if (mysqli_num_rows($result) > 0) {
@@ -706,10 +710,14 @@ class blogEngine {
       }
       return $followers;
     }
-    function getCommaArr($arr) {
-      $pgenre = $this->baseFiling->purify($arr, "full");
-      $pgenre = explode(", ", $pgenre);
-      $pgenre = array_slice($pgenre, 0, 22);
+    function getCommaArr($arr, $reg = "full", $limit = 22) {
+      $pgenre = explode(", ", $arr);
+      $pgenre = array_slice($pgenre, 0, $limit);
+      foreach ($pgenre as $key => &$tag) {
+        $tag = $this->baseFiling->purify($tag, $reg);
+        if ($tag == ""){unset($pgenre[$key]);}
+      }
+      $pgenre = array_values($pgenre);
       return $pgenre;
     }
     function arrAllows($arr, $key) {

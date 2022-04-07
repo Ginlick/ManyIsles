@@ -1,41 +1,15 @@
 ﻿<?php
-
-$servername = "localhost:3306";
-$username = "aufregendetage";
-$password = "vavache8810titigre";
-$dbname = "manyisle_accounts";
-
-if ($_SERVER['REMOTE_ADDR']=="::1"){
-$servername = "localhost";
-$username = "aufregendetage";
-$password = "vavache8810titigre";
-$dbname = "accounts";
+require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
+$ds = new dsEngine;
+if (!$ds->user->check(true)){
+  $ds->go("store");
 }
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if(!isset($_COOKIE["loggedIn"])){header("Location: home.html");exit();}
-
-$id = $_COOKIE["loggedIn"];
-
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-      $confirmed = $row["emailConfirmed"];
-    }
-}
-$redirect = "checkout.html";
-include("../Server-Side/checkPsw.php");
-if ($confirmed == NULL){header("Location: checkoutw.php");exit();}
-
-session_start();
 session_destroy();
 
     $phrase = "You should receive your purchase by postal services within a few weeks. It may take a moment for any digital products you purchased to take effect.<br>
                                 You will receive a receipt by mail.<br><br>
-                                You can always view your order from your <a href='/account/SignedIn.php?display=orders'>account page</a>.";
+                                You can always view your order from your <a href='/account/SignedIn?display=orders'>account page</a>.";
 if (isset($_GET["type"])){
     if ($_GET["type"] == "subs"){
         $phrase = "Your subscription was created. It may take a moment to take effect.<br><br>You can view and edit your active plans from your <a href='/ds/subs/hub'>hub</a>.";
@@ -48,15 +22,8 @@ if (isset($_GET["type"])){
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
-    <title>Checkout | Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
+    <title>Checkout Completed | Digital Store</title>
+    <?php echo $ds->giveHead(); ?>
     <style>
 
     </style>
@@ -70,9 +37,6 @@ if (isset($_GET["type"])){
                 <ul class="myMenu">
                     <li><p class="Bar" style="color:black">Checking out</p></li>
                 </ul>
-                <?php
-                    include("g/sideBasket.php");
-                ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
                 </ul>

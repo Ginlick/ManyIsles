@@ -84,7 +84,7 @@ if (isset($_COOKIE["loggedIn"])) {
                         echo ' <div class="bottButtCon"><a href="edit.php?new=1"><button class="wikiButton" >Create Wiki</button></a></div>';
                     }
                     else if (!isset($_COOKIE["loggedIn"])) {
-                        echo "<p><a href='/account/Account.html?display=Log' target='_blank'>sign in</a></p>";
+                        echo '<div class="bottButtCon"><a href="/account/Account.html?display=Log"><button class="wikiButton" >Sign In</button></a></div>";
                     }
                     else {
                         echo "<p>Currently, your slots are full.</p>";

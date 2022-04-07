@@ -8,6 +8,7 @@ if (!trait_exists("allBase")){
       "cleanText" => "/^[^\"<>]+$/",
       "cleanText2" => "/^[^\"'<>]+$/",
       "wikiName" => "/^[A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū',():\- ]{2,}$/",
+      "tag" => "/[^A-Za-z0-9&]/",
     ];
 
     function construct() {
@@ -75,7 +76,7 @@ if (!trait_exists("allBase")){
     }
     function go($place) {
       $this->killCache();
-      echo "<script>window.location.replace('$dom$place');</script>";
+      echo "<script>window.location.replace('$place');</script>";
       exit;
     }
   }

@@ -12,6 +12,7 @@ if (!class_exists("parser")){
     }
 
     function parse($body, $extent = 0, $callback = null) {
+      //extent: -1 no quotes, 0 basic parse, 1 with images&co
 
       //pre-Parsedown processing
       if ($extent > 0) {
@@ -40,7 +41,10 @@ if (!class_exists("parser")){
         $body = str_replace("[wide]", "<div class='wide'>", $body);
         $body = str_replace("[/wide]", "</div>", $body);
       }
-      $body = $this->placeSpecChar($body, 0);
+
+      $specCharLvl = 1;
+      if ($extent < 0){$specCharLvl = 0;}
+      $body = $this->placeSpecChar($body, $specCharLvl);
 
       return $body;
     }

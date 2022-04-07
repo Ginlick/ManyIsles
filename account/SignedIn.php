@@ -267,9 +267,9 @@ if ($toprow = $conn->query($query)) {
             $ordSeller = $row["seller"];
             $ordAmount = $row["amount"];
             $ordItems = $row["items"];
+            $ordItems = str_replace("),", ")<br>", $ordItems);
             $ordXStatus = $row["status"];
             $ordRegdate = $row["reg_date"];
-
 
 
             $date_array = date_parse($ordRegdate);

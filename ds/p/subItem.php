@@ -16,7 +16,7 @@ $artViewImgs = inputChecker($_POST["viewImgs"], "/[\"]/", true);
 $artOSources = inputChecker($_POST["oSources"], "/[\"]/", true);
 $artSpecifications = inputChecker($_POST["specifications"], "/[\']/", true);
 $artKind = inputChecker($_POST["artKind"], "/[\"]/", true);
-if ($_POST["shipping"] == "") {$artShipping = ""; } else {$artShipping = inputChecker($_POST["shipping"], "/^([A-Z-a-z]{2,3}:[0-9]*(,|))+$/", false);}
+if ($_POST["shipping"] == "") {$artShipping = ""; } else {$artShipping = inputChecker($_POST["shipping"], "/^([0-9]+|(([A-Z-a-z]{2,3}:[0-9]*(,|))+))$/", false);}
 $artStock = inputChecker($_POST["stock"], "/^[0-9]*$/", false);
 $artMaxAmount = inputChecker($_POST["maxAmount"], "/^[0-9]*$/", false);
 $artMinPrice = inputChecker($_POST["minPrice"], "/^[0-9]*$/", false);
@@ -27,6 +27,7 @@ $artDescSpecs = str_replace('"', '%double_quote%', $artDescSpecs);
 
 //preparing
 $artSpecsArray = json_decode($artSpecifications, true);
+//echo $artSpecifications;
 
 $counter = 0;
 foreach ($artSpecsArray as $key => $specArray){
@@ -50,10 +51,10 @@ foreach ($artSpecsArray as $key => $specArray){
         if ($optionArray["price"] == "") {
             $optionArray["price"] = 0;
         }
-        if ($optionArray["shipping"] == "") {
+        if (!isset($optionArray["shipping"]) OR $optionArray["shipping"] == "") {
             $optionArray["shipping"] = 0;
         }
-        if ($optionArray["stock"] == "") {
+        if (!isset($optionArray["stock"]) OR $optionArray["stock"] == "") {
             $optionArray["stock"] = 0;
         }
         $specArray["options"][$key2] = $optionArray;
@@ -69,7 +70,7 @@ $artName = substr($artName, 0, 100);
 $artShortname = substr($artShortname, 0, 22);
 if ($artPrice > 19999){$artPrice = 19999;}else if ($artPrice < 0){$artPrice = 0;}
 if ($artMinPrice > 19999){$artMinPrice = 19999;}else if ($artMinPrice > 0 OR $artMinPrice == null                                                  ){$artMinPrice = 0;}
-if ($artMaxAmount > 99){$artMaxAmount = 99;}else if ($artMaxAmount > 1){$artMaxAmount = 1;}
+if ($artMaxAmount > 99){$artMaxAmount = 99;}else if ($artMaxAmount < 1){$artMaxAmount = 1;}
 if ($artStock > 100){$artStock = 100;}
 
 if ($artShortname == "") {
@@ -108,6 +109,7 @@ $query = str_replace("artMinPrice", $artMinPrice, $query);
 if ($result = $conn->query($query)){
     if ($artId != 0){
         header("Location:item.php?why=upSub&id=".$artId);exit();
+        $error = "Could not redirect";
     }
     else {
         $query = "SELECT id FROM dsprods ORDER BY id DESC LIMIT 0, 1";

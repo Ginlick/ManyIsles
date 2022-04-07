@@ -5,29 +5,19 @@ if (isset($_GET["clear"])){
         unset($_SESSION["subbasket"]);
     }
 }
-
-require_once("g/artTabs.php");
-require_once("g/sideBasket.php");
+require_once("g/dsEngine.php");
+$ds = new dsEngine;
 
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title>Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
+    <?php
+      echo $ds->giveHead();
+     ?>
     <style>
-
-
-
-
     </style>
 </head>
 <body>
@@ -40,7 +30,7 @@ require_once("g/sideBasket.php");
                     <li><a class="Bar" href="/home"><i class="fas fa-arrow-left"></i> Home</a></li>
                 </ul>
                 <?php
-                    doSideBasket();
+                    echo $ds->sideBasket();
                 ?>
 
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
@@ -59,10 +49,10 @@ require_once("g/sideBasket.php");
 <?php
 $latestid = "whelp";
     $query = "SELECT * FROM dsprods";
-        if ($toprow = $conn->query($query)) {
+        if ($toprow = $ds->conn->query($query)) {
         $counter = 0;
             while ($row = $toprow->fetch_assoc()) {
-                makeArtTab($row, $basketed->itemNumArray);
+                echo $ds->makeArtTab($row, $ds->basketed->itemNumArray);
             }
         }
 

@@ -1,0 +1,238 @@
+:root {
+  --diltou-text: black;
+  --diltou-lighttext: #818181;
+  --diltou-lines: #ddd;
+  --diltou-theme: #76b2d9;
+  --diltou-themehover: #609ec7;
+  --diltou-themecontrast: white;
+  --diltou-basec: white;
+
+  --diltou-baseFont: 'Open Sans', Arial, Helvetica, sans-serif;
+  --diltou-titleFont: 'Trebuchet MS', "Roboto", sans-serif;
+}
+
+body {
+    text-align: center;
+    font-family: var(--diltou-baseFont);
+    font-size: min(calc(11px + .4vw), 18px);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+h1 {
+    font-size: min(calc(17px + 2.2vw), 40px);
+}
+h1, h2, h3 {
+  color: var(--diltou-text);
+  font-family: var(--diltou-titleFont);
+}
+
+p, li {
+    font-size:var(--all-fonts-base);
+    text-align: center;
+}
+
+a, .fakelink {
+    color: var(--diltou-theme);
+    text-decoration: none;
+    font-family: inherit;
+}
+a:hover, .fakelink:hover {
+    color: var(--diltou-themehover);
+}
+
+.topnav {
+    background-color: var(--diltou-theme);
+}
+.topnav p, .topnav a {
+    color: var(--diltou-text);
+}
+    .topnav p:hover, .topnav a:hover {
+        color: var(--diltou-themecontrast);
+        transition: .3s ease;
+    }
+
+/*left*/
+.myMenu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.left-col {
+    width: 20%;
+    flex-grow: 1;
+    display: inline-block;
+}
+.menutitle {
+    text-align: left;
+    font-size: min(2.7vw, 40px);
+    padding: 1.2vw 0 1.6vw .8vw;
+    margin: 0;
+}
+.left-col h3 {
+    font-size: min(2.7vw, 40px);
+}
+
+.Bar {
+    padding: .5vw .8vw;
+    font-size: min(1.4vw, 20px);
+    font-weight: bold;
+    text-decoration: none;
+    text-align: left;
+    display: block;
+    margin: 0;
+    transition: .1s ease;
+    color: var(--diltou-text);
+}
+    .bottomFAQ .Bar:hover, .Bar:hover {
+      color: var(--diltou-themehover);
+    }
+
+    .Bar.line {
+        padding-bottom: 0.5vw;
+        border-bottom: 1.3px solid var(--diltou-lines);
+    }
+.bottomFAQ .Bar {
+    font-size: min(1vw, 14px);
+    color: var(--diltou-lines);
+}
+.crumbs {
+    font-family: var(--diltou-baseFont);
+    text-align: left;
+    padding: 90px 20px 0;
+    font-size: var(--all-fonts-smal);
+}
+    .crumbs, .crumbs a {
+        color: var(--diltou-lighttext);
+    }
+    .alert {
+        color:red;
+    }
+
+
+/*right*/
+.column {
+    width: 80%;
+    flex-grow: 1 1;
+    padding: 16px;
+    display: inline-block;
+    position: relative;
+}
+
+.flex-container {
+    display: flex;
+    align-items: stretch;
+    min-height: 90vh;
+    width: 90%;
+    max-width:1400px;
+    margin: auto;
+    padding-bottom: 80px;
+    background-color: var(--diltou-basec);
+    flex: 1 0 auto;
+}
+
+.diltouFooter {
+    background-color: var(--diltou-theme);
+    padding: 25px 0;
+}
+
+    .diltouFooter p {
+        width: 50%;
+        min-width: 200px;
+        margin: auto;
+        font-size: var(--all-fonts-smal);
+        padding: 20px;
+        text-align: center;
+    }
+    .diltouFooter a, .diltouFooter p {
+      color: var(--diltou-themecontrast);
+    }
+
+input, textarea, select {
+    margin: 8px 0;
+    box-sizing: border-box;
+    font-size: var(--all-fonts-base);
+}
+label {
+    font-size:var(--all-fonts-base);
+}
+
+button {
+    background-color: var(--diltou-theme);
+    border-radius: 10px;
+    padding: 9px;
+    font-size: var(--all-fonts-larg);
+    color: var(--diltou-themecontrast);
+    font-weight: normal;
+    display: inline;
+    margin: 0 10px;
+}
+
+    button:hover {
+        background-color: var(--diltou-themehover);
+        transition: .2s ease;
+        cursor: pointer;
+    }
+
+/*cool elements*/
+.contentblock {
+    width: 75%;
+    border: 1px solid var(--diltou-lines);
+    margin: calc(10px + 1vw) auto;
+    min-height: 500px;
+    border-radius: 5px;
+}
+
+
+@media only screen and (max-width: 900px), (max-aspect-ratio:3/4) {
+    h1 {
+        font-size: calc(17px + 3.5vw);
+    }
+    .flex-container {
+        align-items: unset;
+        display: inline-block;
+        width:100%;
+    }
+
+
+    .left-col {
+        width: 100%;
+        display: block;
+        max-width: unset !important;
+        position: relative !important;
+    }
+
+    .column {
+        width: 100%;
+        float: unset;
+    }
+
+    .topnav {
+        padding: 1.3vw;
+    }
+
+        .topnav p, .topnav a {
+            font-size: 2.5vw;
+        }
+
+    .toBeHidden, .bottomFAQ {
+        display: none;
+    }
+    .Bar {
+        text-align: center;
+        font-size: 4vw;
+    }
+
+    .menutitle {
+        text-align: center;
+        font-size: 8vw;
+        margin-top: 2vw;
+    }
+
+    .diltouFooter p {
+        width:70%;
+    }
+}

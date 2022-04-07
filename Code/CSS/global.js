@@ -350,7 +350,7 @@ function getCookie(cname) {
             return c.substring(name.length, c.length);
         }
     }
-    return "";
+    return false;
 }
 
 //account
@@ -380,7 +380,7 @@ function seekMaker(returner) {
 
 
 //cookie accepted checker
-if (getCookie("acceptCookies")==""){
+if (localStorage["alertdisplayed"]=='true' && !getCookie("acceptCookies")){
   createPopup("txt:We use cookies to recognize users and their preferences.;b:1;bTxt:accept;dur:55000;bAct:acceptCookies();'")
 }
 function acceptCookies() {

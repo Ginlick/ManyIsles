@@ -1,19 +1,17 @@
 ﻿<?php
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 
-session_start();
-$inbasket = explode(",", $_SESSION["basket"]);
-require_once("g/loopBasket.php");
+require_once("g/dsEngine.php");
+$ds = new dsEngine;
 
-if ($totalPrice < 150) {
-    $difference = 150 - $totalPrice;
+$inbasket = $ds->basketed->inbasket;
+if ($ds->basketed->totalPrice < 150) {
+    $difference = 150 - $ds->basketed->totalPrice;
     $topush = "2-".$difference;
     array_push($inbasket, $topush);
 }
 
 $_SESSION["basket"] = implode(",", $inbasket);
 
-header("Location:checkout2.php");exit;
+header("Location:checkout2");exit;
 
 ?>
-

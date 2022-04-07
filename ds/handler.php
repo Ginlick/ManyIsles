@@ -13,6 +13,8 @@ function print_log($val) {
   return file_put_contents('php://stderr', print_r($val, TRUE));
 }
 
+
+
 \Stripe\Stripe::setApiKey($stripe_sk);
 $endpoint_secret = $stripe_whsec;
 $mycode = $ds_actcode;
@@ -38,13 +40,11 @@ switch ($event->type) {
         $session = $event->data->object;
         $clid = $session->metadata["clid"];
 
-        if ($session->metadata["type"]=="items"){
-            require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/handlerEffect.php');
-
-            session_start();
-            session_destroy();
+        $type = $session->metadata["type"];
+        if ($type=="items"){
+          require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/handlerEffect.php');
         }
-        else if ($session->metadata["type"]=="subs"){
+        else if ($type=="subs"){
             $plan = new subHandler($mycode, "stripe", $session);
             $plan->newSub($clid);
         }

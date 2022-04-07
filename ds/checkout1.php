@@ -1,52 +1,36 @@
 ﻿<?php
 
-require_once("g/sideBasket.php");
+require_once("g/dsEngine.php");
+$ds = new dsEngine;
+$basketed = $ds->basketed;
 $basketed->possibleCountries();
 if ($basketed->pureDigit) {
-    header("Location: checkout2.php");exit();
+    $ds->go("checkout2");exit();
 }
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-$user = new adventurer;
+if (!$ds->user->check(true, true)){$ds->go("checkoutw");}
+if (count($basketed->inbasket) == 0) {$ds->go("store");}
 
-if (!$user->check(true, true)){header("Location: checkoutw");exit();}
+$conn = $ds->conn;
 
-$conn = $user->conn;
-
-if (isset($_SESSION["basket"])) {
-    if ($_SESSION["basket"] == "") {
-        header("Location: home.php");exit();
-    }
+$ds->fetchAddress();
+$autofillA = true; $showAddressImpossible = false;
+if (!$ds->address["exists"]){
+  $autofillA = false;
 }
-else {header("Location: home.php");exit();}
-
-$query = "SELECT * FROM address WHERE id = ".$user->user;
-$autofillA = false;
-if ($result = $conn->query($query)) {
-    while ($row = $result->fetch_assoc()) {
-        $fullname = $row["fullname"];
-        $address = $row["address"];
-        $city = $row["city"];
-        $zip = $row["Zip"];
-        $state = $row["Country"];
-        if ($fullname != null){$autofillA = true;}
-    }
+else if (!isset($basketed->deliverableCountries[$ds->address["country"]])) {
+  $autofillA = false;
+  $showAddressImpossible = true;
 }
-
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title>Checkout | Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
+    <?php
+      echo $ds->giveHead();
+     ?>
     <style>
             a.remove:hover {
             color:#EA210D !important;
@@ -55,7 +39,7 @@ if ($result = $conn->query($query)) {
     </style>
 </head>
 <body>
-    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;"></div>
+  <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl = "true"></div>
         <div class="flex-container">
             <div class='left-col'>
                 <a href="home.php"><h1 class="menutitle">Digital Store</h1></a>
@@ -63,7 +47,7 @@ if ($result = $conn->query($query)) {
                     <li><p class="Bar" style="color:black">Checking out</p></li>
                 </ul>
                 <?php
-                    doSideBasket();
+                    echo $ds->sideBasket();
                 ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
@@ -73,13 +57,18 @@ if ($result = $conn->query($query)) {
             </div>
 
             <div id='content' class='column'>
-              <?php echo $user->signPrompt(); ?>
+              <?php echo $ds->user->signPrompt(); ?>
 
                 <h1>Step 2</h1>
 
                 <div class="contentblock">
                     <h2>Delivery Address</h2>
+                    <?php
+                    if ($showAddressImpossible){
+                      echo "<p><span class='alert'>Note:</span> The basket cannot be shipped to your saved address.</p>";
+                    }
 
+                    ?>
                     <form action='makeAddress.php' method="post" style="width:100%" id="SignUpForm">
                         <div class="container">
 <?php
@@ -105,19 +94,19 @@ else {
   echo '
                            <table>
                                  <label for="fname"><i class="fa fa-user"></i> Full Name</label>
-                                    <input type="text" id="fname" name="fullname" placeholder="Hans D. Schleer"'; if ($autofillA) {echo 'value="'.$fullname.'"';} ; echo ' >
+                                    <input type="text" id="fname" name="fullname" placeholder="Hans D. Schleer"'; if ($autofillA) {echo 'value="'.$ds->address["fullname"].'"';} ; echo ' >
                                     <label for="adr"><i class="fa fa-address-card-o"></i> Address</label>
-                                    <input type="text" id="adr" name="address" placeholder="542 W. 15th Street"'; if ($autofillA) {echo 'value="'.$address.'"';}  echo '>
+                                    <input type="text" id="adr" name="address" placeholder="542 W. 15th Street"'; if ($autofillA) {echo 'value="'.$ds->address["address"].'"';}  echo '>
                                     <label for="city"><i class="fa fa-institution"></i>City, (State)</label>
-                                    <input type="text" id="city" name="city" placeholder="New York, NY"'; if ($autofillA) {echo 'value="'.$city.'"';} echo '>
+                                    <input type="text" id="city" name="city" placeholder="New York, NY"'; if ($autofillA) {echo 'value="'.$ds->address["city"].'"';} echo '>
                                     <label for="zip">Zip</label>
-                                    <input type="text" id="zip" name="zip" placeholder="10001" '; if ($autofillA) {echo 'value="'.$zip.'"';}  echo '>
+                                    <input type="text" id="zip" name="zip" placeholder="10001" '; if ($autofillA) {echo 'value="'.$ds->address["zip"].'"';}  echo '>
                                     <label for="state">Country</label>
 
 ';
 echo '<select id="state" name="state">';
 foreach ($basketed->deliverableCountries as $key => $value) {
-    if ($autofillA){if($key == $state){$selected = "selected";}else {$selected = "";}}
+    if ($autofillA){if($key == $ds->address["country"]){$selected = "selected";}else {$selected = "";}}
     else if ($key == "US"){$selected = "selected";}
     else {$selected = "";}
     echo "<option value='$key' $selected>$value</option>";
@@ -128,7 +117,7 @@ echo "</select></table>";
                                     echo "<p>Since you do not have any physical items in your basket, you can skip this step.";
                                 }
                                 else {
-                                    echo "<p>We will send your order by standard postal services.</p>";
+                                    echo "<p>We will send your order by standard postal services.<br>You are responsible for any mis-inputs.</p>";
                                 }
 
 }

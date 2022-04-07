@@ -1,6 +1,7 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/fileManager.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/createMarkdown.php");
 $dl = new dlengine();
 $dl->partner();
 $filing = new smolengine();
@@ -164,7 +165,7 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
           </section>
           <div class="inputCont">
               <label for="pname">Description <span>*</span> <a href="/wiki/h/fandom/markdown.html" target="_blank"><span class="roundInfo">Takes Markdown</span></a></label>
-              <textarea rows="6" name="description"  placeholder="Use this great creation to create new [monsters](https://monsters.com)." required><?php echo $proDesc; ?></textarea>
+              <textarea markdownable rows="6" name="description"  placeholder="Use this great creation to create new [monsters](https://monsters.com)." required><?php echo $proDesc; ?></textarea>
               <p class="inputErr info" default="A nice, vivid description of your product. Max 2500 characters."></p>
           </div>
         </div>
@@ -308,10 +309,12 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
 <?php
 echo $dl->giveFooter();
 ?>
+<?php echo markdownTabs(); ?>
 </body>
 </html>
 <?php
   echo $dl->scripts("p");
+  echo markdownScript();
  ?>
 <script>
 var genre = 1;

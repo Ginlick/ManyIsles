@@ -352,7 +352,7 @@ $optionTemplate = <<<BIGTEMPLE
                     </div>
                     <div class="inputCont">
                         <label>Shipping Modifier</label>
-                        <input type="number" value="OPTIONSHIPMOD" tracker-optionName="shipping" placeholder="120" oninput="checkSyntax(this, '[^-0-9]', 0)" onchange="checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
+                        <input type="text" value="OPTIONSHIPMOD" tracker-optionName="shipping" placeholder="US:200,EUR:900,GLO:1800" oninput="checkSyntaxR(this, 'codeList', 0)" onchange="checkSyntaxR(this, 'codeList', 1);updateSpecs(specNumHerePls, 'options', this);" />
                         <p class="inputErr info" default="This modifier in US$ cents will be added to the base shipping costs."></p>
                     </div>
                 </div>
@@ -401,7 +401,7 @@ BIGTEMPLE;
                 <h2>Additional Details</h2>
                 <div class="inputCont">
                     <label for="shipping">Base Shipping Costs</label>
-                    <input type="text" name="shipping" value="<?php echo $artShipping; ?>" placeholder="US:200,EUR:900,GLO:1800" oninput="checkSyntaxR(this, '^([A-Z-a-z]{2,3}:[0-9]*(,|))+$', 0)" onchange="checkSyntaxR(this, '^([A-Z-a-z]{2,3}:[0-9]*(,|))+$', 1)" autocomplete="off" />
+                    <input type="text" name="shipping" value="<?php echo $artShipping; ?>" placeholder="US:200,EUR:900,GLO:1800" oninput="checkSyntaxR(this, 'codeList', 0)" onchange="checkSyntaxR(this, 'codeList', 1)" autocomplete="off" />
                     <p class="inputErr info" default="How much one batch costs you to send, in US$ cents (set the Maximal Simultaneous Purchase value to limit batch size).  <a href='countryArrays.php' target='_blank'>view country codes</a>"></p>
                 </div>
                 <div class="inputCont stockerble">
@@ -544,7 +544,7 @@ if ($artStatus == "deleted"){
                     </div>
                     <div class="inputCont">
                         <label>Shipping Modifier</label>
-                        <input type="number" tracker-optionName="shipping" placeholder="20" oninput="checkSyntax(this, '[^-0-9]', 0)" onchange="checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumHerePls, 'options', this);" />
+                        <input type="text" tracker-optionName="shipping" placeholder="US:200,EUR:900,GLO:1800"  oninput="checkSyntaxR(this, 'codeList', 0)" onchange="checkSyntaxR(this, 'codeList', 1);updateSpecs(specNumHerePls, 'options', this);" />
                         <p class="inputErr info" default="This modifier in US$ cents will be added to the base shipping costs."></p>
                     </div>
                 </div>
@@ -605,6 +605,9 @@ if ($artStatus == "deleted"){
     }
     function checkSyntaxR(element, regex, brutal) {
         var input = element.value;
+        if (regex="codeList"){
+          regex = "^([0-9]+|(([A-Z-a-z]{2,3}:[0-9]*(,|))+))$";
+        }
         var patt = new RegExp(regex, "g");
         target = element.parentElement.children[2];
         if (!patt.test(input)) {
@@ -651,7 +654,6 @@ if ($artStatus == "deleted"){
             let newvalve = "";
             if (which=="name"){newvalve = txtParse(element.value, 2);} else {newvalve = element.value;}
             specsArray[specification][index][optionsIndex][which] = newvalve;
-            specsArray[specification]["smartstock"] = 1;
         }
     }
     function checkIfSmart() {
@@ -693,7 +695,7 @@ if ($artStatus == "deleted"){
 
             let inputCont1 = `<div class="inputCont"><label> Label <span>*</span></label><input type="text" tracker-optionName="name" placeholder="Red" onchange=" updateSpecs(specNumsHere, 'options', this);" required /><p class="inputErr info" default="This option's label."></p></div >`;
             let inputCont2 = `<div class="inputCont"><label> Price Modifier</label><input type="text" tracker-optionName="price" placeholder="120" onchange=" checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumsHere, 'options', this);" /><p class="inputErr info" default="This modifier in US$ cents will be added to the base price. Takes negatives."></p></div >`;
-            let inputCont3 = `<div class="inputCont"><label> Shipping Modifier</label><input type="text" tracker-optionName="shipping" placeholder="20" onchange=" checkSyntax(this, '[^-0-9]', 1);updateSpecs(specNumsHere, 'options', this);" /><p class="inputErr info" default="This modifier in US$ cents will be added to the base shipping costs."></p></div >`;
+            let inputCont3 = `<div class="inputCont"><label> Shipping Modifier</label><input type="text" tracker-optionName="shipping" placeholder="US:200,EUR:900,GLO:1800"  oninput="checkSyntaxR(this, 'codeList', 0)" onchange="checkSyntaxR(this, 'codeList', 1);updateSpecs(specNumHerePls, 'options', this);" /><p class="inputErr info" default="This modifier in US$ cents will be added to the base shipping costs."></p></div >`;
             let inputCont4 = `<div class="inputCont ss smartstockerspecNumsHere"><label> Stock</label><input type="text" tracker-optionName="stock" placeholder="10" onchange="updateSpecs(specNumsHere, 'options', this);" /><p class="inputErr info" default="How many of this variant you have in stock."></p></div >`;
             inputCont1 = inputCont1.replace(/specNumsHere/g, specification);
             inputCont2 = inputCont2.replace(/specNumsHere/g, specification);
@@ -756,10 +758,12 @@ if ($artStatus == "deleted"){
                     }]
                 };
                 for (let inputCont of document.getElementsByClassName("inputCont")) {
+                  if (inputCont.children[2]!=null){
                     let input = inputCont.children[1];
                     input.addEventListener("focus", showInfo);
                     input.addEventListener("focusout", hideInfo);
                     inputCont.children[2].innerHTML = inputCont.children[2].getAttribute("default");
+                  }
                 }
             }
         }
