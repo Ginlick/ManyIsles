@@ -71,20 +71,10 @@ $query = "UPDATE dsprods SET popularity = popularity + 1 WHERE id = $artId";
 $conn->query($query);
 
 //shipping availability
-include_once("g/countries.php");
-
-$clientCountry = null;
-if (isset($_COOKIE["loggedIn"])) {
-    $query = "SELECT Country FROM address WHERE id = ".$_COOKIE["loggedIn"];
-    if ($firstrow = $conn->query($query)) {
-        if (mysqli_num_rows($firstrow) != 0){
-            while ($row = $firstrow->fetch_assoc()) {
-                $clientCountry = $row["Country"];
-                $clientExplicitCountry = $countries["GLO"][$clientCountry];
-            }
-        }
-    }
-}
+$countries = $ds->countries;
+$clientCountry = null; $clientExplicitCountry = "";
+$address = $ds->fetchAddress();
+if ($address["exists"]){$clientCountry = $address["country"];$clientExplicitCountry = $countries["GLO"][$clientCountry];}
 
 $thisItemDeliverable = [];
 if ($artShipping!=null){
