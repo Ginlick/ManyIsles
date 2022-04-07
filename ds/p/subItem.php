@@ -70,7 +70,7 @@ $artName = substr($artName, 0, 100);
 $artShortname = substr($artShortname, 0, 22);
 if ($artPrice > 19999){$artPrice = 19999;}else if ($artPrice < 0){$artPrice = 0;}
 if ($artMinPrice > 19999){$artMinPrice = 19999;}else if ($artMinPrice > 0 OR $artMinPrice == null                                                  ){$artMinPrice = 0;}
-if ($artMaxAmount > 99){$artMaxAmount = 99;}else if ($artMaxAmount < 1){$artMaxAmount = 1;}
+if ($artMaxAmount > 99){$artMaxAmount = 99;}else if ($artMaxAmount < 0){$artMaxAmount = 0;}
 if ($artStock > 100){$artStock = 100;}
 
 if ($artShortname == "") {
