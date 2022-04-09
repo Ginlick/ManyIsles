@@ -5,7 +5,7 @@ $pId = $_GET["id"];
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once("global/engine.php");
 $dl = new dlengine($conn);
-$dl->partInfo($pId);
+if (!$dl->partInfo($pId)) {$dl->go();}
 
 
 

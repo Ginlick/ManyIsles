@@ -3,6 +3,7 @@ if (!trait_exists("allBase")){
   trait allBase {
     public $regArrayR = [
       "basic" => "/[^A-Za-z0-9_]/",
+      "number" => "/[^0-9]/",
       "quotes" => "/[\"']/",
       "full" => "/[^A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū_&\/,\(\)\.\-%:\? ]/",
       "cleanText" => "/^[^\"<>]+$/",

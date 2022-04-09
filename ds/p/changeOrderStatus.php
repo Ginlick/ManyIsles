@@ -2,25 +2,18 @@
 if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:hub.php");exit();}
 if (preg_match("/^[-0-9]*$/", $_GET["dir"])!=1){header("Location:hub.php");exit();}
 if(!isset($_COOKIE["loggedIn"])){header("Location: checkout.html");exit();}
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/dsEngine.php");
+$ds = new dsEngine;
+$ds->killCache();
+$ds->user->check(true, true, true);
 
-$id = $_COOKIE["loggedIn"];
-$clid = $_GET["id"];
-$dir = $_GET["dir"];
-
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-    if ($firstrow = $conn->query($query)) {
-    while ($row = $firstrow->fetch_assoc()) {
-      $uname = $row["uname"];
-      $checkpsw = $row["password"];
-    }
-}
-
-$redirect = "order.php?id=".$clid;
-require($_SERVER['DOCUMENT_ROOT']."/Server-Side/checkPsw.php");
+$id = $ds->user->user;
+$clid = $ds->purify($_GET["id"], "quotes");
+$dir =$ds->purify($_GET["dir"], "number"); ;
+$conn = $ds->conn;
 
 
-$query = 'SELECT * FROM partners WHERE account = "'.$uname.'"';
+$query = 'SELECT * FROM partners WHERE user = '.$id;
 if ($firstrow = $conn->query($query)) {
     while ($row = $firstrow->fetch_assoc()) {
       $pId = $row["id"];

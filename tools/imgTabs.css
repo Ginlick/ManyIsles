@@ -9,6 +9,7 @@
     position: absolute;
     bottom: 10px;
     width: 100%;
+    text-align: center;
 }
 
 .imgCont {
@@ -73,8 +74,7 @@
     text-decoration: none;
     display: inline-block;
     border-radius: 10px;
-    width: 50%;
-    margin-left: 25%;
+    min-width: 50%;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     cursor: pointer;
     font-size: min(var(--all-fonts-base), 1.8vw);

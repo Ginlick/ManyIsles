@@ -71,6 +71,7 @@ class dlengine {
         }
     }
     function equipPart($row) {
+      if (!isset($row["id"])){return false;}
       $this->partId = $row["id"];
       $this->partName = $row["name"];
       $this->partImage = $row["image"];
@@ -435,7 +436,7 @@ class dlengine {
       else if ($name == "Pantheon"){$name = "the Pantheon";}
       return $name;
     }
-    function go($place, $dom = "dl") {
+    function go($place = "home", $dom = "dl") {
       if ($dom == "p"){$dom = "/account/";}
       else if ($dom == "dl"){$dom = "/dl/";}
       else if ($dom == "ds"){$dom = "/ds/p/";}

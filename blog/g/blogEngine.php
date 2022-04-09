@@ -414,7 +414,7 @@ class blogEngine {
           $postText = str_replace("#$tag#", $insert, $postText);
         }
       }*/
-      if (preg_match_all("/#([^ ]+)/m", $postText, $lineMatches)){
+      if (preg_match_all("/#([a-z0-9&]+)/m", $postText, $lineMatches)){
         foreach ($lineMatches[1] as $tag){
           if (!in_array($tag, $allTags)){$allTags[] = $tag;}else {continue;}
           if (str_contains("'", $tag)){continue;}

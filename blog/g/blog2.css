@@ -1,4 +1,4 @@
-:root {
+ :root {
   --blog-b-deepblue: #4ca0e0;
   --blog-b-darkygray: #c2bdbd;
   --blog-b-red: #c12f2f;
@@ -160,7 +160,7 @@ button:hover, .wikiButton:hover, .blogButton:hover {
 .tag-element {
   padding: 2px 7px;
   background-color: var(--blog-lightestgrey);
-  margin: 0 5px;
+  margin: 0 2px;
   border-radius: 100px;
 }
 

@@ -96,7 +96,7 @@ $itemLine = <<<STUDD
 
         <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
         <div style="width:15%;margin:2.5%;float:left;display:block;position:relative">
-            <img src="https://manyisles.ch/ds/images/thumbnails/COOLIMAGE" alt="Hello There!" style="width:100%;display:block;border-radius:15px;" />
+            <img src="COOLIMAGE" alt="Hello There!" style="width:100%;display:block;border-radius:15px;" />
         </div>
         <h2 style="width:80%;float:left;position:relative;text-align:left;font-size:calc(8px + 2.5vw);color:black;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">COOLTITLE</h2>
         <p style="width:80%;float:left;position:relative;text-align:left;font-size:calc(8px + 1.5vw);color:black;margin-top:5px;margin-bottom:5px;">
@@ -152,7 +152,7 @@ foreach ($basketed->itemArray as $item) {
   //generate email line
   $currentLine = str_replace("COOLPRICE", $ds->makeHuman($ordiprice), $itemLine);
   $currentLine = str_replace("COOLTITLE", $prodname, $currentLine);
-  $currentLine = str_replace("COOLIMAGE", $prodimg, $currentLine);
+  $currentLine = str_replace("COOLIMAGE", $ds->clearImgUrl($prodimg), $currentLine);
   $coolAddInfo = "";
   $coolAddInfo = $coolAddInfo."Seller: ".$row["seller"]." (p#".$row['sellerId'].")"."<br>";
   if ($row["digital"] == 0) {$coolAddInfo = $coolAddInfo."Shipping: ".$ds->makeHuman($shippingCost)."<br>";}
