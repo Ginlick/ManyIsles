@@ -1,0 +1,23 @@
+:root {
+  --diltou-theme: #409725;
+  --diltou-themehover: #4aae2a;
+  --diltou-basec: #f7fcf5;
+  --diltou-lines: #c6c8c5;
+}
+
+.dicLogo {
+  width: 58%;
+  max-width: 250px;
+  margin: auto;
+  padding: 12px 0;
+}
+.dicLogo img {
+  width: 100%;
+}
+
+
+@media only screen and (max-width: 900px), (max-aspect-ratio:3/4) {
+  .dicLogo {
+    display: none;
+  }
+}

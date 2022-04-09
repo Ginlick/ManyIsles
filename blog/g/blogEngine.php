@@ -201,7 +201,7 @@ class blogEngine {
     }
     function giveLeftcol() {
       $return = <<<HAIL
-      <div class="titleblock">
+      <div class="leftblock titleblock">
         <h1 class="leftColH1">current-information-place</h1>
         <a href="/blog/explore"><h2 class="leftColH2">Many Isles Blogs</h2></a>
       </div>
