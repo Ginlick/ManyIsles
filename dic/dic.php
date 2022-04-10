@@ -1,7 +1,7 @@
 ﻿<?php
 
 require_once("g/dicEngine.php");
-$dic = new dicEngine("Home");
+$dic = new dicEngine();
 
 ?>
 <!DOCTYPE html>
@@ -23,8 +23,10 @@ $dic = new dicEngine("Home");
         <div class='column'>
           <div class="columnCont">
             <?php echo $dic->giveSignPrompt(); ?>
-            <h1>Explore Blogs</h1>
-            <button>CHELLO</button>
+            <h1>Explore Dictionary</h1>
+            <?php
+
+             ?>
           </div>
         </div>
     </div>
@@ -39,15 +41,10 @@ $dic = new dicEngine("Home");
 <?php echo $dic->giveScripts(); ?>
 <script>
 var urlParams = new URLSearchParams(window.location.search);
-var why = urlParams.get('i');
+var why = urlParams.get('w');
 if (why == "notfound"){
   createPopup("d:gen;txt:Error. Page could not be found.");
 }
-else if (why == "unsigned"){
- createPopup("d:gen;txt:You need to sign in to access this.");
-}
-else if (why == "unconf"){
- createPopup("d:gen;txt:You need to confirm your email first.");
-}
+
 
 </script>

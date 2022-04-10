@@ -61,6 +61,11 @@ if (!trait_exists("allBase")){
       }
       return $input;
     }
+    function explodeA($str, $separator = ", ", $reg = null) {
+      if ($str == "") {return [];}
+      $arr = explode($separator, $str);
+      return $arr;
+    }
     function generateRandomString($length = 10) {
       $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
       $charactersLength = strlen($characters);
@@ -69,6 +74,16 @@ if (!trait_exists("allBase")){
         $randomString .= $characters[rand(0, $charactersLength - 1)];
       }
       return $randomString;
+    }
+    function isEmpty(array $array) {
+        $empty = true;
+        array_walk_recursive($array, function ($leaf) use (&$empty) {
+            if ($leaf === [] || $leaf === '') {
+                return false;
+            }
+            $empty = false;
+        });
+        return $empty;
     }
     function killCache() {
       header("Cache-Control: no-cache, must-revalidate"); //HTTP 1.1

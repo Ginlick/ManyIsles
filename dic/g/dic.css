@@ -3,6 +3,7 @@
   --diltou-themehover: #4aae2a;
   --diltou-basec: #f7fcf5;
   --diltou-lines: #c6c8c5;
+  --diltou-basecd: #fafcf9;
 }
 
 .dicLogo {
@@ -14,7 +15,65 @@
 .dicLogo img {
   width: 100%;
 }
+h1, h2, h3, input {
+  font-family: inherit;
+  font-weight: 300;
+}
 
+/*word*/
+.wordCont {
+  width: 80%;
+  min-width: min(500px, 100%);
+  max-width: 900px;
+  margin: auto;
+  margin-top: 100px;
+  border: 1px solid var(--diltou-lines);
+  background-color: var(--diltou-basecd);
+  border-radius: 7px;
+  padding: 10px;
+}
+.wordCont * {
+  text-align: left;
+}
+.wordTitle {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+.headingnote {
+  color: var(--diltou-lighttext);
+  font-size: var(--all-fonts-med);
+  margin-top: 5px;
+}
+.wordSubTitle {
+  font-size: var(--all-fonts-larg);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+.wordSectionTitle {
+  padding-top: 12px;
+  border-bottom: 1px solid var(--diltou-lines);
+}
+ul {
+  list-style-type: none;
+}
+.wordDefinitionUl {
+  margin: 0;
+  padding-left: 22px;
+}
+.wordDefinitionBlock {
+  margin-left: 6px;
+  padding-left: 10px;
+  border-left: 1px solid var(--diltou-lines);
+}
+.wordExampleBlock p {
+  margin: 0 5px;
+}
+.wordExampleHeader {
+  color: var(--diltou-lighttext);
+}
+.example.headingnote {
+  margin-bottom: 5px;
+}
 
 @media only screen and (max-width: 900px), (max-aspect-ratio:3/4) {
   .dicLogo {
