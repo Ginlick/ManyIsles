@@ -71,6 +71,14 @@ function addCss(fileName, fileType) {
     head.appendChild(link);
 }
 
+function gKillSugg(elementId) {
+  window.setTimeout(function () {
+    document.getElementById(elementId).style.display = "none";
+  }, 500);
+}
+
+
+
 function whenAvailable(name, callback) {
     var interval = 10; // ms
     window.setTimeout(function () {

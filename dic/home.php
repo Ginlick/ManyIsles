@@ -3,15 +3,22 @@
 require_once("g/dicEngine.php");
 $dic = new dicEngine();
 
+$randId = 1;
+$query = "SELECT id FROM words ORDER BY RAND() LIMIT 1";
+if ($result = $dic->dicconn->query($query)) {
+    while ($row = $result->fetch_assoc()) {
+      $randId = $row["id"];
+  }
+}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8" />
+  <title> Home | Dictionary</title>
     <?php echo $dic->giveStyles(); ?>
 </head>
 <style>
+
 </style>
 <body>
     <?php echo $dic->giveTopnav(); ?>
@@ -24,8 +31,8 @@ $dic = new dicEngine();
           <div class="columnCont">
             <?php echo $dic->giveSignPrompt(); ?>
             <h1>Explore Dictionary</h1>
-            <?php
-
+            <?php echo $dic->giveFindWords();
+              echo $dic->giveWordLink($randId, "I'm feeling lucky");
              ?>
           </div>
         </div>

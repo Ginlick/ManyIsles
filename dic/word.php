@@ -7,8 +7,7 @@ $wordInfo = $dic->wordInfo;
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8" />
+    <title><?php echo $wordInfo["word"]; ?> | <?php echo $dic->curPage; ?> Dictionary</title>
     <?php echo $dic->giveStyles(); ?>
 </head>
 <style>
@@ -24,8 +23,8 @@ $wordInfo = $dic->wordInfo;
         <div class='column'>
           <div class="columnCont">
             <?php echo $dic->giveSignPrompt(); ?>
+            <?php echo $dic->giveFindWords(); ?>
             <section class="wordCont">
-              <input class="word findWords" placeholder="Search for a word..." />
               <h1 class="wordTitle"><?php echo $wordInfo["word"]; ?></h1>
               <p class="headingnote"><?php echo $dic->curPage; ?> word</p>
             <?php
@@ -88,11 +87,17 @@ $wordInfo = $dic->wordInfo;
                   echo "</li>";
                 }
                 echo "</ul>";
+                echo "<p><a href='/dic/translate?sl=$dic->language&s=".$wordInfo["word"]."'>View on translate</a></p>";
               }
               //print_r($wordInfo);
 
              ?>
            </section>
+           <?php
+            if ($dic->checkPower(false)) {
+              echo "<div style='margin-top:50px'><a href='/dic/edit?id=".$wordInfo["id"]."'><button>Edit</button></a><a href='/dic/edit?w=$dic->language'><button>New</button></a></div>";
+            }
+           ?>
           </div>
         </div>
     </div>

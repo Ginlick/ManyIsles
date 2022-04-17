@@ -1,9 +1,9 @@
 :root {
   --diltou-theme: #409725;
   --diltou-themehover: #4aae2a;
-  --diltou-basec: #f7fcf5;
+  --diltou-basec: #fafcf9;
   --diltou-lines: #c6c8c5;
-  --diltou-basecd: #fafcf9;
+  --diltou-basecd: white;
 }
 
 .dicLogo {
@@ -73,6 +73,27 @@ ul {
 }
 .example.headingnote {
   margin-bottom: 5px;
+}
+/*suggestions*/
+.findWords {
+  position: relative;
+}
+.suggestions {
+  display: none;
+  position: absolute;
+  top: calc(100%);
+  left: 15px;
+  margin: 2px 0;
+  width: 70%;
+  min-width: 250px;
+  background-color: var(--diltou-basec);
+  border: 1px solid var(--diltou-lines);
+  padding:8px;
+  border-radius: 3px;
+  z-index: 2;
+}
+.suggestions ul {
+  padding: 0; margin: 12px;
 }
 
 @media only screen and (max-width: 900px), (max-aspect-ratio:3/4) {

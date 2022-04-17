@@ -5,18 +5,19 @@ class dicEngine {
     public $conn;
     public $dicconn;
     public $user;
-    public $curPage = "Home";
+    public $curPage = "";
     use allBase;
 
-    public $language = 1;
-    public $word = 1;
+    public $language = 0;
+    public $word = 0;
 
-    function __construct(){
+    function __construct($curPage = "Home") {
       require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
       $this->conn = $conn;
       require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dic.php");
       $this->dicconn = $dicconn;
       $this->user = new adventurer($this->conn);
+      $this->curPage = $curPage;
 
       $this->getLanguage();
       if (isset($_GET["i"])){
@@ -24,6 +25,23 @@ class dicEngine {
         $this->user->killCache();
       }
     }
+    function checkPower($rabid = true) {
+      $astat = 1;
+      $query = "SELECT banned, admin, super FROM poets WHERE id =".$this->user->user;
+      if ($max = $this->conn->query($query)) {
+          while ($row = $max->fetch_assoc()){
+              if ($row["banned"]!=0){$astat = 0;}
+              else if ($row["super"]!=0){$astat = 5;}
+              else if ($row["admin"]!=0){$astat = 4;}
+          }
+      }
+      if ($astat<5){
+        if ($rabid){$this->go();}
+        return false;
+      }
+      return true;
+    }
+
     //setup
     function getLanguage($language = null) {
       if ($language == null) {
@@ -57,10 +75,10 @@ class dicEngine {
         }
       }
       $this->allLangs = $allLangs;
-      if (!isset($this->langInfo)){
+      /*if (!isset($this->langInfo)){
         if ($this->language == 1){echo "Language Error";exit;}
         getLanguage(1);
-      }
+      }*/
     }
 
     //dic functionalities
@@ -99,6 +117,17 @@ class dicEngine {
       }
       return false;
     }
+    function quickWord($wid) {
+      $query = "SELECT word FROM words WHERE id = $wid";
+      if ($result = $this->dicconn->query($query)) {
+        if (mysqli_num_rows($result) > 0) {
+          while ($row = $result->fetch_assoc()) {
+            return $row["word"];
+          }
+        }
+      }
+      return false;
+    }
 
     //giver
     function giveStyles($cachable = true) {
@@ -106,14 +135,13 @@ class dicEngine {
         $this->user->killCache();
       }
       $return = <<<MAGDA
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="UTF-8" />
-        <title>current-information-place | Dictionary</title>
         <link rel="icon" href="/Imgs/FaviconDic.png">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
         <link rel="stylesheet" type="text/css" href="/Code/CSS/diltou.css?2">
         <link rel="stylesheet" type="text/css" href="/dic/g/dic.css">
       MAGDA;
-      $return = str_replace("current-information-place", $this->curPage, $return);
       return $return;
     }
     function giveTopnav() {
@@ -126,7 +154,8 @@ class dicEngine {
         <a href="/dic/home"><h2 class="leftColH2">Many Isles Dictionary</h2></a>
       </div>
       <div class="leftblock">
-
+      <a class="Bar" href="/dic/home">Explore</a>
+      <a class="Bar" href="/dic/translate">Translate</a>
       </div>
 
       <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
@@ -138,6 +167,16 @@ class dicEngine {
       $return = str_replace("current-information-place", $this->curPage, $return);
       return $return;
     }
+    function giveFindWords() {
+      return <<<MAD
+      <section class="wordCont">
+        <div class="findWords">
+          <input placeholder="Search for a word..." onfocus="suggestNow(this)" oninput="suggestNow(this)" onfocusout="gKillSugg('suggestions')" />
+          <div id="suggestions" class="suggestions"></div>
+        </div>
+      </section>
+      MAD;
+    }
     function giveFooter() {
       return '<div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>';
     }
@@ -145,13 +184,16 @@ class dicEngine {
       $return = <<<MAGDA
         <script src="https://kit.fontawesome.com/1f4b1e9440.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-        <script src="/Code/CSS/global.js"></script>
+        <script src="/Code/CSS/global.js?2"></script>
+        <script src="/dic/g/dic.js"></script>
+        <script> var language = $this->language; </script>
       MAGDA;
       return $return;
     }
 
-    function giveWordLink($word) {
-      return "<a href='/dic/word/$word'>".$this->wordInfo($word)["word"]."</a>";
+    function giveWordLink($word, $alttext = "") {
+      if ($alttext == ""){$alttext = $this->wordInfo($word)["word"];}
+      return "<a href='/dic/word/$word'>".$alttext."</a>";
     }
     //misc
     function giveSignPrompt($return = "/dic/home") {
