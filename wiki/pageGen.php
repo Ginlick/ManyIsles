@@ -1069,7 +1069,7 @@ MAIN;
             $fullCategLine = "";
             $categArray = explode(",", $gen->article->categories);
             foreach ($categArray as $catelink){
-                $query = 'SELECT name FROM wikicategories WHERE id = "'.$catelink.'"'.;
+                $query = 'SELECT name FROM wikicategories WHERE id = "'.$catelink.'"';
                 if ($gen->domain == "mystral"){$query .= " AND user = $gen->user";}
                 if ($result = $gen->dbconn->query($query)){
                     while ($row = $result->fetch_assoc()) {
