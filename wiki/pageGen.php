@@ -531,6 +531,7 @@ class gen {
         return $main;
     }
     function giveLAuthors($comp = false) {
+      if ($this->article->authors != ""){
         $authorsArr = explode(", ", $this->article->authors);
         if (count($authorsArr)>0 AND $this->domain != "mystral"){
             $main = ' <div class="col-l">
@@ -541,7 +542,8 @@ class gen {
             $main .='    </div> ';
             return $main;
         }
-        return "";
+      }
+      return "";
     }
     function giveCategs() {
         return <<<MAIN
@@ -1067,20 +1069,22 @@ MAIN;
         }
         function categLine($gen) {
             $fullCategLine = "";
-            $categArray = explode(",", $gen->article->categories);
-            foreach ($categArray as $catelink){
-                $query = 'SELECT name FROM wikicategories WHERE id = "'.$catelink.'"';
-                if ($gen->domain == "mystral"){$query .= " AND user = $gen->user";}
-                if ($result = $gen->dbconn->query($query)){
-                    while ($row = $result->fetch_assoc()) {
-                        if ($fullCategLine == ""){
-                            $fullCategLine = "<a href='/".$gen->domain."/search.php?w=".$gen->parentWiki."&c=".$catelink."'>".$row["name"]."</a>";
-                        }
-                        else {
-                            $fullCategLine = $fullCategLine.", <a href='/".$gen->domain."/search.php?w=".$gen->parentWiki."&c=".$catelink."'>".$row["name"]."</a>";
-                        }
-                    }
-                }
+            if ($gen->article->categories != ""){
+              $categArray = explode(",", $gen->article->categories);
+              foreach ($categArray as $catelink){
+                  $query = 'SELECT name FROM wikicategories WHERE id = "'.$catelink.'"';
+                  if ($gen->domain == "mystral"){$query .= " AND user = $gen->user";}
+                  if ($result = $gen->dbconn->query($query)){
+                      while ($row = $result->fetch_assoc()) {
+                          if ($fullCategLine == ""){
+                              $fullCategLine = "<a href='/".$gen->domain."/search.php?w=".$gen->parentWiki."&c=".$catelink."'>".$row["name"]."</a>";
+                          }
+                          else {
+                              $fullCategLine = $fullCategLine.", <a href='/".$gen->domain."/search.php?w=".$gen->parentWiki."&c=".$catelink."'>".$row["name"]."</a>";
+                          }
+                      }
+                  }
+              }
             }
             if ($fullCategLine != ""){
                 return '<div class="topinfo">In: <i>'.$fullCategLine.'</i></div>';

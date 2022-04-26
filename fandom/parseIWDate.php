@@ -17,6 +17,8 @@ function getDateArray($conn, $wiki, $domain = "fandom") {
 
 
 function parseIWDate($otimeStart, $otimeEnd, $dates = [], $complete = false, $indiv = 0) {
+  if ($otimeStart == ""){$otimeStart = "";}
+  if ($otimeEnd == ""){$otimeEnd = "";}
     if (str_contains($otimeStart, ",")) {
         $dArr = explode(",", $otimeStart);
         $startDays = $dArr[0];

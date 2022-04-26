@@ -158,6 +158,7 @@ if (!trait_exists("allBase")){
       return $input;
     }
     function placeSpecChar($input, $level = 1) {
+      if ($input == ""){return "";}
       if ($level < 1){
         $input = str_replace('%double_quote%', '', $input);
         $input = str_replace("%single_quote%", "", $input);
