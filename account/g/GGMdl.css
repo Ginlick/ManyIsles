@@ -1,6 +1,7 @@
 ﻿body {
     background-image: url('/Imgs/OshBacc.png');
     background-attachment: fixed;
+    padding-bottom: 50px;
 }
 * {
     box-sizing: border-box;
@@ -15,7 +16,7 @@
     box-shadow: 0 0px 50px 0 rgba(0, 0, 0, 0.4), 0 6px 50px 0 rgba(0, 0, 0, 0.22);
     border-radius: 16px;
     overflow: hidden;
-    /*max-width: 1600px;*/
+    max-width: 1600px;
 }
 h1 {
     color: black;
@@ -54,7 +55,7 @@ a, .fakelink {
     a:hover, .fakelink:hover {
         color: #e90000;
     }
-.topnav {
+/* .topnav {
     background-color: #8f0404;
     overflow: hidden;
     font-family: 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -79,7 +80,7 @@ a, .fakelink {
 
         .topnav a:hover {
             color: white;
-        }
+        } */
 .mednav {
     width: 100%;
     background-color: #ff0000;
