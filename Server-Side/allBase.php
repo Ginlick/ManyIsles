@@ -4,6 +4,7 @@ if (!function_exists("err_redirect")) {
   error_reporting(~0);
   ini_set('display_errors', 0);
   ini_set('log_errors', 1);
+  mysqli_report(MYSQLI_REPORT_OFF);
 
   /* Set the error handler. */
   set_error_handler(function ($errno, $errstr, $errfile, $errline) {
@@ -15,6 +16,7 @@ if (!function_exists("err_redirect")) {
                  'file'=>$errfile,
                  'line'=>$errline);
       err_redirect($e);
+      return true;
   });
 
 
@@ -25,6 +27,8 @@ if (!function_exists("err_redirect")) {
                  'file'=>$e->getFile(),
                  'line'=>$e->getLine());
       err_redirect($e);
+      echo "did stuff";
+      return true;
   });
 
 
@@ -32,19 +36,19 @@ if (!function_exists("err_redirect")) {
   register_shutdown_function(function () {
       if (!is_null($e = error_get_last())) {
           err_redirect($e);
+          return true;
       }
   });
 
 
   function err_redirect($e) {
-
       $now = date('d-M-Y H:i:s');
       $type = format_error_type($e['type']);
       $message = "[$now] $type: {$e['message']} in {$e['file']} on line {$e['line']}\n";
       $error_log_name = ini_get('error_log');
-      echo "<br><br>$message $error_log_name";//exit;
+      echo "<br><br>$message";//exit;
       if ($error_log_name != ""){
-        error_log($message, 3, $error_log_name);
+        mail("pantheon@manyisles.ch", "Bug Report", $_SERVER['DOCUMENT_ROOT']."\n$message");
       }
       switch ($e['type']) {
           /* We'll ignore these errors.  They're only here for reference. */
@@ -59,7 +63,7 @@ if (!function_exists("err_redirect")) {
           case E_DEPRECATED:
           case E_USER_DEPRECATED:
           case E_ALL:
-              break;
+            break;
           /* Redirect to "oops" page on the following errors. */
           case 0: /* Exceptions return zero for type */
           case E_ERROR:
@@ -67,6 +71,7 @@ if (!function_exists("err_redirect")) {
           case E_CORE_ERROR:
           case E_COMPILE_ERROR:
           case E_USER_ERROR:
+            echo "UWU".$e["type"];exit;
             echo "<script>window.location.replace('/Code/error');</script>";
             die();
       }
@@ -109,6 +114,9 @@ if (!function_exists("err_redirect")) {
       }
       return $type;
   }
+
+   trigger_error("BAD NAME", E_USER_WARNING);
+   echo "huhu";
 }
 
 //allBase
