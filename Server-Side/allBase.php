@@ -46,6 +46,7 @@ if (!function_exists("err_redirect")) {
       $message = "[$now] $type: {$e['message']} in {$e['file']} on line {$e['line']}\n";
       //echo "<br><br>$message";//exit;
       mail("pantheon@manyisles.ch", "Bug Report", $_SERVER['DOCUMENT_ROOT']."\n$message");
+
       switch ($e['type']) {
           /* We'll ignore these errors.  They're only here for reference. */
           case E_WARNING:
