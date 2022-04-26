@@ -39,6 +39,7 @@ if (!class_exists("adventurer")){
             include($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
           }
           $this->conn = $conn;
+          if ($user == ""){$user = 0;}
           $this->user = preg_replace("/[^0-9]/", "", $user);
           $this->signedIn = false;
           if ($this->user == null){$this->user = 0;}
