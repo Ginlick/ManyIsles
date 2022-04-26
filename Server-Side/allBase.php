@@ -42,7 +42,7 @@ if (!function_exists("err_redirect")) {
       $type = format_error_type($e['type']);
       $message = "[$now] $type: {$e['message']} in {$e['file']} on line {$e['line']}\n";
       $error_log_name = ini_get('error_log');
-      //echo "<br><br>$message $error_log_name";exit;
+      echo "<br><br>$message $error_log_name";//exit;
       if ($error_log_name != ""){
         error_log($message, 3, $error_log_name);
       }
