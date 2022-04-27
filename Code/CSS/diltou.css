@@ -44,6 +44,9 @@ a, .fakelink {
 a:hover, .fakelink:hover {
     color: var(--diltou-themehover);
 }
+select {
+  font-family: var(--diltou-baseFont);
+}
 
 .topnav {
     background-color: var(--diltou-theme);

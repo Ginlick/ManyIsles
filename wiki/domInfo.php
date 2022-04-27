@@ -8,15 +8,17 @@ function equipDom($gen, $domain = "fandom"){
 
     if (preg_match("/^[0-9]+$/", $domain)) {
         if ($domain == "3"){$domain = "mystral";}
+        else if ($domain == "4"){$domain = "spells";}
+        else if ($domain == "5"){$domain = "dic";}
         else if ($domain == "2"){$domain = "5eS";}
         else if ($domain == "1"){$domain = "docs";}
         else {$domain = "fandom";}
     }
-
     $gen->domainType = "fandom";
     $gen->luckying = false;
     $gen->acceptsTopBar = true;
     $gen->changeableGenre = false;
+    $gen->canLocalAccStat = false;
     $gen->baseWSet = "";
     $gen->premPower = 0;
     $gen->domainSpecs = [];
@@ -91,6 +93,7 @@ function equipDom($gen, $domain = "fandom"){
         $gen->defaultGenre = "Rule";
         $gen->artRootLink = "/5eS/";
         $gen->baseLink = "/5eS/";
+        $gen->canLocalAccStat = true;
 
         $gen->styles = ["5eS"];
         $gen->defaultStyle = "5eS";
@@ -110,6 +113,7 @@ function equipDom($gen, $domain = "fandom"){
         $gen->minPower = 2;
         $gen->domainName = "Spells";
         $gen->domainLogo = '<a href="/5eS/home"><span class="fakelink fesLogo">Spells</span></a>';
+        $gen->canLocalAccStat = true;
 
         $gen->defaultBanner = "starry.png";
         $gen->cateoptions =   json_decode('[{"name":"Spell","value":"Spell"},{"name":"Ritual","value":"Ritual"},{"name":"Ceremony","value":"Ceremony"}]', true);
@@ -190,6 +194,23 @@ function equipDom($gen, $domain = "fandom"){
             $gen->baseImage = "/Imgs/Mystral.png";
         }
     }
+    else if ($domain == "dic"){
+        require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dic.php");
+        $gen->dbconn = $dicconn;
+        $gen->domain = "dic";
+        $gen->domainnum = 5;
+        $gen->database = "words";
+        $gen->pagename = "word";
+        $gen->groupName = "dictionary";
+        $gen->homelink = "/dic/home";
+        $gen->minPower = 4;
+        $gen->domainName = "Dictionary";
+        $gen->domainLogo = 'Dictionary';
+        $gen->domainType = "dic";
+
+        $gen->artRootLink = "/dic/word/";
+        $gen->baseLink = "/dic/";
+    }
     else {
         $gen->dbconn = $gen->conn;
         $gen->domain = "fandom";
@@ -205,6 +226,7 @@ function equipDom($gen, $domain = "fandom"){
         $gen->defaultGenre = "Lore";
         $gen->artRootLink = "/fandom/wiki/";
         $gen->baseLink = "/fandom/";
+        $gen->canLocalAccStat = true;
 
         $gen->luckying = true;
         $gen->acceptsTopBar = false;

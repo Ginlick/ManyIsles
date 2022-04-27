@@ -11,12 +11,13 @@ class dicEngine {
     public $language = 0;
     public $word = 0;
 
+    public $canedit = false;
+
     function __construct($curPage = "Home") {
-      require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
-      $this->conn = $conn;
       require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dic.php");
       $this->dicconn = $dicconn;
       $this->user = new adventurer($this->conn);
+      $this->conn = $this->user->conn;
       $this->curPage = $curPage;
 
       $this->getLanguage();
@@ -25,21 +26,14 @@ class dicEngine {
         $this->user->killCache();
       }
     }
-    function checkPower($rabid = true) {
-      $astat = 1;
-      $query = "SELECT banned, admin, super FROM poets WHERE id =".$this->user->user;
-      if ($max = $this->conn->query($query)) {
-          while ($row = $max->fetch_assoc()){
-              if ($row["banned"]!=0){$astat = 0;}
-              else if ($row["super"]!=0){$astat = 5;}
-              else if ($row["admin"]!=0){$astat = 4;}
-          }
-      }
-      if ($astat<5){
+    function checkCredentials($rabid = true) {
+      require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
+      $this->wiki = new gen("view", 0, 0, false, "dic");
+      if (!$this->wiki->canedit){
         if ($rabid){$this->go();}
-        return false;
       }
-      return true;
+      $this->canedit = $this->wiki->canedit;
+      return $this->wiki->canedit;
     }
 
     //setup
@@ -176,6 +170,74 @@ class dicEngine {
         </div>
       </section>
       MAD;
+    }
+    function giveWordTab($wordInfo) {
+      $wordTab = '      <section class="wordCont">
+              <h1 class="wordTitle">'.$wordInfo["word"].'</h1>
+              <p class="headingnote">'.$this->curPage.' word</p>';
+      if (isset($wordInfo["specifications"])){
+        foreach ($wordInfo["specifications"] as $group) {
+          $wordTab .= "<h3 class='wordSubTitle'>".$group["wordtype"]."</h3>";
+          if (isset($group["conjugation"])){
+            $wordTab .= "<p class='headingnote'>".$group["conjugation"]."</p>";
+          }
+          if (isset($group["definitions"]) AND !$this->isEmpty($group["definitions"])){
+            $wordTab .= "<ol class='wordDefinitionUl'>";
+            foreach ($group["definitions"] as $definition) {
+              if (count($definition)==0){continue;}
+              $wordTab .= "<li class='wordDefinitionBlock'>";
+              if (isset($definition["definition"])) {
+                $wordTab .= "<p>".$this->placeSpecChar($definition["definition"])."</p>";
+              }
+              if (isset($definition["examples"]) AND count($definition["examples"])>0) {
+                $wordTab .= "<p class='headingnote example' >Sample Sentence</p><div class='wordExampleBlock'>";
+                foreach ($definition["examples"] as $example) {
+                  $wordTab .= "<p><span class='wordExampleHeader'>".$this->allLangs[$example["language"]].":</span> ".$this->placeSpecChar($example["sentence"])."</p>";
+                }
+                $wordTab .= "</div>";
+              }
+              if (isset($definition["synonyms"]) AND count($definition["synonyms"])>0) {
+                $wordTab .= "<p class='headingnote example' >Synonyms</p><div class='wordExampleBlock'>";
+                $prefix = "";
+                foreach ($definition["synonyms"] as $synonym) {
+                  $wordTab .= $prefix.$this->giveWordLink($synonym);
+                  $prefix = ", ";
+                }
+                $wordTab .= "</p>";
+              }
+              if (isset($definition["antonyms"]) AND count($definition["antonyms"])>0) {
+                $wordTab .= "<p class='headingnote example'>Antonyms</p><div class='wordExampleBlock'>";
+                $prefix = "";
+                foreach ($definition["antonyms"] as $antonym) {
+                  $wordTab .= $prefix.$this->giveWordLink($antonym);
+                  $prefix = ", ";
+                }
+                $wordTab .= "</p>";
+              }
+              $wordTab .= "</li>";
+            }
+            $wordTab .= "</ol>";
+          }
+        }
+      }
+      if (isset($wordInfo["translations"])){
+        $wordTab .= "<h2 class='wordSectionTitle'>Translations</h2>";
+        $wordTab .= "<ul>";
+        foreach ($wordInfo["translations"] as $words) {
+          if ($words == "" OR !isset($words["words"]) OR count($words["words"])==0){continue;}
+          $wordTab .= "<li>".$this->allLangs[$words["language"]].": "; $prefix = "";
+          foreach ($words["words"] as $word) {
+            //if (gettype($word)=="array") {if (count($word)==0){$word = 0;} else {$word = $word[0];}}
+            if ($word == 0) {continue;}
+            $wordTab .= $prefix.$this->giveWordLink($word); $prefix = ", ";
+          }
+          $wordTab .= "</li>";
+        }
+        $wordTab .= "</ul>";
+        $wordTab .= "<p><a href='/dic/translate?sl=$this->language&s=".$wordInfo["word"]."'>View on translate</a></p>";
+      }
+      $wordTab .= '</section>';
+      return $wordTab;
     }
     function giveFooter() {
       return '<div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>';
