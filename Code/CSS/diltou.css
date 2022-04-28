@@ -6,6 +6,7 @@
   --diltou-themehover: #609ec7;
   --diltou-themecontrast: white;
   --diltou-basec: white;
+  --diltou-basecd: white;
 
   --diltou-baseFont: 'Open Sans', Arial, Helvetica, sans-serif;
   --diltou-titleFont: 'Trebuchet MS', "Roboto", sans-serif;
@@ -43,6 +44,9 @@ a, .fakelink {
 a:hover, .fakelink:hover {
     color: var(--diltou-themehover);
 }
+select {
+  font-family: var(--diltou-baseFont);
+}
 
 .topnav {
     background-color: var(--diltou-theme);
@@ -75,11 +79,12 @@ a:hover, .fakelink:hover {
 .left-col h3 {
     font-size: min(2.7vw, 40px);
 }
-
+.leftblock {
+  padding: 10px;
+}
 .Bar {
     padding: .5vw .8vw;
     font-size: min(1.4vw, 20px);
-    font-weight: bold;
     text-decoration: none;
     text-align: left;
     display: block;
@@ -94,6 +99,9 @@ a:hover, .fakelink:hover {
     .Bar.line {
         padding-bottom: 0.5vw;
         border-bottom: 1.3px solid var(--diltou-lines);
+    }
+    .leftblock .Bar {
+      padding: 5px 0;
     }
 .bottomFAQ .Bar {
     font-size: min(1vw, 14px);
@@ -112,7 +120,19 @@ a:hover, .fakelink:hover {
         color:red;
     }
 
-
+    .leftColH1, .leftColH2 {
+      text-align: left;
+      margin: 0;
+      padding: 0;
+    }
+  .leftColH1 {
+    padding:10px 0 0 0;
+  }
+    .leftColH2 {
+      color: var(--diltou-lines);
+      font-size: var(--all-fonts-larg);
+      font-family: var(--diltou-baseFont);
+    }
 /*right*/
 .column {
     width: 80%;

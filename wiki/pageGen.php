@@ -164,7 +164,7 @@ class gen {
           }
         }
 
-        //power
+        //credentials / power
         if ($this->userMod->signedIn){
           require_once($_SERVER['DOCUMENT_ROOT']."/fandom/accStat.php");
           if ($this->domainType == "spells"){
@@ -176,7 +176,7 @@ class gen {
               }
             }
           }
-          else if ($this->domain != "mystral"){
+          else if ($this->canLocalAccStat){
               $this->power = getAccStat($this->dbconn, $this->user, $this->parentWiki, false);
           }
           else {

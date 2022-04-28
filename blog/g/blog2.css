@@ -79,24 +79,10 @@ blockquote {
   margin: auto;
   padding: 80px 0;
 }
-.titleblock, .left-menu {
-  padding:10px;
-}
 .crumbs {
   padding: 0;
 }
-  .leftColH1, .leftColH2 {
-    text-align: left;
-    margin: 0;
-    padding: 0;
-  }
-.leftColH1 {
-  padding:10px 0 0 0;
-}
-.leftColH2 {
-  color: var(--blog-lightgrey);
-  font-size: var(--all-fonts-larg);
-}
+
 .left-menu-a {
   font-family: "Montserrat", sans-serif;
   display: block;
@@ -544,4 +530,21 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   .buser-info-names, .buser-pp {
     padding: 10px;
   }
+}
+
+/*discontinued*/
+.titleblock, .left-menu, .leftblock {
+  padding:10px;
+}
+.leftColH1, .leftColH2 {
+  text-align: left;
+  margin: 0;
+  padding: 0;
+}
+.leftColH1 {
+padding:10px 0 0 0;
+}
+.leftColH2 {
+  color: var(--blog-lightgrey);
+  font-size: var(--all-fonts-larg);
 }

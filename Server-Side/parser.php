@@ -21,7 +21,12 @@ if (!class_exists("parser")){
         if (preg_match_all("/^.*{([a-z]+\[.*\]).*}.*$/m", $body, $lineMatches) != false){$body = $this->parseImg($body, $this->keyTracker, $lineMatches[0]);}
       }
 
-      $body = $this->Parsedown->text($body);
+      if ($extent == 0){
+        $body = $this->Parsedown->line($body);
+      }
+      else {
+        $body = $this->Parsedown->text($body);
+      }
 
       //post-Parsedown processing
       if (gettype($callback)=="object") {
@@ -45,6 +50,7 @@ if (!class_exists("parser")){
       $specCharLvl = 1;
       if ($extent < 0){$specCharLvl = 0;}
       $body = $this->placeSpecChar($body, $specCharLvl);
+      $body = utf8_decode($body);
 
       return $body;
     }

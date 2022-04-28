@@ -12,6 +12,11 @@ function getAccStat($conn, $id, $wiki = null, $explicit = false) {
             else if ($row["admin"]!=0){$astat = 4;}
         }
     }
+    else {
+      echo mysqli_error($conn);
+    }
+    echo $astat;
+
     if ($wiki != null AND $astat > 0 AND $astat < 5){
         $query = "SELECT banned, auths, mods FROM wiki_settings WHERE id = $wiki";
         if ($max = $conn->query($query)) {
