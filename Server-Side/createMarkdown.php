@@ -11,8 +11,8 @@ function markdownTabs() {
       <div class="modContent smol">
           <h1>Insert Link</h1>
           <div class="nmodBody">
-              <input type="text" placeholder="Shown Text" id="markdown-mods-link-name"></input>
-              <input type="text" placeholder="url" id="markdown-mods-link-url"></input>
+              <input type="text" placeholder="Shown Text" id="markdown-mods-link-name" notmarkdownable></input>
+              <input type="text" placeholder="url" id="markdown-mods-link-url" notmarkdownable></input>
               <button class="wikiButton" onclick="markdownCreateLink();">Insert</button>
               <p><span class="typeTab tiny" onclick="newpop(\'ded\')">esc</span> close</p>
           </div>
@@ -29,9 +29,9 @@ function markdownTabs() {
                   <option value="sideimg medium">Larger Side Image</option>
                   <option value="sideimg landscape">Landscape Side Image</option>
               </select>
-              <input type="text" placeholder="Direct link to image" id="markdown-mods-img-src" />
-              <input type="text" placeholder="Caption (optional)" id="markdown-mods-img-caption"  />
-              <input type="text" placeholder="Style (css, optional)" id="markdown-mods-img-style"  />
+              <input type="text" placeholder="Direct link to image" id="markdown-mods-img-src" notmarkdownable/>
+              <input type="text" placeholder="Caption (optional)" id="markdown-mods-img-caption"  notmarkdownable/>
+              <input type="text" placeholder="Style (css, optional)" id="markdown-mods-img-style"  notmarkdownable/>
               <button class="wikiButton" onclick="markdownCreateImg();">Insert</button>
               <p><span class="typeTab tiny" onclick="newpop()">esc</span> close</p>
           </div>
@@ -40,22 +40,29 @@ function markdownTabs() {
 
   return $tab.$image;
 }
-function markdownScript() {
+function markdownScript($plentiful = false) {
+  //use plentiful = true if you want ALL elements to take markdown
+  $insert = '!area.hasAttribute("markdownable")'; if ($plentiful){$insert = 'area.hasAttribute("notmarkdownable")';}
   $script = <<<HELAI
     <script>
     var myField = null;
-    fillableAreas = document.getElementsByTagName("*");
-    for (let area of fillableAreas){
-      if (!area.hasAttribute("markdownable")){continue;}
-      area.addEventListener("focus", markdownTarget);
-      myField = area;
+    function findField() {
+      fillableAreas = document.getElementsByTagName("INPUT");
+      for (let area of fillableAreas){
+        if ($insert){continue;}
+        area.addEventListener("focus", markdownTarget);
+        if (myField == null){
+          myField = area;
+        }
+      }
     }
+    findField();
     function markdownTarget(evt) {
       myField = evt.srcElement;
     }
 
     function markdownInsLink() {
-      if (myField == null){throw "no markdownable input found";}
+      if (myField == null){ throw "no markdownable input found";}
       let selectedText = getSelectionText();
       document.getElementById("markdown-mods-link-name").value = selectedText;
       document.getElementById("markdown-mods-link-url").value = "";

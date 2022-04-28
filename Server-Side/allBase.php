@@ -10,7 +10,7 @@ if (!trait_exists("allBase")){
       "cleanText2" => "/^[^\"'<>]+$/",
       "wikiName" => "/^[A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū',():\- ]{2,}$/",
       "tag" => "/[^A-Za-z0-9&]/",
-      "dicWord" => "/[^A-Za-zàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū ]/"
+      "dicWord" => "/[^A-Za-zàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū\-' ]/"
     ];
 
     function construct() {
@@ -29,17 +29,19 @@ if (!trait_exists("allBase")){
     }
     function replaceSpecChar($input, $level = 1) {
       $input = str_replace("'", "%single_quote%", $input);
-      $input = str_replace('"', "%double_quote%", $input);
-      if ($level > 1) {
-          $input = str_replace(":", '%colon%', $input);
-          $input = str_replace(";", '%pcolon%', $input);
-          $input = str_replace("-", '%hyphon%', $input);
-          $input = str_replace(",", '%comma%', $input);
-          $input = str_replace("[", '%sqbrak_left%', $input);
-          $input = str_replace("]", '%sqbrak_right%', $input);
-          if ($level > 2){
-            $input = str_replace("'", '', $input);
-          }
+      if ($level > 0){
+        $input = str_replace('"', "%double_quote%", $input);
+        if ($level > 1) {
+            $input = str_replace(":", '%colon%', $input);
+            $input = str_replace(";", '%pcolon%', $input);
+            $input = str_replace("-", '%hyphon%', $input);
+            $input = str_replace(",", '%comma%', $input);
+            $input = str_replace("[", '%sqbrak_left%', $input);
+            $input = str_replace("]", '%sqbrak_right%', $input);
+            if ($level > 2){
+              $input = str_replace("'", '', $input);
+            }
+        }
       }
       return $input;
     }

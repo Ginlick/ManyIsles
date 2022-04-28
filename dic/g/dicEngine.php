@@ -15,10 +15,12 @@ class dicEngine {
 
     function __construct($curPage = "Home") {
       require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dic.php");
+      require($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
       $this->dicconn = $dicconn;
       $this->user = new adventurer($this->conn);
       $this->conn = $this->user->conn;
       $this->curPage = $curPage;
+      $this->parser = new parser;
 
       $this->getLanguage();
       if (isset($_GET["i"])){
@@ -90,6 +92,7 @@ class dicEngine {
       }
     }
     function wordInfo($word, int $lang = null) {
+      $word = $this->purify($word);
       if (preg_match($this->regArrayR["number"], $word)!==1) {
         $query = "SELECT * FROM words WHERE id = '$word'";
       }
@@ -172,71 +175,102 @@ class dicEngine {
       MAD;
     }
     function giveWordTab($wordInfo) {
+      //print_r($wordInfo);
       $wordTab = '      <section class="wordCont">
-              <h1 class="wordTitle">'.$wordInfo["word"].'</h1>
-              <p class="headingnote">'.$this->curPage.' word</p>';
+              <h1 class="wordTitle">'.$wordInfo["word"];
+      if ($this->isValidArr($wordInfo, "notes")){
+        $notes = $wordInfo["notes"];
+        if ($this->isValidInput($notes, "phonetic")){
+          $wordTab .= "<span class='headingnote title'>".$notes["phonetic"]."</span>";
+        }
+      }
+      $wordTab .= '</h1>
+      <p class="headingnote">'.$this->curPage.' word</p>';
+      if ($this->isValidArr($wordInfo, "notes")){
+        if ($this->isValidInput($notes, "style")){
+          $wordTab .= "<p class='headingnote collapsed'>Style: ".$this->purify($notes["style"], "full")."</p>";
+        }
+        if ($this->isValidInput($notes, "usage")){
+          $wordTab .= "<p class='headingnote collapsed'>Context: ".$this->parser->parse($notes["usage"])."</p>";
+        }
+        if ($this->isValidInput($notes, "misc")){
+          $wordTab .= "<p class='headingnote collapsed'>".$this->parser->parse($notes["misc"])."</p>";
+        }
+      }
       if (isset($wordInfo["specifications"])){
         foreach ($wordInfo["specifications"] as $group) {
-          $wordTab .= "<h3 class='wordSubTitle'>".$group["wordtype"]."</h3>";
+          $wordTab .= "<div class='specGroup'>";
+          $wordTab .= "<h3 class='wordSubTitle'>".$this->purify($group["wordtype"], "full")."</h3>";
           if (isset($group["conjugation"])){
-            $wordTab .= "<p class='headingnote'>".$group["conjugation"]."</p>";
+            $wordTab .= "<p class='headingnote'>".$this->parser->parse($group["conjugation"])."</p>";
           }
-          if (isset($group["definitions"]) AND !$this->isEmpty($group["definitions"])){
+          if ($this->isValidArr($group, "definitions")){
             $wordTab .= "<ol class='wordDefinitionUl'>";
             foreach ($group["definitions"] as $definition) {
               if (count($definition)==0){continue;}
               $wordTab .= "<li class='wordDefinitionBlock'>";
               if (isset($definition["definition"])) {
-                $wordTab .= "<p>".$this->placeSpecChar($definition["definition"])."</p>";
+                $wordTab .= "<p>".$this->parser->parse($definition["definition"])."</p>";
               }
-              if (isset($definition["examples"]) AND count($definition["examples"])>0) {
+              if ($this->isValidArr($definition, "examples")) {
                 $wordTab .= "<p class='headingnote example' >Sample Sentence</p><div class='wordExampleBlock'>";
                 foreach ($definition["examples"] as $example) {
-                  $wordTab .= "<p><span class='wordExampleHeader'>".$this->allLangs[$example["language"]].":</span> ".$this->placeSpecChar($example["sentence"])."</p>";
+                  $wordTab .= "<p><span class='wordExampleHeader'>".$this->allLangs[$example["language"]].":</span> ".$this->parser->parse($example["sentence"])."</p>";
                 }
                 $wordTab .= "</div>";
               }
-              if (isset($definition["synonyms"]) AND count($definition["synonyms"])>0) {
+              if ($this->isValidArr($definition, "synonyms")) {
                 $wordTab .= "<p class='headingnote example' >Synonyms</p><div class='wordExampleBlock'>";
                 $prefix = "";
                 foreach ($definition["synonyms"] as $synonym) {
                   $wordTab .= $prefix.$this->giveWordLink($synonym);
                   $prefix = ", ";
                 }
-                $wordTab .= "</p>";
+                $wordTab .= "</div>";
               }
-              if (isset($definition["antonyms"]) AND count($definition["antonyms"])>0) {
+              if ($this->isValidArr($definition, "antonyms")) {
                 $wordTab .= "<p class='headingnote example'>Antonyms</p><div class='wordExampleBlock'>";
                 $prefix = "";
                 foreach ($definition["antonyms"] as $antonym) {
                   $wordTab .= $prefix.$this->giveWordLink($antonym);
                   $prefix = ", ";
                 }
-                $wordTab .= "</p>";
+                $wordTab .= "</div>";
               }
               $wordTab .= "</li>";
             }
             $wordTab .= "</ol>";
           }
+          $wordTab .= "</div>";
+        }
+      }
+      if ($this->isValidArr($wordInfo, "notes")){
+        // $wordTab .= "<div style='padding-top:1em;'></div>";
+        if ($this->isValidInput($notes, "time")){
+          $wordTab .= "<p class='headingnote collapsed'>Usage over time: ".$this->parser->parse($notes["time"])."</p>";
+        }
+        if ($this->isValidInput($notes, "etymology")){
+          $wordTab .= "<p class='headingnote collapsed'>Etymology: ".$this->parser->parse($notes["etymology"])."</p>";
         }
       }
       if (isset($wordInfo["translations"])){
         $wordTab .= "<h2 class='wordSectionTitle'>Translations</h2>";
         $wordTab .= "<ul>";
         foreach ($wordInfo["translations"] as $words) {
-          if ($words == "" OR !isset($words["words"]) OR count($words["words"])==0){continue;}
-          $wordTab .= "<li>".$this->allLangs[$words["language"]].": "; $prefix = "";
-          foreach ($words["words"] as $word) {
-            //if (gettype($word)=="array") {if (count($word)==0){$word = 0;} else {$word = $word[0];}}
-            if ($word == 0) {continue;}
-            $wordTab .= $prefix.$this->giveWordLink($word); $prefix = ", ";
+          if ($this->isValidArr($words, "words")){
+            $wordTab .= "<li>".$this->allLangs[$words["language"]].": "; $prefix = "";
+            foreach ($words["words"] as $word) {
+              if ($word == 0) {continue;}
+              $wordTab .= $prefix.$this->giveWordLink($word); $prefix = ", ";
+            }
+            $wordTab .= "</li>";
           }
-          $wordTab .= "</li>";
         }
         $wordTab .= "</ul>";
         $wordTab .= "<p><a href='/dic/translate?sl=$this->language&s=".$wordInfo["word"]."'>View on translate</a></p>";
       }
       $wordTab .= '</section>';
+
       return $wordTab;
     }
     function giveFooter() {
@@ -253,8 +287,21 @@ class dicEngine {
       return $return;
     }
 
+    function isValidArr($arr, $key){
+      if (isset($arr[$key]) AND count($arr[$key])>0){
+        if (count($arr[$key])==1 AND array_values($arr[$key])[0]==""){return false;}
+        return true;
+      }
+      return false;
+    }
+    function isValidInput($arr, $key){
+      if (isset($arr[$key]) AND $arr[$key]!=""){
+        return true;
+      }
+      return false;
+    }
     function giveWordLink($word, $alttext = "") {
-      if ($alttext == ""){$alttext = $this->wordInfo($word)["word"];}
+      if ($alttext == "") {if ($newword = $this->wordInfo($word)) {$alttext = $newword["word"];} else {return false;}}
       return "<a href='/dic/word/$word'>".$alttext."</a>";
     }
     //misc

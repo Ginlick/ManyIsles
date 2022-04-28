@@ -1,7 +1,7 @@
 //requires language
 
 function suggestNow(element, mode = 0) {
-  //modes: 0=links to word page, 1=translate's options
+  //modes: 0=links to word page, 1=translate's options, 2=insert word id
     var value = element.value;
     var getFile = "/dic/load/searchSugg.php?dics="+value+"&dicl="+language;
     var parent = document.getElementById("suggestions");
@@ -20,6 +20,13 @@ function suggestNow(element, mode = 0) {
               node.addEventListener("click", newWord);
               listElement.appendChild(node);
             }
+            else if (mode == 2){
+              var node = document.createElement("A");
+              node.innerHTML = arr["word"];
+              node.setAttribute("wordId", arr["id"]);
+              node.addEventListener("click", insertWordId);
+              listElement.appendChild(node);
+            }
             else {
               listElement.innerHTML = arr["link"];
             }
@@ -35,7 +42,7 @@ function suggestNow(element, mode = 0) {
           unordered.appendChild(listElement);
         }
         while (parent.firstChild) {
-            parent.removeChild(parent.firstChild);
+          parent.removeChild(parent.firstChild);
         }
         parent.appendChild(unordered);
         parent.style.display = "block";

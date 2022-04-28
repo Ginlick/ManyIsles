@@ -482,3 +482,17 @@ span.dsp {
   .showBGer:hover {
       background-color: var(--gen-color-hlink);
   }
+/*round info*/
+.roundInfo {
+    border: 1px solid var(--gen-color-bblue);
+    color: var(--gen-color-bblue);
+    border-radius: 50px;
+    font-size: var(--all-fonts-smol);
+    padding: 4px;
+    margin: 0 0 0 6px;
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: normal;
+    transition: .3s;
+    position: relative;
+}

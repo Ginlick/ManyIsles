@@ -1,6 +1,6 @@
 ﻿<?php
 
-require_once("g/dicEngine.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/dic/g/dicEngine.php");
 $dic = new dicEngine();
 $wordInfo = $dic->wordInfo;
 $dic->checkCredentials(false);
@@ -44,9 +44,12 @@ $dic->checkCredentials(false);
 <?php echo $dic->giveScripts(); ?>
 <script>
 var urlParams = new URLSearchParams(window.location.search);
-var why = urlParams.get('w');
-if (why == "notfound"){
-  createPopup("d:gen;txt:Error. Page could not be found.");
+var why = urlParams.get('i');
+if (why == "changed"){
+  createPopup("d:poet;txt:Information changed.");
+}
+else if (why == "error"){
+  createPopup("d:poet;txt:Error. Changes could not be made.");
 }
 
 

@@ -44,6 +44,17 @@ h1, h2, h3, input {
   font-size: var(--all-fonts-med);
   margin-top: 5px;
 }
+.headingnote.title {
+  font-size: var(--all-fonts-h2);
+  font-weight: normal;
+  margin-left: 0.5em;
+}
+.headingnote.collapsed {
+  margin-bottom: 0;
+}
+.specGroup {
+  margin-bottom: 1.8em;
+}
 .wordSubTitle {
   font-size: var(--all-fonts-larg);
   font-style: italic;
@@ -74,6 +85,7 @@ ul {
 .example.headingnote {
   margin-bottom: 5px;
 }
+
 /*suggestions*/
 .findWords {
   position: relative;

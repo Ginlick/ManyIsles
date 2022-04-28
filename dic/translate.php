@@ -181,6 +181,7 @@ function translates() {
     var newRelativePathQuery = window.location.pathname + '?' + "sl="+language+"&tl="+targetLanguage+"&s="+toTrans;
     history.pushState(null, '', newRelativePathQuery);
     query = "/dic/load/translations?dics="+toTrans+"&dicl="+language+"&targetl="+targetLanguage;
+    console.log(query);
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
