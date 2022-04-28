@@ -39,10 +39,11 @@ if (!class_exists("adventurer")){
             include($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
           }
           $this->conn = $conn;
+          if ($user == ""){$user = 0;}
           $this->user = preg_replace("/[^0-9]/", "", $user);
           $this->signedIn = false;
           if ($this->user == null){$this->user = 0;}
-          $query = "SELECT * FROM accountsTable WHERE id = $user";
+          $query = "SELECT * FROM accountsTable WHERE id = '$user'";
           if ($result = $this->conn->query($query)) {
               if (mysqli_num_rows($result) > 0) {
                   while ($row = $result->fetch_assoc()) {
