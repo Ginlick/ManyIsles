@@ -18,26 +18,14 @@ $conn = $dl->conn;
 $id = $dl->user->user;
 if (!$dl->user->signedIn){$dl->go("/account/Account", "");}
 
-$query = "SELECT * FROM accountsTable WHERE id = ".$id;
-$result = $conn->query($query);
-while ($row = $result -> fetch_assoc()) {
-    $name = $row["uname"];
-    $title = $row["title"];
-    $email = $row["email"];
-    $checkpsw = $row["password"];
-    $emailConfirmed = $row["emailConfirmed"];
-    $discname = $row["discname"];
-    $region = $row["region"];
-}
+$user = $dl->user;
+$emailConfirmed = $user->emailConfirmed;
+$discname = $user->discname;
 
 $disctitle = "Connect Discord";
 if ($discname != null){$disctitle = "Discord";}
 
-$tradeadmin = false;
 $poetadmin = false;
-if ($id == 11 or $id == 14 or $id == 26 or $id == 36) {
-    $tradeadmin = true;
-}
 $query="SELECT * FROM poets WHERE id = ".$id;
 $result =  $conn->query($query);
 if ($result != false){
@@ -115,7 +103,7 @@ $confMailBody = <<<MESSAGE
                 </p>
                  <button class="popupButton" type="submit" style="width:auto;margin-top:4vw"><a href="resendConfirm.php?mail=
 MESSAGE;
-    $confMailBody = $confMailBody.$email."&id=".$id.'" style="color:white;text-decoration:none">Resend Email</a></button></div>';
+    $confMailBody = $confMailBody.$user->email."&id=".$id.'" style="color:white;text-decoration:none">Resend Email</a></button></div>';
 
 if ($partner == false) {
 $partBar = <<<message
@@ -213,13 +201,14 @@ MESSAGE;
     $partBody = str_replace("gay", $partname, $partBody);
 }
 
-if ($poetadmin == false AND $tradeadmin == false) {
+if ($poetadmin == false AND !$user->moderator) {
     $adminBar = "";
 }
-else if ($poetadmin == true AND $tradeadmin == true){
+else if ($poetadmin == true AND $user->moderator){
 $adminBar = <<<message
-                <li> <a class="Bar" href="admin.php">Trade Admin</a></li>
-                <li> <a class="Bar line" href="/fandom/admin.php">Poetry Admin</a></li>
+      <li> <a class="Bar" href="admin/errors">Error Log</a></li>
+      <li> <a class="Bar" href="admin.php">Trade Admin</a></li>
+      <li> <a class="Bar line" href="/fandom/admin.php">Poetry Admin</a></li>
 message;
 }
 else if ($poetadmin == true){
@@ -227,9 +216,10 @@ $adminBar = <<<message
                 <li> <a class="Bar line" href="/fandom/admin.php">Poetry Admin</a></li>
 message;
 }
-else if ($tradeadmin == true){
+else if ($user->moderator){
 $adminBar = <<<message
-                <li> <a class="Bar line" href="admin.php">Trade Admin</a></li>
+  <li> <a class="Bar" href="admin/errors">Error Log</a></li>
+  <li> <a class="Bar line" href="admin.php">Trade Admin</a></li>
 message;
 }
 
@@ -450,14 +440,14 @@ if ($ordersExist){
             </div>
 
             <div id='Over' class='column'>
-                <h1><?php echo $title." ".$name; ?></h1>
+                <h1><?php echo $user->fullName; ?></h1>
                     <img src="<?php echo $dl->user->image(); ?>" alt="WorkingMage" class='bannerI' class='separator'>
                 <p>
                     Your account unlocks many awesome features, such as making your own spell list, access to premium content in the digital library, and getting early and free access to some of our products via mail!<br>
                     If you have any questions, problems or complaints, feel free to contact us at <a href="mailto:pantheon@manyisles.ch" target="_blank">pantheon@manyisles.ch</a>.
                 </p>
                 <div class="infoContain">
-                    <p>Email: <span style="color:#d40000"><?php echo $email; ?></span></p><button class="popupButton" onclick="pop('email')">Change</button>
+                    <p>Email: <span style="color:#d40000"><?php echo $user->email; ?></span></p><button class="popupButton" onclick="pop('email')">Change</button>
                 </div>
                 <div class="infoContain">
                     <p>Password</p><button class="popupButton" onclick="pop('psw-b')">Change</button>
@@ -466,9 +456,9 @@ if ($ordersExist){
                         <form action="changeRegion.php" method="POST" >
                         <td> <label for="region"><b>Region</b></label></td>
                         <td> <select name="region" id="region" required>
-                                <option value="1" <?php if ($region == 1){echo "selected";} ?>>1 (UTC)</option>
-                                <option value="2" <?php if ($region == 2){echo "selected";} ?>>2 (UTC + 7)</option>
-                                <option value="3" <?php if ($region == 3){echo "selected";} ?>>3 (UTC - 7)</option>
+                                <option value="1" <?php if ($user->region == 1){echo "selected";} ?>>1 (UTC)</option>
+                                <option value="2" <?php if ($user->region == 2){echo "selected";} ?>>2 (UTC + 7)</option>
+                                <option value="3" <?php if ($user->region == 3){echo "selected";} ?>>3 (UTC - 7)</option>
                             </select>
                         </td>
                         <div style="width:40%;margin:auto"><button class="popupButton" type="submit">Change</button></div>
@@ -582,7 +572,7 @@ if ($ordersExist){
             <img src="/Imgs/PopupBar.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block " />
             <h1>Change Email</h1>
             <p>
-                Your current email is <span style="color:red"><?php echo $email; ?></span><br /><br />
+                Your current email is <span style="color:red"><?php echo $user->email; ?></span><br /><br />
                 All information we send you will go to your new email. Please be aware that if you enter a wrong address, you will not get anything from us, be it free goodies or important updates.
             </p>
             <form style="padding:0 10% 0 10%" action="ChangeMail.php" autocomplete="off" method="POST">
@@ -751,6 +741,9 @@ if ($ordersExist){
     }
     else if (show == "discSucc") {
         clinnation("Disc");
+    }
+    else if (show=="credentials"){
+      createPopup("d:acc;txt:Improper credentials.");
     }
 
 function getCookie(name) {

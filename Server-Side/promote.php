@@ -12,8 +12,11 @@ if (!class_exists("adventurer")){
       public $discname = "";
       public $cpsw = "";
       public $tier = 0;
+      public $region = 1;
+      public $power = 1;
       public $signedIn = false;
       public $emailConfirmed = false;
+      public $moderator = false;
 
       public $titleArr = [
               "Adventurer" => 0, "Poet" => 0, "Trader" => 0, "Journeyman" => 0,
@@ -54,7 +57,10 @@ if (!class_exists("adventurer")){
                       $this->email = $row["email"];
                       $this->discname = $row["discname"];
                       $this->cpsw = $row["password"];
+                      $this->power = $row["power"];
+                      $this->region = $row["region"];
                       if ($row["emailConfirmed"]==1){$this->emailConfirmed = true;}
+                      if ($this->power > 3){$this->moderator = true;}
                   }
               }
           }
@@ -107,6 +113,12 @@ if (!class_exists("adventurer")){
           return false;
         }
         return true;
+      }
+      function modcheck($minpower = 4, $return="/account/SignedIn?show=credentials"){
+        $this->check(true, true, true);
+        if ($this->power < $minpower){
+          $this->go($return);
+        }
       }
       function checkInputPsw($psw) {
         if (password_verify($psw, $this->cpsw)){return true;}
