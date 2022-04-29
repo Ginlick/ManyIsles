@@ -7,7 +7,7 @@ $dic->checkCredentials(true);
 
 $wordInfo = null; $writingNew = false; $wordId = 0;
 if (!isset($_GET["dicw"])){
-  $language = $dic->purify($_GET["lang"], "number");
+  $language = $dic->language;
   if (!isset($dic->allLangs[$language])){$dic->go("home?i=error");}
   $wordWord = "New Word";
   $dic->language = $language; $dic->curPage = $dic->allLangs[$language];

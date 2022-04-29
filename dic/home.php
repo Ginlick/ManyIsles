@@ -48,9 +48,15 @@ if ($result = $dic->dicconn->query($query)) {
 <?php echo $dic->giveScripts(); ?>
 <script>
 var urlParams = new URLSearchParams(window.location.search);
-var why = urlParams.get('w');
-if (why == "notfound"){
-  createPopup("d:gen;txt:Error. Page could not be found.");
+var why = urlParams.get('i');
+if (why == "error"){
+  createPopup("d:poet;txt:Error.");
+}
+else if (why == "notfound"){
+  createPopup("d:poet;txt:Error. Page could not be found.");
+}
+else if (why == "req"){
+  createPopup("d:poet;txt:Request sent.");
 }
 
 

@@ -26,7 +26,7 @@ class parse {
     function bodyParser($body, $extent = 0, $database = "pages") {
         $this->database = $database;
 
-        if ($extent > 0){
+        if ($extent > 1){
           $wikiWork = function(&$body) {
             if (str_contains($body, "[footnote:")){$body = $this->doSources($body);}
               //if (preg_match_all("/^<h.+\[fold\].*$/m", $body, $newMatches) != false){$body = $this->parseFolds($body, $newMatches[0]);}

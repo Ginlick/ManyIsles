@@ -5,6 +5,7 @@
 if (!class_exists("errorHandler")) {
   class errorHandler {
     use allBase;
+    public $testMode = false;
 
     function __construct() {
       $this->construct();
@@ -40,7 +41,9 @@ if (!class_exists("errorHandler")) {
           case E_COMPILE_ERROR:
           case E_USER_ERROR:
             $this->log_error($e['type'], $message, 3);
-            echo "<script>window.location.replace('/Code/error');</script>";
+            if (!$this->testMode){
+              echo "<script>window.location.replace('/Code/error');</script>";
+            }
             die();
         }
     }
@@ -84,7 +87,7 @@ if (!class_exists("errorHandler")) {
     }
 
     function log_error($type, $message, int $severity = 1) {
-      //echo $message;
+      if ($this->testMode){echo $message;}
       $message = $this->replaceSpecChar($message, 0);
       $type = $this->replaceSpecChar($type, 0);
       $query = "UPDATE errors SET occurrences = occurrences + 1, status = 1 WHERE message = '$message'";

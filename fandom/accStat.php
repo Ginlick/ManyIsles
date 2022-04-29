@@ -2,7 +2,7 @@
 <?php
 //$conn
 
-function getAccStat($conn, $id, $wiki = null, $explicit = false) {
+function getAccStat($conn, $id, $wiki = null, $explicit = false, $wsetdb = "wiki_settings") {
     $astat = 1;
     $query = "SELECT banned, admin, super FROM poets WHERE id = $id";
     if ($max = $conn->query($query)) {
@@ -12,12 +12,9 @@ function getAccStat($conn, $id, $wiki = null, $explicit = false) {
             else if ($row["admin"]!=0){$astat = 4;}
         }
     }
-    else {
-      echo mysqli_error($conn);
-    }
 
     if ($wiki != null AND $astat > 0 AND $astat < 5){
-        $query = "SELECT banned, auths, mods FROM wiki_settings WHERE id = $wiki";
+        $query = "SELECT banned, auths, mods FROM $wsetdb WHERE id = $wiki";
         if ($max = $conn->query($query)) {
             while ($row = $max->fetch_assoc()){
                 $banned = explode(",", $row["banned"]);

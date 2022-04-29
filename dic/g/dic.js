@@ -5,7 +5,7 @@ function suggestNow(element, mode = 0) {
     var value = element.value;
     var getFile = "/dic/load/searchSugg.php?dics="+value+"&dicl="+language;
     var parent = document.getElementById("suggestions");
-
+    console.log(getFile);
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {

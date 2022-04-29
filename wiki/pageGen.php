@@ -42,7 +42,6 @@ class gen {
         if (isset($moreSpecs["fillIt"])){$fillIt = $moreSpecs["fillIt"];}
         if (isset($moreSpecs["igRev"])){$igRev = $moreSpecs["igRev"];}  //ignores the issue of reverted pages on edit / act
         if (isset($moreSpecs["notArticle"])){$this->notArticle = $moreSpecs["notArticle"];}
-
         require_once($_SERVER['DOCUMENT_ROOT']."/wiki/domInfo.php");
         equipDom($this, $domain);
         $conn = $this->conn;
@@ -166,6 +165,7 @@ class gen {
 
         //credentials / power
         if ($this->userMod->signedIn){
+          $this->power = $this->userMod->power;
           require_once($_SERVER['DOCUMENT_ROOT']."/fandom/accStat.php");
           if ($this->domainType == "spells"){
             $this->power = getAccStat($this->conn, $this->user, $this->parentWiki, false);
@@ -177,9 +177,9 @@ class gen {
             }
           }
           else if ($this->canLocalAccStat){
-              $this->power = getAccStat($this->dbconn, $this->user, $this->parentWiki, false);
+              $this->power = getAccStat($this->dbconn, $this->user, $this->parentWiki, false, $this->wsettingsdb);
           }
-          else {
+          else if ($this->domainType == "mystral") {
               $this->power = 5;
           }
           if ($this->domain == "fandom") {
@@ -354,6 +354,9 @@ class gen {
         }
         else if ($this->domain == "mystral") {
           $main = ' <link rel="icon" href="/Imgs/FaviconMyst.png">';
+        }
+        else if ($this->domain == "dic"){
+          $main = '<link rel="icon" href="/Imgs/FaviconDic.png">';
         }
         $main .= '  <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
         <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
@@ -1119,13 +1122,13 @@ MAIN;
             return $main;
         }
         function body($gen){
-            $sidetab = "<div class='sidetab'>".$gen->parse->bodyParser($gen->article->sidetabTitle, 0, $gen->database);
+            $sidetab = "<div class='sidetab'>".$gen->parse->bodyParser($gen->article->sidetabTitle, 1, $gen->database);
             if ($gen->article->timeStart != "" OR $gen->article->timeEnd != "") {
                 $sidetab .= "<p><i>".parseIWDate($gen->article->timeStart, $gen->article->timeEnd, $gen->dateArray, true);
                 $sidetab .="</i></p>";
             }
             if ($gen->article->sidetabImg != "") {$sidetab = $sidetab.'<a href="'.$gen->article->sidetabImg.'" target="_blank"><div class="sImage" load-image="'.$gen->article->sidetabImg.'"></div></a>';}
-            $sidetab = $sidetab.$gen->parse->bodyParser($gen->article->sidetabText, 0, $gen->database)."</div>";
+            $sidetab = $sidetab.$gen->parse->bodyParser($gen->article->sidetabText, 1, $gen->database)."</div>";
 
             $main = '<div style="'; if ($gen->prude) { $main .= "visibility: hidden";} $main .= '" id="actualNeatCont" >';
                 if ($gen->sidetabEx){
@@ -1139,7 +1142,7 @@ MAIN;
                     $main .= '<p class="warning">This page is <b>outstanding</b>. Be the one to write the '.$gen->pagename.'! <a href="'.$gen->editLink.'">Edit</a></p>';
                 }
 
-            $main .= $gen->parse->bodyParser($gen->article->body, 1, $gen->database);
+            $main .= $gen->parse->bodyParser($gen->article->body, 2, $gen->database);
             $main .='<div id="footnotes" style="display:none;">
                     <h2>Sources</h2>
                     <div id = "gimmeSources"></div>

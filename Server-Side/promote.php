@@ -89,13 +89,14 @@ if (!class_exists("adventurer")){
         return false;
       }
       function check($mod = false, $emailConfirmedMatters = false, $deadly = false) {
+        $skip = false;
         if ($this->signedIn OR $mod){
           if ($emailConfirmedMatters){
             if (!$this->emailConfirmed){
-              return false;
+              $skip = true;
             }
           }
-          if (isset($_COOKIE["loggedIn"]) AND isset($_COOKIE["loggedCode"])){
+          if ((isset($_COOKIE["loggedIn"]) AND isset($_COOKIE["loggedCode"])) OR !$skip){
             $code = $_COOKIE["loggedCode"];
             $query = "SELECT * FROM signCodes WHERE user = $this->user";
             if ($result = $this->conn->query($query)) {

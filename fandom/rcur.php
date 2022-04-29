@@ -15,7 +15,7 @@ if (!$undo){
     $doSecurity = true;
     //require($_SERVER['DOCUMENT_ROOT']."/wiki/engine.php");
     require($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-    $user = new adventurer($uid);$user->check(true); $conn = $user->conn;
+    $user = new adventurer($conn, $uid);$user->check(true); $conn = $user->conn;
     require("slotChecker.php");
 
     $query = "INSERT INTO requests (requestee, domain, request) VALUES ($uid, 'wf$wiki', 'auth')";
@@ -27,7 +27,7 @@ else {
   require($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
   $page = new gen("act", 0, $wiki);
   if ($page->power<3){header("Location:/fandom/wsettings.php?w=$wiki"); exit();}
-  $query = "DELETE FROM requests WHERE id = $uid";
+  $query = "DELETE FROM requests WHERE id = $uid AND domain LIKE 'wf%'";
   if ($page->conn->query($query)) {
       header("Location:/fandom/wsettings.php?w=$wiki&i=reqCurDel"); exit();
   }

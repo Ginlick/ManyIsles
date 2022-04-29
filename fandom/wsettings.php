@@ -168,7 +168,7 @@ function createPageTable($type) {
 <head>
     <meta charset="UTF-8" />
     <?php echo $gen->giveFavicon(); ?>
-    <title><?php echo $gen->wikiName; ?> Settings | Fandom</title>
+    <title><?php echo $gen->wikiName; ?> Settings | <?php echo $gen->domainName; ?></title>
     <style>
     table {
         width:80%;

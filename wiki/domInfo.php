@@ -20,6 +20,7 @@ function equipDom($gen, $domain = "fandom"){
     $gen->changeableGenre = false;
     $gen->canLocalAccStat = false;
     $gen->baseWSet = "";
+    $gen->wsettingsdb = "wiki_settings";
     $gen->premPower = 0;
     $gen->domainSpecs = [];
 
@@ -203,10 +204,13 @@ function equipDom($gen, $domain = "fandom"){
         $gen->pagename = "word";
         $gen->groupName = "dictionary";
         $gen->homelink = "/dic/home";
-        $gen->minPower = 4;
+        $gen->minPower = 2;
         $gen->domainName = "Dictionary";
         $gen->domainLogo = 'Dictionary';
         $gen->domainType = "dic";
+        $gen->acceptsTopBar = false;
+        $gen->wsettingsdb = "languages";
+        $gen->canLocalAccStat = true;
 
         $gen->artRootLink = "/dic/word/";
         $gen->baseLink = "/dic/";

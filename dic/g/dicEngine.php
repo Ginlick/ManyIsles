@@ -30,7 +30,7 @@ class dicEngine {
     }
     function checkCredentials($rabid = true) {
       require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
-      $this->wiki = new gen("view", 0, 0, false, "dic");
+      $this->wiki = new gen("view", 0, $this->language, false, "dic");
       if (!$this->wiki->canedit){
         if ($rabid){$this->go();}
       }
@@ -80,30 +80,40 @@ class dicEngine {
     //dic functionalities
     function wordId($word, int $lang = null) {
       if ($lang == null) {$lang = $this->language;}
-      $word = $this->purify($word, "quotes");
+      $word = $this->purify($word, "dicWord");
       if ($row = $this->wordInfo($word, $lang)){
         return $row["id"];
       }
       else {
-        $query = "INSERT INTO words (lang, word) VALUES ($lang, '$word')";
+        $query = 'INSERT INTO words (lang, word) VALUES ('.$lang.', "'.$word.'")';
         if ($this->dicconn->query($query)) {
           return $this->dicconn->insert_id;
         }
       }
     }
+    function wordExists(int $wordId, int $lang){
+      $query = "SELECT id FROM words WHERE id = '$wordId' AND lang = '$lang'";
+      if ($result = $this->dicconn->query($query)){
+        if (mysqli_num_rows($result)>0){return true;}
+      }
+      return false;
+    }
     function wordInfo($word, int $lang = null) {
+      $fullWord = $this->purify($word, "dicWord");
       $word = $this->purify($word);
       if (preg_match($this->regArrayR["number"], $word)!==1) {
         $query = "SELECT * FROM words WHERE id = '$word'";
       }
       else {
         $word = $this->purify($word, "quotes");
-        $query = "SELECT * FROM words WHERE lang = $lang AND word = '$word'";
+        $query = 'SELECT * FROM words WHERE lang = '.$lang.' AND (simpleWord = "'.$word.'" OR word = "'.$fullWord.'")';
+        echo $query;
       }
       if ($result = $this->dicconn->query($query)) {
         if (mysqli_num_rows($result) > 0) {
           while ($row = $result->fetch_assoc()) {
             $art = $row;
+            $art["word"] = $this->placeSpecChar($art["word"]);
             $art["specifications"] = json_decode($row["definitions"], true);
             $art["notes"] = json_decode($row["notes"], true);
             $art["translations"] = json_decode($row["translations"], true);
@@ -144,7 +154,7 @@ class dicEngine {
     function giveTopnav() {
       return '<div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl="true"></div>';
     }
-    function giveLeftcol() {
+    function giveLeftcol(array $additionalBars = []) {
       $return = <<<HAIL
       <div class="leftblock">
         <h1 class="leftColH1">current-information-place</h1>
@@ -153,6 +163,11 @@ class dicEngine {
       <div class="leftblock">
       <a class="Bar" href="/dic/home">Explore</a>
       <a class="Bar" href="/dic/translate">Translate</a>
+      HAIL;
+      foreach ($additionalBars as $bar){
+        $return .= $bar;
+      }
+      $return .= <<<HAIL
       </div>
 
       <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
@@ -177,7 +192,7 @@ class dicEngine {
     function giveWordTab($wordInfo) {
       //print_r($wordInfo);
       $wordTab = '      <section class="wordCont">
-              <h1 class="wordTitle">'.$wordInfo["word"];
+              <h1 class="wordTitle">'.$this->placeSpecChar($wordInfo["word"]);
       if ($this->isValidArr($wordInfo, "notes")){
         $notes = $wordInfo["notes"];
         if ($this->isValidInput($notes, "phonetic")){
