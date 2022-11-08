@@ -113,7 +113,10 @@ else if (window.location.href.includes("/SignedIn.php")) {
 }
 addCss("/Code/CSS/pop.2.css", "css");
 
-addCss("https://kit.fontawesome.com/1f4b1e9440.js", "js");
+addCss("/Code/fontawesome/css/fontawesome.css", "css");
+addCss("/Code/fontawesome/css/all.css", "css");
+// addCss("/Code/fontawesome/css/brands.css", "css");
+
 addCss("https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js", "js");
 
 addCss("https://fonts.googleapis.com", "preconnect");
@@ -367,8 +370,8 @@ function signOut(yeah = null) {
     document.cookie = "loggedCode=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     let newpath = removeParam("i", window.location.href);
 
-    if (yeah == "friendly") { window.location.href = "/account/Account?error=signIn"; }
-    else if (yeah == "baddie") { window.location.href = "/account/Account?error=notSignedIn";}
+    if (yeah == "friendly") { window.location.href = "/account/home?error=signIn"; }
+    else if (yeah == "baddie") { window.location.href = "/account/home?error=notSignedIn";}
     else {
       if (window.location.href != newpath){
         window.location.href = newpath;
@@ -383,7 +386,15 @@ function seekMaker(returner) {
   if (returner == "dl"){returner = "/dl/home";}
   else if (returner == "ds"){returner = "/ds/store";}
   else if (returner == "publish"){returner = "/ds/Publish";}
-  document.cookie='seeker='+returner;
+
+  if (returner != ""){
+    const d = new Date();
+    d.setTime(d.getTime() + (1*24*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+
+    console.log("seeker" + "=" + returner + ";" + expires + ";path=/;");
+    document.cookie = "seeker" + "=" + returner + ";" + expires + ";path=/;";
+  }
 }
 
 

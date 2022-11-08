@@ -182,13 +182,13 @@ if (!class_exists("adventurer")){
           }
           $this->signOut();
           if ($deadly) {
-            $this->go("/account/Account?error=notSignedIn");
+            $this->go("/account/home?error=notSignedIn");
           }
           return false;
         }
         return true;
       }
-      function modcheck($minpower = 4, $return="/account/SignedIn?show=credentials"){
+      function modcheck($minpower = 4, $return="/account/home?show=credentials"){
         $this->check(true, true, true);
         if ($this->power < $minpower){
           $this->go($return);
@@ -233,22 +233,23 @@ if (!class_exists("adventurer")){
             return "/Imgs/Ranks/single/".$image;
           }
       }
-      function signPrompt($back = "/account/Account") {
+      function signPrompt($back = "/account/home") {
         if (!$this->signedIn){
+          //could add onsubmit="seekMaker()" to form
           $signPrompt = '<h3>Sign In</h3>
-          <form action="/account/SignIn.php?back='.$back.'" method="POST" onsubmit="seekMaker()" style="text-align:center">
+          <form action="/account/SignIn.php?back='.$back.'" method="POST" style="text-align:center">
             <label for="loguname"><b>Username</b></label>
             <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" autocomplete="username" required>
             <label for="logpassword"><b>Password</b></label>
             <input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" autocomplete="current-password" required>
             <button class="wikiButton"><i class="fas fa-arrow-right"></i> Sign In</button>
           </form>
-          <p>Don\'t have an account? <a href="/account/Account?add=dl">Join us</a></p>
+          <p>Don\'t have an account? <a href="/account/home?add=dl">Join us</a></p>
           ';
         }
         else {
             $signPrompt = "<h3>".$this->fullName."</h3>
-            <p>Currently signed in with a tier ".$this->tier." account. <a href='/account/SignedIn' target='_blank'>View account</a></p>
+            <p>Currently signed in with a tier ".$this->tier." account. <a href='/account/home' target='_blank'>View account</a></p>
             <button onclick='signOut();' class='wikiButton'><i class='fas fa-arrow-right'></i> Sign Out</button>
             ";
         }
@@ -316,7 +317,7 @@ if (!class_exists("adventurer")){
                       </div>
                       <h2 style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 2.5vw);color:#911414;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">An awesome Digital Library</h2>
                       <p style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;">
-                          Our main goal is to promote small creators that want to get their awesome free stuff out there. Check out our <a href="https://manyisles.ch/dl/Goods">digital library</a> today, and start publishing from your <a href="https://manyisles.ch/account/SignedIn">account page</a>!
+                          Our main goal is to promote small creators that want to get their awesome free stuff out there. Check out our <a href="https://manyisles.ch/dl/Goods">digital library</a> today, and start publishing from your <a href="https://manyisles.ch/account/home">account page</a>!
                       </p>
 
                       <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />

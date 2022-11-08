@@ -12,6 +12,7 @@ class gen {
     public $signedIn = true;
     public $power = 1;
     public $canedit = true;
+    public $wikiVisibility = "standard";
     public $mode = "view";
 
     public $artLink = "/home";
@@ -126,6 +127,9 @@ class gen {
                       if ($this->changeableGenre AND isset($row["genres"]) AND $row["genres"] != ""){
                           $this->cateoptions = json_decode($row["genres"], true);
                       }
+                      if ($row["visibility"]=="hidden"){
+                        $this->wikiVisibility = "hidden";
+                      }
                   }
               }
           }
@@ -164,9 +168,9 @@ class gen {
         }
 
         //credentials / power
+        require_once($_SERVER['DOCUMENT_ROOT']."/fandom/accStat.php");
         if ($this->userMod->signedIn){
           $this->power = $this->userMod->power;
-          require_once($_SERVER['DOCUMENT_ROOT']."/fandom/accStat.php");
           if ($this->domainType == "spells"){
             $this->power = getAccStat($this->conn, $this->user, $this->parentWiki, false);
             $query = "SELECT mods FROM wiki_settings WHERE id = ".$this->parentWiki;
@@ -206,7 +210,11 @@ class gen {
           }
         }
         else {
+          $this->power = 0;
           $this->canedit = false;
+          if ($this->canLocalAccStat){
+              $this->power = getAccStat($this->dbconn, $this->user, $this->parentWiki, false, $this->wsettingsdb);
+          }
         }
 
         if ($this->power < $this->minPower){$this->canedit = false; $this->ediProblem = "Status";}
@@ -642,6 +650,9 @@ MAIN;
             if ($this->power == 0) {
                 $main.= "<p class='warning'>You are banned from this $this->groupName and cannot edit.</p>";
             }
+            else if ($this->wikiVisibility == "hidden"){
+              $main.= "<p class='infot'><i class='fa-regular fa-eye-slash'></i>  This wiki is hidden.</p>";
+            }
         $main .= '</div>';
 
         return $main;
@@ -704,11 +715,11 @@ MAIN;
         $main = '<div class="col-l">
             <h2>Share</h2>
             <div class="sharerCont">
-                <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch'.$this->artLink.'" target="_blank" class="fa fa-facebook"></a>
-                <a href="http://www.reddit.com/submit?title=Read up on '.$this->article->shortName.' lore on the Many Isles!&url=https://manyisles.ch'.$this->artLink.'" target="_blank" class="fa fa-reddit"></a>
-                <a href="https://twitter.com/intent/tweet?text=Read up on '.$this->article->shortName.' lore on the Many Isles!%0A&url=https://manyisles.ch'. $this->artLink.'&hashtags=manyisles,lore" target="_blank" class="fa fa-twitter"></a>';
-                if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="fa fa-pinterest"></a> '; }
-               $main .= ' <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://'.$_SERVER["HTTP_HOST"].$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch'.$this->artLink.'" target="_blank" class="linkfa fa-brands fa-facebook"></a>
+                <a href="http://www.reddit.com/submit?title=Read up on '.$this->article->shortName.' lore on the Many Isles!&url=https://manyisles.ch'.$this->artLink.'" target="_blank" class="linkfa fa-brands fa-reddit"></a>
+                <a href="https://twitter.com/intent/tweet?text=Read up on '.$this->article->shortName.' lore on the Many Isles!%0A&url=https://manyisles.ch'. $this->artLink.'&hashtags=manyisles,lore" target="_blank" class="linkfa fa-brands fa-twitter"></a>';
+                if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="linkfa fa-brands fa-pinterest"></a> '; }
+               $main .= ' <a class="linkfa fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://'.$_SERVER["HTTP_HOST"].$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
             </div>
         </div>';
         return $main;
@@ -826,7 +837,7 @@ MAIN;
                       <p id="currentRoot" class="topinfo" style="padding-top:5px;"><a href="/fandom/home">Fandom</a></p>
                       <input type="text" placeholder="New Root"  oninput="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');" autocomplete="off" onfocus="offerSuggestions(this, \'findSuggestions\', 0, \'switchSupport\');this.value=\'\';"></input>
                       <div class="suggestions" style=""></div>
-                      <input type="text" id="root" name="root" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->parentWiki.'"/>
+                      <input type="text" id="root" name="root" style="display:none;opacity:0;visibility:hidden;" value="'.$this->parentWiki.'"/>
                   </div>';
           if ($modifier > 0){
               $main .='

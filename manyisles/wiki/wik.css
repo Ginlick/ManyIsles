@@ -680,7 +680,7 @@ a:hover .aHoverDiv, span:hover .aHoverDiv {
 .sharerCont {
     text-align: center;
 }
-.sharerCont .fa {
+.sharerCont .linkfa {
     padding: 5px 10px;
     font-size: min(calc(17px + .3vw), 22px);
 }
@@ -934,6 +934,10 @@ h1 {
 
 .warning {
     color: var(--wiki-color-red);
+    padding-bottom: 15px;
+}
+.infot {
+    color: var(--wiki-color-anav);
     padding-bottom: 15px;
 }
 

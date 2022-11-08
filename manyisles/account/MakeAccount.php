@@ -21,7 +21,7 @@ $buttcon = "To Account";
 if (isset($_COOKIE["seeker"])){
   $return = $_COOKIE["seeker"];
   $buttcon = "continue";
-  setcookie("seeker", "", time() - 2200);
+  setcookie("seeker", "", time() - 2200, "/");
 }
 if (isset($_POST['wanttoPublish']) AND $_POST['wanttoPublish'] =="1"){
     $return = "SignedIn?show=notConfirmed";

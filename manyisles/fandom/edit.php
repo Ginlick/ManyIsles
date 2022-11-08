@@ -16,6 +16,7 @@ else {
 }
 if (isset($_GET["new"])) {
     $writingNew = true;
+    $parentWiki = 0;
 }
 if (isset($_GET["domain"])) {
     if (preg_match("/[^0-9a-zA-Z ]/", $_GET['domain'])==1){header("Location:/fandom/home");exit();}

@@ -3,20 +3,22 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
 $subUname = str_replace("'", "", $_POST['uname']);
 $subPsw = $_POST['psw'];
 $user = new adventurer();
+$user->killCache();
 
-$return = "SignedIn";
+$return = "home";
 if (isset($_COOKIE["seeker"])){
   if ( $_COOKIE["seeker"] != "" AND $_COOKIE["seeker"] != "undefined"){
     $return = $_COOKIE["seeker"];
   }
-  setcookie("seeker", "", time() - 2200, "/");
+  setcookie("seeker", $return, time() - 2200, "/");
 }
 else if (isset($_GET["back"])){
   $return = $_GET["back"];
 }
 
+//echo $return; exit;
 if ($user->signIn($subUname, $subPsw)) {
-  header("Location: $return"); exit;
+  $user->go($return);
 }
-header("Location:Account?error=signingIn");
+$user->go("home?error=signingIn");
 ?>

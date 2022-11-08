@@ -14,7 +14,7 @@ function getAccStat($conn, $id, $wiki = null, $explicit = false, $wsetdb = "wiki
         }
     }
 
-    if ($wiki != null AND $astat > 0 AND $astat < 5){
+    if ($wiki != null AND $astat < 5){
         $query = "SELECT * FROM $wsetdb WHERE id = $wiki";
         if ($max = $conn->query($query)) {
             while ($row = $max->fetch_assoc()){
