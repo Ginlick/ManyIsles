@@ -34,14 +34,10 @@ trait fundamentals {
     if ($oldOption != "" AND !preg_match("/^\/.*/", $file)){
       $file = $oldOption.$file;
     }
+    $this->checkServerInfo();
 
     if (!preg_match("/^http/", $file)){
-      if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
-        $file = "https://media.manyisles.ch".$file;
-      }
-      else {
-        $file = "http://25.36.111.17:8080".$file;
-      }
+      $file = $this->serverInfo["servername_media"].$file;
     }
     return $file;
   }

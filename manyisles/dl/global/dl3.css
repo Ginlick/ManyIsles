@@ -245,7 +245,7 @@ select {
     border-radius: 5px;
 }
 .menuCont button {
-    margin-top: 5px;
+    margin: 5px 0 0;
     width: 100%;
 }
 .tabs-header {

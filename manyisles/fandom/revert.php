@@ -9,7 +9,7 @@ if (isset($_GET["dom"])){
 }
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 $gen = new gen("act", $_GET['id'], 0, false, $domain, ["igRev" => true]);
-
+$gen->killCache();
 
 
 $query = "SELECT MIN(v) FROM $gen->database WHERE id = $id";

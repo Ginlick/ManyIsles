@@ -81,6 +81,13 @@ class gen {
 
         $this->article = new article($this);
         if ($this->article->name != "" AND $this->domainType == "spells"){$this->parentWiki = $this->article->parentWiki;}
+        // $placeSpecCharDegree = 1;
+        // if ($this->mode == "view"){
+        //   $placeSpecCharDegree = 2;
+        // }
+        // $this->article->body = $this->placeSpecChar($this->article->body, $placeSpecCharDegree);
+        // $this->article->sidetabTitle = $this->placeSpecChar($this->article->sidetabTitle, $placeSpecCharDegree);
+        // $this->article->sidetabText = $this->placeSpecChar($this->article->sidetabText, $placeSpecCharDegree);
 
         if ($this->domainType == "spells"){
           $query="SELECT wikiName FROM wiki_settings WHERE id = $this->parentWiki";
@@ -1063,7 +1070,7 @@ MAIN;
     }
     function giveRArticle($parts = []){
         $this->sidetabEx = false;
-        if ($this->article->sidetabTitle != ""  OR $this->article->sidetabText != "") {
+        if ($this->article->sidetabTitle != "null"  OR $this->article->sidetabText != "") {
           $this->sidetabEx = true;
         }
 
@@ -1882,9 +1889,9 @@ class article {
                         $this->parseClear = $row["parseClear"];
                         $this->regdate = $row["reg_date"];
 
-                        $this->body = $this->placeSpecChar($this->body);
-                        $this->sidetabTitle = $this->placeSpecChar($this->sidetabTitle, 2);
-                        $this->sidetabText = $this->placeSpecChar($this->sidetabText, 2);
+                        // $this->body = $this->placeSpecChar($this->body);
+                        // $this->sidetabTitle = $this->placeSpecChar($this->sidetabTitle, 2);
+                        // $this->sidetabText = $this->placeSpecChar($this->sidetabText, 2);
 
                         $date_array = date_parse($this->regdate);
                         $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];

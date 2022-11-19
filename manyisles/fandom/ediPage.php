@@ -221,6 +221,7 @@ else {
   $timeEnd = str_replace('"', '', $_POST['timeEnd']);
   if ($shortName == ""){$shortName = $name;}
   if ($importance > 99){$importance = 99;}
+  if ($sidetabImg != "" AND $sidetabTitle == ""){$sidetabTitle = "###".$shortName;}
 
   $query = 'INSERT INTO '.$gen->database.' (id, v, name, shortName, cate, banner, body, authors, pop, canon, root, sidetabTitle, sidetabImg, sidetabText, sources, categories, timeStart, timeEnd, importance, queryTags, parseClear, NSFW, parentWiki) VALUES (artid, artv, "artname", "artshortName", "artgenre", "artbanner", "artbody", "artauthors", artpop, artcanon, artroot, "artsidetabTitle", "artsidetabImg", "artsidetabText", \'artsources\', \'artcategories\', "arttimeStart", "arttimeEnd", artimportance, "artqueryTags", artparseClear, artNSFW, artparentWiki)';
 

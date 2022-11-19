@@ -119,12 +119,15 @@ button:hover, .popupButton:hover {
     width: 100%;
 }
 
-code {
+code, .code {
     font-family: inherit;
     background-color: #ebedee;
     border-radius: 3px;
     padding: 2px 4px;
     font-family: var(--gen-fontfams-code);
+}
+.code.block {
+  display: inline-block;
 }
 
 /*imgConts*/

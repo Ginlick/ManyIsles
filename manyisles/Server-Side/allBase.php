@@ -27,7 +27,6 @@ if (!trait_exists("allBase")){
         $newjson = file_get_contents(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/server-info.json");
         $newjson = json_decode($newjson, true);
         if (!isset($newjson["email"]) OR !isset($newjson["mysql"])){
-          print_r($newjson);
           throw new ErrorException("Incomplete server-info file");
         }
         $this->serverInfo = $newjson;
@@ -67,7 +66,11 @@ if (!trait_exists("allBase")){
         $input = str_replace('%double_quote%', '', $input);
         $input = str_replace("%single_quote%", "", $input);
       }
-      else {
+      if ($level < 2){
+        $input = str_replace("%single_quote%", "'", $input);
+        $input = str_replace("%double_quote%", '"', $input);
+      }
+      else { //level >= 2
         $input = str_replace("%single_quote%", "'", $input);
         $input = str_replace("%double_quote%", '"', $input);
         $input = str_replace("%colon%", ':', $input);

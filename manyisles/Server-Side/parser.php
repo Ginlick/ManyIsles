@@ -5,6 +5,28 @@ if (!class_exists("parser")){
 
   class parser {
     use allBase;
+    public $divTypes = [
+      "gallery" => [
+        "class" => "gallery"
+      ],
+      "wide" => [
+        "class" => "wide"
+      ],
+      "quote" => [
+        "class" => "quote",
+        "classOptions" => ["note", "left"]
+      ],
+      "highlighted" => [
+        "class" => "quote highlited",
+        "classOptions" => ["note", "left"]
+      ],
+      "code" => [
+        "class" => "code",
+        "el_type" => "span",
+        "innerType" => "line",
+        "classOptions" => ["block"]
+      ]
+    ];
 
     function __construct($parseClear = false) {
       $this->Parsedown = new Parsedown();
@@ -40,19 +62,65 @@ if (!class_exists("parser")){
             $body = str_replace("%key".$key."key%", "", $body);
           }
         }
-        //miscellaneous
-        $body = str_replace("[gallery]", "<div class='gallery'>", $body);
-        $body = str_replace("[/gallery]", "</div>", $body);
-        $body = str_replace("[wide]", "<div class='wide'>", $body);
-        $body = str_replace("[/wide]", "</div>", $body);
+
+        //all kinds of divs
+        $lineMatchesD = [];
+        if (preg_match_all("/\[(([A-Za-z]+)[A-Za-z ]*)\]/", $body, $lineMatchesD, PREG_OFFSET_CAPTURE) != false){$body = $this->parseDivs($body, $lineMatchesD);}
       }
 
-      $specCharLvl = 1;
+      $specCharLvl = 2;
       if ($extent < 0){$specCharLvl = 0;}
       $body = $this->placeSpecChar($body, $specCharLvl);
       $body = utf8_decode($body);
 
       return $body;
+    }
+
+    function parseDivs($body, $lineMatches){
+      $insertArray = [];
+      for ($i = 0; $i < count($lineMatches[0]); $i++){
+        $blockStart = $lineMatches[0][$i];
+        $startMarker  = $blockStart[0];
+        $startMarkerPos = $blockStart[1] + strlen($startMarker);
+        $fullClass = $lineMatches[1][$i][0];
+        $class = $lineMatches[2][$i][0];
+        $endMarker = "[/".$class."]";
+
+        $inBlock = substr($body, $startMarkerPos);
+        if (($endMarkerPos = strpos($inBlock, $endMarker)) === false){continue;}//no end marker found
+        $inBlock = substr($inBlock, 0, $endMarkerPos);
+
+        if (!($officialClass = $this->checkDivClass($fullClass))){continue;}
+        if ($officialClass[2] == "text"){$parsedInBlock = $this->Parsedown->text($inBlock);}
+        else {$parsedInBlock = $this->Parsedown->line($inBlock);}
+
+        $parsedBlock = "<".$officialClass[0]." class='".$officialClass[1]."'>".$parsedInBlock."</".$officialClass[0].">";
+        $insertArray[$i] = [$startMarker.$inBlock.$endMarker, $parsedBlock];
+      }
+      foreach ($insertArray as $element){
+        $body = str_replace($element[0], $element[1], $body);
+      }
+      return $body;
+    }
+    function checkDivClass($fullClass){
+      $officialClass = [0 => "div", 1 => "", 2 => "text"];
+      $classes = explode(" ", $fullClass);
+      if (!isset($this->divTypes[$classes[0]])){ return false; }
+      $officialClass[1] = $this->divTypes[$classes[0]]["class"];
+      if (isset($this->divTypes[$classes[0]]["classOptions"])){
+        foreach ($classes as $class){
+          if (in_array($class, $this->divTypes[$classes[0]]["classOptions"])){
+            $officialClass[1] .= " ".$class;
+          }
+        }
+      }
+      if (isset($this->divTypes[$classes[0]]["el_type"])){
+        $officialClass[0] = $this->divTypes[$classes[0]]["el_type"];
+      }
+      if (isset($this->divTypes[$classes[0]]["innerType"])){
+        $officialClass[2] = $this->divTypes[$classes[0]]["innerType"];
+      }
+      return $officialClass;
     }
 
     function parseImg($body, &$keyTracker, $lineMatches) {

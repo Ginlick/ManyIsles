@@ -10,6 +10,9 @@
     --wiki-color-lgrey: var(--col-lgrey);
     --wiki-fonts-unresp-nav: 17px;
     --wiki-color-quote: #d0952f;
+    --wiki-color-quotebody: #f0dab4;
+    --wiki-color-quoteAlt: var(--wiki-color-anav);
+    --wiki-color-quoteAltbody: #ececec;
     --wiki-color-buttback: var(--col-wikiBluBut);
     --wiki-color-buttback-hover: var(--col-wikiBluButHov);
     --wiki-color-beige: beige;
@@ -20,14 +23,15 @@
     --wiki-fonts-h2: min(calc(12px + 1.6vw), 39px);
     --wiki-fonts-h3: min(calc(14px + 1.2vw), 32px);
     --wiki-fonts-h3-colL: min(calc(4px + 1.4vw), 22px);
-    --wiki-fonts-p: min(calc(13.5px + 0.2vw), 20px);
+    --wiki-fonts-p: min(calc(12px + 0.2vw), 16px);
     --wiki-fonts-smaller: min(calc(9px + 0.2vw), 19px);
     --wiki-fonts-small: min(calc(10px + 0.1vw), 15px);
 }
 body {
     font-size: var(--wiki-fonts-p);
-    font-family: var( --gen-fontfams-base);
+    /* font-family: var( --gen-fontfams-base); */
 }
+
 
 .col-l, .col-r, h2, input, select, textarea {
     border-color: var(--doc-accent-color);
@@ -108,14 +112,13 @@ p, .note, td, th, ul {
     word-wrap: break-word;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 15px 5px;
-}
+
 .col-r ul {
-  list-style-type: disc;
-  padding-left: 15px;
+  list-style-type: none;
+  padding-left: 10px;
+}
+li {
+  font-size: var(--wiki-fonts-p);
 }
 li p {
     margin: 0;
@@ -1079,22 +1082,28 @@ h1 {
     width: 100%;
     justify-content: center;
 }
+
+.quote {
+  margin: 10px 0;
+  border-left: 5px solid var(--wiki-color-quote);
+  padding: 10px 10px 10px 15px;
+  background-color: var(--wiki-color-quotebody);
+  overflow: hidden;
+}
+.quote.highlited {
+  border-color: var(--wiki-color-quoteAlt);
+  background-color: var(--wiki-color-quoteAltbody);
+}
 .note {
-    background-color: var(--doc-stracc-color);
     width: 40%;
     max-width: 650px;
     min-width: min(300px, 100%);
     float: right;
-    padding: 5px;
 }
-
-    .note.wide {
-        width: 100%;
-        max-width: 100%;
+    .note.left {
+        float: left;
     }
-        .note.left {
-            float: left;
-        }
+
 .docTopRiter {
   position: absolute;
   top: 20px;
@@ -1150,13 +1159,18 @@ h1 {
     }
 
 .gallery {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+
 }
     .gallery .sideimg {
         float: unset;
-        display: inline-block;
-        position: relative;
-        vertical-align: top;
+        display: flex;
+        flex-grow: 1 1;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+
         max-width: 200px;
         margin: 10px;
     }
