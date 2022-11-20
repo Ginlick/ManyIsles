@@ -1,7 +1,9 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/stripe-php-7.75.0/init.php');
-require_once(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/stripe-sk.php");
+require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
+$ds = new dsEngine;
+$stripe_sk = $ds->give_stripe_sk();
 \Stripe\Stripe::setApiKey($stripe_sk);
 
 header('Content-Type: application/json');

@@ -37,7 +37,7 @@ trait fundamentals {
     $this->checkServerInfo();
 
     if (!preg_match("/^http/", $file)){
-      $file = $this->serverInfo["servername_media"].$file;
+      $file = $this->giveServerInfo("servername_media").$file;
     }
     return $file;
   }

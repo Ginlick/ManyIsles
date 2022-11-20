@@ -9,10 +9,11 @@ if (!class_exists("mailer")){
   require($_SERVER['DOCUMENT_ROOT']."/Server-Side/PHPMailer/PHPMailer.php");
   require($_SERVER['DOCUMENT_ROOT']."/Server-Side/PHPMailer/Exception.php");
   require($_SERVER['DOCUMENT_ROOT']."/Server-Side/PHPMailer/SMTP.php");
+  private $baseInfo;
 
   class mailer {
-    function __construct($serverInfo) {
-      $this->baseInfo = $serverInfo["email"];
+    function __construct($mailInfo) {
+      $this->baseInfo = $mailInfo;
     }
 
     function sendMail($recipientInfo, $subject, $message, $senderInfo = []) {

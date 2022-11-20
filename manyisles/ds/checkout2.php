@@ -370,7 +370,8 @@ if ($basketed->codesExist){
         }
     }
 
-    <?php require(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/stripe-pk.php");
+
+    <?php  $stripe_pk = $ds->give_stripe_pk();
     echo "var stripe = Stripe('$stripe_pk');"; ?>
     function doStripe() {
       if (<?php if ($stripeTotal >= 150){echo "true";} else {echo "false";}?>) {

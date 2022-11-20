@@ -14,22 +14,29 @@ if (!trait_exists("allBase")){
       "tag" => "/[^A-Za-z0-9&]/",
       "dicWord" => "/[^A-Za-zàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœĀāŌо̄Ūū\-'%_ ]/"
     ];
-    public $serverInfo = [];
+    private $serverInfo = [];
 
     function construct() {
       $this->conn = $this->addConn("accounts");
+      $this->checkServerInfo();
     }
     function checkServerInfo() {
       if ($this->serverInfo == []){
-        if (!file_exists(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/server-info.json")) {
+        $tofile = dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/keys/server-info.json";
+        if (!file_exists($tofile)) {
           throw new ErrorException("Missing essential file: server-info");
         }
-        $newjson = file_get_contents(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/server-info.json");
+        $newjson = file_get_contents($tofile);
         $newjson = json_decode($newjson, true);
         if (!isset($newjson["email"]) OR !isset($newjson["mysql"])){
           throw new ErrorException("Incomplete server-info file");
         }
         $this->serverInfo = $newjson;
+      }
+    }
+    function giveServerInfo($key) {
+      if (isset($this->serverInfo[$key])){
+        return $this->serverInfo[$key];
       }
     }
 
@@ -147,7 +154,7 @@ if (!trait_exists("allBase")){
     function addMailer() {
       require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/mailer.php");
       $this->checkServerInfo();
-      return new mailer($this->serverInfo);
+      return new mailer($this->serverInfo["email"]);
     }
   }
 }

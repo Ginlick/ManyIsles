@@ -4,8 +4,10 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/stripe-php-7.75.0/init.php');
-require_once(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/stripe-sk.php");
-require_once(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/ds-actcode.php");
+require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
+$ds = new dsEngine;
+$stripe_sk = $ds->give_stripe_sk();
+$stripe_whsec = $ds->give_stripe_whsec();
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/subs/subHandler.php');
 

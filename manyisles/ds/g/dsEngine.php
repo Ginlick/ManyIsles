@@ -5,6 +5,7 @@ class dsEngine {
   public $moneyconn;
   public $inbasket;
   public $type = "items"; //either items or subs
+  private $ds_info = [];
   use allBase;
   use allDStools;
 
@@ -17,6 +18,9 @@ class dsEngine {
     $this->construct(); //allBase construct
     $this->userInformation();
     $this->updateBasket();
+
+    //get info
+    $this->ds_info = $this->giveServerInfo("ds");
   }
 
   function userInformation() {
@@ -408,6 +412,19 @@ class dsEngine {
       $totalStock = $baseStock;
     }
     return $totalStock;
+  }
+
+  function give_actcode() {
+    return $this->ds_info["actcode"];
+  }
+  function give_stripe_pk() {
+    return $this->ds_info["stripe"]["pk"];
+  }
+  function give_stripe_sk() {
+    return $this->ds_info["stripe"]["sk"];
+  }
+  function give_stripe_whsec() {
+    return $this->ds_info["stripe"]["whsec"];
   }
 }
 

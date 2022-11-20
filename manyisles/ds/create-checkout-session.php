@@ -1,7 +1,6 @@
 ﻿<?php
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
-require_once(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/ds-actcode.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/subs/subHandler.php');
 
@@ -123,8 +122,8 @@ print_r($testArray);*/
 
 
 require_once('stripe-php-7.75.0/init.php');
-require_once(dirname($_SERVER['DOCUMENT_ROOT'])."/media/keys/stripe-sk.php");
 header('Content-Type: application/json');
+$stripe_sk = $ds->give_stripe_sk();
 
 $metaInfo = ["clid"=>$clid, "type"=>$basketed->type];
 

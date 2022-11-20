@@ -6,12 +6,11 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
-require_once(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/ds-actcode.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/account/prem/partAmount.php');
 $ds = new dsEngine;
 $conn = $ds->conn; $moneyconn = $ds->moneyconn;
 
-if (!isset($mycode) OR $mycode != $ds_actcode){echo "invalid certification";exit();}
+if (!isset($mycode) OR $mycode != $ds->give_actcode()){echo "invalid certification";exit();}
 
 $query = "SELECT * FROM dsclearing WHERE id = $clid";
 if ($result = $conn->query($query)) {

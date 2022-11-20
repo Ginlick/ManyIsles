@@ -1,7 +1,6 @@
 ﻿<?php
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
-require_once(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/media/keys/ds-actcode.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/subs/subHandler.php');
 
@@ -56,7 +55,7 @@ if ($basketed->type == "items"){
     $ds->go("checkout2?why=error");
   }
 
-  $mycode = $ds_actcode;
+  $mycode = $ds->give_actcode();
   $customer_email = $ds->user->email;
   require_once("g/handlerEffect.php");
 }
@@ -70,7 +69,7 @@ else if ($basketed->type == "subs") {
     $query = sprintf('INSERT INTO ds_asubs (buyer, datas, validity, plan) VALUES (%s, \'%s\', 365, '.$sid.')', $id, $fullDatas);
     $moneyconn->query($query);
 
-    $subby = new subHandler($ds_actcode);
+    $subby = new subHandler($ds->give_actcode());
     $subby->subProfit($sid, $id);
 }
 else {
