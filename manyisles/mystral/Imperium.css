@@ -7,6 +7,8 @@
     --doc-accent-color: var(--ds-gold);
     --doc-stracc-color: var(--ds-gold);
     --doc-base-color: white;
+    --wiki-color-quote: var(--doc-accent-color);
+    --wiki-color-quotebody: var(--doc-ahover-color);
 }
 .topBar {
     border-bottom: 1px solid var(--ds-gold);

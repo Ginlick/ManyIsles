@@ -520,7 +520,7 @@ function actRename() {
     xhttp.open("POST", getFile, true);
     xhttp.send(formData);
 
-    removePops();
+    newpop();
     return false;
 }
 function filter(input) {

@@ -6,6 +6,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/wiki/domInfo.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/fandom/getWiki.php");
 
 class parse {
+    use allBase;
     public $conn = null;
     protected $page = "";
     protected $parseClear = false;
@@ -13,6 +14,8 @@ class parse {
     public $keyTracker = 0;
     public $database = "pages";
     public $parentWiki = 2;
+
+    protected $titleArray = [];
 
     function __construct($conn, $page, $parseClear = 0, $domain = "fandom") {
         $this->page = $page;
@@ -38,14 +41,16 @@ class parse {
                   $artId = substr($artId, 0, strpos($artId, "]"));
                   $body = $this->addFullChildLine($body, $artId, "spec");
               }
+              $this->idifyTitles($body);
               if (str_contains($body, "[wiki:new")){$body = $this->addRecents($body, "reg_date");}
               if (str_contains($body, "[wiki:rand")){$body = $this->addRecents($body, "RAND()");}
               if (str_contains($body, "[wiki:pop")){$body = $this->addRecents($body);}
               if (str_contains($body, "[wiki:genre:")){$body = $this->addGenre($body);}
               if (str_contains($body, "[wiki:art")){$body = $this->addThumbnails($body);}
+              if (str_contains($body, "[contentsTable:")){$body = $this->addContentsTable($body);}
 
-              $body = preg_replace("/\[note([a-zA-Z ]*)\]/", "<div class='note $1'>", $body);
-              $body = str_replace("[/note]", "</div>", $body);
+              // $body = preg_replace("/\[note([a-zA-Z ]*)\]/", "<div class='note $1'>", $body);
+              // $body = str_replace("[/note]", "</div>", $body);
               //$body = preg_replace("/\[\/[a-z]+\]/", "</div>", $body);
           };
         }
@@ -54,7 +59,6 @@ class parse {
             if (str_contains($body, "[footnote:")){$body = $this->doSources($body);}
           };
         }
-
         return $this->parser->parse($body, $extent, $wikiWork);
     }
 
@@ -243,6 +247,24 @@ class parse {
         else { return $body;}
     }
 
+    function addContentsTable($body){
+      if (preg_match_all("/\[contentsTable:([1-9])\]/", $body, $lineMatches, PREG_OFFSET_CAPTURE) != false){
+        $degree = $lineMatches[1][0][0];
+        $offset = $lineMatches[0][0][1];
+        $index = 1;
+        $result = "<div class='contentsTable'><h4>Contents</h4><ul>";
+        foreach ($this->titleArray as $title){
+          if ($title["magnitude"]>$degree){continue;}
+          $inset = ""; if ($title["magnitude"]==2){$inset = $index.". ";$index++;}
+          $result .= "<li class='contentEl m".$title["magnitude"]."'>".$inset."<span class='fakelink' onclick='showTitle(\"".$title["id"]."\")'>".$title["text"]."</span></li>";
+        }
+        $result .= "</ul></div>";
+        $body = substr_replace($body, $result, $offset, 17);
+      }
+      return $body;
+    }
+
+
     /*function parseFolds($body, $lineMatches){
         foreach($lineMatches as $line){
             $header
@@ -251,6 +273,20 @@ class parse {
         }
     }*/
 
+    function idifyTitles(&$body){
+      $degree = 5;
+      if (preg_match_all("/<h([1-".$degree."])>([^<\/>]+)<\/h[1-".$degree."]>/", $body, $titles) != false){
+        for ($i = 0; $i < count($titles[0]); $i++){
+          $titFull = $titles[0][$i];
+          $titMagnitude = $titles[1][$i];
+          $titText = $titles[2][$i];
+          $titId = $this->purate($titText);
+          $newTitFull = "<h$titMagnitude id='$titId'>$titText</h$titMagnitude>";
+          $body = str_replace($titFull, $newTitFull, $body);
+          $this->titleArray[] = ["id" => $titId, "magnitude" => $titMagnitude, "text" => $titText];
+        }
+      }
+    }
     function doSources($body){
         $artId = substr($body, strpos($body, "[footnote:") + 10);
         $footNumber = substr($artId, 0, strpos($artId, "]"));

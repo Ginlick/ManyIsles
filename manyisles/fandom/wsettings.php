@@ -229,12 +229,19 @@ function createPageTable($type) {
                 <input type="color" onchange="this.nextElementSibling.value = this.value;" value="<?php if (preg_match("/#[0-9a-f]{6}/", $backgroundColor)){ echo $backgroundColor; } ?>">
                 <input type="text" name="backgroundCol" placeholder="Color (css code)" value="<?php echo $backgroundColor; ?>"></input>
                 <input type="text" name="backgroundImg" placeholder="Image (direct link, leave blank for none)" value="<?php echo $backgroundImg; ?>"></input>
+                <label for="bgtiling">Tiling:</label>
+                <select name="bgtiling">
+                    <option value="current">current</option>
+                    <option value="contain">contain (default)</option>
+                    <option value="tiled">tiled</option>
+                    <option value="cover">cover</option>
+                </select>
                 <h3>Date Format<span class="roundInfo green">Optional</span></h3>
                 <input type="text" name="dateB" placeholder="Date Before 0" value="<?php echo $dateB; ?>"></input>
                 <input type="text" name="dateA" placeholder="Date After 0" value="<?php echo $dateA; ?>"></input>
-                <h3>Default Banner</h3>
+                <h3>Banner</h3>
                 <div class="selectCont">
-                    <label for="banner">Choose a banner:</label>
+                    <label for="banner">Choose a default banner:</label>
                     <select id="banner" name="banner">
                         <option value="current">current</option>
                         <option value="default">default</option>

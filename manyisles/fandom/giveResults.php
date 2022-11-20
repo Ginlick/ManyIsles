@@ -78,7 +78,7 @@ function createTimeline($result, $parse) {
             if ($row["sidetabImg"] != null){$pageImg = $row["sidetabImg"];}else{$pageImg = banner($row["banner"]);}
             $sideResult["html"] = ' <div class="cd-timeline__block">
                 <div class="cd-timeline__img cd-timeline__img--picture" load-image="'.$pageImg.'">
-                </div> 
+                </div>
 
                 <div class="cd-timeline__content text-component">
                     <a href="'.$gen->baseLink.$row["id"].'/'.$row["shortName"].'">
@@ -153,7 +153,7 @@ if ($firstrow = $gen->dbconn->query($query)) {
         }
         if ($fullChildLine == ""){echo "<p class='topinfo' style='text-align:center;padding: 60px 0 30px;'>No results found.</p>";}
         else {
-            echo $parse->bodyParser($fullChildLine, 1, $gen->database);
+            echo $parse->bodyParser($fullChildLine, 2, $gen->database);
         }
     }
 }

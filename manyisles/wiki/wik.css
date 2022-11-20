@@ -26,6 +26,7 @@
     --wiki-fonts-p: min(calc(12px + 0.2vw), 16px);
     --wiki-fonts-smaller: min(calc(9px + 0.2vw), 19px);
     --wiki-fonts-small: min(calc(10px + 0.1vw), 15px);
+    --wiki-standardborder: 1px solid #ccc;
 }
 body {
     font-size: var(--wiki-fonts-p);
@@ -73,7 +74,7 @@ a, .fakelink, .footnote {
 h1, h2, h3, p {
     color: var(--doc-text-color);
 }
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5 {
     margin: 0;
     margin-bottom: 10px;
 }
@@ -103,6 +104,13 @@ h4 {
     padding: 8px 0 2px 5px;
     margin-bottom: 5px;
     font-style: oblique;
+}
+h5 {
+    font-family: var(--gen-fontfams-headers);
+    color: var(--wiki-color-lgrey);
+    font-size: calc(13px + 0.3vw);
+    padding: 8px 0 2px 5px;
+    margin-bottom: 5px;
 }
 
 p, .note, td, th, ul {
@@ -205,7 +213,7 @@ body {
     width: 30%;
     max-width: 400px;
     float: right;
-    border: 1px solid #ccc;
+    border: var(--wiki-standardborder);
     border-radius: 3px;
     margin-left: 10px;
     background-color:   var(--doc-base-color);
@@ -241,6 +249,35 @@ body {
         right: 0;
         left: unset;
     }
+
+    .contentsTable {
+      border: var(--wiki-standardborder);
+      border-radius: 3px;
+      display: inline-block;
+      padding: 5px 15px 10px 10px;
+      margin: 10px 0;
+    }
+    .contentsTable ul {
+      padding: 0;
+    }
+    .contentEl {
+      margin-top: 3px;
+    }
+    .contentEl.m1 {
+      font-weight: bold;
+    }
+    .contentEl.m3 {
+      margin-left: 25px;
+    }
+    .contentEl.m4 {
+      margin-left: 40px;
+    }
+    .contentEl.m5 {
+      margin-left: 45px;
+      font-weight: italic;
+    }
+
+
     .wikisearchbar {
         width: 20%;
         position: absolute;

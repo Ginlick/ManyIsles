@@ -71,7 +71,7 @@ if (!class_exists("parser")){
       $specCharLvl = 2;
       if ($extent < 0){$specCharLvl = 0;}
       $body = $this->placeSpecChar($body, $specCharLvl);
-      $body = utf8_decode($body);
+      //$body = utf8_decode($body);
 
       return $body;
     }

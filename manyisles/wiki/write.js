@@ -215,8 +215,13 @@ function viewNSFW(x) {
 }
 
 function showFoot(key) {
-    let footnote = document.getElementById("footnote" + key);
-    footnote.classList.remove("highlighted");
-    footnote.scrollIntoView({ behavior: "smooth", block: "center" });
-    footnote.classList.add("highlighted");
+    showTitle("footnote" + key);
+}
+function showTitle(key) {
+    let element = document.getElementById(key);
+    if (element != null){
+      element.classList.remove("highlighted");
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      element.classList.add("highlighted");
+    }
 }

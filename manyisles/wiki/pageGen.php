@@ -134,7 +134,7 @@ class gen {
                       if ($this->changeableGenre AND isset($row["genres"]) AND $row["genres"] != ""){
                           $this->cateoptions = json_decode($row["genres"], true);
                       }
-                      if ($row["visibility"]=="hidden"){
+                      if (isset($row["visibility"]) AND $row["visibility"]=="hidden"){
                         $this->wikiVisibility = "hidden";
                       }
                   }
@@ -448,6 +448,14 @@ class gen {
                     $echo = "";
                     if ($row["backgroundColor"] != ""){$echo .= "background-color: ".$row["backgroundColor"].";";}
                     if ($row["backgroundImg"] != ""){$echo .= "background-image: url(".$row["backgroundImg"].");"; }
+                    $moreSettings = json_decode($row["moreSettings"], true);
+                    if (isset($moreSettings["bgtiling"])){
+                      $bgtiling = $moreSettings["bgtiling"];
+                      if ($bgtiling == "contain"){$echo .= "background-size: contain;";}
+                      else if ($bgtiling == "cover"){$echo .= "background-size: cover;";}
+                      else if ($bgtiling == "tiled"){$echo .= "background-size: auto;";}
+                    }
+
                     return $echo;
                 }
             }
@@ -1069,9 +1077,9 @@ MAIN;
       return $fullblock;
     }
     function giveRArticle($parts = []){
-        $this->sidetabEx = false;
-        if ($this->article->sidetabTitle != "null"  OR $this->article->sidetabText != "") {
-          $this->sidetabEx = true;
+        $this->sidetabEx = true;
+        if (($this->article->sidetabTitle == "null" OR $this->article->sidetabTitle == "null")  AND $this->article->sidetabText == "") {
+          $this->sidetabEx = false;
         }
 
         $main = '        <div class="col-r" style="margin-bottom:50px;">

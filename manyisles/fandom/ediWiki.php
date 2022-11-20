@@ -2,6 +2,7 @@
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/expressions.php");
 if (preg_match("/[^0-9]/", $_POST['wId'])==1){header("Location:/fandom/home");exit();}
 if (preg_match("/[^0-9]/", $_POST['dom'])==1){header("Location:/fandom/home");exit();}
+if (preg_match("/[^a-z]/", $_POST['bgtiling'])==1){header("Location:/fandom/home");exit();}
 if (preg_match('/[:;{}"]/', $_POST['backgroundCol'])==1){header("Location:/fandom/home");exit();}
 $backgroundImg = str_replace('"', '', $_POST['backgroundImg']);
 if (!checkRegger("cleanText2", $_POST["dateB"])){header("Location:/fandom/home");exit();}
@@ -11,6 +12,7 @@ $styles = ""; if (isset($_POST['style'])) {$styles = $_POST["style"]; if (!check
 $parentWiki = $_POST['wId'];
 $domain = $_POST['dom'];
 $backgroundCol = $_POST['backgroundCol'];
+$bgtiling = $_POST['bgtiling'];
 
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 $gen = new gen("act", 0, $parentWiki, false, $domain);
@@ -25,13 +27,15 @@ if ($result->num_rows == 0){
 }
 
 
-$oldBanner = $gen->defaultBanner; $oldStyle = "Mystral";
+$oldBanner = $gen->defaultBanner; $oldStyle = "Mystral"; $oldTiling = "cover";
 $query = "SELECT * FROM wiki_settings WHERE id = '$gen->WSet'";
 $firstrow = $conn->query($query);
 if (mysqli_num_rows($firstrow) != 0){
     while ($row = $firstrow->fetch_assoc()) {
         $oldBanner = $row["defaultBanner"];
         $oldStyle = $row["styles"];
+        $oldMoreSet = json_decode($row["moreSettings"], true);
+        if (isset($oldMoreSet["bgtiling"])){$oldTiling = $oldMoreSet["bgtiling"];}
     }
 }
 
@@ -52,9 +56,8 @@ $dateArray = json_encode($dateArray);
 
 
 if ($oldBanner == $gen->styleDefaults[$oldStyle]["banner"]) {$oldBanner = $gen->styleDefaults[$styles]["banner"];}
-if ($backgroundImg == null OR $backgroundImg == $gen->styleDefaults[$oldStyle]["backgroundImg"]){$backgroundImg = $gen->styleDefaults[$styles]["backgroundImg"];}    
-if ($backgroundCol == null OR $backgroundCol == $gen->styleDefaults[$oldStyle]["backgroundImg"]){$backgroundCol = $gen->styleDefaults[$styles]["backgroundColor"];}    
-
+if ($backgroundImg == null OR $backgroundImg == $gen->styleDefaults[$oldStyle]["backgroundImg"]){$backgroundImg = $gen->styleDefaults[$styles]["backgroundImg"];}
+if ($backgroundCol == null OR $backgroundCol == $gen->styleDefaults[$oldStyle]["backgroundImg"]){$backgroundCol = $gen->styleDefaults[$styles]["backgroundColor"];}
 
 
 
@@ -68,18 +71,23 @@ else {
     $banner = $_POST["banner"];
 }
 
+if ($bgtiling == "current"){
+  $bgtiling = $oldTiling;
+}
 
+$moreSettings = ["bgtiling" => $bgtiling];
+$moreSettings = json_encode($moreSettings);
 
-
-$query = 'UPDATE wiki_settings SET dateName = \'artdateName\', defaultBanner = "artdefaultBanner", backgroundImg = "artbackgroundImg", backgroundColor = "artbackgroundColor", styles = "artStyles" WHERE id = "'.$gen->WSet.'"';
+$query = 'UPDATE wiki_settings SET dateName = \'artdateName\', defaultBanner = "artdefaultBanner", backgroundImg = "artbackgroundImg", backgroundColor = "artbackgroundColor", styles = "artStyles", moreSettings = \'artmoreSettings\' WHERE id = "'.$gen->WSet.'"';
 
 $query = str_replace("artdateName", $dateArray, $query);
 $query = str_replace("artdefaultBanner", $banner, $query);
 $query = str_replace("artbackgroundColor", $backgroundCol, $query);
 $query = str_replace("artbackgroundImg", $backgroundImg, $query);
 $query = str_replace("artStyles", $styles, $query);
+$query = str_replace("artmoreSettings", $moreSettings, $query);
 
-echo $query;
+//echo $query; exit;
 
 if ($conn->query($query)){
     header("Location:".$gen->baseLink."wsettings?i=bigup&w=$parentWiki");

@@ -12,7 +12,10 @@
     --wiki-color-ahover: #7c9ca6;
     --wiki-color-buttback: var(--doc-stext-color);
     --wiki-color-buttback-hover: var(--doc-ahover-color);
-    --wiki-color-quote: #808080;
+    --wiki-color-quote: var(--doc-accent-color);
+    --wiki-color-quotebody: #b29f60;
+    --wiki-color-quoteAlt: var(--all-color-albord);
+    --wiki-color-quoteAltbody: var(--col-dgrey);
     --wiki-color-lgrey: var(--doc-text-color);
     --wiki-color-anaver: #808080;
     --wiki-color-beige: var(--wiki-color-a);
