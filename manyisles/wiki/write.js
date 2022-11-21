@@ -183,25 +183,27 @@ function showAuthors() {
 function addJSON(sourceJSON) {
     if (sourceJSON != "") {
         sourceJSON = JSON.parse(sourceJSON);
-        document.getElementById("footnotes").style.display = "block";
-        for (let key in sourceJSON) {
-            let line = document.createElement("p");
-            getFile = encodeURI("/fandom/giveParse.php?q=".concat(sourceJSON[key]));
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = async function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    let result = xhttp.responseText;
-                    let tokillement = document.createElement("div");
-                    tokillement.innerHTML = result;
-                    let parsedText = tokillement.children[0].innerHTML;
-                    line.innerHTML = "<sup>" + key + "</sup> " + parsedText;
-                    line.setAttribute("id", "footnote" + key);
-                    document.getElementById("gimmeSources").appendChild(line);
-                }
-            };
-            xhttp.open("GET", getFile, false);
-            xhttp.send();
-        }
+        if (!Object.keys(sourceJSON).length == 0){
+          document.getElementById("footnotes").style.display = "block";
+          for (let key in sourceJSON) {
+              let line = document.createElement("p");
+              getFile = encodeURI("/fandom/giveParse.php?q=".concat(sourceJSON[key]));
+              var xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = async function () {
+                  if (this.readyState == 4 && this.status == 200) {
+                      let result = xhttp.responseText;
+                      let tokillement = document.createElement("div");
+                      tokillement.innerHTML = result;
+                      let parsedText = tokillement.children[0].innerHTML;
+                      line.innerHTML = "<sup>" + key + "</sup> " + parsedText;
+                      line.setAttribute("id", "footnote" + key);
+                      document.getElementById("gimmeSources").appendChild(line);
+                  }
+              };
+              xhttp.open("GET", getFile, false);
+              xhttp.send();
+          }
+      }
     }
 }
 

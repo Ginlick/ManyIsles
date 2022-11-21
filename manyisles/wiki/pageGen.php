@@ -1078,7 +1078,7 @@ MAIN;
     }
     function giveRArticle($parts = []){
         $this->sidetabEx = true;
-        if (($this->article->sidetabTitle == "null" OR $this->article->sidetabTitle == "null")  AND $this->article->sidetabText == "") {
+        if (($this->article->sidetabTitle == "null" OR $this->article->sidetabTitle == "")  AND $this->article->sidetabText == "") {
           $this->sidetabEx = false;
         }
 
