@@ -1,8 +1,9 @@
 ﻿:root {
     --gen-color-bblue: #8dceff;
-    --gen-color-mellowite: #f3f3f3;
-    --gen-color-link: #9a0000;
-    --gen-color-hlink: #b61414;
+    --gen-color-hoverbblue: #539bd1;
+    --gen-color-mellowite: #ffffff;
+    --gen-color-link: var(--gen-color-bblue);
+    --gen-color-hlink: var(--gen-color-hoverbblue);
     --wiki-color-green: #b1e68f;
     --col-wikiA: #786ab5;
     --col-grey2: #f2f2f2;
@@ -29,9 +30,9 @@
     --all-fonts-med: min(calc(12px + .2vw), 18px);
     --all-fonts-smal: min(calc(10px + .2vw), 15px);
     --all-fonts-unresp-bigStan: 16px;
-    --gen-fontfams-titles: "Pacifico", 'Luminari', 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    --gen-fontfams-titles:  'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     --gen-fontfams-headers: 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    --gen-fontfams-base: Arial, Helvetica, sans-serif;
+    --gen-fontfams-base: "Lato", Arial, Helvetica, sans-serif;
     --gen-fontfams-code: Courier New, Courier, monospace;
     --doc-neatshadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
@@ -60,7 +61,6 @@ body {
     flex: 1;
 }
 h1 {
-    color: RGB(130,0,0);
     font-family: var(--gen-fontfams-titles);
     font-size: var(--all-fonts-h1);
 }
@@ -74,6 +74,7 @@ h3 {
     font-size: var(--all-fonts-h3);
 }
 p, li {
+  font-family: var(--gen-fontfams-base);
    font-size: var(--all-fonts-base);
 }
 input, textarea, select {
@@ -102,17 +103,18 @@ a:hover, .fakelink:hover {
     color: var(--gen-color-hlink);
 }
 button, .popupButton {
-    background-color: red;
-    border-radius: 4px;
+    background-color: var(--gen-color-bblue);
     font-weight: bold;
+    border-radius: 2px;
     color: white;
     font-size: 20px;
     border:0px;
     transition: .2s ease;
-    padding : 5px 9px;
+    padding : 8px 12px;
 }
 button:hover, .popupButton:hover {
     color: white;
+    background-color: var(--gen-color-hoverbblue);
 }
 
 .separator {

@@ -121,7 +121,7 @@ addCss("https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"
 
 addCss("https://fonts.googleapis.com", "preconnect");
 addCss("https://fonts.gstatic.com", "preconnect");
-addCss("https://fonts.googleapis.com/css2?family=Roboto&display=swap", "css");
+addCss("https://fonts.googleapis.com/css2?family=Roboto&family=Lato&display=swap", "css");
 
 function responsive(fileName, ifWhich) {
     if (ifWhich == "big") {
