@@ -92,64 +92,61 @@
           padding: 20px 0;
         }
 
-        .homep {
+        .homep, h1 {
           text-align: center;
-          padding: 15px;
+        }
+        h1 {
+          padding-top: 50px;
         }
         .im-ccontainer {
           display: flex;
           flex-direction: row;
           position: relative;
-        }
-        .im-bg {
-          width: 100%;
-          height: 200px;
-          background-color: var(--gen-color-bblue);
-          position: absolute; top: 0; left: 0;
+          justify-content: center;
+          max-width: 1000px;
+          margin: auto;
         }
         .im-box {
-          width: 260px;
+          width: 300px;
           margin: 20px;
-          border: 1px solid #ddd;
+          box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+          transition: .2s ease;
+          border-radius: 5px;
+          overflow: hidden;
+          position: relative;
+        }
+        .im-box:hover {
+          transform: translateY(-2px);
+          background-color: #fcfcfc;
+        }
+        .im-wrapA {
+          position: absolute; width: 100%; height: 100%;
         }
         .im-topcontainer {
           width: 100%;
-          position: relative;
-        }
-        .im-topcontainer::after {
-          content: "";
-          display: block;
-          padding-bottom: 100%;
+          height: 200px;
         }
         .im-intopcontainer {
-          position: absolute;
           height: 100%; width: 100%;
-          border-radius: 5px;
           overflow: hidden;
+        }
+        .im-imgCont {
+          width: 100%; height: 100%;
         }
         .im-imgCont img {
           height: 100%; width: 100%;
           object-fit: cover;
-        }
-        .im-overlay {
-          transition: .5s ease;
-          opacity: 0;
-        }
-        .im-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            height: 100%; width: 100%;
-            background-color: #000000;
-        }
-        .im-incontainer:hover .im-overlay {
-            opacity: 0.75;
+          object-position: 50% 50%;
         }
         .im-botcontainer {
           padding: 10px;
-          text-align: center;
         }
-        .im-text {
+        .im-text h3 {
+          margin: 15px 0 0;
+          display: flex;
+          justify-content: space-between;
         }
+
         /* .im-text {
           color: white;
           text-align: center;
@@ -207,28 +204,217 @@
 
           <h1>Publications</h1>
           <div class="im-ccontainer">
-            <div class="im-bg"></div>
             <div class="im-box">
+              <a class="im-wrapA" href="/dl/home"></a>
               <div class="im-topcontainer">
                 <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/Prods.png"></div>
+                  <div class="im-imgCont" load-image="/Imgs/slides/dl.png"></div>
                   <div class="im-overlay"></div>
                 </div>
               </div>
               <div class="im-botcontainer">
                 <div class="im-text">
                   <h3>Digital Library</h3>
-                  <p>A gallery full of jewels from the Many Isles. What we're all about!</p>
+                  <p>
+                    A gallery full of jewels from the Many Isles. What we're all about!
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
                 </div>
-                <div class='im-buttcont'><a href='/dl/home' target='_self'><button class='im-button'>Visit</button></a></div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="/ds/store"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/ds.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Digital Store</h3>
+                  <p>
+                    A selection of physical products you can buy.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
+          <h1>Worldbuilding</h1>
+          <div class="im-ccontainer">
+            <div class="im-box">
+              <a class="im-wrapA" href="/fandom/home"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/fandom.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Fandom Wiki</h3>
+                  <p>
+                    Awesome community-created wikis.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="/mystral/hub"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/mystral.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Mystral</h3>
+                  <p>
+                    Easily create notebooks for campaigns and worldbuilding.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <h1>Roleplaying</h1>
           <h1>Community</h1>
+          <div class="im-ccontainer">
+            <div class="im-box">
+              <a class="im-wrapA" href="/account/home"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/account.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Account</h3>
+                  <p>
+                    Your Many Isles account.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="/blog/explore"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/blogs.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Blogs</h3>
+                  <p>
+                    View and publish posts about fantasy.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="https://discord.gg/XTQnR7mS3D"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/discord.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Discord</h3>
+                  <p>
+                    Join our discord server and become part of our growing community.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Join</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
           <h1>Tools</h1>
+          <div class="im-ccontainer">
+            <div class="im-box">
+              <a class="im-wrapA" href="/account/home"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/spells.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Spells</h3>
+                  <p>
+                    Your Many Isles account.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="/blog/explore"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/blogs.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Blogs</h3>
+                  <p>
+                    View and publish posts about fantasy.
+                  </p>
+                  <p>
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="https://discord.gg/XTQnR7mS3D"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/discord.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Discord</h3>
+                  <p>
+                    Join our discord server and become part of our growing community.
+                  </p>
+                  <p>
+                    <span class="fakelink">Join</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
       </section>

@@ -26,9 +26,9 @@
     --all-fonts-h2: min(calc(22px + .4vw), 30px);
     --all-fonts-h3: min(calc(20px + .3vw), 27px);
     --all-fonts-larg: min(calc(17px + .3vw), 21px);
-    --all-fonts-base: min(calc(14px + .3vw), 20px);
-    --all-fonts-med: min(calc(12px + .2vw), 18px);
-    --all-fonts-smal: min(calc(10px + .2vw), 15px);
+    --all-fonts-base: 18px;
+    --all-fonts-med: 15px;
+    --all-fonts-smal: 12.5px;
     --all-fonts-unresp-bigStan: 16px;
     --gen-fontfams-titles:  'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     --gen-fontfams-headers: 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
