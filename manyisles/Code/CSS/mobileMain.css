@@ -1,0 +1,21 @@
+:root {
+  --struc-navheight: 150px;
+}
+.m-topnav-logo {
+  height: 90px; width: 90px;
+}
+.m-topnav-logocont h3 {
+  font-size: 40px;
+}
+.m-navmenu-cont {
+  height: 80px; width: 80px;
+}
+.m-navmenu i {
+  font-size: 40px;
+}
+.m-topnav-a {
+  display: none;
+}
+.m-menuel {
+  width: 50%;
+}

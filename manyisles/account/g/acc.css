@@ -27,7 +27,7 @@
     }
 
         .Bar:hover {
-           color: #8f0404;
+           color: var(--gen-color-hlink);
         }
         .Bar.line {
             padding-bottom: 0.5vw;
@@ -51,7 +51,9 @@
 .flex-container {
     display: flex;
     align-items: stretch;
-    min-height: 100%;
+    min-height: calc(100vh - var(--struc-navheight));
+    max-width: var(--contcol-width);
+    margin: auto;
 }
 accButton {
     padding: 10px;

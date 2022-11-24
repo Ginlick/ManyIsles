@@ -21,7 +21,7 @@
 </head>
 <body>
 
-    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;"></div>
+  <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newel="true"></div>
     <div style="flex: 1 0 auto;">
         <div class="flex-container">
 
@@ -170,8 +170,7 @@
     <div id="modal" class="modal" onclick="pop('ded')">
     </div>
 
-    <footer style="flex-shrink:0;">
-    </footer>
+    <div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>
 
 </body>
 </html>

@@ -1,8 +1,0 @@
-:root {
-  --contcol-width: min(1400px, 100%);
-}
-.contcol-wrapper {
-  width: var(--contcol-width);
-  margin: auto;
-  padding: 0 10px;
-}

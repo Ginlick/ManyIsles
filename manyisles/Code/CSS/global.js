@@ -14,8 +14,14 @@ function includeHTML() {
                 if (this.readyState == 4) {
                     if (this.status == 200) {
                         if (elmnt.getAttribute("w3-create-newEl") == "true") {
-                            elmnt.parentElement.insertBefore(parser.parseFromString(this.responseText, "text/html").firstChild.children[1].firstChild, elmnt);
-                            elmnt.remove();
+                          let children = parser.parseFromString(this.responseText, "text/html").firstChild.children[1].childNodes;
+                          for (let child of children){
+                            if (typeof child == "object"){
+                              console.log(child);
+                              elmnt.parentElement.insertBefore(child, elmnt);
+                            }
+                          }
+                          elmnt.remove();
                         }
                         else { elmnt.innerHTML = this.responseText; elmnt.removeAttribute("w3-include-html"); }
                     }
@@ -111,7 +117,8 @@ else if (window.location.href.includes("/SignedIn.php")) {
     addCss("https://fonts.gstatic.com", "preconnect");
     addCss("https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap", "css");
 }
-addCss("/Code/CSS/pop.2.css", "css");
+addCss("/Code/CSS/pop.css", "css");
+responsive("/Code/CSS/mobileMain.css", "smol");
 
 addCss("/Code/fontawesome/css/fontawesome.css", "css");
 addCss("/Code/fontawesome/css/all.css", "css");
@@ -123,7 +130,7 @@ addCss("https://fonts.googleapis.com", "preconnect");
 addCss("https://fonts.gstatic.com", "preconnect");
 addCss("https://fonts.googleapis.com/css2?family=Roboto&family=Lato&display=swap", "css");
 
-function responsive(fileName, ifWhich) {
+function responsive(fileName, ifWhich = "smol") {
     if (ifWhich == "big") {
         if (large.matches) { addCss(fileName, "css"); format = "desktop"; } else { format = "mobile"; }
     }
@@ -397,6 +404,18 @@ function seekMaker(returner) {
   }
 }
 
+//m-menu
+function mShowMenu(e) {
+  console.log(e.classList);
+  if (e.classList.contains("active")){
+    e.classList.remove("active");
+    document.getElementById("mMenu").classList.remove("active");
+  }
+  else {
+    e.classList.add("active");
+    document.getElementById("mMenu").classList.add("active");
+  }
+}
 
 //cookie accepted checker
 if (localStorage["alertdisplayed"]=='true' && !getCookie("acceptCookies")){

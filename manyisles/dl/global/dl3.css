@@ -1,4 +1,8 @@
-﻿body, li, label {
+:root {
+  --gen-color-link: #9a0000;
+  --gen-color-hlink:#b61414;
+}
+body, li, label {
     text-align: left;
     font-family: "Open Sans";
 }
@@ -31,7 +35,7 @@ a:hover, .fakelink:hover,  .Bar:hover {
         padding: 12px 0 0;
     }
 .flex-container {
-    max-width: 1800px;
+    max-width: var(--contcol-width);
     position: relative;
 }
 .left-col {

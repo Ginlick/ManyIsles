@@ -419,9 +419,8 @@ if ($ordersExist){
     </style>
 </head>
 <body>
-    <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;"></div>
+    <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newel="true"></div>
     <div style="flex: 1 0 auto;">
-
         <div class="flex-container">
             <div class='left-col'>
                 <ul id="myMenu">
@@ -448,7 +447,7 @@ if ($ordersExist){
                     If you have any questions, problems or complaints, feel free to contact us at <a href="mailto:pantheon@manyisles.ch" target="_blank">pantheon@manyisles.ch</a>.
                 </p>
                 <div class="infoContain">
-                    <p>Email: <span style="color:#d40000"><?php echo $user->email; ?></span></p><button class="popupButton" onclick="pop('email')">Change</button>
+                    <p>Email: <span style="color:var(--gen-color-link); font-weight: bold"><?php echo $user->email; ?></span></p><button class="popupButton" onclick="pop('email')">Change</button>
                 </div>
                 <div class="infoContain">
                     <p>Password</p><button class="popupButton" onclick="pop('psw-b')">Change</button>
@@ -562,8 +561,7 @@ if ($ordersExist){
             <i class="fas fa-bars rotate"></i>
         </div>
     </div>
-    <footer style="flex-shrink:0;">
-    </footer>
+    <div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>
 
     <div id="modal" class="modal" onclick="pop('ded')">
     </div>
