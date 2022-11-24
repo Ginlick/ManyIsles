@@ -10,6 +10,9 @@
 
   --diltou-baseFont: 'Open Sans', Arial, Helvetica, sans-serif;
   --diltou-titleFont: 'Trebuchet MS', "Roboto", sans-serif;
+
+  --gen-color-link: var(--diltou-theme);
+  --gen-color-hlink: var(--diltou-themehover);
 }
 
 body {
@@ -37,12 +40,7 @@ p, li {
 }
 
 a, .fakelink {
-    color: var(--diltou-theme);
-    text-decoration: none;
     font-family: inherit;
-}
-a:hover, .fakelink:hover {
-    color: var(--diltou-themehover);
 }
 select {
   font-family: var(--diltou-baseFont);
@@ -156,16 +154,9 @@ select {
 
 .diltouFooter {
     background-color: var(--diltou-theme);
-    padding: 25px 0;
 }
-
     .diltouFooter p {
-        width: 50%;
-        min-width: 200px;
-        margin: auto;
         font-size: var(--all-fonts-smal);
-        padding: 20px;
-        text-align: center;
     }
     .diltouFooter a, .diltouFooter p {
       color: var(--diltou-themecontrast);

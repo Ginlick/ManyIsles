@@ -1,8 +1,8 @@
 ﻿:root {
+    /*absolute styles*/
     --gen-color-bblue: #8dceff;
-    --gen-color-mellowite: #f3f3f3;
-    --gen-color-link: #9a0000;
-    --gen-color-hlink: #b61414;
+    --gen-color-hoverbblue: #539bd1;
+    --gen-color-mellowite: #ffffff;
     --wiki-color-green: #b1e68f;
     --col-wikiA: #786ab5;
     --col-grey2: #f2f2f2;
@@ -21,19 +21,28 @@
     --doc-base-color: white;
     --col-whitet: #FFFAFF;
     --ds-gold: #d1a720;
+
+
+    /*relative styles*/
+    --g-bground: var(--gen-color-mellowite);
+    --g-accent: var(--gen-color-bblue);
+    --gen-color-link: var(--gen-color-bblue);
+    --gen-color-hlink: var(--gen-color-hoverbblue);
+    --contcol-width: min(1400px, 100%);
     --all-fonts-h1: min(calc(24px + .6vw), 40px);
     --all-fonts-h2: min(calc(22px + .4vw), 30px);
     --all-fonts-h3: min(calc(20px + .3vw), 27px);
     --all-fonts-larg: min(calc(17px + .3vw), 21px);
-    --all-fonts-base: min(calc(14px + .3vw), 20px);
-    --all-fonts-med: min(calc(12px + .2vw), 18px);
-    --all-fonts-smal: min(calc(10px + .2vw), 15px);
+    --all-fonts-base: 18px;
+    --all-fonts-med: 15px;
+    --all-fonts-smal: 12.5px;
     --all-fonts-unresp-bigStan: 16px;
-    --gen-fontfams-titles: "Pacifico", 'Luminari', 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    --gen-fontfams-titles:  'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     --gen-fontfams-headers: 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    --gen-fontfams-base: Arial, Helvetica, sans-serif;
+    --gen-fontfams-base: "Lato", Arial, Helvetica, sans-serif;
     --gen-fontfams-code: Courier New, Courier, monospace;
     --doc-neatshadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+    --struc-navheight: 100px;
 }
 
 * {
@@ -60,7 +69,6 @@ body {
     flex: 1;
 }
 h1 {
-    color: RGB(130,0,0);
     font-family: var(--gen-fontfams-titles);
     font-size: var(--all-fonts-h1);
 }
@@ -74,7 +82,11 @@ h3 {
     font-size: var(--all-fonts-h3);
 }
 p, li {
+  font-family: var(--gen-fontfams-base);
    font-size: var(--all-fonts-base);
+}
+p {
+  margin: 5px 0;
 }
 input, textarea, select {
   display: inline-block;
@@ -96,23 +108,26 @@ input, textarea, select {
 
 a, .fakelink {
     text-decoration: none;
+    transition: .2s ease;
     color: var(--gen-color-link);
 }
 a:hover, .fakelink:hover {
     color: var(--gen-color-hlink);
 }
 button, .popupButton {
-    background-color: red;
-    border-radius: 4px;
+    background-color: var(--gen-color-bblue);
     font-weight: bold;
+    border-radius: 4px;
+    text-align: center;
     color: white;
     font-size: 20px;
     border:0px;
     transition: .2s ease;
-    padding : 5px 9px;
+    padding : 8px 12px;
 }
 button:hover, .popupButton:hover {
     color: white;
+    background-color: var(--gen-color-hoverbblue);
 }
 
 .separator {
@@ -130,96 +145,182 @@ code, .code {
   display: inline-block;
 }
 
-/*imgConts*/
+/*structure*/
 
-.imgCont {
-    background-color: var(--gen-color-mellowite);
-    animation-name: imgCont;
-    animation-iteration-count: infinite;
-    animation-duration: 3s;
+.ccont-cont {
 }
-@keyframes imgCont {
-    0% {
-        background-color: #c9c9c9;
+.cont-cont {
+  padding: 20px 0;
+  background-color: var(--g-bground);
+}
+.contcol-wrapper {
+  width: var(--contcol-width);
+  margin: auto;
+  padding: 0 10px;
+}
+
+/*m-topnav*/
+
+.m-topnav {
+    position: sticky;
+    top: 0;
+    background-color: var(--g-bground);
+    height: var(--struc-navheight);
+    box-shadow: var(--doc-neatshadow);
+    z-index: 15;
+}
+.m-topnav-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding: 8px 16px;
+  height: 100%;
+}
+
+.m-topnav-left, .m-topnav-right {
+  display: flex;
+  text-align: left;
+  align-items: center;
+}
+
+.m-topnav-left {
+    flex-grow: 1;
+}
+
+.m-topnav-logo {
+    height: 50px;
+    width: 50px;
+    border-radius: 500px;
+    overflow: hidden;
+}
+
+    .m-topnav-logo img {
+        width: 100%;
+        object-fit: contain;
     }
 
-    50% {
-        background-color: #eaeaea;
+    .m-topnav-logocont {
+      padding: 0 10px;
+    }
+    .m-topnav-logocont a {
+      color: var(--doc-text-color);
     }
 
-    100% {
-        background-color: #c9c9c9;
+    .m-topnav-a {
+      color: var(--doc-text-color);
+      font-size: var(--all-fonts-base);
+      padding: 0 15px;
     }
-}
-.imgCont.loaded {
-    background-color: rgba(0,0,0,0);
 
-    animation: none;
-}
+    .m-topnav-right {
+      flex-grow: 2;
+      justify-content: flex-end;
+    }
+    .m-navmenu-cont {
+      height: 50px; width: 50px;
+      background-color: var(--gen-color-link);
+      transition: .2s ease;
+      color: var(--g-bground);
+      border-radius: 5px;
+      margin: 0 15px;
+    }
+    .m-navmenu-cont:hover {
+      background-color: var(--gen-color-hlink);
+    }
+    .m-navmenu {
+      display: flex; width: 100%; height: 100%; flex-direction: column;
+      justify-content: center;
+      vertical-align: center;
+    }
+    .m-navmenu i {
+      text-align: center;
+      font-size: 30px;
+      transition: .2s ease;
+    }
+    .m-navmenu-cont.active .m-navmenu i {
+      transform: rotate(90deg);
+    }
+
+    .m-menu {
+      z-index: 14;
+      position: fixed;
+      top: var(--struc-navheight);
+      width: 100%;
+      min-height: 400px;
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 15px 0px;
+      transform: translateY(-400px);
+      visibility: hidden;
+      transition: .2s ease;
+    }
+    .m-menu.active {
+      transform: none;
+      visibility: visible;
+    }
+    .m-menuelcont {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .m-menuel {
+      padding: 10px 15px;
+      width: 25%;
+    }
+    .m-menuliel, .m-menuliel a {
+      font-size: var(--all-fonts-base);
+      color: var(--col-dgrey);
+      text-align: left;
+    }
+    .m-menuliel a:hover {
+      color: var(--gen-color-hlink);
+    }
+    .m-menuliel.main {
+      color: var(--gen-text-color);
+      font-weight: bold;
+      margin: 10px 0 15px;
+      border-bottom: 1px solid #ddd;
+    }
 
 /*topnav*/
 
-.topnav {
-    background-color: #8f0404;
-    overflow: hidden;
-    z-index: 22;
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 13px;
-    display: block;
-}
 
-    .top-bar {
-        line-height: 1;
-        font-family: var(--gen-fontfams-headers);
-        font-size: var(--all-fonts-unresp-bigStan);
-        display: inline;
-        padding: 4px 10px;
-        float: left;
-        margin: 0;
-    }
-    .top-bar a {
-      color: #d5d5d5;
-      padding: 0;
-    }
-    .top-bar.right {
-        float: right;
-    }
-        .top-bar, .top-bar a:hover {
-            color: white;
-        }
-@media (max-width: 560px) {
-    .topnav .top-bar.leftr:nth-of-type(2) {
-        display:none;
-    }
+/*footer*/
+.footer {
+    background-color: var(--g-bground);
+    padding: 25px 0;
+    border-top: 1px solid #ddd;
 }
-@media (max-width: 700px) {
-    .topnav .top-bar.leftr:nth-of-type(3) {
-        display: none;
+    .footer p {
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+        font-size: var(--all-fonts-med)
     }
-}
-@media (max-width: 840px) {
-    .topnav .top-bar.leftr:nth-of-type(4) {
-        display: none;
-    }
-}
-@media (max-width: 950px) {
-    .topnav .top-bar.leftr:nth-of-type(5) {
-        display: none;
-    }
-}
-@media (max-width: 1000px) {
-    .topnav .top-bar.leftr:nth-of-type(6) {
-        display: none;
-    }
-}
-@media (max-width: 1050px) {
-    .topnav .top-bar.leftr:nth-of-type(7) {
-        display: none;
-    }
-}
+
+
+  /*imgConts*/
+
+  .imgCont {
+      background-color: var(--g-bground);
+      animation-name: imgCont;
+      animation-iteration-count: infinite;
+      animation-duration: 3s;
+  }
+  @keyframes imgCont {
+      0% {
+          background-color: #c9c9c9;
+      }
+
+      50% {
+          background-color: #eaeaea;
+      }
+
+      100% {
+          background-color: #c9c9c9;
+      }
+  }
+  .imgCont.loaded {
+      background-color: rgba(0,0,0,0);
+
+      animation: none;
+  }
 
 /*popupBar*/
 .popupBar-contCont {
@@ -244,7 +345,7 @@ code, .code {
 }
 .popupBar {
     pointer-events: auto;
-    background-color: var(--gen-color-mellowite);
+    background-color: var(--g-bground);
     box-shadow: 0 0px 30px 0 rgba(0, 0, 0, 0.1), 0 6px 30px 0 rgba(0, 0, 0, 0.1);
     display: inline-block;
     height: 50px;

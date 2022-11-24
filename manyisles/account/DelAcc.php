@@ -31,7 +31,7 @@ $message = <<<MYGREATMAIL
             padding:10px;
     ">
         Your account was just deleted. According to §3.7.1, block (2), of the Trader's Agreement, this allows the Many Isles Pantheon to begin a salvation period on your partnership. A week after initialization of this period, the Many Isles may dissolve your partnership, taking partial or complete ownership of your partnership's product assortment and deleting the partnership. Meanwhile, your partnership is suspended, as per §3.7.2 and §3.6 of the Trader's Agreement.<br />
-        Do you wish to stop this procedure? Please contact the Pantheon or Homeland Institute of Trade immediately and create a new account. This will halt the salvation period and allow you to restore ownership over your partnership and its product assortment. Feel free to contact <a href="mailto:pantheon@manyisles.ch">pantheon@manyisles.ch</a> if you have any questions.
+        Do you wish to stop this procedure? Please contact the Pantheon immediately and create a new account. This will halt the salvation period and allow you to restore ownership over your partnership and its product assortment. Feel free to contact <a href="mailto:pantheon@manyisles.ch">pantheon@manyisles.ch</a> if you have any questions.
 
     </p>
 </body>

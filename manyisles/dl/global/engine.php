@@ -381,7 +381,7 @@ class dlengine {
     function hasBlogs() {
       $query = "SELECT * FROM busers WHERE type = 'partnership' AND user = ".$this->user->user;
       $blogconn = $this->user->addConn("blogs");
-      if ($result = $this->  blogconn->query($query)) {
+      if ($result = $blogconn->query($query)) {
         if (mysqli_num_rows($result) != 0) {
           return true;
         }

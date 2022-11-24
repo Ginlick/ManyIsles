@@ -1,6 +1,6 @@
-﻿.modCol {
+.modCol {
     display: none;
-    z-index: 7;
+    z-index: 24;
     height: 100%;
     overflow: auto;
     position: fixed;
@@ -22,11 +22,10 @@
 .modContent {
     font-family: Arial, Helvetica, sans-serif;
     display: block;
-    position: static;
+    position: relative;
     width: 100%;
     max-height: 90%;
     background-image: none;
-    background-color: white;
     margin: 10vh 0 0 0;
     border-radius: 16px;
     text-align: center;
@@ -52,24 +51,14 @@
 .popupButton {
     padding: 10px;
     display: block;
-    border: none;
-    background-color: red;
-    border-radius: 4px;
-    text-align: center;
-    font-weight: bold;
-    color: white;
     font-size: 20px;
     margin: auto;
     margin-bottom:1%;
 }
-    .popupButton:hover {
-        background-color: #d40000;
-        color: white;
-    }
 .modal {
     display: none;
     position: fixed; /* Stay in place */
-    z-index: 6;
+    z-index: 21;
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -78,6 +67,7 @@
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     padding-top: 60px;
+    overflow-y: hidden;
 }
 
 .modCol.new {
@@ -98,6 +88,13 @@
 }
 .nmodBody {
     padding: 10px;
+    text-align: center;
+}
+.nmodBody p,.nmodBody  h1,.nmodBody  h2,.nmodBody  h3 {
+  text-align: center;
+}
+.nmodBody button {
+  margin: 30px auto 20px;
 }
 .closer {
     position: absolute;
@@ -109,3 +106,10 @@
     .closer:hover {
         color: var(--gen-color-hlink);
     }
+
+.typeTab.tiny {
+    border-radius: 50px;
+    border: 1px solid #ccc;
+    padding: 3px;
+    display: inline-block;
+}
