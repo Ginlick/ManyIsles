@@ -400,12 +400,8 @@ class dlengine {
           $image = "/IndexImgs/".$image;
         }
       }
-      if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
-        $image = "https://media.manyisles.ch".$image;
-      }
-      else {
-        $image = "http://25.36.111.17:8080".$image;
-      }
+      $mediaServer = $this->user->giveServerInfo("servername_media");
+      $image = $mediaServer.$image;
       return $image;
     }
     function fileclear($file, $genre, $direct = false) {
