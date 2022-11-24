@@ -1,4 +1,9 @@
-﻿
+﻿<?php
+require("Server-Side/src/homer/homer.php");
+$homer = new homer();
+$slogan = $homer->giveSlogan();
+
+ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,9 +29,11 @@
         .firstview-texter h1 {
           font-size: 6em;
           margin-bottom: 0.5em;
+          text-align: left;
         }
         .firstview-texter .slogan {
           font-size: 2em;
+          text-align: left;
         }
 
         .content {
@@ -103,7 +110,7 @@
         <div class="firstview-cont contcol-wrapper">
           <div class="firstview-texter">
             <h1>Many Isles</h1>
-            <p class="slogan">A world of creation.</p>
+            <p class="slogan" id="sloganHere">A world of creation.</p>
           </div>
         </div>
 
@@ -347,7 +354,9 @@
         else {
           setTimeout(function () {
             document.getElementById("firstTitle").scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 900);
+          }, 2200);
+          slogan = "<?php echo $slogan; ?>";
+          document.getElementById("sloganHere").innerHTML = slogan;
           /*generate new slogan*/
         }
     }

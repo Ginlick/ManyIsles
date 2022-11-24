@@ -1,12 +1,16 @@
 <?php
+require $_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php";
+
 class homer {
+
   public $sloganArr = ["A world of creation."];
   function __construct() {
-    $json = file_get_contents("slogans.json");
+    $json = file_get_contents($_SERVER['DOCUMENT_ROOT']."/Server-Side/src/homer/slogans.json");
     $newSlogs = json_decode($json, true);
     if ($newSlogs != null){
       $this->sloganArr = $newSlogs;
     }
+    $this->parser = new parser();
   }
   function giveSlogan($arr = null) {
     if ($arr === null){
@@ -15,7 +19,10 @@ class homer {
     $cap = count($arr) - 1;
     $index = $this->curvedRand($cap);
 
-    if (gettype($arr[$index]) != "array"){return $arr[$index];}
+    if (gettype($arr[$index]) != "array"){
+      $text = $this->parser->parse($arr[$index]);
+      return $text;
+    }
     return $this->giveSlogan($arr[$index]);
   }
   function curvedRand($cap) {
