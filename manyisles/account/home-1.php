@@ -39,51 +39,7 @@
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 <p id="createAccountP">Only normal letters are allowed throughout the form. You may use numbers in the password, and special characters in the email.</p>
 
-
-
-                <form action='MakeAccount.php' method="post" style="width:100%" id="SignUpForm">
-                    <input name="wanttoPublish" id="wanttoPublish" type="text" style="display:none;" value="0" autocomplete="off" readonly />
-                    <div class="container">
-                        <table>
-                            <tr>
-                                <td> <label for="uname"><b>Username</b></label></td>
-                                <td style="width:1000%">  <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="uname" oninput="inputGramm(this, 'u')" autocomplete="username" required></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td id="unameInputErr" class="inputErr">Incorrect input!</td>
-                            </tr>
-                            <tr>
-                                <td> <label for="email"><b>Email</b></label></td>
-                                <td> <input type="email" placeholder="godsofmanyisles@gmail.com" name="email" id="email" onfocusout="inputGramm(this, 'e')" required></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td id="emailInputErr" class="inputErr">Incorrect input!</td>
-                            </tr>
-                            <tr>
-                                <td> <label for="psw"><b>Password</b></label></td>
-                                <td> <input type="password" placeholder="uniquePassword22" name="psw" oninput="inputGramm(this, 'p')" autocomplete="new-password" required></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td id="pswInputErr" class="inputErr">Incorrect input!</td>
-                            </tr>
-                            <tr>
-                                <td> <label for="region"><b>Region</b></label></td>
-                                <td>
-                                    <select name="region" id="region" required>
-                                        <option value="1">1 (UTC)</option>
-                                        <option value="2">2 (UTC + 7)</option>
-                                        <option value="3">3 (UTC - 7)</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                        <p>By creating an account, you agree with the community's <a href="/docs/44/Conditions_and_Terms" target="_blank">Terms and Conditions</a>.</p>
-                        <button class="popupButton" type="submit">Sign Up</button>
-                    </div>
-                </form>
+                <div id="signCreateFormCont"></div>
 
                 <p>Already have an account? <span onclick="clinnation('Log')" class="fakelink">Log in</span></p>
                 <div style="margin-top:7vw;">
@@ -110,24 +66,8 @@
                 <h1 id="signTitle"> Sign In </h1>
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 <p id="signExpl">Sign in to access the entirety of the Many Isles!</p>
+                <div id="signFormCont"></div>
 
-                <form action='SignIn.php' method="post" style="width:100%">
-                    <div class="container">
-                        <table>
-                            <tr>
-                                <td><label for="loguname"><b>Username</b></label></td>
-                                <td style="width:1000%"><input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" autocomplete="username" required></td>
-                            </tr>
-                            <tr>
-                                <td><label for="logpassword"><b>Password</b></label></td>
-                                <td><input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" autocomplete="current-password" required><br></td>
-                            </tr>
-                        </table>
-                        <p style="color:red;display:none;" id="youFailedMaggot">Sign in failed.</p>
-                        <button class="popupButton" type="submit">Log In</button>
-                    </div>
-                </form>
-                <p>Don't have an account yet? <span class="fakelink" onclick="clinnation('Sign')">Join us now!</span></p>
             </div>
 
             <div id="Pol" class="column">
@@ -176,7 +116,15 @@
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/Code/CSS/global.js"></script>
+<script src="/account/portal/acp-builder.js"></script>
 <script>
+    returnF = function (resultObject) {
+      location.reload(); //also support seeker cookie (log in), wanttoPublish (create)
+    }
+    element = document.getElementById("signFormCont");
+    acpBuilder = new acp_builder(returnF);
+    acpBuilder.createPortal(element); //options: have these be just nude inputform, don't allow changing
+
     responsive("g/acc-m.css", "smol");
 
     function pop(x) {

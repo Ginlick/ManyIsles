@@ -17,7 +17,6 @@ function includeHTML() {
                           let children = parser.parseFromString(this.responseText, "text/html").firstChild.children[1].childNodes;
                           for (let child of children){
                             if (typeof child == "object"){
-                              console.log(child);
                               elmnt.parentElement.insertBefore(child, elmnt);
                             }
                           }
