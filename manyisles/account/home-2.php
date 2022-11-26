@@ -567,8 +567,7 @@ if ($ordersExist){
     </div>
 
     <div id="email" class="modCol">
-        <div class="modContent">
-            <img src="/Imgs/PopupBar.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block " />
+        <div class="modContent smol">
             <h1>Change Email</h1>
             <p>
                 Your current email is <span style="color:red"><?php echo $user->email; ?></span><br /><br />
@@ -585,8 +584,7 @@ if ($ordersExist){
     </div>
 
     <div id="psw-b" class="modCol">
-        <div class="modContent">
-            <img src="/Imgs/PopupBar.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block " />
+        <div class="modContent smol">
             <h1>Change Password</h1>
             <p>
                 Changing your password regularly is a good security measure. Keep it up!
@@ -603,7 +601,7 @@ if ($ordersExist){
 
     <div id="del" class="modCol">
         <div class="modContent" style="background:black">
-            <img src="/Imgs/PopupBar.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block " />
+            <img src="/Imgs/PopupBar.png" alt="Hello There!" style="width: 100%; margin: 0; padding: 0; display: inline-block; border-radius: 5px; " />
             <h1 style="color: grey">Sorry to see you leave...</h1>
             <p style="color: grey">
                 This step is irreversible. Any partnerships, spell lists, or many isles credit will be lost.

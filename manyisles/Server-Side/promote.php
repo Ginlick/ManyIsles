@@ -80,7 +80,7 @@ if (!class_exists("adventurer")){
         if ($this->signedIn){$redirect = "accountExists";} //will auto-redirect to SignedIn after anyway
         else if (preg_match($this->regArrayR["account"], $uname)!=1){$redirect = "uname";}
         else if (preg_match("/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)!=1){$redirect = "email";}
-        else if (preg_match("/[A-Za-z0-9]{1,}/", $psw)!=1){$redirect = "psw";}
+        else if (preg_match("/[A-Za-z0-9!.\-_ ]{1,}/", $psw)!=1){$redirect = "psw";}
         else if (preg_match("/[1-3]/", $region)!=1){$redirect = "reg";}
         if (!$redirect){
           //spamkill

@@ -14,9 +14,21 @@
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <link rel="stylesheet" type="text/css" href="g/acc.css">
     <style>
-        #wanttoPublish {
-            display: none;
-        }
+    #wanttoPublish {
+      display: none;
+    }
+      .acp-form {
+        margin: 30px 20px;
+      }
+      .acp-button {
+        margin: 20px;
+      }
+      .acp-successor {
+        font-size: 30px;
+        margin: 20px auto;
+        color: var(--wiki-color-green);
+      }
+
     </style>
 </head>
 <body>
@@ -37,11 +49,14 @@
 
                 <h1 id="SignUp-title"> Join the Many Isles! </h1>
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                <p id="createAccountP">Only normal letters are allowed throughout the form. You may use numbers in the password, and special characters in the email.</p>
+                <div id="signCreateBigCont">
+                  <p id="createAccountP">Only normal letters are allowed throughout the form. You may use numbers in the password, and special characters in the email.</p>
 
-                <div id="signCreateFormCont"></div>
+                  <div id="signCreateFormCont"></div>
 
-                <p>Already have an account? <span onclick="clinnation('Log')" class="fakelink">Log in</span></p>
+                  <p>Already have an account? <span onclick="clinnation('Log')" class="fakelink">Log in</span></p>
+                </div>
+
                 <div style="margin-top:7vw;">
                     <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 </div>
@@ -67,6 +82,7 @@
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 <p id="signExpl">Sign in to access the entirety of the Many Isles!</p>
                 <div id="signFormCont"></div>
+                <p>Don't have an account yet? <span onclick="clinnation('Sign')" class="fakelink">Join us now!</span></p>
 
             </div>
 
@@ -118,12 +134,17 @@
 <script src="/Code/CSS/global.js"></script>
 <script src="/account/portal/acp-builder.js"></script>
 <script>
-    returnF = function (resultObject) {
-      location.reload(); //also support seeker cookie (log in), wanttoPublish (create)
+    returnFin = function (resultObject) {
+      location.reload(); //also support seeker cookie
     }
-    element = document.getElementById("signFormCont");
-    acpBuilder = new acp_builder(returnF);
-    acpBuilder.createPortal(element); //options: have these be just nude inputform, don't allow changing
+    returnFcreate = function (resultObject) {
+      document.getElementById("signCreateBigCont").replaceChildren(this.giveHTMLel("successCreateHTML"));
+       //also support wanttoPublish
+    }
+    acpBuilder1 = new acp_builder(returnFin);
+    acpBuilder1.createPortal(document.getElementById("signFormCont"), "signInBasic");
+    acpBuilder2 = new acp_builder(returnFcreate);
+    acpBuilder2.createPortal(document.getElementById("signCreateFormCont"), "signCreateBasic");
 
     responsive("g/acc-m.css", "smol");
 
@@ -176,23 +197,7 @@
     if (display != null) {
         clinnation(display);
     }
-    if (urlParams.get('uname') != null) { document.getElementById("uname").value = urlParams.get('uname'); }
-    if (urlParams.get('email') != null) { document.getElementById("email").value = urlParams.get('email'); }
-    if (error == "EmailTaken") {
-        document.getElementById("email").placeholder = "Email Already Used";
-        document.getElementById("email").value = null;
-        document.getElementById("email").style.backgroundColor = "#ff8f8f";
-    }
-    else if (error == "UnameTaken") {
-        document.getElementById("uname").placeholder = "username already in use";
-        document.getElementById("uname").value = null;
-        document.getElementById("uname").style.backgroundColor = "#ff8f8f";
-    }
-    else if (error == "signingIn") {
-        clinnation('Log');
-        document.getElementById("youFailedMaggot").style.display = "block";
-    }
-    else if (error == "notSignedIn") {
+    if (error == "notSignedIn") {
         clinnation('Log');
         document.getElementById("signTitle").innerHTML = "Sign In First";
         document.getElementById("signExpl").innerHTML = "You need to sign in to use this feature.";
@@ -204,12 +209,6 @@
         document.getElementById("SignUp-title").innerHTML = "Make an Account to start Publishing!";
         document.getElementById("wanttoPublish").value = "1";
     }
-    else if (error == "spamblock") {
-        document.getElementById("createAccountP").innerHTML = "Our spam block interrupted your account creation. Please try again tomorrow.";
-    }
-    else if (error == "creatingAcc") {
-      createPopup("d:acc;txt:Sorry, there was an error creating your account.");
-    }
     else if (error == "deleted") {
       createPopup("d:acc;txt:Account deleted.");
     }
@@ -218,20 +217,4 @@
       seekMaker(add);
     }
 
-    function inputGramm(x, y) {
-        var input = x.value;
-        var patt = new RegExp("[^A-Za-z0-9 ]");
-        var target = "uname";
-        if (y == "e") { patt = new RegExp("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]$"); target = "email"; }
-        else if (y == "p") { patt = new RegExp("[^A-Za-z0-9 ]"); target = "psw"; }
-        target = "#".concat(target).concat("InputErr");
-        $("input").removeAttr("style");
-        if (y != "e") {
-            if (patt.test(input) && input.length != 0) { $(target).show(); }
-            else { $(target).hide(); }
-        }
-        else {
-            if (!patt.test(input) && input.length != 0) { $(target).show(); }
-            else { $(target).hide(); }
-        }
-    }</script>
+  </script>

@@ -32,6 +32,8 @@
     padding-bottom: 20px;
     overflow: auto;
     pointer-events: all;
+    background-color: var(--g-bground);
+    padding: 10px;
 }
     .modContent.smol {
         max-width: 800px;
