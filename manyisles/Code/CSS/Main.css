@@ -3,6 +3,7 @@
     --gen-color-bblue: #8dceff;
     --gen-color-hoverbblue: #539bd1;
     --gen-color-mellowite: #ffffff;
+    --gen-color-lightred: #ff8f8f;
     --wiki-color-green: #b1e68f;
     --col-wikiA: #786ab5;
     --col-grey2: #f2f2f2;
@@ -36,6 +37,7 @@
     --all-fonts-base: 18px;
     --all-fonts-med: 15px;
     --all-fonts-smal: 12.5px;
+    --all-fonts-tiny: 10px;
     --all-fonts-unresp-bigStan: 16px;
     --gen-fontfams-titles:  'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     --gen-fontfams-headers: 'Trebuchet MS', "Roboto", 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -98,12 +100,15 @@ input, textarea, select {
   text-align: left;
 }
 .inputErr {
-    font-size: min(calc(9px + .3vw), 14px);
-    color: red;
-    text-align:left;
-    margin:0;
-    padding-left:.4vw;
-    display:none;
+  color: red;
+  display:none;
+  text-align:left;
+  padding-left:10px;
+}
+.infoText, .inputErr {
+  font-size: var(--all-fonts-tiny);
+  margin:0;
+  color: var(--col-dgrey);
 }
 
 a, .fakelink {
@@ -167,7 +172,7 @@ code, .code {
     background-color: var(--g-bground);
     height: var(--struc-navheight);
     box-shadow: var(--doc-neatshadow);
-    z-index: 15;
+    z-index: 22;
 }
 .m-topnav-wrapper {
   display: flex;

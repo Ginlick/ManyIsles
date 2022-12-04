@@ -17,7 +17,6 @@ function includeHTML() {
                           let children = parser.parseFromString(this.responseText, "text/html").firstChild.children[1].childNodes;
                           for (let child of children){
                             if (typeof child == "object"){
-                              console.log(child);
                               elmnt.parentElement.insertBefore(child, elmnt);
                             }
                           }
@@ -95,6 +94,15 @@ function whenAvailable(name, callback) {
         }
     }, interval);
 }
+function whenClassAvailable(name, callback) {
+    window.setTimeout(function () {
+        if (typeof name !== "undefined") {
+            callback(name);
+        } else {
+            whenAvailable(name, callback);
+        }
+    }, 10);
+}
 
 function formatBytes(bytes, decimals = 2) {
     if (bytes === 0) return '0 Bytes';
@@ -107,6 +115,9 @@ function formatBytes(bytes, decimals = 2) {
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
+
+//pronto
+addCss("/account/portal/acp-builder.js", "js");
 
 if (window.location.href.includes("/ds/")) {
     addCss("https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap", "css");

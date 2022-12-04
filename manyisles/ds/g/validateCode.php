@@ -2,7 +2,7 @@
 
 if (isset($_GET["code"])) {if (preg_match("/[^-A-Za-z0-9]/", $_GET["code"])==1){header("Location: ../basket.php");exit();} else {$code = $_GET["code"];} } else  {header("Location: ../checkout2.php?why=invalidCode");exit();}
 
-if(!isset($_COOKIE["loggedIn"])) {header("Location: checkout.html");exit();}
+if(!isset($_COOKIE["loggedIn"])) {header("Location: checkout");exit();}
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 

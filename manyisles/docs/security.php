@@ -5,7 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 
 if (isset($_COOKIE["loggedIn"])) {
     $uid = $_COOKIE["loggedIn"];
-    if (preg_match("/^[0-9]+$/", $uid)!=1) {setcookie("loggedIn", "", time() -3600, "/");header("Location: /account/Account.html?error=notSignedIn");exit();}
+    if (preg_match("/^[0-9]+$/", $uid)!=1) {setcookie("loggedIn", "", time() -3600, "/");header("Location: /account/home.html?error=notSignedIn");exit();}
 
     $query = "SELECT password FROM accountsTable WHERE id = ".$uid;
         if ($firstrow = $conn->query($query)) {

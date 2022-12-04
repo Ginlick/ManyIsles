@@ -32,7 +32,7 @@ require_once("../g/makeHuman.php");
             <div class='left-col'>
                 <a href="/ds/store"><h1 class="menutitle">Subscriptions</h1></a>
                 <ul class="myMenu">
-                    <li><a class="Bar" href="/account/SignedIn.php"><i class="fas fa-arrow-left"></i> Account</a></li>
+                    <li><a class="Bar" href="/account/home"><i class="fas fa-arrow-left"></i> Account</a></li>
                     <li><a class="Bar" href="/ds/store"><i class="fas fa-arrow-left"></i> Digital Store</a></li>
                 </ul>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
@@ -83,7 +83,7 @@ require_once("../g/makeHuman.php");
                             echo "</tbody></table>";
                         }
                     }
-  
+
                 ?>
 
 
@@ -103,5 +103,3 @@ var urlParams = new URLSearchParams(window.location.search);
 var why = urlParams.get('why');
 
 </script>
-
-

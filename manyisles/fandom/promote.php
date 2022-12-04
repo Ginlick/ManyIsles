@@ -54,7 +54,7 @@ else if ($d == 0) {
     $title = "banned";
 }
 
-if (include($_SERVER['DOCUMENT_ROOT']."/Server-Side/email.php")) {
+if (include($_SERVER['DOCUMENT_ROOT']."/Server-Side/modMailer.php")) {
     $email = "";
     $query = "SELECT email FROM accountsTable WHERE id = $id";
     if ($result = $conn->query($query)) {
@@ -62,8 +62,8 @@ if (include($_SERVER['DOCUMENT_ROOT']."/Server-Side/email.php")) {
             $email = $row["email"];
         }
     }
-    $mailer = new mailer;
-    $mailer->send($email, "You were Promoted", "A wiki made you $title. Congratulations! <br> <a href='https://manyisles.ch/fandom/wiki/$parentWiki/home'>view wiki</a>", "poet", "You're now $title");
+    $mailer = new modMailer;
+    $mailer->send($email, "You were Promoted", "A wiki made you $title. Congratulations! <br> <a href='https://manyisles.ch/fandom/wiki/$parentWiki/home'>view wiki</a>", "community", "You're now $title");
 }
 
 if ($conn->query($myquery)){

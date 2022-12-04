@@ -15,7 +15,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 include("g/countries.php");
 $countries_glob = $countries["GLO"];
 
-if(!isset($_COOKIE["loggedIn"])){header("Location: checkout.html");exit();}
+if(!isset($_COOKIE["loggedIn"])){header("Location: checkout");exit();}
 if (!isset($countries_glob[$_POST['state']])){header("Location: checkout1.php");exit();}
 
 $id = $_COOKIE["loggedIn"];
@@ -29,7 +29,7 @@ $query = "SELECT * FROM accountsTable WHERE id = ".$id;
     }
 }
 
-$redirect = "checkout.html";
+$redirect = "checkout";
 include("../Server-Side/checkPsw.php");
 
 if ( session_status() !== PHP_SESSION_ACTIVE ) {session_start();}

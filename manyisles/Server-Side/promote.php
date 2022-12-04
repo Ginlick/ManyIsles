@@ -80,19 +80,9 @@ if (!class_exists("adventurer")){
         if ($this->signedIn){$redirect = "accountExists";} //will auto-redirect to SignedIn after anyway
         else if (preg_match($this->regArrayR["account"], $uname)!=1){$redirect = "uname";}
         else if (preg_match("/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)!=1){$redirect = "email";}
-        else if (preg_match("/[A-Za-z0-9]{1,}/", $psw)!=1){$redirect = "psw";}
+        else if (preg_match("/[A-Za-z0-9!.\-_ ]{1,}/", $psw)!=1){$redirect = "psw";}
         else if (preg_match("/[1-3]/", $region)!=1){$redirect = "reg";}
         if (!$redirect){
-          //spamkill
-          $query = "SELECT * FROM accountsTable order by id DESC LIMIT 22,1";
-          if ($result = $this->conn->query($query)){
-              while ($row = $result->fetch_assoc()) {
-                  $time = $row["regdate"];
-                  if (strtotime($time) >= strtotime("-1 day")){
-                      $redirect = "spamblock";
-                  }
-              }
-          }
           if (!$redirect){
             //check for duplicates
             if ($result = $this->conn->query(sprintf("SELECT email FROM accountsTable WHERE email='%s';", $email))) {
@@ -235,17 +225,17 @@ if (!class_exists("adventurer")){
       }
       function signPrompt($back = "/account/home") {
         if (!$this->signedIn){
-          //could add onsubmit="seekMaker()" to form
           $signPrompt = '<h3>Sign In</h3>
-          <form action="/account/SignIn.php?back='.$back.'" method="POST" style="text-align:center">
-            <label for="loguname"><b>Username</b></label>
-            <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" autocomplete="username" required>
-            <label for="logpassword"><b>Password</b></label>
-            <input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" autocomplete="current-password" required>
-            <button class="wikiButton"><i class="fas fa-arrow-right"></i> Sign In</button>
-          </form>
-          <p>Don\'t have an account? <a href="/account/home?add=dl">Join us</a></p>
+          <div id="signMeUpHere">Loading...</div>
+          <p>Don\'t have an account? <a href="/account/home" target="_blank">Join us!</a></p>
           ';
+          $signPrompt .= '
+                    <script>
+                    function acp_launcher() {
+                      let acpBuilder = new acp_builder();
+                      acpBuilder.createPortal(document.getElementById("signMeUpHere"), "signInLine");
+                    }
+                    </script>';
         }
         else {
             $signPrompt = "<h3>".$this->fullName."</h3>
@@ -254,16 +244,17 @@ if (!class_exists("adventurer")){
             ";
         }
         $signPormpt = '
-            <div class="logoRound">
-                <div class="roundling">
-                  <img src="'.$this->image(2).'" />
+          <div class="logoRound">
+              <div class="roundling">
+                <img src="'.$this->image(2).'" />
+              </div>
+              <div class="accntInfoCont">
+                <div class="accntInfoInCont">
+                  '.$signPrompt.'
                 </div>
-                <div class="accntInfoCont">
-                  <div class="accntInfoInCont">
-                    '.$signPrompt.'
-                  </div>
-                </div>
-            </div>';
+              </div>
+          </div>
+          ';
         return $signPormpt;
       }
 
@@ -291,64 +282,94 @@ if (!class_exists("adventurer")){
               <meta charset="utf-8" />
               <title></title>
           </head>
-          <body>
-
-              <div style="width: 100%;background-color: #61b3dd;margin:0;min-height:100vh;padding:2vw;box-sizing: border-box;">
-                  <img src="https://manyisles.ch/Imgs/Favicon.png" style="width:10%;padding:1vw 1vw 0 1vw" />
-                  <h2 style="color:white;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;display:inline-block;font-size:8vw; margin:0;transform: translate(0, -22%);">Many Isles</h2>
-                  <div style="background-color:white;padding:1vw;border-radius:22px">
-                      <h1 style="text-align:center;font-size:calc(12px + 3vw);color:#911414;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;margin-bottom:0;">Welcome to the Many Isles, %%UNAME%%!</h1>
-                      <p style="text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;margin-right:5%;margin-left:5%;">
-                          We're happy that you've decided to join us. You'll get free premium products, as well as access to our great community! We love worldbuilding and homebrewing, and you'll fit right in.<br />
-                      </p>
-
-                      <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-                      <div style="width:20%;float:left;display:block;position:relative">
-                          <img src="http://manyisles.ch/IndexImgs/Pen.png" alt="Hello There!" style="width:100%;display:block;border-radius:15px;" />
-                      </div>
-                      <h2 style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 2.5vw);color:#911414;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">An awesome Fandom</h2>
-                      <p style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;">
-                          The Many Isles has a cool <a href="https://www.manyisles.ch/fandom/home" target="_blank">fandom wiki</a>, accessible to all. Once you've confirmed your email, you can participate your own articles and even write a whole wiki about your own world!
-                      </p>
-
-                      <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-                      <div style="width:20%;float:left;display:block;position:relative">
-                          <img src="http://manyisles.ch/Imgs/Prods.png" alt="Hello There!" style="width:100%;display:block;border-radius:15px;" />
-                      </div>
-                      <h2 style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 2.5vw);color:#911414;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">An awesome Digital Library</h2>
-                      <p style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;">
-                          Our main goal is to promote small creators that want to get their awesome free stuff out there. Check out our <a href="https://manyisles.ch/dl/Goods">digital library</a> today, and start publishing from your <a href="https://manyisles.ch/account/home">account page</a>!
-                      </p>
-
-                      <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-                      <div style="width:20%;float:left;display:block;position:relative">
-                          <img src="http://manyisles.ch/IndexImgs/Bless.png" alt="Hello There!" style="width:100%;display:block;border-radius:15px;" />
-                      </div>
-                      <h2 style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 2.5vw);color:#911414;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Our Recommendation</h2>
-                      <p style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;">
-                          Check out the great <a href="https://www.manyisles.ch/dl/View?id=17&t=m">Handbook of Blessings</a> published by the Pantheon, and gift your party with cool minor blessings to reward them supernaturally for their efforts! Feel free to explore the digital library beyond this afterwards ;)
-                      </p>
-
-                      <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-                      <div style="width:20%;float:left;display:block;position:relative">
-                          <img src="http://manyisles.ch/Imgs/disct.png" alt="Hello There!" style="width:100%;display:block;border-radius:15px;" />
-                      </div>
-                      <h2 style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 2.5vw);color:#911414;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Join Us</h2>
-                      <p style="width:80%;float:left;position:relative;text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;">
-                          We share epic brews on our <a href="https://discord.gg/F7ZvRckpC9" target="_blank">discord server</a>. Join us to become part of the community!
-                      </p>
-
-                      <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-                      <h2 style="text-align:center;font-size:calc(8px + 2.5vw);color:#911414;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Confirm Email</h2>
-                      <p style="text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;">
-                          By clicking the button below, you'll confirm your email unlock the many features of the Many Isles!
-                      </p>
-                      <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:red;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="http://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
-                      <p style='color: #7d7d7d; font-size: calc(10px + 0.4vw); text-align: center; '>If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="http://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife">http://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
-
+          <body style="padding:0;margin:0;">
+            <section style="max-width: 900px; margin: auto;background-image:url(https://manyisles.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
+              <div style="width: 100%;
+              height: 200px;
+              background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5));"></div>
+              <div style="background-color: white;padding: 10px 0;">
+                <div style="width: 85%; margin:auto;">
+                  <h1 style="font-size: 30px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;">Welcome to the Many Isles, %%UNAME%%!</h1>
+                  <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                      We're happy you've decided to join us. You'll get free premium products, as well as access to our great community! We love worldbuilding and homebrewing, and you'll fit right in.
+                  </p>
+                </div>
+                <!-- offer -->
+                <div style="border-top: 3px solid #61b3dd;margin-top:50px">
+                  <div style="width: 85%; margin:auto;">
+                    <h2 style="font-size: 25px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:20px 0 0;">What we offer</h2>
+                    <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                        A selection of what you can find on the Many Isles.
+                    </p>
+                    <table>
+                      <tbody style="vertical-align:top">
+                        <tr style="padding-bottom:10px">
+                          <td>
+                            <img src="https://manyisles.ch/IndexImgs/Pen.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                          </td>
+                          <td style="padding-left: 10px">
+                            <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">The Fandom Wiki</h2>
+                            <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                                We host a cool <a style="color:#61b3dd" href="https://manyisles.ch/fandom/home">fandom wiki</a>, accessible to all. Once you've confirmed your email, you can participate your own articles and even write a whole wiki about your own world!
+                            </p>
+                          </td>
+                        </tr>
+                        <tr style="padding-bottom:10px">
+                          <td>
+                            <img src="https://manyisles.ch/Imgs/Prods.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                          </td>
+                          <td style="padding-left: 10px">
+                            <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">An awesome Digital Library</h2>
+                            <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                                Our main goal is to promote small creators that want to get their awesome free stuff out there. Check out our <a style="color:#61b3dd" href="https://manyisles.ch/dl/home">digital library</a> today, and start publishing from your <a style="color:#61b3dd" href="https://manyisles.ch/account/home">account page</a>!
+                            </p>
+                          </td>
+                        </tr>
+                        <tr style="padding-bottom:10px">
+                          <td>
+                            <img src="https://media.manyisles.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                          </td>
+                          <td style="padding-left: 10px">
+                            <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Handbook of Dark Secrets</h2>
+                            <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                              A guide to possession, exorcism, the afterlife, demon forging, and fiends. It includes special feats, exclusive spells, unique magic items, and more infernal secrets.<br>
+                              <a style="color:#61b3dd" href="https://manyisles.ch/dl/item/8/Handbook_of_Dark_Secrets">Check it out!</a>
+                            </p>
+                          </td>
+                        </tr>
+                        <tr style="padding-bottom:10px">
+                          <td>
+                            <img src="https://manyisles.ch/Imgs/slides/blogs.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                          </td>
+                          <td style="padding-left: 10px">
+                            <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Many Isles Blogs</h2>
+                            <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                                View and publish awesome posts about fantasy with our <a style="color:#61b3dd" href="https://manyisles.ch/blog/explore">blog tool</a>.
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
+                </div>
+                <!-- confirm -->
+                <div style="border-top: 3px solid #61b3dd;margin-top:50px">
+                  <div style="width: 85%; margin:auto;">
+                    <h2 style="font-size: 25px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:20px 0 0;">Confirm Email</h2>
+                    <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                      By clicking the button below, you'll confirm your email unlock the many features of the Many Isles!
+                    </p>
+                    <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
+                    <p style="color: #7d7d7d; padding:10px;font-size: 14px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="color:#61b3dd">https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
+                  </div>
+                </div>
+                <!-- footer -->
+                <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
+                  <img src="https://manyisles.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+                  <a href="https://manyisles.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">manyisles.ch</a>
+                </div>
               </div>
-
+            </section>
           </body>
           </html>
           MYGREATMAIL;
@@ -362,27 +383,36 @@ if (!class_exists("adventurer")){
               <meta charset="utf-8" />
               <title></title>
           </head>
-          <body>
-              <img src="http://manyisles.ch/Imgs/PopupBar.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;" />
-              <h1 style="text-align:center;font-size:calc(12px + 3vw);color:#911414;">Confirm Email</h1>
-              <p style="
-                      text-align: center;
-                      font-size: calc(8px + 0.9vw);
-                      color: black;
-                      padding:10px;
-              ">
-                  Click the button below to confirm your Many Isles email, %%UNAME%%.
-                  <br>You may receive this message due to having changed your account's email address, or having requested a new code from your account page.
-
-              </p>
-              <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:red;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="http://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
-              <p style='color: #7d7d7d; font-size: calc(10px + 0.4vw); text-align: center; '>If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="http://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife">http://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
+          <body style="padding:0;margin:0;">
+            <section style="max-width: 900px; margin: auto;background-image:url(https://manyisles.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
+              <div style="width: 100%;
+              height: 200px;
+              background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5));"></div>
+              <div style="background-color: white;padding: 10px 0;">
+                <div style="width: 85%; margin:auto;">
+                  <h1 style="font-size: 30px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;">Confirm Email</h1>
+                  <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                      Click the button below to confirm your Many Isles email, %%UNAME%%.
+                      <br>You may receive this message due to having changed your account's email address, or having requested a new code from your account page.
+                  </p>
+                  <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
+                  <p style="color: #7d7d7d; padding:10px;font-size: 14px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="color:#61b3dd">https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
+                </div>
+                <!-- footer -->
+                <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
+                  <img src="https://manyisles.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+                  <a href="https://manyisles.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">manyisles.ch</a>
+                </div>
+              </div>
+            </section>
           </body>
           </html>
       MYGREATMAIL;
         }
         $message = str_replace("%%UNAME%%", $this->uname, $message);
         $message =  str_replace("massiveTreeofLife", urlencode($conCode), $message);
+        $message = str_replace("https://media.manyisles.ch", "https://".$this->giveServerInfo("servername_media"), $message);
+        $message = str_replace("manyisles.ch", $this->giveServerInfo("servername"), $message); //this can do bugs: should have better regex, not just all "manyisles.ch"
 
         $mailer = $this->addMailer();
         if ($mailer->sendMail([[$this->email, $this->fullName]], $subject, $message)){

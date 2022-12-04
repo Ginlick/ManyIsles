@@ -17,6 +17,7 @@ $dl = new dlengine();
 
 </style>
 <body>
+
   <?php
       echo $dl->giveGlobs();
   ?>
@@ -89,9 +90,6 @@ $dl = new dlengine();
         </div>
     </div>
 </div>
-
-
-
 </body>
 </html>
 <?php echo $dl->baseVars(); ?>

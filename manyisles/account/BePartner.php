@@ -40,7 +40,6 @@ if ($dl->partner(false)) {$dl->go("Publish", "p");}
                         <img src='/Imgs/Recruit.png' alt:'Oopsie!' class='bannerI' />
                         <p>Confirm your email to become a trader!<br></p>
                         <a href='resendConfirm.php?id=41'><button class='popupButton'><i class='fas fa-arrow-right'></i> Resend</button></a>
-                        <p>You will be redirected back from the confirmation page.</p>
                         </div></div>
                         </div>
                         </div>

@@ -14,9 +14,8 @@
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <link rel="stylesheet" type="text/css" href="g/acc.css">
     <style>
-        #wanttoPublish {
-            display: none;
-        }
+
+
     </style>
 </head>
 <body>
@@ -29,7 +28,7 @@
                 <ul id="myMenu">
                     <li onclick='clinnation("Sign")'><p id='SignBar' class="Bar">Sign Up</p></li>
                     <li onclick='clinnation("Log")'><p id='LogBar' class="Bar">Log In</p></li>
-                    <li onclick='clinnation("Pol")'><p id='PolBar' class="Bar">Account Policy</p></li>
+                    <li onclick='clinnation("Pol")'><p id='PolBar' class="Bar">Terms of Service</p></li>
                 </ul>
             </div>
 
@@ -37,55 +36,14 @@
 
                 <h1 id="SignUp-title"> Join the Many Isles! </h1>
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                <p id="createAccountP">Only normal letters are allowed throughout the form. You may use numbers in the password, and special characters in the email.</p>
+                <div id="signCreateBigCont">
+                  <p id="createAccountP">Only normal letters are allowed throughout the form. You may use numbers in the password, and special characters in the email.</p>
 
+                  <div id="signCreateFormCont"></div>
 
+                  <p>Already have an account? <span onclick="clinnation('Log')" class="fakelink">Log in</span></p>
+                </div>
 
-                <form action='MakeAccount.php' method="post" style="width:100%" id="SignUpForm">
-                    <input name="wanttoPublish" id="wanttoPublish" type="text" style="display:none;" value="0" autocomplete="off" readonly />
-                    <div class="container">
-                        <table>
-                            <tr>
-                                <td> <label for="uname"><b>Username</b></label></td>
-                                <td style="width:1000%">  <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="uname" oninput="inputGramm(this, 'u')" autocomplete="username" required></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td id="unameInputErr" class="inputErr">Incorrect input!</td>
-                            </tr>
-                            <tr>
-                                <td> <label for="email"><b>Email</b></label></td>
-                                <td> <input type="email" placeholder="godsofmanyisles@gmail.com" name="email" id="email" onfocusout="inputGramm(this, 'e')" required></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td id="emailInputErr" class="inputErr">Incorrect input!</td>
-                            </tr>
-                            <tr>
-                                <td> <label for="psw"><b>Password</b></label></td>
-                                <td> <input type="password" placeholder="uniquePassword22" name="psw" oninput="inputGramm(this, 'p')" autocomplete="new-password" required></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td id="pswInputErr" class="inputErr">Incorrect input!</td>
-                            </tr>
-                            <tr>
-                                <td> <label for="region"><b>Region</b></label></td>
-                                <td>
-                                    <select name="region" id="region" required>
-                                        <option value="1">1 (UTC)</option>
-                                        <option value="2">2 (UTC + 7)</option>
-                                        <option value="3">3 (UTC - 7)</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                        <p>By creating an account, you agree with the community's <a href="/docs/44/Conditions_and_Terms" target="_blank">Terms and Conditions</a>.</p>
-                        <button class="popupButton" type="submit">Sign Up</button>
-                    </div>
-                </form>
-
-                <p>Already have an account? <span onclick="clinnation('Log')" class="fakelink">Log in</span></p>
                 <div style="margin-top:7vw;">
                     <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 </div>
@@ -110,29 +68,21 @@
                 <h1 id="signTitle"> Sign In </h1>
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 <p id="signExpl">Sign in to access the entirety of the Many Isles!</p>
+                <div id="signFormCont"></div>
+                <p>Don't have an account yet? <span onclick="clinnation('Sign')" class="fakelink">Join us now!</span></p>
 
-                <form action='SignIn.php' method="post" style="width:100%">
-                    <div class="container">
-                        <table>
-                            <tr>
-                                <td><label for="loguname"><b>Username</b></label></td>
-                                <td style="width:1000%"><input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" autocomplete="username" required></td>
-                            </tr>
-                            <tr>
-                                <td><label for="logpassword"><b>Password</b></label></td>
-                                <td><input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" autocomplete="current-password" required><br></td>
-                            </tr>
-                        </table>
-                        <p style="color:red;display:none;" id="youFailedMaggot">Sign in failed.</p>
-                        <button class="popupButton" type="submit">Log In</button>
-                    </div>
-                </form>
-                <p>Don't have an account yet? <span class="fakelink" onclick="clinnation('Sign')">Join us now!</span></p>
             </div>
 
             <div id="Pol" class="column">
-                <h1>Account Policy</h1>
-                <p>Find an outline of our account policy here; for more information, check out the <a href="https://docs.google.com/document/d/1ZxErZV-D1Otk0L4UbP3RZqUuR6ptSj8i3NNNmVxu9LU/edit?usp=sharing" target="_blank">Adventurer's Agreement</a>.<br />You agree to this policy, and the Adventurer's Agreement, when you create an account.</p>
+                <h1>Terms of Service</h1>
+                <div>
+                  <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
+                </div>
+                <p>
+                  The Terms of Service of the Many Isles website are outlined in this <a href="/docs/44/Terms_of_Service" target="_blank">article</a>.<br>
+                  This site is protected by reCAPTCHA and the Google <a href=%double_quote%https://policies.google.com/privacy%double_quote%>Privacy Policy</a> and <a href=%double_quote%https://policies.google.com/terms%double_quote%>Terms of Service</a> apply.
+                </p>
+                <!-- <p>Find an outline of our account policy here; for more information, check out the <a href="https://docs.google.com/document/d/1ZxErZV-D1Otk0L4UbP3RZqUuR6ptSj8i3NNNmVxu9LU/edit?usp=sharing" target="_blank">Adventurer's Agreement</a>.<br />You agree to this policy, and the Adventurer's Agreement, when you create an account.</p>
                 <p style="text-align:left">
                     <br>
                     &sect;0 Definitions<br>
@@ -158,7 +108,7 @@
                     The Many Isles takes care not to spread your data. We do not have ads, so no browser or personal information is sent to unknown buyers. All data collected in Many Isles databases never come in the hands of outside services except for Stripe payouts.<br>
                     <br>
                     <br>
-                </p>
+                </p> -->
 
             </div>
         </div>
@@ -228,23 +178,7 @@
     if (display != null) {
         clinnation(display);
     }
-    if (urlParams.get('uname') != null) { document.getElementById("uname").value = urlParams.get('uname'); }
-    if (urlParams.get('email') != null) { document.getElementById("email").value = urlParams.get('email'); }
-    if (error == "EmailTaken") {
-        document.getElementById("email").placeholder = "Email Already Used";
-        document.getElementById("email").value = null;
-        document.getElementById("email").style.backgroundColor = "#ff8f8f";
-    }
-    else if (error == "UnameTaken") {
-        document.getElementById("uname").placeholder = "username already in use";
-        document.getElementById("uname").value = null;
-        document.getElementById("uname").style.backgroundColor = "#ff8f8f";
-    }
-    else if (error == "signingIn") {
-        clinnation('Log');
-        document.getElementById("youFailedMaggot").style.display = "block";
-    }
-    else if (error == "notSignedIn") {
+    if (error == "notSignedIn") {
         clinnation('Log');
         document.getElementById("signTitle").innerHTML = "Sign In First";
         document.getElementById("signExpl").innerHTML = "You need to sign in to use this feature.";
@@ -254,36 +188,30 @@
     }
     else if (error == "wannaPublish") {
         document.getElementById("SignUp-title").innerHTML = "Make an Account to start Publishing!";
-        document.getElementById("wanttoPublish").value = "1";
-    }
-    else if (error == "spamblock") {
-        document.getElementById("createAccountP").innerHTML = "Our spam block interrupted your account creation. Please try again tomorrow.";
-    }
-    else if (error == "creatingAcc") {
-      createPopup("d:acc;txt:Sorry, there was an error creating your account.");
     }
     else if (error == "deleted") {
       createPopup("d:acc;txt:Account deleted.");
     }
 
-    if (add != null) {
-      seekMaker(add);
-    }
 
-    function inputGramm(x, y) {
-        var input = x.value;
-        var patt = new RegExp("[^A-Za-z0-9 ]");
-        var target = "uname";
-        if (y == "e") { patt = new RegExp("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]$"); target = "email"; }
-        else if (y == "p") { patt = new RegExp("[^A-Za-z0-9 ]"); target = "psw"; }
-        target = "#".concat(target).concat("InputErr");
-        $("input").removeAttr("style");
-        if (y != "e") {
-            if (patt.test(input) && input.length != 0) { $(target).show(); }
-            else { $(target).hide(); }
-        }
-        else {
-            if (!patt.test(input) && input.length != 0) { $(target).show(); }
-            else { $(target).hide(); }
-        }
-    }</script>
+    /*acp*/
+    returnFin = function (resultObject) {
+      location.reload();
+    }
+    returnFcreate = function (resultObject) {
+      var urlParams = new URLSearchParams(window.location.search);
+      var error = urlParams.get('error');
+      if (error == "wannaPublish"){
+        document.getElementById("signCreateBigCont").replaceChildren(this.giveHTMLel("successCreateWanttopublishHTML"));
+      }
+      else {
+        document.getElementById("signCreateBigCont").replaceChildren(this.giveHTMLel("successCreateHTML"));
+      }
+    }
+    function acp_launcher() {
+      acpBuilder1 = new acp_builder(returnFin);
+      acpBuilder1.createPortal(document.getElementById("signFormCont"), "signInBasic");
+      acpBuilder2 = new acp_builder(returnFcreate);
+      acpBuilder2.createPortal(document.getElementById("signCreateFormCont"), "signCreateBasic");
+    };
+  </script>

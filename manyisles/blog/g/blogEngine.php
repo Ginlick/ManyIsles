@@ -222,7 +222,7 @@ class blogEngine {
       HAIL;
       $return = str_replace("?u=1", "?u=".$this->buserId, $return);
       $return = str_replace("current-information-place", $this->curPage, $return);
-      $insert = '<a class="left-menu-a" href="/account/Account?error=signIn" target="_blank"><i class="fa-regular fa-user"></i> Sign In</a>';
+      $insert = '<a class="left-menu-a" href="/account/home?error=signIn" target="_blank"><i class="fa-regular fa-user"></i> Sign In</a>';
       if ($this->user->signedIn){
         $insert = '<a class="left-menu-a" href="/blog/profile"><i class="fa-solid fa-user"></i> Profile</a>';
         if ($this->partner){

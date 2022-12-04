@@ -23,6 +23,9 @@ ul.address li {
     display: inline-block;
     position: relative;
 }
+.checkout.grey {
+  background-color: #BABABA;
+}
 /*right*/
 .dsBanner img {
     width: 90%;

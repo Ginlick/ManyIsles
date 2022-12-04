@@ -137,7 +137,6 @@ select {
     flex-grow: 1 1;
     padding: 16px;
     display: inline-block;
-    position: relative;
 }
 
 .flex-container {
@@ -195,6 +194,7 @@ button {
     margin: calc(10px + 1vw) auto;
     min-height: 500px;
     border-radius: 5px;
+    padding: 15px 5px;
 }
 
 

@@ -49,7 +49,7 @@ $ds = new dsEngine;
 
         <div class="flex-container">
             <div class='left-col'>
-                <a href="home.php"><h1 class="menutitle">Digital Store</h1></a>
+                <a href="store"><h1 class="menutitle">Digital Store</h1></a>
                 <ul class="myMenu">
                     <li><a class="Bar" href="home.php">Browse</a></li>
                 </ul>
