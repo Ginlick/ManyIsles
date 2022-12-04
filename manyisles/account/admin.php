@@ -4,10 +4,10 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
 $user = new adventurer($conn, $_COOKIE["loggedIn"]);
 $id = $user->user;
 if (!$user->check(false)){
-  header("Location: /account/SignedIn.php");exit();
+  header("Location: /account/home");exit();
 }
 if ($id != 11 AND $id != 14) {
-    header("Location: /account/SignedIn.php");exit();
+    header("Location: /account/home");exit();
 }
 
 $pId = 0;

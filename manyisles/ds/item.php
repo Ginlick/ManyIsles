@@ -344,10 +344,10 @@ echo '<p class="warning red" id="warningNone" style="display: none">out of stock
 
 ?>
                     </div>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/ds/<?php echo $artLink; ?>" target="_blank" class="fa fa-facebook"></a>
-                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $artName; ?> on the Many Isles!&url=https://manyisles.ch/ds/<?php echo $artLink; ?>" target="_blank" class="fa fa-reddit"></a>
-                    <a href="https://twitter.com/intent/tweet?text=Check out the awesome <?php echo $artName; ?> on the Many Isles!%0A&url=https://manyisles.ch/ds/<?php echo $artLink; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
-                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/ds/<?php echo $artLink; ?>&media=<?php echo $ds->clearImgUrl($artImage); ?>&description=Check out the awesome <?php echo $artName; ?> on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/ds/<?php echo $artLink; ?>" target="_blank" class="fa-brands fa-facebook"></a>
+                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $artName; ?> on the Many Isles!&url=https://manyisles.ch/ds/<?php echo $artLink; ?>" target="_blank" class="fa-brands fa-reddit"></a>
+                    <a href="https://twitter.com/intent/tweet?text=Check out the awesome <?php echo $artName; ?> on the Many Isles!%0A&url=https://manyisles.ch/ds/<?php echo $artLink; ?>&hashtags=manyisles,dnd" target="_blank" class="fa-brands fa-twitter"></a>
+                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/ds/<?php echo $artLink; ?>&media=<?php echo $ds->clearImgUrl($artImage); ?>&description=Check out the awesome <?php echo $artName; ?> on the Many Isles!" target="_blank" class="fa-brands fa-pinterest"></a>
                     <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://<?php echo $_SERVER["HTTP_HOST"]."/ds/".$artLink; ?> ');createPopup('d:poet;txt:Link copied!');"></a>
 
                 </section>

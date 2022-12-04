@@ -1,0 +1,49 @@
+.acp-form {
+  margin: 30px 20px;
+}
+.acp-form.line {
+  margin: 5px;
+}
+.acp-button {
+  margin: 20px;
+}
+.acp-successor {
+  font-size: 30px;
+  margin: 20px auto;
+  color: var(--wiki-color-green);
+  text-align: center;
+}
+.acp-form td {
+  padding: 0 5px;
+  text-align: right; 
+}
+.acp-form td.inputErr {
+  text-align: left;
+}
+.acp-form input, .acp-form select {
+    padding: 8px 10px;
+    margin: 8px 0;
+    font-size: var(--all-fonts-base);
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    width: 100%;
+}
+.acp-form label {
+  font-size: var(--all-fonts-base);
+  font-weight: normal;
+}
+.acp-form.line label  {
+  margin: 0 0 5px;
+}
+.acp-form.line input {
+  margin: 0 0 10px;
+}
+select {
+    font-size: calc(10px + .4vw);
+}
+.grecaptcha-badge { visibility: hidden; }
+
+.flex-container {
+  z-index: 0;
+}

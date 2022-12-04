@@ -333,7 +333,7 @@ if ($basketed->codesExist){
 <script>
     function checkCookie() {
         if (document.cookie.indexOf('loggedIn') == -1) {
-            window.location.href = "checkout.html";
+            window.location.href = "checkout";
         }
     }
     checkCookie();

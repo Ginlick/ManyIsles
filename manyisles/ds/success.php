@@ -9,7 +9,7 @@ session_destroy();
 
     $phrase = "You should receive your purchase by postal services within a few weeks. It may take a moment for any digital products you purchased to take effect.<br>
                                 You will receive a receipt by mail.<br><br>
-                                You can always view your order from your <a href='/account/SignedIn?display=orders'>account page</a>.";
+                                You can always view your order from your <a href='/account/home?display=orders'>account page</a>.";
 if (isset($_GET["type"])){
     if ($_GET["type"] == "subs"){
         $phrase = "Your subscription was created. It may take a moment to take effect.<br><br>You can view and edit your active plans from your <a href='/ds/subs/hub'>hub</a>.";
@@ -109,7 +109,7 @@ if (isset($_GET["type"])){
 
     function checkCookie() {
         if (document.cookie.indexOf('loggedIn') == -1) {
-            window.location.href = "checkout.html";
+            window.location.href = "checkout";
         }
     }
     checkCookie();

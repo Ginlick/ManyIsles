@@ -55,7 +55,7 @@ class gen {
 
         if ($mode == "edit" OR $mode == "act"){
           if (!$this->userMod->check(true)) {
-            echo "<script>window.location.replace('/account/Account?error=notSignedIn');</script>";exit();
+            echo "<script>window.location.replace('/account/home?error=notSignedIn');</script>";exit();
           }
         }
         else {
@@ -502,7 +502,7 @@ class gen {
           }
         }
 
-        $main .=' <a href="/account/SignedIn.php" target="_self">Account</a>
+        $main .=' <a href="/account/home" target="_self">Account</a>
                 <a href="/home" target="_self">Home</a>
             </div>
         </div>
@@ -1257,14 +1257,14 @@ MAIN;
     function giveUnsigner() {
       return " <div class='starterCont'><p>Sign in to get started!</p>
           <div class='bottButtCon'>
-          <a href='/account/Account' target='_blank' class='wikiButton'><i class='fas fa-arrow-up'></i> Account</a>
+          <a href='/account/home' target='_blank' class='wikiButton'><i class='fas fa-arrow-up'></i> Account</a>
           <a href='#' onclick='location.reload();' class='wikiButton'><i class='fas fa-redo'></i> Refresh</a></div></div>";
     }
     function giveRArticPops() {
         if (!$this->signedIn){$basetext = "<h1>Log In</h1>
                                 <p>Sorry, you need to log in to edit the fandom.</p>
                                 <div class='bottButtCon' style='display: table'>
-                                <a href='/account/Account?error=signIn' target='_blank' class='wikiButton'>Account</a>
+                                <a href='/account/home?error=signIn' target='_blank' class='wikiButton'>Account</a>
                                 <a href='#' onclick='location.reload();' class='wikiButton'><i class='fas fa-redo'></i> Refresh</a></div>"; }
         else if ($this->power == 0) {
             $basetext = "<h1>Banned</h1><p>Sorry, you've been <a href='/docs/26/User_Roles'>banned</a> by the $this->wikiName wiki moderators or by the Pantheon. You can't participate to this wiki until you're cleared.</p>";

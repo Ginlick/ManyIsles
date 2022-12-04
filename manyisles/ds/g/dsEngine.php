@@ -121,7 +121,7 @@ class dsEngine {
 
     if (str_contains($_SERVER['REQUEST_URI'], "/store")) {
       if ($this->user->dsHasordered){
-        $fullText .= "<ul class='myMenu'><li><a class='Bar' href='/account/SignedIn.php?display=orders' target='_blank'>My Orders</a></li></ul>";
+        $fullText .= "<ul class='myMenu'><li><a class='Bar' href='/account/home?display=orders' target='_blank'>My Orders</a></li></ul>";
       }
       if ($this->user->dsHassubs) {
         $fullText .= "<ul class='myMenu'><li><a class='Bar' href='subs/hub'>My Subscriptions</a></li></ul>";

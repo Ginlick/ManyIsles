@@ -3,15 +3,15 @@ $todoid = substr(preg_replace("/[^0-9]/", "", $_GET['id']), 0, 222);
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/email.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/modMailer.php");
 $user = new adventurer($conn, $_COOKIE["loggedIn"]);
-$mailer = new mailer();
+$mailer = new modMailer();
 $id = $user->user;
 if (!$user->check(false)){
-  header("Location: /account/SignedIn.php");exit();
+  header("Location: /account/home");exit();
 }
 if ($id != 11 AND $id != 14) {
-    header("Location: /account/SignedIn.php");exit();
+    header("Location: /account/home");exit();
 }
 
 $query = "SELECT user, status FROM partners WHERE id =".$todoid;
@@ -41,7 +41,7 @@ if ($conn->query($query)) {
       $subject = "Partnership Reactivated";
       $message = 'An administrator of the Homeland Institute of Trade reactivated your suspended partnership, and all your products are now visible again in the digital library.';
     }
-    $mailer->send($pemail, $subject, $message, "pub");
+    $mailer->send($pemail, $subject, $message, "publishing");
 }
 header("Location:admin.php");
 

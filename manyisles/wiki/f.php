@@ -43,7 +43,7 @@ if ($firstrow = $conn->query($query)) {
             <p class="topinfo"><a href="/wiki.html">Many Isles Wiki</a> - <a href="#">Fandom</a></p>
             <h1>Fandom Wiki</h1>
             <p>
-                Written by the Many Isles community, you can find anything here: lore of Karte-Caedras, meta information, fan pages, and much more. Participate yourself after <a href="/account/Account">creating an account</a>!<br />
+                Written by the Many Isles community, you can find anything here: lore of Karte-Caedras, meta information, fan pages, and much more. Participate yourself after <a href="/account/home">creating an account</a>!<br />
                 The Fandom wiki is a hub in which other wikis are ordered. The Karte-Caedras wiki is for Many Isles lore, while the Many Isles wiki is for community lore.<br />
                 If you want to learn more about participating in the Fandom Wiki, check out this <a href="h/fandom.html">article</a>.
             </p>

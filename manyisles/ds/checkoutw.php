@@ -1,25 +1,12 @@
 ﻿<?php
+if(isset($_GET["w"]) && $_GET["w"]=="1") {$newAcc = true;} else {$newAcc = false;}
+require_once("g/dsEngine.php");
+$ds = new dsEngine;
+$ds->killCache();
 
-if(isset($_GET["w"])) {if ($_GET["w"]!="1"){header("Location: basket.html");exit();} else {$newAcc = true;} } else {$newAcc = false;}
-
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-$user = new adventurer;
-if (!$user->check(true)){header("Location: checkout");exit();}
-else if ($user->emailConfirmed){header("Location: checkout1");exit();}
-$conn = $user->conn;
-
-session_start();
-if (!isset($_SESSION["subbasket"])) {
-    if (isset($_SESSION["basket"])) {
-        if ($_SESSION["basket"] == "") {
-            echo "<script>window.location.replace('/ds/store');</script>";exit();
-        }
-    }
-    else {
-        echo "<script>window.location.replace('/ds/store');</script>";exit();
-    }
-}
-
+if (!$ds->user->check(true)){header("Location: checkout");exit();}
+else if ($ds->user->emailConfirmed){header("Location: checkout1");exit();}
+$conn = $ds->conn;
 
 ?>
 
@@ -27,17 +14,8 @@ if (!isset($_SESSION["subbasket"])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Imgs/FaviconDS.png">
     <title>Checkout | Digital Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="g/ds-g.css">
-    <style>
-    </style>
+    <?php echo $ds->giveHead(); ?>
 </head>
 <body>
     <div w3-include-html="/Code/CSS/GTopnav.html" style="position:sticky;top:0;"></div>
@@ -49,17 +27,18 @@ if (!isset($_SESSION["subbasket"])) {
                 <ul class="myMenu">
                     <li><p class="Bar" style="color:black">Checking out</p></li>
                 </ul>
+                <?php
+                    echo $ds->sideBasket();
+                ?>
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
                     <li><a class="Bar" href="/docs/8/Confirming_an_Account" target="_blank">Confirming an account</a></li>
                     <li><a class="Bar" href="/docs/6/Accounts" target="_blank">Many Isles accounts</a></li>
-                    <li><a class="Bar" href="/account/Account?display=Pol" target="_blank">Many Isles account policy</a></li>
+                    <li><a class="Bar" href="/docs/44/Terms_of_Service" target="_blank">Terms of Service</a></li>
                 </ul>
             </div>
 
             <div id='content' class='column'>
-              <?php echo $user->signPrompt(); ?>
-
                 <h1>Step 0</h1>
 
                 <div class="contentblock" id="makeIt">
@@ -73,12 +52,12 @@ if (!isset($_SESSION["subbasket"])) {
                             <?php if ($newAcc){
                                 echo "We're waiting for your email to be confirmed. Check your spam if it isn't in your inbox.<br />
                                 You can continue by clicking <em>Reload</em> here once your email is confirmed.<br><br>
-                                Resend a confirmation email from your <a href='/account/SignedIn.php?show=notConfirmed' target='_blank'>account page</a>.";
+                                If necessary, resend a confirmation email from your <a href='/account/home?show=notConfirmed' target='_blank'>account page</a>.";
                             }
                             else {
                                 echo "You need to confirm your email to continue.<br>
-                                Resend a confirmation email from your <a href='/account/SignedIn.php?show=notConfirmed' target='_blank'>account page</a>.<br>
-                                If you have confirmed it, you can click <em>Reload</em> here.";
+                                If necessary, resend a confirmation email from your <a href='/account/home?show=notConfirmed' target='_blank'>account page</a>.<br><br>
+                                Once your email is confirmed, you can click <em>Reload</em> here.";
                             }
                             ?>
                             </p>

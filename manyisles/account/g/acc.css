@@ -55,21 +55,6 @@
     max-width: var(--contcol-width);
     margin: auto;
 }
-accButton {
-    padding: 10px;
-    display: block;
-    background-color: red;
-    border-radius: 4px;
-    font-weight: bold;
-    color: white;
-    font-size: calc(12px + .5vw);
-    border: 0px;
-    margin:auto;
-}
-.accButton:hover {
-    background-color: #d40000;
-    color: white;
-}
 
 .infoContain {
     width:50%;
@@ -88,18 +73,6 @@ accButton {
     margin-left: 10%;
 }
 
-input[type=text], input[type=password], input[type=email], select {
-    padding: .7vw 1%;
-    margin: 8px 0;
-    font-size: calc(12px + .5vw);
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    width: 100%;
-}
-select {
-    font-size: calc(10px + .4vw);
-}
 .coolInfo {
     display: block;
     margin: auto;
@@ -152,13 +125,3 @@ select {
         #SLoptions a:hover {
             color: #666666;
         }
-
-/*discontinued*/
-.inputErr {
-    font-size: calc(9px + .3vw);
-    color: red;
-    text-align:left;
-    margin:0;
-    padding-left:.4vw;
-    display:none;
-}

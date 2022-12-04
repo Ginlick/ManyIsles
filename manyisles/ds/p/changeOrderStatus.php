@@ -1,7 +1,7 @@
 ﻿<?php
 if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:hub.php");exit();}
 if (preg_match("/^[-0-9]*$/", $_GET["dir"])!=1){header("Location:hub.php");exit();}
-if(!isset($_COOKIE["loggedIn"])){header("Location: checkout.html");exit();}
+if(!isset($_COOKIE["loggedIn"])){header("Location: checkout");exit();}
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/dsEngine.php");
 $ds = new dsEngine;
 $ds->killCache();

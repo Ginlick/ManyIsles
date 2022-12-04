@@ -147,7 +147,7 @@ section.details {
 .iOvertails .fas {
     color: #9f9f9f;
 }
-.fa {
+.fa, .fa-brands {
     padding: 5px 10px;
     font-size:min(calc(17px + .3vw), 22px);
 }

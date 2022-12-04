@@ -11,7 +11,7 @@ $query="SELECT * FROM poets WHERE id = ".$uid;
 $result =  $conn->query($query);
 while ($row = $result->fetch_assoc()) {
     if ($row["admin"] != 1) {
-        header("Location: /account/SignedIn.php");exit();
+        header("Location: /account/home");exit();
     }
     if ($uid == $_GET['id'] AND $row["super"] != 1){
         header("Location:admin.php?i=0");exit();

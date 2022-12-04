@@ -50,7 +50,7 @@ require_once("../g/alertStock.php");
                 <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
                 <ul class="myMenu bottomFAQ">
                     <li><a class="Bar" href="../home.php">Browse Store</a></li>
-                    <li><a class="Bar" href="/account/SignedIn.php">Account</a></li>
+                    <li><a class="Bar" href="/account/home">Account</a></li>
                     <li><a class="Bar" href="partner.php?id=<?php echo $pId; ?>"></i> View Public Page</a></li>
                     <li><a class="Bar" href="/docs/18/Digital_Store_Extension" target="_blank">DS Publishing</a></li>
                     <li><a class="Bar" href="/docs/19/Publishing_Obligations">DS Publishing Conditions</a></li>

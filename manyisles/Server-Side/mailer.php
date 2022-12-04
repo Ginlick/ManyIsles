@@ -30,9 +30,17 @@ if (!class_exists("mailer")){
       $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
       $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-      //Recipients
+      //People
       if ($senderInfo == []){ //sender
         $senderInfo = $this->baseInfo["default_info"];
+      }
+      else if (gettype($senderInfo) == "string"){
+        if (isset($this->baseInfo["more_info"][$senderInfo])){
+          $senderInfo = $this->baseInfo["more_info"][$senderInfo];
+        }
+        else {
+          $senderInfo = $this->baseInfo["default_info"];
+        }
       }
       $mail->setFrom($senderInfo["address"], $senderInfo["user"]);
       foreach ($recipientInfo as $recipient){ //recipients

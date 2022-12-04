@@ -28,7 +28,7 @@ if ($correct){
 
 $conn->close();
 
-if (isset($_COOKIE["loggedIn"])) {$return = "/account/SignedIn.php"; } else {$return = "/home"; }
+if (isset($_COOKIE["loggedIn"])) {$return = "/account/home"; } else {$return = "/home"; }
 if (isset($_COOKIE["seeker"])){
   $return = $_COOKIE["seeker"];
   setcookie("seeker", "", time() - 2200, "");

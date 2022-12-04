@@ -9,7 +9,7 @@ $query="SELECT * FROM poets WHERE id = ".$id;
 $result =  $conn->query($query);
 while ($row = $result->fetch_assoc()) {
     if ($row["admin"] != 1) {
-        header("Location: /account/SignedIn.php");exit();
+        header("Location: /account/home");exit();
     }
 }
 ?>
@@ -85,7 +85,7 @@ a, .fakelink {
 
 <div class="mednav">
         <ul>
-            <li> <a href="/account/SignedIn.php">&lt Back</a></li>
+            <li> <a href="/account/home">&lt Back</a></li>
         </ul>
     </div>
 

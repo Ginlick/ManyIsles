@@ -110,7 +110,7 @@ $slogan = $homer->giveSlogan();
         <div class="firstview-cont contcol-wrapper">
           <div class="firstview-texter">
             <h1>Many Isles</h1>
-            <p class="slogan" id="sloganHere">A world of creation.</p>
+            <p class="slogan" id="gimmeSlogan">A world of creation.</p>
           </div>
         </div>
 
@@ -346,19 +346,21 @@ $slogan = $homer->giveSlogan();
     var urlParams = new URLSearchParams(window.location.search);
     var show = urlParams.get('show');
 
-    onload= function hey() {
-        if (!localStorage["alertdisplayed"]) {
-            createPopup("d:gen;txt:Welcome to the Many Isles!;b:1;bTxt:take a tour;bHref:/docs/32/Welcome;dur:22000");
-            localStorage["alertdisplayed"] = true;
-        }
-        else {
-          setTimeout(function () {
-            document.getElementById("firstTitle").scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 2200);
-          slogan = "<?php echo $slogan; ?>";
-          document.getElementById("sloganHere").innerHTML = slogan;
-          /*generate new slogan*/
-        }
+    if (!localStorage["alertdisplayed"]) {
+        createPopup("d:gen;txt:Welcome to the Many Isles!;b:1;bTxt:take a tour;bHref:/docs/32/Welcome;dur:22000");
+        localStorage["alertdisplayed"] = true;
+    }
+    else {
+      xhttp = new XMLHttpRequest();
+      xhttp.addEventListener("load", (e) => {
+        document.getElementById("gimmeSlogan").innerHTML = e.target.responseText;
+      });
+      xhttp.open("GET", "/Server-Side/src/homer/slogan-api.php", true);
+      xhttp.send();
+
+      setTimeout(function () {
+        document.getElementById("firstTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 2200);
     }
 
 </script>

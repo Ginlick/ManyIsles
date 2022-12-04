@@ -14,20 +14,7 @@
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <link rel="stylesheet" type="text/css" href="g/acc.css">
     <style>
-    #wanttoPublish {
-      display: none;
-    }
-      .acp-form {
-        margin: 30px 20px;
-      }
-      .acp-button {
-        margin: 20px;
-      }
-      .acp-successor {
-        font-size: 30px;
-        margin: 20px auto;
-        color: var(--wiki-color-green);
-      }
+
 
     </style>
 </head>
@@ -41,7 +28,7 @@
                 <ul id="myMenu">
                     <li onclick='clinnation("Sign")'><p id='SignBar' class="Bar">Sign Up</p></li>
                     <li onclick='clinnation("Log")'><p id='LogBar' class="Bar">Log In</p></li>
-                    <li onclick='clinnation("Pol")'><p id='PolBar' class="Bar">Account Policy</p></li>
+                    <li onclick='clinnation("Pol")'><p id='PolBar' class="Bar">Terms of Service</p></li>
                 </ul>
             </div>
 
@@ -87,8 +74,15 @@
             </div>
 
             <div id="Pol" class="column">
-                <h1>Account Policy</h1>
-                <p>Find an outline of our account policy here; for more information, check out the <a href="https://docs.google.com/document/d/1ZxErZV-D1Otk0L4UbP3RZqUuR6ptSj8i3NNNmVxu9LU/edit?usp=sharing" target="_blank">Adventurer's Agreement</a>.<br />You agree to this policy, and the Adventurer's Agreement, when you create an account.</p>
+                <h1>Terms of Service</h1>
+                <div>
+                  <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
+                </div>
+                <p>
+                  The Terms of Service of the Many Isles website are outlined in this <a href="/docs/44/Terms_of_Service" target="_blank">article</a>.<br>
+                  This site is protected by reCAPTCHA and the Google <a href=%double_quote%https://policies.google.com/privacy%double_quote%>Privacy Policy</a> and <a href=%double_quote%https://policies.google.com/terms%double_quote%>Terms of Service</a> apply.
+                </p>
+                <!-- <p>Find an outline of our account policy here; for more information, check out the <a href="https://docs.google.com/document/d/1ZxErZV-D1Otk0L4UbP3RZqUuR6ptSj8i3NNNmVxu9LU/edit?usp=sharing" target="_blank">Adventurer's Agreement</a>.<br />You agree to this policy, and the Adventurer's Agreement, when you create an account.</p>
                 <p style="text-align:left">
                     <br>
                     &sect;0 Definitions<br>
@@ -114,7 +108,7 @@
                     The Many Isles takes care not to spread your data. We do not have ads, so no browser or personal information is sent to unknown buyers. All data collected in Many Isles databases never come in the hands of outside services except for Stripe payouts.<br>
                     <br>
                     <br>
-                </p>
+                </p> -->
 
             </div>
         </div>
@@ -132,20 +126,7 @@
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/Code/CSS/global.js"></script>
-<script src="/account/portal/acp-builder.js"></script>
 <script>
-    returnFin = function (resultObject) {
-      location.reload(); //also support seeker cookie
-    }
-    returnFcreate = function (resultObject) {
-      document.getElementById("signCreateBigCont").replaceChildren(this.giveHTMLel("successCreateHTML"));
-       //also support wanttoPublish
-    }
-    acpBuilder1 = new acp_builder(returnFin);
-    acpBuilder1.createPortal(document.getElementById("signFormCont"), "signInBasic");
-    acpBuilder2 = new acp_builder(returnFcreate);
-    acpBuilder2.createPortal(document.getElementById("signCreateFormCont"), "signCreateBasic");
-
     responsive("g/acc-m.css", "smol");
 
     function pop(x) {
@@ -207,14 +188,30 @@
     }
     else if (error == "wannaPublish") {
         document.getElementById("SignUp-title").innerHTML = "Make an Account to start Publishing!";
-        document.getElementById("wanttoPublish").value = "1";
     }
     else if (error == "deleted") {
       createPopup("d:acc;txt:Account deleted.");
     }
 
-    if (add != null) {
-      seekMaker(add);
-    }
 
+    /*acp*/
+    returnFin = function (resultObject) {
+      location.reload();
+    }
+    returnFcreate = function (resultObject) {
+      var urlParams = new URLSearchParams(window.location.search);
+      var error = urlParams.get('error');
+      if (error == "wannaPublish"){
+        document.getElementById("signCreateBigCont").replaceChildren(this.giveHTMLel("successCreateWanttopublishHTML"));
+      }
+      else {
+        document.getElementById("signCreateBigCont").replaceChildren(this.giveHTMLel("successCreateHTML"));
+      }
+    }
+    function acp_launcher() {
+      acpBuilder1 = new acp_builder(returnFin);
+      acpBuilder1.createPortal(document.getElementById("signFormCont"), "signInBasic");
+      acpBuilder2 = new acp_builder(returnFcreate);
+      acpBuilder2.createPortal(document.getElementById("signCreateFormCont"), "signCreateBasic");
+    };
   </script>

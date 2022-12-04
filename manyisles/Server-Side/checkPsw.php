@@ -9,7 +9,7 @@ if (!$user->check(true, true)){
     header("Location: ".$redirect);exit();
   }
   else {
-    header("Location: /account/Account?error=notSignedIn");exit();
+    header("Location: /account/home?error=notSignedIn");exit();
   }
 }
 

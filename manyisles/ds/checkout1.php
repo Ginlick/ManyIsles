@@ -2,6 +2,7 @@
 
 require_once("g/dsEngine.php");
 $ds = new dsEngine;
+$ds->killCache();
 $basketed = $ds->basketed;
 $basketed->possibleCountries();
 if ($basketed->pureDigit) {
@@ -42,7 +43,7 @@ else if (!isset($basketed->deliverableCountries[$ds->address["country"]])) {
   <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl = "true"></div>
         <div class="flex-container">
             <div class='left-col'>
-                <a href="home.php"><h1 class="menutitle">Digital Store</h1></a>
+                <a href="store"><h1 class="menutitle">Digital Store</h1></a>
                 <ul class="myMenu">
                     <li><p class="Bar" style="color:black">Checking out</p></li>
                 </ul>
@@ -190,7 +191,7 @@ if (why =="delItem"){
 
     function checkCookie() {
         if (document.cookie.indexOf('loggedIn') == -1) {
-            window.location.href = "checkout.html";
+            window.location.href = "checkout";
         }
     }
     checkCookie();

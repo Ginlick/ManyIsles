@@ -101,7 +101,7 @@ if (isset($_COOKIE["loggedIn"])) {
                         echo ' <div class="bottButtCon"><a href="edit.php?new=1"><button class="wikiButton" >Create Wiki</button></a></div>';
                     }
                     else if (!isset($_COOKIE["loggedIn"])) {
-                        echo '<div class="bottButtCon"><a href="/account/Account?display=Log"><button class="wikiButton" >Sign In</button></a></div>"';
+                        echo '<div class="bottButtCon"><a href="/account/home?error=SignIn"><button class="wikiButton" >Sign In</button></a></div>"';
                     }
                     else {
                         echo "<p>Currently, your slots are full.</p>";
@@ -120,7 +120,7 @@ if (isset($_COOKIE["loggedIn"])) {
 
             <h1>Fandom</h1>
             <p>
-                The Many Isles Fandom Wiki is an awesome platform where you can create extensive wikis about your setting, for free.  <?php if (!isset($_COOKIE["loggedIn"])) {echo ' <a href="/account/Account">Create an account</a> to get started! '; } ?><br />
+                The Many Isles Fandom Wiki is an awesome platform where you can create extensive wikis about your setting, for free.  <?php if (!isset($_COOKIE["loggedIn"])) {echo ' <a href="/account/home">Create an account</a> to get started! '; } ?><br />
                 You can find the documentation <a href="/docs/20/Fandom">here</a>.
             </p>
 
