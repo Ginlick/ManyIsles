@@ -32,7 +32,7 @@ class modMailer {
             </p>
           </div>
           <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
-            <img src="https://manyisles.ch/s/branding/website.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+            <img src="https://manyisles.ch/Imgs/branding/s/website.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
             <a href="https://manyisles.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">manyisles.ch</a>
           </div>
         </div>
@@ -49,7 +49,7 @@ MYGREATMAIL;
       $body = $this->baseMail;
 
       if (!isset($this->domArr[$domain])){$domain = "website";}
-      $body = str_replace("https://manyisles.ch/s/branding/pantheon.png", $this->domArr[$domain]["img"], $body);
+      $body = str_replace("https://manyisles.ch/Imgs/branding/s/website.png", $this->domArr[$domain]["img"], $body);
 
       if ($txtSubj) {$body = str_replace("Subject", $txtSubj, $body);}
       else {$body = str_replace("Subject", $subject, $body);}
