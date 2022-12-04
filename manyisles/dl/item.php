@@ -245,7 +245,8 @@ $dl->dlconn->query($query);
                     }
                     ?>
                     <div class="overtail">
-                      <?php echo $checkoutPair;
+                      <?php
+                      echo $checkoutPair;
                       if ($isPartner) {
                         echo '
                         <a href="/account/Product?id='.$artId.'" >

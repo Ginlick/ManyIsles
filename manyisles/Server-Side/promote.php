@@ -411,7 +411,7 @@ if (!class_exists("adventurer")){
         }
         $message = str_replace("%%UNAME%%", $this->uname, $message);
         $message =  str_replace("massiveTreeofLife", urlencode($conCode), $message);
-        $message = str_replace("https://media.manyisles.ch", "https://".$this->giveServerInfo("servername_media"), $message);
+        $message = str_replace("https://media.manyisles.ch", $this->giveServerInfo("servername_media"), $message);
         $message = str_replace("manyisles.ch", $this->giveServerInfo("servername"), $message); //this can do bugs: should have better regex, not just all "manyisles.ch"
 
         $mailer = $this->addMailer();

@@ -414,12 +414,8 @@ class dlengine {
         }
       }
       if ($direct AND preg_match("/^\/.*$/", $file)){
-        if ($_SERVER['DOCUMENT_ROOT'] == "/var/www/vhosts/manyisles.firestorm.swiss/manyisles.ch") {
-          $file = "https://media.manyisles.ch".$file;
-        }
-        else {
-          $file = "http://25.36.111.17:8080".$file;
-        }
+        $mediaServer = $this->user->giveServerInfo("servername_media");
+        $file = $mediaServer.$file;
       }
       return $file;
     }
