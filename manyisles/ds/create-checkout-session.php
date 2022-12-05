@@ -18,7 +18,8 @@ $basketed = $ds->basketed;
 $totalShipping = $ds->shipping();
 
 $totalPrice = $ds->totalPrice($basketed, $totalShipping);
-$totalPrice = $totalPrice + $ds->calcStripeTax($totalPrice);
+$stripeTax = $ds->calcStripeTax($totalPrice);
+$totalPrice = $totalPrice + $stripeTax;
 
 if (!$basketed->pureDigit){
   if (count($basketed->deliverableCountries) == 0) {$ds->go("checkout1");}
@@ -88,7 +89,10 @@ if ($basketed->type == "items"){
   }
   require("g/killCodes.php");
 
-  $query = sprintf('INSERT INTO dsclearing (buyer, total, purchase, address, country, codes) VALUES (%s, %s, "%s", "%s", "%s", "%s")', $id, $totalPrice, implode(",", $basketed->inbasket), $address, $country, $codeList);
+  $paidInfo = ["method" => "Stripe", "extraFee" => $stripeTax, "codeReduction" => $basketed->fullDCodeReduction];
+  $paidInfo = json_encode($paidInfo);
+
+  $query = sprintf('INSERT INTO dsclearing (buyer, total, purchase, address, country, codes, paidInfo) VALUES (%s, %s, "%s", "%s", "%s", "%s", \'%s\')', $id, $totalPrice, implode(",", $basketed->inbasket), $address, $country, $codeList, $paidInfo);
   if ($conn->query($query)) {
       $clid = $conn->insert_id;
   }
@@ -124,6 +128,7 @@ print_r($testArray);*/
 require_once('stripe-php-7.75.0/init.php');
 header('Content-Type: application/json');
 $stripe_sk = $ds->give_stripe_sk();
+$YOUR_DOMAIN = "https://".$ds->giveServerInfo("servername");
 
 $metaInfo = ["clid"=>$clid, "type"=>$basketed->type];
 

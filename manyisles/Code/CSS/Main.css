@@ -99,17 +99,19 @@ input, textarea, select {
   width: 100%;
   text-align: left;
 }
+
+.infoText, .inputErr {
+  font-size: var(--all-fonts-med);
+  margin:0;
+  color: var(--col-dgrey);
+}
 .inputErr {
   color: red;
   display:none;
   text-align:left;
   padding-left:10px;
 }
-.infoText, .inputErr {
-  font-size: var(--all-fonts-tiny);
-  margin:0;
-  color: var(--col-dgrey);
-}
+
 
 a, .fakelink {
     text-decoration: none;

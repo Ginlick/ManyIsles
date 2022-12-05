@@ -142,8 +142,7 @@ $ordExplicitStatus = ordStatus($ordNStatus, 1);
                 ?>
                 </p>
                 <?php
-                  $address = $ds->fetchAddress($ordBuyer);
-                  echo $ds->makeAddressList($address, true);
+                  echo $ds->makeAddressList($ordAddress, true);
 
                  ?>
 

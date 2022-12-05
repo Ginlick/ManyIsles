@@ -31,7 +31,7 @@ class modMailer {
                 Bodytext
             </p>
           </div>
-          <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
+          <div style="border-top: 3px solid #61b3dd;text-align:center;margin:200px 0">
             <img src="https://manyisles.ch/Imgs/branding/s/website.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
             <a href="https://manyisles.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">manyisles.ch</a>
           </div>
@@ -47,7 +47,7 @@ MYGREATMAIL;
 
     function send($to, $subject, $message, $domain = "website", $txtSubj = false){
       $body = $this->baseMail;
-
+      
       if (!isset($this->domArr[$domain])){$domain = "website";}
       $body = str_replace("https://manyisles.ch/Imgs/branding/s/website.png", $this->domArr[$domain]["img"], $body);
 

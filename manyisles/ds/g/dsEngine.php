@@ -335,12 +335,8 @@ class dsEngine {
     if ($addressArray == ""){
       $addressArray = $this->fetchAddress();
     }
-    else if (gettype($addressArray)=="string") {
-      $addressArray = explode(";", $ordAddress);
-    }
-    if (gettype($addressArray)!="array" AND count($addressArray)==0){
-      return "";
-    }
+    $addressArray = $this->parseAddressList($addressArray);
+
 
     $return = '
     <ul class="address">';
@@ -348,16 +344,25 @@ class dsEngine {
       $return .= '<li class="pHeader">Address</li>';
     }
     foreach ($addressArray as $key => $line){
-      if ($key == "exists"){continue;}
-      if ($key == "country"){
-        $return .= "<li>".$this->countries["GLO"][$line]." (".$line.")</li>";
-      }
-      else {
-          $return .= "<li>".$line."</li>";
-      }
+      $return .= "<li>".$line."</li>";
     }
     $return .= "</ul>";
     return $return;
+  }
+  function parseAddressList($addressArray){
+    if (gettype($addressArray)=="string") {
+      $addressArray = explode(";", $addressArray);
+    }
+    $resultArray = [];
+    foreach ($addressArray as $key => $line){
+      if (isset($this->countries["GLO"][$line])){
+        $resultArray["country"] = $this->countries["GLO"][$line]." (".$line.")";
+      }
+      else {
+        $resultArray[$key] = $line;
+      }
+    }
+    return $resultArray;
   }
 
   //stock-related functionality

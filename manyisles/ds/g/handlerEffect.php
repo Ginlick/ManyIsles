@@ -1,14 +1,13 @@
 ﻿<?php
 
 // requires $clid, $mycode
-
-
-
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/transactions.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/account/prem/partAmount.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/Server-Side/modMailer.php');
 $ds = new dsEngine;
 $conn = $ds->conn; $moneyconn = $ds->moneyconn;
+$mailer = new modMailer;
 
 if (!isset($mycode) OR $mycode != $ds->give_actcode()){echo "invalid certification";exit();}
 
@@ -21,6 +20,7 @@ if ($result = $conn->query($query)) {
         $country = $row["country"];
         $codeList = $row["codes"];
         $dsclearingTotal = $row["total"];
+        $paidInfo = json_decode($row["paidInfo"], true);
     }
 }
 if (!isset($customer)) {echo "invalid clid";exit;}
@@ -33,78 +33,120 @@ $purchase = explode(",", $purchase);
 $basketed = new loopBasket;
 $basketed->loopBasket($conn, $purchase, false, false, true, "items", true);
 
-$partnerMail = <<<MASSMAIL
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-    <img src="http://manyisles.ch/Imgs/PopTrade.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;" />
-    <h1 style="text-align:center;font-size:calc(12px + 3vw);color:#911414;">New Order #22222</h1>
-    <p style="text-align: center;font-size: calc(8px + 0.9vw);color: black;padding:10px;">
-        Someone just placed an order. You can handle it from your <a href="https://manyisles.ch/ds/p/hub.php">digital store hub</a>.
-    </p>
-</body>
-</html>
+$partnerMsg = 'Someone just placed an order. You can handle it from your <a href="https://manyisles.ch/ds/p/hub">digital store hub</a>.';
 
-MASSMAIL;
 $bigMail = <<<'BIGMAIL'
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8" />
-<title></title>
-</head>
-<body>
-
-<div style="width: 100%;background-color: #d1a720;margin:0;min-height:100vh;padding:2vw;box-sizing: border-box;">
-    <img src="https://manyisles.ch/Imgs/FaviconDS.png" style="width:10%;padding:1vw 1vw 0 1vw" />
-    <h2 style="color:white;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;display:inline-block;font-size:8vw; margin:0;transform: translate(0, -22%);">Many Isles</h2>
-    <div style="background-color:white;padding:1vw;border-radius:22px;min-height:1000px;">
-        <h1 style="text-align:center;font-size:calc(12px + 3vw);color:black;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;margin-bottom:0;">Order Cleared</h1>
-        <p style="text-align:center;font-size:calc(8px + 0.8vw);color:black;margin-top:20px;margin-bottom:5px;margin-right:5%;margin-left:5%;">
-            Order id: #COOLCLID<br />
-        </p>
-        <p style="text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;margin-right:5%;margin-left:5%;">
-            COOLINFOTEXT<br />
-        </p>
-
-        PRODLINESTUDD
-
-        <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-        <p style="text-align:center;font-size:calc(8px + 1.5vw);color:black;margin-top:15px;margin-bottom:15px;">
-            Total: COOLAMOUNT
-        </p>
-        <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-        <p style="text-align:center;font-size:calc(8px + 0.9vw);color:black;margin-top:5px;margin-bottom:5px;">
-            INFOABOUTCODESIf you have any questions or problems, please contact us.<br /><br />
-        </p>
-
-
-    </div>
+<p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+    Thank you for shopping with the Many Isles digital store. Payment for your order (id #%%CLID) was received and your order has been placed.<br>
+    %%COOLINFOTEXT You can view your <a href="https://manyisles.ch/account/home?display=orders" style="color:#61b3dd">order status online</a>.
+</p>
 </div>
-
-</body>
-</html>
-
+<!-- payment info -->
+<div style="border-top: 3px solid #61b3dd;margin-top:50px">
+<div style="width: 85%; margin:auto;">
+  <h2 style="font-size: 25px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;">Payment Information</h2>
+  <p style="padding:10px 10px 0;margin-bottom:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%PAYMENTADDRESS
+  </p>
+  <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+    <b>Payment Method:</b><br>
+    %%PAYMENTMETHOD
+  </p>
+</div>
+</div>
+<!-- order list -->
+<div style="border-top: 3px solid #61b3dd;margin-top:50px">
+<div style="width: 85%; margin:auto;">
+  <h2 style="font-size: 25px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;">Order Details</h2>
+  <table style="margin:20px 0;padding:10px;width:100%;border-collapse:collapse;">
+    <thead>
+      <tr style="background-color:#ddd;">
+        <td style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">Details</td>
+        <td style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">Price</td>
+        <td style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">Shipping</td>
+        <td style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">Total</td>
+      </tr>
+    </thead>
+    <tbody style="vertical-align:top;border-left: 1px dotted #ddd;">
+      %%FULLLINEHERE
+      <tr style="background-color:#ddd">
+        <td style="padding:10px;">
+          <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+            <b>TOTAL</b>
+          </p>
+        </td>
+        <td></td>
+        <td></td>
+        <td style="padding:10px;">
+          <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+            %%FULLPRICE
+          </p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<!-- order list -->
+<div style="border-top: 3px solid #61b3dd;margin-top:50px">
+<div style="width: 85%; margin:auto;">
+  <h2 style="font-size: 25px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;">Enjoy your products!</h2>
+  <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      Thank you for shopping with us,<br><br>
+      Many Isles Publishing Service
+  </p>
+</div>
 BIGMAIL;
 
 $itemLine = <<<STUDD
-
-        <img src="http://manyisles.ch/Imgs/Bar2.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;padding:16px;box-sizing:border-box;" />
-        <div style="width:15%;margin:2.5%;float:left;display:block;position:relative">
-            <img src="COOLIMAGE" alt="Hello There!" style="width:100%;display:block;border-radius:15px;" />
-        </div>
-        <h2 style="width:80%;float:left;position:relative;text-align:left;font-size:calc(8px + 2.5vw);color:black;margin-bottom:0px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">COOLTITLE</h2>
-        <p style="width:80%;float:left;position:relative;text-align:left;font-size:calc(8px + 1.5vw);color:black;margin-top:5px;margin-bottom:5px;">
-            COOLPRICE
-        </p>
-        <p style="width:80%;float:left;position:relative;text-align:left;font-size:calc(8px + 1.3vw);color:grey;margin-bottom:5px;">
-            COOLADDINFO
-        </p>
-
+<tr style="padding-bottom:10px;border-bottom:1px dotted #ddd">
+  <td style="border-right: 1px dotted #ddd;padding:10px;display:flex;flex-direction:row">
+    <img src="%%COOLIMAGE" alt="Hello There!" style="height:120px;width:120px;object-fit:cover;display:block;border-radius:15px;" />
+    <p style="margin:0;padding-left:20px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+        <b>%%COOLTITLE</b><br>
+        %%COOLADDINFO
+    </p>
+  </td>
+  <td style="border-right: 1px dotted #ddd;padding:10px;">
+    <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%COOLPRICE
+    </p>
+  </td>
+  <td style="border-right: 1px dotted #ddd;padding:10px;">
+    <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%COOLSHIPPING
+    </p>
+  </td>
+  <td style="border-right: 1px dotted #ddd;padding:10px;">
+    <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%COOLTOTAL
+    </p>
+  </td>
+</tr>
+STUDD;
+$pseudoItemLine = <<<STUDD
+<tr style="padding-bottom:10px;border-bottom:1px dotted #ddd">
+  <td style="padding-left:140px;border-right: 1px dotted #ddd;padding:10px;">
+    <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%COOLTEXT
+    </p>
+  </td>
+  <td style="border-right: 1px dotted #ddd;padding:10px;">
+    <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%COOLPRICE
+    </p>
+  </td>
+  <td style="border-right: 1px dotted #ddd;padding:10px;">
+    <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%COOLSHIPPING
+    </p>
+  </td>
+  <td style="border-right: 1px dotted #ddd;padding:10px;">
+    <p style="margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+      %%COOLTOTAL
+    </p>
+  </td>
+</tr>
 STUDD;
 
 $fullLine = "";
@@ -112,7 +154,6 @@ $sellerPayment = array("Royalty" => array("paid"=>0, "shipping"=>0, "amount"=>0,
 $ordersArray = array();
 
 $sellerPaymentRoyalty = $sellerPayment["Royalty"];
-
 
 foreach ($basketed->itemArray as $item) {
   $row = $item["row"];
@@ -145,22 +186,30 @@ foreach ($basketed->itemArray as $item) {
   $shippingCost = $ds->itemShipping($item, $country);
   $sellerPaymentInfo["shipping"] += $shippingCost;
 
-  $sellerPaymentInfo["amount"] += $ordiprice + $shippingCost;
+  $totalCost = $ordiprice + $shippingCost;
+  $sellerPaymentInfo["amount"] += $totalCost;
   $sellerPayment[$sellerId] = $sellerPaymentInfo;
 
-  //generate email line
-  $currentLine = str_replace("COOLPRICE", $ds->makeHuman($ordiprice), $itemLine);
-  $currentLine = str_replace("COOLTITLE", $prodname, $currentLine);
-  $currentLine = str_replace("COOLIMAGE", $ds->clearImgUrl($prodimg), $currentLine);
+  //generate tr for this entry
+  $currentLine = str_replace("%%COOLPRICE", $ds->makeHuman($ordiprice), $itemLine);
+  $currentLine = str_replace("%%COOLTOTAL", $ds->makeHuman($totalCost), $currentLine);
+  $currentLine = str_replace("%%COOLTITLE", $prodname, $currentLine);
+  $currentLine = str_replace("%%COOLIMAGE", $ds->clearImgUrl($prodimg), $currentLine);
   $coolAddInfo = "";
-  $coolAddInfo = $coolAddInfo."Seller: ".$row["seller"]." (p#".$row['sellerId'].")"."<br>";
-  if ($row["digital"] == 0) {$coolAddInfo = $coolAddInfo."Shipping: ".$ds->makeHuman($shippingCost)."<br>";}
+  if ($row["digital"] != 0) {
+    $coolAddInfo .= "<i>Digital Product</i><br>";
+    $currentLine = str_replace("%%COOLSHIPPING", "-", $currentLine);
+  }
+  else {
+    $currentLine = str_replace("%%COOLSHIPPING", $ds->makeHuman($shippingCost), $currentLine);
+  }
+  $coolAddInfo .= "Seller: ".$row["seller"]." (p#".$row['sellerId'].")"."<br>";
   foreach ($item["prodSpecs"] as $addInfo){
       $coolAddInfo .= ucfirst($addInfo)."<br>";
   }
-  $currentLine = str_replace("COOLADDINFO", $coolAddInfo, $currentLine);
+  $currentLine = str_replace("%%COOLADDINFO", $coolAddInfo, $currentLine);
 
-  $fullLine = $fullLine.$currentLine;
+  $fullLine .= $currentLine;
 
   //specials
   if ($prodId == 1){
@@ -198,28 +247,54 @@ foreach ($basketed->itemArray as $item) {
 $sellerPayment["Royalty"] = $sellerPaymentRoyalty;
 
 if ($basketed->pureDigit == false) {
-    $bigMail = str_replace("COOLINFOTEXT", "Your payment has been received and we will shortly send your items by postal service. This mail is your receipt.", $bigMail);
+  $bigMail = str_replace("%%COOLINFOTEXT", "We will shortly send your items by postal service.", $bigMail);
+
+  $text = <<<MACAE
+    <b>Payment Address:</b></p><ul style="list-style-type: none;margin:0;padding:0;">
+  MACAE;
+  $address = $ds->parseAddressList($address);
+  foreach ($address as $line){
+    $text .= "<li style=\"margin:0;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;\">".$line."</li>";
+  }
+  $text .= "</ul>";
+  $bigMail = str_replace("%%PAYMENTADDRESS", $text, $bigMail);
 }
 else {
-    $bigMail = str_replace("COOLINFOTEXT", "Your payment has been received and the changes effectuated. This mail is your receipt.", $bigMail);
+  $bigMail = str_replace("%%COOLINFOTEXT", "All purchased changes were effectuated.", $bigMail);
+  $bigMail = str_replace("%%PAYMENTADDRESS", "", $bigMail);
 }
-$bigMail = str_replace("PRODLINESTUDD", $fullLine, $bigMail);
-$bigMail = str_replace("COOLCLID", $clid, $bigMail);
-$bigMail = str_replace("COOLAMOUNT", $ds->makeHuman($dsclearingTotal), $bigMail);
-if ($codeList != ""){
-    $bigMail = str_replace("INFOABOUTCODES", "Codes used: ".$codeList."<br>", $bigMail);
-}
-else {
-    $bigMail = str_replace("INFOABOUTCODES", "", $bigMail);
-}
-//echo $bigMail;
 
-$headers = "From: pantheon@manyisles.ch" . "\r\n";
-$headers .= "MIME-Version: 1.0" . "\r\n";
-$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+if (isset($paidInfo["extraFee"]) AND $paidInfo["extraFee"] > 0){
+  $extraLine = str_replace("%%COOLTEXT", "Transfer Fee (".$paidInfo["method"].")", $pseudoItemLine);
+  $extraLine = str_replace("%%COOLPRICE", $ds->makeHuman($paidInfo["extraFee"]), $extraLine);
+  $extraLine = str_replace("%%COOLSHIPPING", "-", $extraLine);
+  $extraLine = str_replace("%%COOLTOTAL", $ds->makeHuman($paidInfo["extraFee"]), $extraLine);
+  $fullLine .= $extraLine;
+}
+if (isset($paidInfo["codeReduction"]) AND $paidInfo["codeReduction"] > 0){
+  $text = "Codes";
+  if ($codeList != ""){
+      $text .=  " (".$codeList.")";
+  }
+  $extraLine = str_replace("%%COOLTEXT", $text, $pseudoItemLine);
+  $extraLine = str_replace("%%COOLPRICE", $ds->makeHuman($paidInfo["codeReduction"]), $extraLine);
+  $extraLine = str_replace("%%COOLSHIPPING", "-", $extraLine);
+  $extraLine = str_replace("%%COOLTOTAL", $ds->makeHuman($paidInfo["codeReduction"]), $extraLine);
+  $fullLine .= $extraLine;
+}
 
-mail ("pantheon@manyisles.ch", "Order #$clid Cleared", $bigMail, $headers);
-mail ($custProm->email, "Order #$clid Cleared", $bigMail, $headers);
+$bigMail = str_replace("%%FULLLINEHERE", $fullLine, $bigMail);
+$bigMail = str_replace("%%CLID", $clid, $bigMail);
+$bigMail = str_replace("%%FULLPRICE", $ds->makeHuman($dsclearingTotal), $bigMail);
+
+$paymentInfo = "Undefined";
+if (isset($paidInfo["method"])){$paymentInfo = $paidInfo["method"];}
+$bigMail = str_replace("%%PAYMENTMETHOD", $paymentInfo, $bigMail);
+
+$txtSubject = "Order #$clid Placed";
+$subject = "Your Many Isles digital store order #$clid confirmation";
+$mailer->send("publishing@manyisles.ch", $txtSubject, $bigMail, "publishing", $txtSubject);
+$mailer->send($custProm->email, $subject, $bigMail, "publishing", $txtSubject);
 
 //pay partners
 print_r($sellerPayment);
@@ -237,35 +312,32 @@ foreach ($sellerPayment as $partner => $partnerArray) {
         if ($partnerArray["digital"]==0){$ordStatus = 0;} else {$ordStatus = 2;}
         $orderItems = implode(", ", $partnerArray["items"]);
         $query = sprintf('INSERT INTO dsorders (orderId, buyer, seller, paid, shipping, items, address, amount, status, codes) VALUES ("%s", %s, %s, %s, %s, "%s", "%s", %s, %s, "%s")', $clid, $customer, $partner, $paid, $shippingPaid, $orderItems, $address, $partnerArray["amount"], $ordStatus, $codeList);
-        echo $query;
         if ($conn->query($query)){
-            //pay partners
-            $query = "SELECT user FROM partners WHERE id = $partner";
-            if ($result = $conn->query($query)) {
-                while ($row = $result->fetch_assoc()){
-                    $partnerAccId = $row["user"];
-                }
-            }
-            $query = 'SELECT email FROM accountsTable WHERE id = "'.$partnerAccId.'"';
-            if ($result = $conn->query($query)) {
-                while ($row = $result->fetch_assoc()){
-                    $partnerAccEmail = $row["email"];
-                }
-            }
-            if (isset($partnerAccId)){
-                $pTran = new transaction($moneyconn, $partnerAccId);
-                $pTran->new($paid, $custProm->fullName, "Payment of Order #$clid");
-                $pTran->new($shippingPaid, $custProm->fullName, "Shipping costs for Order #$clid");
-            }
-            //inform partners
-            if ($partnerArray["digital"]==0){
-                $partnerMail = str_replace("22222", $clid, $partnerMail);
-                $headers = "From: pantheon@manyisles.ch" . "\r\n";
-                $headers .= "MIME-Version: 1.0" . "\r\n";
-                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-                mail ($partnerAccEmail, "New Order #$clid", $partnerMail, $headers);
-            }
+          $ud = mysqli_insert_id($conn);
+          $fullClid = $clid."-".$ud;
+          //pay partners
+          $query = "SELECT user FROM partners WHERE id = $partner";
+          if ($result = $conn->query($query)) {
+              while ($row = $result->fetch_assoc()){
+                  $partnerAccId = $row["user"];
+              }
+          }
+          $query = 'SELECT email FROM accountsTable WHERE id = "'.$partnerAccId.'"';
+          if ($result = $conn->query($query)) {
+              while ($row = $result->fetch_assoc()){
+                  $partnerAccEmail = $row["email"];
+              }
+          }
+          if (isset($partnerAccId)){
+              $pTran = new transaction($moneyconn, $partnerAccId);
+              $pTran->new($paid, $custProm->fullName, "Payment of Order #$fullClid");
+              $pTran->new($shippingPaid, $custProm->fullName, "Shipping costs for Order #$fullClid");
+          }
+          //inform partners
+          if ($partnerArray["digital"]==0){
+            $partnerSubject = "New Order #".$fullClid;
+            $mailer->send($partnerAccEmail, $partnerSubject, $partnerMsg, "publishing");
+          }
         }
     }
 }

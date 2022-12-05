@@ -570,7 +570,7 @@ if ($ordersExist){
         <div class="modContent smol">
             <h1>Change Email</h1>
             <p>
-                Your current email is <span style="color:red"><?php echo $user->email; ?></span><br /><br />
+                Your current email is <span style="color:var(--gen-color-link)"><?php echo $user->email; ?></span><br /><br />
                 All information we send you will go to your new email. Please be aware that if you enter a wrong address, you will not get anything from us, be it free goodies or important updates.
             </p>
             <form style="padding:0 10% 0 10%" action="ChangeMail.php" autocomplete="off" method="POST">
@@ -689,18 +689,14 @@ if ($ordersExist){
         $("#patSucc").show();
     }
     else if (show == "emailWrongPassword") {
-        pop("email");
-        document.getElementById('emailWrongPsw').style.display = 'block';
-        document.getElementById('emailWrongPsw').innerHTML = 'Incorrect Password.';
+      createPopup("d:acc;txt:There was an error.");
     }
     else if (show == "emailAccomplished") {
         pop("email");
         document.getElementById('emailAccomplished').style.display = 'block';
     }
     else if (show == "emailChangConf") {
-        pop("email");
-        document.getElementById('emailAccomplished').style.display = 'block';
-        document.getElementById('emailAccomplished').innerHTML = 'New email confirmed!';
+      createPopup("d:acc;txt:Email successfully confirmed.");
     }
     else if (show == "emailDoubleMail") {
         pop("email");

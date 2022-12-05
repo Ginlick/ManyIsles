@@ -18,6 +18,7 @@ $basketed = $ds->basketed;
 $totalShipping = $ds->shipping();
 
 $totalPrice = $ds->totalPrice($basketed, $totalShipping);
+$codeReduction = $ds->basketed->fullDCodeReduction;
 
 if (!$basketed->pureDigit){
   if (count($basketed->deliverableCountries) == 0) {$ds->go("checkout1");}
@@ -42,7 +43,10 @@ if ($basketed->type == "items"){
   }
   require("g/killCodes.php");
 
-  $query = sprintf('INSERT INTO dsclearing (buyer, total, purchase, address, country, codes) VALUES (%s, %s, "%s", "%s", "%s", "%s")', $id, $totalPrice, implode(",", $basketed->inbasket), $address, $country, $codeList);
+  $paidInfo = ["method" => "Many Isles credit", "extraFee" => 0, "codeReduction" => $codeReduction];
+  $paidInfo = json_encode($paidInfo);
+
+  $query = sprintf('INSERT INTO dsclearing (buyer, total, purchase, address, country, codes, paidInfo) VALUES (%s, %s, "%s", "%s", "%s", "%s", \'%s\')', $id, $totalPrice, implode(",", $basketed->inbasket), $address, $country, $codeList, $paidInfo);
   if ($conn->query($query)) {
       $clid = $conn->insert_id;
   }
@@ -56,7 +60,6 @@ if ($basketed->type == "items"){
   }
 
   $mycode = $ds->give_actcode();
-  $customer_email = $ds->user->email;
   require_once("g/handlerEffect.php");
 }
 else if ($basketed->type == "subs") {

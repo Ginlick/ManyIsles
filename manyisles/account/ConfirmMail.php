@@ -28,11 +28,6 @@ if ($correct){
 
 $conn->close();
 
-if (isset($_COOKIE["loggedIn"])) {$return = "/account/home"; } else {$return = "/home"; }
-if (isset($_COOKIE["seeker"])){
-  $return = $_COOKIE["seeker"];
-  setcookie("seeker", "", time() - 2200, "");
-}
 ?>
 
 
@@ -67,7 +62,7 @@ else {
 
 ?>
 
-<div><a class="popupButton" style="width:15%;margin-top:20px;" href="<?php echo $return; ?>">OK</a></div>
+<div><a class="popupButton" style="width:15%;margin-top:20px;" href="/account/home">OK</a></div>
 </body>
 </html>
 <script src="/Code/CSS/global.js"></script>

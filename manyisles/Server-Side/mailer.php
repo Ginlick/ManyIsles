@@ -31,16 +31,16 @@ if (!class_exists("mailer")){
       $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
       //People
-      if ($senderInfo == []){ //sender
-        $senderInfo = $this->baseInfo["default_info"];
-      }
-      else if (gettype($senderInfo) == "string"){
-        if (isset($this->baseInfo["more_info"][$senderInfo])){
-          $senderInfo = $this->baseInfo["more_info"][$senderInfo];
+      if (gettype($senderInfo) == "string"){
+        if (isset($this->baseInfo["other_info"][$senderInfo])){
+          $senderInfo = $this->baseInfo["other_info"][$senderInfo];
         }
         else {
           $senderInfo = $this->baseInfo["default_info"];
         }
+      }
+      else if ($senderInfo == []){ //sender
+        $senderInfo = $this->baseInfo["default_info"];
       }
       $mail->setFrom($senderInfo["address"], $senderInfo["user"]);
       foreach ($recipientInfo as $recipient){ //recipients

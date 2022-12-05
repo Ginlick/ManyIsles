@@ -8,14 +8,13 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/dsEngine.php');
 $ds = new dsEngine;
 $stripe_sk = $ds->give_stripe_sk();
 $stripe_whsec = $ds->give_stripe_whsec();
+$ds_actcode = $ds->give_actcode();
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/ds/subs/subHandler.php');
 
 function print_log($val) {
   return file_put_contents('php://stderr', print_r($val, TRUE));
 }
-
-
 
 \Stripe\Stripe::setApiKey($stripe_sk);
 $endpoint_secret = $stripe_whsec;
@@ -41,7 +40,6 @@ switch ($event->type) {
     case 'checkout.session.completed':
         $session = $event->data->object;
         $clid = $session->metadata["clid"];
-
         $type = $session->metadata["type"];
         if ($type=="items"){
           require_once($_SERVER['DOCUMENT_ROOT'].'/ds/g/handlerEffect.php');
