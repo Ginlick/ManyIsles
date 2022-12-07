@@ -1,0 +1,41 @@
+:root {
+  --e-lightshade: #e9f2f9;
+  --e-separator: #5b6064;
+}
+.cont-cont {
+  min-height: calc(100vh - var(--struc-navheight));
+}
+.eContCol {
+  display: flex;
+}
+.column-left {
+  width: min(400px, 30%);
+
+}
+.column-main {
+  margin: 10px;
+  padding: 10px;
+  flex-grow: 1;
+}
+
+/*left*/
+.inColumnLeft {
+  background-color: var(--e-lightshade);
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+}
+.column-left .eventButton {
+
+}
+/*utils*/
+.clear-separator {
+  height: 1px; width: 100%;
+  background-color: var(--e-separator);
+}
+.eventButton {
+  border-radius: 120px;
+  margin: 10px;
+  padding: 10px 15px;
+  display: block;
+}

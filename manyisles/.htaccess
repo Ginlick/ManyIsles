@@ -20,6 +20,8 @@ RewriteRule  ^blog/post/(.+)/.*   blog/posted.php?p=$1 [NC,L]
 RewriteRule  ^dic/([0-9]+)$ dic/dic.php?dicd=$1 [L]
 RewriteRule  ^dic/word/([0-9]+).*$ dic/word.php?dicw=$1 [L]
 
+RewriteRule ^events/$ events/home.php [L]
+
 RewriteRule  ^([^/]*)/([0-9]+)/.*   $1/page.php?id=$2&%{QUERY_STRING} [NC,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
