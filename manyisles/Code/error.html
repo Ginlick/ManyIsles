@@ -5,40 +5,24 @@
     <link rel="icon" href="/Imgs/Favicon.png">
     <title>Oops</title>
     <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
-    <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
-    <link rel="stylesheet" type="text/css" href="/account/g/GGMdl.css">
     <style>
     </style>
 </head>
 <body>
-  <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl="true"></div>
-        <div class="contentBlock" style="margin-top:5vw;">
+    <div w3-include-html="/Code/CSS/GTopnav.html" w3-create-newEl = "true"></div>
 
-            <div class="banner" style="position:static">
-                <picture>
-                    <source srcset="/Imgs/Banner.png" media="(max-width: 1400px)">
-                    <source srcset="/Imgs/BigBanner.png">
-                    <img src="/Imgs/BigBanner.png" alt="Banner" style='width:100%;display:block'>
-                </picture>
-            </div>
+    <div class="cont-cont" style="min-height:calc(100vh - var(--struc-navheight))">
+      <div class="contcol-wrapper">
+        <div style="padding: 50px 30px;">
+            <h1 style="text-align: center"> Oops! Something went really wrong. </h1>
+            <div><img src="/Imgs/CreateBoio.png" alt:"Oopsie!" style='width:100%; padding: 12%, 0%,'></div>
 
-            <div class="mednav">
-                <ul>
-                    <li> <a href="/home">&lt Home</a></li>
-                </ul>
-            </div>
-
-            <div style="padding: 50px 30px;">
-
-                <h1 style="text-align: center"> Oops! Something went really wrong. </h1>
-                <div><img src="/Imgs/CreateBoio.png" alt:"Oopsie!" style='width:100%; padding: 12%, 0%,'></div>
-
-                <p style="text-align: center"> Sorry, there has been a fatal error.<br> The moderators have been informed.</p>
-                <a href="/home"><button class="popupButton">Home</button></a>
-            </div>
+            <p style="text-align: center;padding: 50px 0"> Sorry, there has been a fatal error.<br> The moderators have been informed. </p>
+            <a href="/home"><button class="popupButton" style="display: block;margin:auto;">Home</button></a></div>
         </div>
-        <div style="height: 50px;width:100%;"></div>
+    </div>
 
+    <div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>
 </body>
 </html>
 <script src="/Code/CSS/global.js"></script>

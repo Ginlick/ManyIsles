@@ -131,6 +131,7 @@ button, .popupButton {
     border:0px;
     transition: .2s ease;
     padding : 8px 12px;
+    cursor: pointer;
 }
 button:hover, .popupButton:hover {
     color: white;

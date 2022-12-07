@@ -106,7 +106,6 @@ class dicEngine {
       else {
         $word = $this->purify($word, "quotes");
         $query = 'SELECT * FROM words WHERE lang = '.$lang.' AND (simpleWord = "'.$word.'" OR word = "'.$fullWord.'")';
-        echo $query;
       }
       if ($result = $this->dicconn->query($query)) {
         if (mysqli_num_rows($result) > 0) {
