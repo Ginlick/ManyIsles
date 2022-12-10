@@ -1,6 +1,10 @@
 :root {
   --e-lightshade: #e9f2f9;
   --e-separator: #5b6064;
+  --e-border: #d0d7de;
+  --e-inset: #f6f8fa;
+
+  --e-defaultborder: 1px solid var(--e-border);
 }
 .cont-cont {
   min-height: calc(100vh - var(--struc-navheight));
