@@ -45,13 +45,6 @@ class Stack {
       return $this->stack[$this->top];
     }
   }
-
-  function echoStack() {
-    $text = "";
-    foreach ($this->stack as $element){
-      $text .= " ".$element["type"];
-    }
-  }
 }
 
 ?>

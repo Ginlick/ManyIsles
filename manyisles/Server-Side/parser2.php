@@ -1,8 +1,19 @@
 <html>
 <head>
+  <link rel="icon" href="/Imgs/FaviconWiki.png">  <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
+   <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
 <style>
   p {
     padding-left: 22px;
+  }
+
+  .wide {
+    min-width: 200px;
+    background-color: red;
+    padding: 20px;
+  }
+  .fullTable {
+    background-color: green;
   }
 
 </style>
@@ -16,217 +27,302 @@ if (!class_exists("parser")){
 
   class parser {
     use allBase;
-    public $divTypes = [
-      "gallery" => [
-        "class" => "gallery"
-      ],
-      "wide" => [
-        "class" => "wide"
-      ],
-      "quote" => [
-        "class" => "quote",
-        "classOptions" => ["note", "left"]
-      ],
-      "highlighted" => [
-        "class" => "quote highlited",
-        "classOptions" => ["note", "left"]
-      ],
-      "code" => [
-        "class" => "code",
-        "el_type" => "span",
-        "innerType" => "line",
-        "classOptions" => ["block"]
-      ]
-    ];
-    private $safeMode = true;
+    private $Parsedown = null;
 
     function __construct($parseClear = false) {
-      if ($parseClear) {$this->safeMode = false;}
+      $this->Parsedown = new Parsedown(!$parseClear);
     }
 
     function parse($body, $extent = 0, $callback = null) {
       //extent: -1 pure markdown, 0 markdown and special characters, 1 full html (with images&divs)
-
-      $bodyArr = explode(PHP_EOL, $body);
-      $bodyObj = new textObject();
-
-      foreach ($bodyArr as $i => $line){
-        //check line markers and define line type
-        $lineType = "";
-        if (preg_match_all("/^#+/", $line, $lineMatches)){ //header
-          $lineType = ("h" . strlen($lineMatches[0][0]));
-          $line = preg_replace("/^#+ */", "", $line);
-        }
-        else if (preg_match("/^\-/", $line)){ //ul
-          $lineType = ("li");
-          $line = preg_replace("/^\- */", "", $line);
-        }
-        $bodyObj->newline($line, $lineType);
-        if ($this->safeMode){$bodyObj->linesafe();}
-        $bodyObj->linemarkdown();
-        $bodyObj->endline();
-      }
-
-      return $bodyObj->plainBody();
-
-      // //pre-Parsedown processing
-      // if ($extent > 0) {
-      //   //images
-      //   $this->insertArray = [];$lineMatches = [];
-      //   if (preg_match_all("/^.*{([a-z]+\[.*\]).*}.*$/m", $body, $lineMatches) != false){$body = $this->parseImg($body, $this->keyTracker, $lineMatches[0]);}
-      // }
-      //
-      // if ($extent == 0){
-      //   $body = $this->Parsedown->line($body);
-      // }
-      // else {
-      //   $body = $this->Parsedown->text($body);
-      // }
-      //
-      // //post-Parsedown processing
-      // if (gettype($callback)=="object") {
-      //   $callback($body);
-      // }
-      // if ($extent > 0){
-      //   //images
-      //   if ($this->insertArray != null){
-      //     foreach ($this->insertArray as $key => $value) {
-      //       $body = substr_replace($body, $value, strpos($body, "%key".$key."key%"), 0);
-      //       $body = str_replace("%key".$key."key%", "", $body);
-      //     }
-      //   }
-      //
-      //   //all kinds of divs
-      //   $lineMatchesD = [];
-      //   if (preg_match_all("/\[(([A-Za-z]+)[A-Za-z ]*)\]/", $body, $lineMatchesD, PREG_OFFSET_CAPTURE) != false){$body = $this->parseDivs($body, $lineMatchesD);}
-      // }
-      //
-      // $specCharLvl = 2;
-      // if ($extent < 0){$specCharLvl = 0;}
-      // $body = $this->placeSpecChar($body, $specCharLvl);
-      // //$body = utf8_decode($body);
-
-    }
-
-    function parseDivs($body, $lineMatches){
-      $insertArray = [];
-      for ($i = 0; $i < count($lineMatches[0]); $i++){
-        $blockStart = $lineMatches[0][$i];
-        $startMarker  = $blockStart[0];
-        $startMarkerPos = $blockStart[1] + strlen($startMarker);
-        $fullClass = $lineMatches[1][$i][0];
-        $class = $lineMatches[2][$i][0];
-        $endMarker = "[/".$class."]";
-
-        $inBlock = substr($body, $startMarkerPos);
-        if (($endMarkerPos = strpos($inBlock, $endMarker)) === false){continue;}//no end marker found
-        $inBlock = substr($inBlock, 0, $endMarkerPos);
-
-        if (!($officialClass = $this->checkDivClass($fullClass))){continue;}
-        if ($officialClass[2] == "text"){$parsedInBlock = $this->Parsedown->text($inBlock);}
-        else {$parsedInBlock = $this->Parsedown->line($inBlock);}
-
-        $parsedBlock = "<".$officialClass[0]." class='".$officialClass[1]."'>".$parsedInBlock."</".$officialClass[0].">";
-        $insertArray[$i] = [$startMarker.$inBlock.$endMarker, $parsedBlock];
-      }
-      foreach ($insertArray as $element){
-        $body = str_replace($element[0], $element[1], $body);
-      }
+      $body = $this->Parsedown->parse($body, $extent);
+      $callback($body);
       return $body;
-    }
-    function checkDivClass($fullClass){
-      $officialClass = [0 => "div", 1 => "", 2 => "text"];
-      $classes = explode(" ", $fullClass);
-      if (!isset($this->divTypes[$classes[0]])){ return false; }
-      $officialClass[1] = $this->divTypes[$classes[0]]["class"];
-      if (isset($this->divTypes[$classes[0]]["classOptions"])){
-        foreach ($classes as $class){
-          if (in_array($class, $this->divTypes[$classes[0]]["classOptions"])){
-            $officialClass[1] .= " ".$class;
-          }
-        }
-      }
-      if (isset($this->divTypes[$classes[0]]["el_type"])){
-        $officialClass[0] = $this->divTypes[$classes[0]]["el_type"];
-      }
-      if (isset($this->divTypes[$classes[0]]["innerType"])){
-        $officialClass[2] = $this->divTypes[$classes[0]]["innerType"];
-      }
-      return $officialClass;
-    }
-
-    function parseImg($body, &$keyTracker, $lineMatches) {
-        foreach($lineMatches as $line){
-            $artId = substr($line, strpos($line, "{")+1);
-            $stringDico = substr($artId, 0, strpos($artId, "}") - 1);
-            $chunks = array_chunk(preg_split('/(\[|\])/', $stringDico), 2);
-
-            if (count(array_column($chunks, 0)) > 0 AND count(array_column($chunks, 0)) == count(array_column($chunks, 1))){
-                $img = array_combine(array_column($chunks, 0), array_column($chunks, 1));
-            }
-            else {$img = [];}
-
-            if (!isset($img["class"])){$img["class"] = "sideimg";}
-            else if ($img["class"]=="landscape"){$img["class"]="sideimg landscape";}
-            if (!isset($img["caption"])){$img["caption"] = "";}
-            if (!isset($img["src"])){$img["src"] = "";}
-            if (!isset($img["style"])){$img["style"] = "";}
-            $this->purify($img["class"]);$this->purify($img["caption"], "cleanText");$this->purify($img["src"], "cleanText");$this->purify($img["style"], "cleanText");
-            $caption = $this->parse($this->placeSpecChar($img["caption"], 0), 0);
-
-            $echoImg = '<div class="'.$img["class"].'" style="'.$img["style"].'"><a href="'.$img["src"].'" target="_blank"><img src="'.$img["src"].'" /></a><p>'.$caption.'</p></div>';
-
-            $this->insertArray[$keyTracker] = $echoImg;
-            $pos = strpos($body, "{");
-            $body = str_replace($line, "%key".$keyTracker."key%", $body);
-            $keyTracker++;
-        }
-
-        if (preg_match("/^{.*}$/", $body)){return $this->parseImg($body, $keyTracker);}
-        else {return $body;}
     }
   }
 
-  class textObject {
-    private $boxTypes = [
+  class Parsedown {
+    use allBase; //purify, special characters parse required
+
+    private $boxTypes = [ //change this to be like InlineTypes
+      "fullTable" => [
+        "name" => "fullTable",
+        "regex"=> ["o" => "/^\[fullTable\]/", "c" => "/\[\/fullTable\]/"],
+        "syntax"=>'<div class="wide fullTable">%body%</div>',
+        "nesting"=>["level"=>1, "maxParent" => 1],
+      ],
+      "wide" => [
+        "name" => "wide",
+        "regex"=> ["o" => "/^\[wide\]/", "c" => "/\[\/wide\]/"],
+        "syntax"=>'<div class="wide">%body%</div>',
+        "nesting"=>["level"=>1, "maxParent" => 1],
+      ],
+      "gallery" => [
+        "name" => "wide",
+        "regex"=> ["o" => "/^\[gallery\]/", "c" => "/\[\/gallery\]/"],
+        "syntax"=>'<div class="gallery">%body%</div>',
+        "nesting"=>["level"=>1, "maxParent" => 1],
+      ],
+      "quote" => [
+        "name" => "wide",
+        "regex"=> ["o" => "/\[quote((?: note| left)*)\]/", "c" => "/\[\/quote\]/"],
+        "syntax"=>'<div class="quote%1%">%body%</div>',
+        "nesting"=>["level"=>2, "maxParent" => 1],
+      ],
+      "highlighted" => [
+        "name" => "wide",
+        "regex"=> ["o" => "/\[highlighted((?: note| left)*)\]/", "c" => "/\[\/highlighted\]/"],
+        "syntax"=>'<div class="highlighted%1%">%body%</div>',
+        "nesting"=>["level"=>2, "maxParent" => 1],
+      ],
       "paragraph" => [
-        "defaultHTMLlabel" => "p"
+        "name" => "paragraph",
+        "syntax" => "<p>%body%</p>",
+        "nesting"=>["level"=>2,"maxParent"=>1],
+        "autoclose" => 1,
       ],
       "ul" => [
-        "defaultHTMLlabel" => "ul"
+        "name" => "ul",
+        "syntax" => "<ul>%body%</ul>",
+        "nesting"=>["level"=>2,"maxParent"=>1],
+        "autoclose" => 1,
+      ],
+      "base" => [
+        "name" => "base",
+        "nesting" => ["level"=>0]
       ]
     ];
-    private $lineTypes = [
-      "none" => ["prefix" => "", "suffix" => ""],
-      "n" => ["prefix" => "", "suffix" => ""],
-      "h1" => ["prefix" => "<h1>", "suffix" => "</h1>"],
-      "h2" => ["prefix" => "<h2>", "suffix" => "</h2>"],
-      "h3" => ["prefix" => "<h3>", "suffix" => "</h3>"],
-      "h4" => ["prefix" => "<h4>", "suffix" => "</h4>"],
-      "h5" => ["prefix" => "<h5>", "suffix" => "</h5>"],
-      "li" => ["prefix" => "<li>", "suffix" => "</li>"],
+    private $inlineTypes = [ //I probably can delete all the "name" attributes (unused)
+      "bolditalic" => [
+        "name"=>"bolditalic",
+        "regex"=>"/\*\*\*(.+)\*\*\*/",
+        "syntax"=>"<i><b>%1%</b></i>",
+      ],
+      "bold" => [
+        "name"=>"bold",
+        "regex"=>"/\*\*(.+)\*\*/",
+        "syntax"=>"<i><b>%1%</b></i>"
+      ],
+      "italic" => [
+        "name"=>"italic",
+        "regex"=>"/\*(.+)\*/",
+        "syntax"=>"<i>%1%</i>"
+      ],
+      "link" => [
+          "name" => "link",
+          "regex"=>"/\[(.+)\]\(([A-Za-z0-9\.\/: ]+)\)/",
+          "syntax"=>'<a href="%2%">%1%</a>'
+      ],
+      "squote" => [
+          "name" => "squote",
+          "regex"=>"/\[squote\](.+)\[\/squote\]/",
+          "syntax"=>'<span class="squote">%1%</span>'
+      ],
+      "code" => [
+          "name" => "code",
+          "regex"=>"/\[code\](.+)\[\/code\]/",
+          "syntax"=>'<span class="code">%1%</span>'
+      ],
+      "linebreak" => [
+          "name" => "linebreak",
+          "regex"=>"/\[br\]/",
+          "syntax"=>'<br />'
+      ],
+      //the line types
+      "li" => [
+        "name"=>"li",
+        "regex"=>"/^\- *(.+)/",
+        "syntax"=>"<li>%1%</li>",
+        "requiredBox" => "ul",
+      ],
+      "h5" => [
+        "name"=>"h5",
+        "regex"=>"/^#####(.*)/",
+        "syntax"=>"<h5>%1%</h5>",
+        "requiredBox" => ""
+      ],
+      "h4" => [
+        "name"=>"h4",
+        "regex"=>"/^####(.*)/",
+        "syntax"=>"<h4>%1%</h4>",
+        "requiredBox" => ""
+      ],
+      "h3" => [
+        "name"=>"h3",
+        "regex"=>"/^###(.*)/",
+        "syntax"=>"<h3>%1%</h3>",
+        "requiredBox" => ""
+      ],
+      "h2" => [
+        "name"=>"h2",
+        "regex"=>"/^##(.*)/",
+        "syntax"=>"<h2>%1%</h2>",
+        "requiredBox" => ""
+      ],
+      "h1" => [
+        "name"=>"h1",
+        "regex"=>"/^#(.*)/",
+        "syntax"=>"<h1>%1%</h1>",
+        "requiredBox" => ""
+      ],
+      "emptyline" => [
+        "regex" => "/^$/",
+        "syntax"=>"",
+        "requiredBox" => ""
+      ]
     ];
 
     public $boxes;
     public $currLine = [];
+    public $safeMode = true;
+    public $extent = 1;
 
-    function __construct() {
+    function __construct($safeMode = true) {
+      if (!$safeMode){$this->safeMode = false;}
+      $this->construct();
+    }
+    function construct(){
       $this->boxes = new Stack();
       $this->boxes->push(["type"=>"base", "text" => []]);
+      $this->currLine = [];
+    }
+
+    function parse($body, $extent = 1) {
+      //extent: -1 pure markdown, 0 markdown and special characters, 1 full html (with images&divs)
+      $this->construct();
+      $this->extent = $extent;
+
+      $bodyArr = explode(PHP_EOL, $body);
+      foreach ($bodyArr as $i => $line){
+        $this->newline($line);
+      }
+      return $this->plainBody();
     }
 
     //lines
-    function newline(string $text, string $lineType = "n") {
-      if (!isset($this->lineTypes[$lineType])){
-        $lineType = "n";
+    function newline(string $line) {
+      if (preg_match("/^{(?:.+\[.+\])+}$/", $line)){//image
+        while (count($this->boxes->stack) > 1){
+          $box = $this->boxes->top();
+          if ($this->boxTypes[$box["type"]]["nesting"]["level"]!=1){
+            $this->closeBox();
+          }
+          else {
+            break;
+          }
+        }
+        $line = $this->parseImage($line);
+        $this->currLine = ["text" => $line];
+        $this->endline();
       }
 
-      //check whether current box needs to be closed
+      //explicit boxes: parse tags
+      $closeBoxes = [];
+      foreach ($this->boxTypes as $boxType){
+        if (isset($boxType["regex"]["o"]) && preg_match_all($boxType["regex"]["o"], $line, $lineMatches)){
+          foreach ($lineMatches[0] as $i => $match){
+            $syntax = $boxType["syntax"];
+            for ($j = 1; $j < count($lineMatches); $j++){
+              $syntax = str_replace("%".$j."%", $lineMatches[$j][$i], $syntax);
+            }
+          }
+          $this->openBox($boxType["name"], $syntax);
+          $line = preg_replace($boxType["regex"]["o"], "", $line);
+        }
+        if (isset($boxType["regex"]["c"]) && preg_match($boxType["regex"]["c"], $line)){
+          $closeBoxes[] = $boxType["name"];
+          $line = preg_replace($boxType["regex"]["c"], "", $line);
+        }
+      }
+
+      $this->currLine = ["text" => $line, "requiredBox" => "paragraph"];
+      if ($this->safeMode){$this->linesafe();}
+      $this->linemarkdown();
+
+      //autoclose not required box, open required box
       while ($this->boxes->top > 0){
-        if ($this->boxes->top()["type"] == "paragraph" && $lineType != "n"){
+        $box = $this->boxTypes[$this->boxes->top()["type"]];
+        if (isset($box["autoclose"]) && $box["autoclose"]==1 && $box["name"]!=$this->currLine["requiredBox"]){
           $this->closeBox();
         }
-        else if ($this->boxes->top()["type"] == "ul" && $lineType != "li"){
+        else {
+          break;
+        }
+      }
+      if ($this->currLine["requiredBox"] != ""){
+        if ($this->boxes->top()["type"]!=$this->currLine["requiredBox"]){
+          $this->openBox($this->currLine["requiredBox"]);
+        }
+      }
+
+      $this->endline($closeBoxes);
+    }
+    function linesafe(){ //make sure no user-inputted HTML is interpreted (safe mode)
+      $this->currLine["text"] = htmlspecialchars($this->currLine["text"], ENT_NOQUOTES, 'UTF-8');
+    }
+    function linemarkdown() {
+      $line = $this->currLine["text"];
+      foreach ($this->inlineTypes as $inlineType){
+        if (preg_match_all($inlineType["regex"], $line, $lineMatches)){
+          foreach ($lineMatches[0] as $i => $match){
+            $replacement = $inlineType["syntax"];
+            for ($j = 1; $j < count($lineMatches); $j++){
+              $replacement = str_replace("%".$j."%", $lineMatches[$j][$i], $replacement);
+            }
+            $line = str_replace($match, $replacement, $line);
+            if (isset($inlineType["requiredBox"])){
+              $this->currLine["requiredBox"] = ($inlineType["requiredBox"]);
+            }
+          }
+        }
+      }
+      $this->currLine["text"] = $line;
+    }
+    function endline($closeBoxes = []){
+      $line = $this->currLine["text"];
+      $box = $this->boxes->pop();
+
+      //special rules
+      if ($box["type"]=="paragraph" && count($box["text"]) > 0 && $line != ""){
+        $line = "<br />".$line;
+      }
+
+      $box["text"][] = $line;
+      $this->boxes->push($box);
+
+      foreach ($closeBoxes as $closeBox){
+        $inStack = false;
+        foreach ($this->boxes->stack as $livebox){
+          if ($livebox["type"] == $closeBox){
+            $inStack = true; break;
+          }
+        }
+        if ($inStack){
+          while (count($this->boxes->stack) > 1){
+            $box = $this->boxes->top();
+            $this->closeBox();
+            if ($box["type"]==$closeBox){
+              break;
+            }
+          }
+        }
+      }
+      $this->currLine = ["text" => ""];
+    }
+
+    //boxes
+    function openBox(string $boxType, string $syntax = ""){
+      //input checker
+      if (!isset($this->boxTypes[$boxType])){
+        return false;
+      }
+      if ($syntax == ""){
+        $syntax = $this->boxTypes[$boxType]["syntax"];
+      }
+
+      //nesting checker
+      while (count($this->boxes->stack) != 1){
+        if ($this->boxTypes[$this->boxes->top()["type"]]["nesting"]["level"] > $this->boxTypes[$boxType]["nesting"]["maxParent"]){
           $this->closeBox();
         }
         else {
@@ -234,76 +330,19 @@ if (!class_exists("parser")){
         }
       }
 
-      //check that current box is compatible with lineType
-      if (preg_match("/h[1-5]$/", $lineType)){ //header
-        while ($this->boxes->top()["type"] != "base" && !$this->boxes->isEmpty()){
-          $this->closeBox();
-        }
-      }
-      else if ($lineType == "li"){ //list
-        if ($this->boxes->top()["type"] != "ul"){
-          $this->openBox("ul");
-        }
-      }
-      else if ($text == ""){//empty line
-        $lineType = "none";
-        if ($this->boxes->top()["type"] == "paragraph"){
-          $this->closeBox();
-        }
-      }
-      else { //new line
-        if ($this->boxes->top()["type"] != "paragraph"){
-          $this->openBox("paragraph");
-        }
-      }
-
-      $this->currLine = ["text" => $text, "type" => $lineType];
-    }
-    function linesafe(){ //make sure no user-inputted HTML is interpreted (safe mode)
-      $this->currLine["text"] = htmlspecialchars($this->currLine["text"], ENT_NOQUOTES, 'UTF-8');
-    }
-    function linemarkdown() {
-      $line = $this->currLine["text"];
-
-      //***, **, *, links
-
-      $this->currLine["text"] = $line;
-    }
-    function endline(){
-      $line = $this->currLine["text"];
-      $lineInfo = $this->lineTypes[$this->currLine["type"]];
-      $box = $this->boxes->pop();
-
-      //special rules
-      if ($this->currLine["type"]=="n" && count($box["text"]) > 0){
-        $lineInfo["suffix"] = "<br />";
-      }
-
-      $line = $lineInfo["prefix"].$line.$lineInfo["suffix"];
-      //echo "<br>endline, appending ".$line;
-      $box["text"][] = $line;
-      $this->boxes->push($box);
-      $this->boxes->echoStack();
-    }
-    //boxes
-    function openBox(string $boxType, array $HTMLlabels = []){
-      if (!isset($this->boxTypes[$boxType])){
-        return false;
-      }
-      if (count($HTMLlabels)!=2){
-        $default = $this->boxTypes[$boxType]["defaultHTMLlabel"];
-        $HTMLlabels = ["prefix" => "<$default>", "suffix" => "</$default>"];
-      }
-
-      $box = ["type" => $boxType, "text" => [], "HTMLlabels" => $HTMLlabels];
+      $box = ["type" => $boxType, "text" => [], "syntax" => $syntax];
       $this->boxes->push($box);
     }
     function closeBox() {
       $box = $this->boxes->pop();
       $parentBox = $this->boxes->pop();
-      $parentBox["text"][] = $box["HTMLlabels"]["prefix"].implode(PHP_EOL, $box["text"]).$box["HTMLlabels"]["suffix"];
+      $body = implode(PHP_EOL, $box["text"]);
+      $fullText = $box["syntax"];
+      $fullText = str_replace("%body%", $body, $fullText);
+      $parentBox["text"][] = $fullText;
       $this->boxes->push($parentBox);
     }
+
     //other
     function plainBody(){
       echo "<br><br>BEGIN RETURN<br>";
@@ -314,40 +353,58 @@ if (!class_exists("parser")){
       }
 
       $return .= implode(PHP_EOL, $this->boxes->pop()["text"]);
+      //parse all special characters now (%yomama% and company)
       return $return;
     }
-  }
+    function parseImage(string $body){
+      preg_match("/{(.*)}/", $body, $allmatches);
+      $stringDico = $allmatches[1];
+      $chunks = array_chunk(preg_split('/(\[|\])/', $stringDico), 2);
 
-  // potentially: represent body, lines in classes instead of arrays
-  // class textObject {
-  //   private $body = [];
-  //
-  // }
-  // class lineObject {
-  //   private $type;
-  //   private $htmlLabel;
-  //   private $text;
-  //
-  // }
+      if (count(array_column($chunks, 0)) > 0 AND count(array_column($chunks, 0)) == count(array_column($chunks, 1))){
+          $img = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+      }
+      else {$img = [];}
+
+      if (!isset($img["class"])){$img["class"] = "sideimg";}
+      else if ($img["class"]=="landscape"){$img["class"]="sideimg landscape";}
+      if (!isset($img["caption"])){$img["caption"] = "";}
+      if (!isset($img["src"])){$img["src"] = "";}
+      if (!isset($img["style"])){$img["style"] = "";}
+      $this->purify($img["class"]);$this->purify($img["caption"], "cleanText");$this->purify($img["src"], "cleanText");$this->purify($img["style"], "cleanText");
+      $caption = $this->parse($this->placeSpecChar($img["caption"], 0), 0);
+
+      $echoImg = '<div class="'.$img["class"].'" style="'.$img["style"].'"><a href="'.$img["src"].'" target="_blank"><img src="'.$img["src"].'" /></a><p>'.$caption.'</p></div>';
+
+      return $echoImg;
+    }
+  }
 }
 
 $input = <<<helle
 ## I'm a title
 what's up?
 -
-list element
--another list element
+list e*lement*
+-another lis*t [squote]element[/squote]
+- hail
 
+[quote]
+hi
+[/quote]
 
-
-
-
-the sky, lol
+[wide]
+{src[https://i.pinimg.com/564x/1f/1c/8f/1f1c8f39f8950afa1f5c7dcd79541a99.jpg]caption[this]}
+the *sky*, lol
 ###Subtitle
-more Text
-
-what happens here?
-########Looooooong loooooong tiiitle
+[fullTable]
+more ***Tex***t
+and a line break <script>alert("hehe!");</script>
+and another!
+[/fullTable]
+[/wide]
+wh**at [happens](e)[br] h**ere?
+#####Loooooo*ong loooo*oong tiiitle
 helle;
 
 $parser = new parser();

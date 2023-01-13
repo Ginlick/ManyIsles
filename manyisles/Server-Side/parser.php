@@ -149,9 +149,7 @@ if (!class_exists("parser")){
             $body = str_replace($line, "%key".$keyTracker."key%", $body);
             $keyTracker++;
         }
-
-        if (preg_match("/^{.*}$/", $body)){return $this->parseImg($body, $keyTracker);}
-        else {return $body;}
+        return $body;
     }
   }
 }
