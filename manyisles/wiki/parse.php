@@ -1,4 +1,5 @@
 <?php
+//generates thumbnails ([wiki:X]), [contentsTable:X], [footnote:X]
 
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/engine.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");

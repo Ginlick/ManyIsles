@@ -232,3 +232,76 @@ var view = urlParams2.get("view");
 if (view != null){
     switchDis(view);
 }
+
+//sortable tables
+function callSortTable(e){
+  let targ = e.currentTarget;
+  if (targ.sortDirection == "none" || targ.sortDirection == "up"){
+    targ.sortDirection = "down";
+    targ.firstElementChild.classList.remove("up");
+    targ.firstElementChild.classList.add("down");
+  }
+  else if (targ.sortDirection == "down") {
+    targ.sortDirection = "up";
+    targ.firstElementChild.classList.add("up");
+    targ.firstElementChild.classList.remove("down");
+  }
+
+  for (let element of document.getElementsByClassName("sortable")){
+    if (element == targ){continue;}
+    element.sortDirection = "none";
+    element.firstElementChild.classList.remove("up");
+  }
+  sortTable(e.currentTarget.parentTable, e.currentTarget.columnIndex);
+}
+function sortTable(table, col = 1){
+    var rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    switching = true;
+    dir = "asc";
+    while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName("TD")[col];
+            y = rows[i + 1].getElementsByTagName("TD")[col];
+            //if (x === undefined || y === undefined){continue;}
+            valuex = x.innerText.replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
+            valuey = y.innerText.replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
+            console.log(x.innerText);
+            if (dir == "asc") {
+                if (valuex > valuey) {
+                    shouldSwitch = true;
+                    break;
+                }
+            } else if (dir == "desc") {
+                if (valuex < valuey) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchcount++;
+        } else {
+            if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+}
+for (let element of document.getElementsByTagName("TABLE")){
+    for (let i = 0; i < element.rows[0].cells.length; i++){
+      cell = element.rows[0].cells[i];
+      if (cell.classList.contains("sortable")){
+        cell.addEventListener("click", callSortTable);
+        cell.parentTable = element;
+        cell.columnIndex = i;
+        cell.innerHTML += "<i class='arrow'></i>";
+        cell.sortDirection = "none";
+      }
+    }
+  }

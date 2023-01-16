@@ -916,7 +916,7 @@ MAIN;
                         <span onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
                       </span>
                   </p>
-                  <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->article->body.'</textarea>
+                  <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->placeSpecChar($this->article->body).'</textarea>
                   <img src="/Imgs/Bar2.png" class="separator"></img> ';
               if ($modifier > 0){
                   $main .= '                <div class="complete">
