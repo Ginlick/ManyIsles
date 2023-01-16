@@ -88,6 +88,7 @@ if (!trait_exists("allBase")){
         $input = str_replace("%sqbrak_right%", ']', $input);
         $input = str_replace("%qbrak_left%", '{', $input);
         $input = str_replace("%qbrak_right%", '}', $input);
+        $input = str_replace("%pipe%", '|', $input);
       }
       return $input;
     }

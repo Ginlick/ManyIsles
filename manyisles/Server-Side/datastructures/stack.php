@@ -32,8 +32,8 @@ class Stack {
     if($this->top >= 0){
       //echo "<br>popped, returning ";
       //print_r($this->stack[$this->top]);
-
-      return $this->stack[$this->top--];
+      $this->top--;
+      return array_pop($this->stack);
     }
     return false;
   }
