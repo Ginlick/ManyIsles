@@ -89,22 +89,22 @@ if (!class_exists("parser")){
     private $inlineTypes = [
       "bolditalic" => [
         "name"=>"bolditalic",
-        "regex"=>"/\*\*\*(.+)\*\*\*/",
+        "regex"=>"/\*\*\*(.+?)\*\*\*/",
         "syntax"=>"<i><b>%1%</b></i>",
       ],
       "bold" => [
         "name"=>"bold",
-        "regex"=>"/\*\*(.+)\*\*/",
+        "regex"=>"/\*\*(.+?)\*\*/",
         "syntax"=>"<b>%1%</b>"
       ],
       "italic" => [
         "name"=>"italic",
-        "regex"=>"/\*(.+)\*/",
+        "regex"=>"/\*(.+?)\*/",
         "syntax"=>"<i>%1%</i>"
       ],
       "link" => [
           "name" => "link",
-          "regex"=>"/\[([^\[\]\(\)]+)\]\(([A-Za-z0-9\.\/: ]+)\)/",
+          "regex"=>"/\[([^\[\]\(\)]+)\]\(([A-Za-z0-9\.\/:\-\?\= ]+)\)/",
           "syntax"=>'<a href="%2%">%1%</a>'
       ],
       "squote" => [
@@ -292,9 +292,6 @@ if (!class_exists("parser")){
 
       //special rules
       if (preg_match("/[ ]*/", $line)){
-        if ($box["type"]=="paragraph" && !preg_match("/(^<br>|<br \/>)|(<br>|<br \/>$)/", $line)){//basic lines
-          $line = $line."<br />";
-        }
         if ($box["type"]=="table"){//table lines
           if (count($box["text"]) == 0){
             $box["syntax"] = str_replace("<thead></thead>", "<thead>".$this->parseTableLine($line, true)."</thead>", $box["syntax"]);

@@ -188,14 +188,12 @@ function addJSON(sourceJSON) {
           for (let key in sourceJSON) {
               let line = document.createElement("p");
               getFile = encodeURI("/fandom/giveParse.php?q=".concat(sourceJSON[key]));
+              console.log(getFile);
               var xhttp = new XMLHttpRequest();
               xhttp.onreadystatechange = async function () {
                   if (this.readyState == 4 && this.status == 200) {
                       let result = xhttp.responseText;
-                      let tokillement = document.createElement("div");
-                      tokillement.innerHTML = result;
-                      let parsedText = tokillement.children[0].innerHTML;
-                      line.innerHTML = "<sup>" + key + "</sup> " + parsedText;
+                      line.innerHTML = "<sup>" + key + "</sup> " + result;
                       line.setAttribute("id", "footnote" + key);
                       document.getElementById("gimmeSources").appendChild(line);
                   }

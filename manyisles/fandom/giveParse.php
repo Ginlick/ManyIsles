@@ -1,8 +1,8 @@
 ﻿
 <?php
-require_once($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
-$Parsedown = new Parsedown();
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
+$Parsedown = new parser();
 
-echo $Parsedown->text($_GET["q"]);
+echo $Parsedown->parse($_GET["q"]);
 
 ?>
