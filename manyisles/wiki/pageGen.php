@@ -555,6 +555,24 @@ class gen {
         </div>';
         return $main;
     }
+    function giveEditSrcInfo() {
+        $main = '
+                    <div class="col-l">
+                    <h2>'.$this->domainLogo.'</h2>
+                    <div id="topLInfo">
+        ';
+
+            if ($this->writingNew) {
+                $main .= " <p>You are creating a new source in the $this->wikiName $this->groupName.<br> <a href='/fandom/21/Edit_and_Write' target='_blank'>more info</a></p>";
+            }
+            else {
+                $main .= " <p>You are editing a $this->wikiName $this->groupName source.<br> <a href='/docs/20/Fandom' target='_blank'>more info</a></p>";
+
+            }
+            $main .= '</div>
+        </div>';
+        return $main;
+    }
     function giveLAuthors($comp = false) {
       if ($this->article->authors != ""){
         $authorsArr = explode(", ", $this->article->authors);
@@ -825,7 +843,7 @@ MAIN;
       return $itemTab;
     }
 
-    function giveREdit($modifier = 2) {
+    function giveREdit($modifier = 2, $mode = "normal") {
         $main =' <div class="col-r">
             <img src="'.banner($this->article->banner, $this).'" alt="oops" class="topBanner" />
             <p class="topinfo"><a href="'.$this->homelink.'">'.$this->domainName.'</a> - <a href="'.$this->artRootLink.$this->parentWiki."/home".'">'.$this->wikiName.'</a> - <a href="#">';
@@ -854,97 +872,100 @@ MAIN;
                       <div class="suggestions" style=""></div>
                       <input type="text" id="root" name="root" style="display:none;opacity:0;visibility:hidden;" value="'.$this->parentWiki.'"/>
                   </div>';
-          if ($modifier > 0){
-              $main .='
-                  <div id="cateChanger">
-                      <p id="currentCategs" class="topinfo" style="padding-top:5px;"></p>
-                      <input type="text" id="viewRoot3" placeholder="Add Categories"  oninput="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');" autocomplete="off" onfocus="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');this.value=\'\';"></input>
-                      <div class="suggestions" style=""></div>
-                      <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->categories.'"/>
-                  </div>';
+          if ($mode == "source"){$main .= $this->giveREditSrc();}
+          else {
+            if ($modifier > 0){
+                $main .='
+                    <div id="cateChanger">
+                        <p id="currentCategs" class="topinfo" style="padding-top:5px;"></p>
+                        <input type="text" id="viewRoot3" placeholder="Add Categories"  oninput="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');" autocomplete="off" onfocus="offerSuggestions(this, \'findCategSugg\', 0, \'addCategory\');this.value=\'\';"></input>
+                        <div class="suggestions" style=""></div>
+                        <input type="text" id="categs" name="categories" style="display:none;opacity:0;visibility:hidden;" value="'.$this->article->categories.'"/>
+                    </div>';
+            }
+            $main .= '
+                <div class="selectCont">
+                    <label for="cate">Choose a genre:</label>
+                    <select id="cate" name="cate" >';
+                    foreach ($this->cateoptions as $option){
+                        $main .= '<option value="'.$option["value"].'">'.$option["name"].'</option>';
+                    }
+                    $main .= '
+                    </select>
+                </div>';
+            if ($modifier > 0){
+                $main .= '
+                    <div class="selectCont">
+                        <label for="banner">Choose a banner:</label>
+                        <select id="banner" name="banner" onchange="newBanner()">
+                            <option value="current">current</option>';
+                                foreach ($this->article->banners as $banner){
+                                    $main .= "<option value='".banner($banner["src"])."'>".$banner["name"]."</option>";
+                                }
+                    $main .= '</select>
+                    </div>
+                    <div class="selectCont complete">
+                        <label for="NSFW">Set NSFW level:</label>
+                        <select name="NSFW">
+                            <option value="0"'; if ($this->article->NSFW == 0) { $main .=  "selected"; } $main .= '>SFW</option>
+                            <option value="1"'; if ($this->article->NSFW == 1) { $main .=  "selected"; } $main .= '>Some graphic content</option>
+                            <option value="2"'; if ($this->article->NSFW == 2) { $main .=  "selected"; } $main .= '>NSFW</option>
+                        </select>
+                    </div>
+
+                    <img src="/Imgs/Bar2.png" class="separator"></img>
+
+                    <h3  class="complete">Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
+                    <p class="complete">This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
+                    <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabTitle.'</textarea>
+                    <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
+                    <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabText.'</textarea>
+                    <div><h4>Timeframe</h4>
+                    <input name="timeStart" type="text" value ="'.$this->article->timeStart.'" placeholder="Starting Date" />
+                    <input name="timeEnd" type="text" value ="'.$this->article->timeEnd.'" placeholder="Ending Date"  /></div>
+                    ';
+            }
+            $main .='  <img src="/Imgs/Bar2.png" class="separator"></img>
+
+                <h3>Body<span class="roundInfo">Takes Markdown</span></h3>
+                <p>Write your page\'s body below using <a href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a>. Also check out this doc on <a href="/docs/25/Special_Syntax" target="_blank">cool special elements</a>. <br>
+                    <span class="flipcomplete">
+                      <span class="typeTab tiny" onclick="insLink();">ctrl+shift+k</span> insert link<br>
+                      <span class="typeTab tiny" onclick="insThumb();">ctrl+shift+l</span> insert '.$this->pagename.' thumbnail<br>
+                      <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
+                      <span onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
+                    </span>
+                </p>
+                <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->placeSpecChar($this->article->body).'</textarea>
+                <img src="/Imgs/Bar2.png" class="separator"></img> ';
+            if ($modifier > 0){
+                $main .= '                <div class="complete">
+                    <h4>Sources (Footnotes)</h4>
+                    <p>Put footnotes in your body text with the "[footnote:X]" syntax. Add sources here as references.</p>
+                    <table id="gimmeBabes">
+                        <tbody id="gimmeBabesTbody">
+                        </tbody>
+                    </table>
+                    <input type="text" value="" id = "sources" name ="sources" style="display:none;" />
+
+                    <div class="addSome" onclick="addSome(1);">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="addSome" onclick="addSome(0);">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                    <img src="/Imgs/Bar2.png" class="separator"></img>
+                    </div> ';
+            }
+            if ($this->power > 1) {
+                $main .= '<div class="complete">
+                    <h2>Additional Details<span class="roundInfo green">Optional</span></h2>';
+                $main .= "<h4>Search Details</h4>";
+                $main .= "<input type='text' name='queryTags' placeholder='Tree,Brate'  value='".$this->article->queryTags."' pattern=\"".jsReg("basicList")."\" />";
+                $main .= "<input type='number' name='importance' placeholder='Importance'  value='".$this->article->importance."'/>
+                    <img src='/Imgs/Bar2.png' class='separator'></img></div>";
+            }
           }
-              $main .= '
-                  <div class="selectCont">
-                      <label for="cate">Choose a genre:</label>
-                      <select id="cate" name="cate" >';
-                      foreach ($this->cateoptions as $option){
-                          $main .= '<option value="'.$option["value"].'">'.$option["name"].'</option>';
-                      }
-                      $main .= '
-                      </select>
-                  </div>';
-              if ($modifier > 0){
-                  $main .= '
-                      <div class="selectCont">
-                          <label for="banner">Choose a banner:</label>
-                          <select id="banner" name="banner" onchange="newBanner()">
-                              <option value="current">current</option>';
-                                  foreach ($this->article->banners as $banner){
-                                      $main .= "<option value='".banner($banner["src"])."'>".$banner["name"]."</option>";
-                                  }
-                      $main .= '</select>
-                      </div>
-                      <div class="selectCont complete">
-                          <label for="NSFW">Set NSFW level:</label>
-                          <select name="NSFW">
-                              <option value="0"'; if ($this->article->NSFW == 0) { $main .=  "selected"; } $main .= '>SFW</option>
-                              <option value="1"'; if ($this->article->NSFW == 1) { $main .=  "selected"; } $main .= '>Some graphic content</option>
-                              <option value="2"'; if ($this->article->NSFW == 2) { $main .=  "selected"; } $main .= '>NSFW</option>
-                          </select>
-                      </div>
-
-                      <img src="/Imgs/Bar2.png" class="separator"></img>
-
-                      <h3  class="complete">Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
-                      <p class="complete">This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
-                      <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabTitle.'</textarea>
-                      <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
-                      <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabText.'</textarea>
-                      <div><h4>Timeframe</h4>
-                      <input name="timeStart" type="text" value ="'.$this->article->timeStart.'" placeholder="Starting Date" />
-                      <input name="timeEnd" type="text" value ="'.$this->article->timeEnd.'" placeholder="Ending Date"  /></div>
-                      ';
-              }
-              $main .='  <img src="/Imgs/Bar2.png" class="separator"></img>
-
-                  <h3>Body<span class="roundInfo">Takes Markdown</span></h3>
-                  <p>Write your page\'s body below using <a href="/docs/24/Markdown" target="_blank">Many Isles Markdown</a>. Also check out this doc on <a href="/docs/25/Special_Syntax" target="_blank">cool special elements</a>. <br>
-                      <span class="flipcomplete">
-                        <span class="typeTab tiny" onclick="insLink();">ctrl+shift+k</span> insert link<br>
-                        <span class="typeTab tiny" onclick="insThumb();">ctrl+shift+l</span> insert '.$this->pagename.' thumbnail<br>
-                        <span class="typeTab tiny" onclick="insImg();">ctrl+shift+i</span> insert image<br>
-                        <span onclick="insFootnote();"><span class="typeTab tiny">ctrl+shift+o</span> insert footnote<br></span>
-                      </span>
-                  </p>
-                  <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->placeSpecChar($this->article->body).'</textarea>
-                  <img src="/Imgs/Bar2.png" class="separator"></img> ';
-              if ($modifier > 0){
-                  $main .= '                <div class="complete">
-                      <h4>Sources (Footnotes)</h4>
-                      <p>Put footnotes in your body text with the "[footnote:X]" syntax. Add sources here as references.</p>
-                      <table id="gimmeBabes">
-                          <tbody id="gimmeBabesTbody">
-                          </tbody>
-                      </table>
-                      <input type="text" value="" id = "sources" name ="sources" style="display:none;" />
-
-                      <div class="addSome" onclick="addSome(1);">
-                          <i class="fas fa-plus"></i>
-                      </div>
-                      <div class="addSome" onclick="addSome(0);">
-                          <i class="fas fa-minus"></i>
-                      </div>
-                      <img src="/Imgs/Bar2.png" class="separator"></img>
-                      </div> ';
-              }
-                  if ($this->power > 1) {
-                      $main .= '<div class="complete">
-                          <h2>Additional Details<span class="roundInfo green">Optional</span></h2>';
-                      $main .= "<h4>Search Details</h4>";
-                      $main .= "<input type='text' name='queryTags' placeholder='Tree,Brate'  value='".$this->article->queryTags."' pattern=\"".jsReg("basicList")."\" />";
-                      $main .= "<input type='number' name='importance' placeholder='Importance'  value='".$this->article->importance."'/>
-                          <img src='/Imgs/Bar2.png' class='separator'></img></div>";
-                  }
         }
                 $main .= '<div class="bottButtCon">
                     <button id="submitButton" class="wikiButton" type="submit" onclick="setFormSubmitting()">Submit</button>
@@ -1055,7 +1076,6 @@ MAIN;
         return $main;
     }
     function giveREditSpell() {
-
       $input = '<input type="text" name="PLASSEHOLDER" placeholder="PLASSEHOLDER" value="PLACER%%ARR"></input>'; $fullblock = '';
       $spellable = new spellGen($this); $spellDic = [];
       if (!$this->writingNew){
@@ -1075,6 +1095,14 @@ MAIN;
 
       $fullblock .= '<input type="text" name="wiki" value="'.$this->parentWiki.'"style="display:none;" required></input>';
       return $fullblock;
+    }
+    function giveREditSrc() {
+      $main = '
+      <label for="description">Description<span class="roundInfo">Takes Markdown</span></h3>
+      <textarea name="description" id="bodyFieldarea" rows = "5" placeholder="Source Description" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->text["description"]).'</textarea>
+      (custom source input here)
+      ';
+      return $main;
     }
     function giveRArticle($parts = []){
         $this->sidetabEx = true;
@@ -1879,14 +1907,11 @@ class article {
                         $this->cate = $row["cate"];
                         $this->banner = $row["banner"];
                         $this->authors = $row["authors"];
-                        $this->body = $row["body"];
                         $this->root = $row["root"];
                         $this->canon = $row["canon"];
                         $this->incomplete = $row["incomplete"];
                         $this->categories = $row["categories"];
-                        $this->sidetabTitle = $row["sidetabTitle"];
-                        $this->sidetabImg = $row["sidetabImg"];
-                        $this->sidetabText = $row["sidetabText"];
+                        $this->articleImg = $row["sidetabImg"];
                         $this->sources = $row["sources"];
                         $this->NSFW = $row["NSFW"];
                         $this->timeStart = $row["timeStart"];
@@ -1896,6 +1921,29 @@ class article {
                         $this->pop = $row["pop"];
                         $this->parseClear = $row["parseClear"];
                         $this->regdate = $row["reg_date"];
+
+                        $body = $row["body"];
+                        $this->bodyInfo = [];
+                        echo $body;
+                        if (json_decode($body, true)!=null){
+                          $text = $body["text"][0];
+                          $this->body = $text["body"];
+                          if (isset($text["sidetab"])){
+                            $this->sidetabTitle = $text["sidetab"]["title"];
+                            $this->sidetabImg = $text["sidetab"]["img"];
+                            $this->sidetabText = $text["sidetab"]["text"];
+                          }
+                          if (isset($text["meta"])){
+                            $this->bodyInfo["description"] = $text["meta"]["description"];
+                          }
+
+                        }
+                        else {
+                          $this->body = $row["body"];
+                          $this->sidetabTitle = "";
+                          $this->sidetabImg = $row["sidetabImg"];
+                          $this->sidetabText = "";
+                        }
 
                         // $this->body = $this->placeSpecChar($this->body);
                         // $this->sidetabTitle = $this->placeSpecChar($this->sidetabTitle, 2);
