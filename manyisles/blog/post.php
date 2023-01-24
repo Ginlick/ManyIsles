@@ -39,14 +39,7 @@ $buserInfo = $blog->fetchBuserInfo();
             <form action="makePost.php" method="POST" enctype="multipart/form-data" class="blogForm">
               <?php echo $blog->genProfileBlock(); ?>
 
-              <div class="bannerBlock" >
-                <img alt="banner image" class="inBanner" id="bannerBlock" src=""/>
-              </div>
-              <div class="uploadable bannerUploadCont">
-                  <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                   Select Banner (optional, max 2mb)
-                   <input type="file" onchange="readURL(this);" class="fileInput" id="image" value="null" name = "banner" accept=".png, .jpg"/>
-              </div>
+              <div id="bannerInputCont"></div>
               <input type="text" placeholder="Title (Optional)" name="title"/>
               <datalist id="genreSugg" />
                 <option value="Lore" />
@@ -86,6 +79,16 @@ $buserInfo = $blog->fetchBuserInfo();
 </html>
 <?php echo $blog->scripts(); echo markdownScript(); ?>
 <script>
+addCss("/Server-Side/src/fileportal/fpi-builder.js", "js");
+
+returnF = function (r){
+
+}
+function fpi_launcher() {
+  fpiBuilder = new fpi_builder(301);
+  fpiBuilder.createPortal(document.getElementById("bannerInputCont"), "wideDashed", 1);
+  imageCount(0);
+};
 
 function readURL(input) {
   if (input.files && input.files[0]) {
@@ -97,6 +100,7 @@ function readURL(input) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
 
 var textBody = document.getElementById("textBody");
 var showing = false;

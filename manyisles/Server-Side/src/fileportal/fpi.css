@@ -1,0 +1,41 @@
+:root {
+  --fpi-bg: #9ab6bf;
+  --fpi-contrast: black;
+  --fpi-accent: #61b3dd;
+}
+
+.file-upload {
+    background-color: var(--fpi-bg);
+    width: 60%;
+    margin: 40px auto;
+    padding: 2vw;
+}
+.file-upload-content, .image-upload-wrap {
+  text-align: center;
+  padding: 10px;
+}
+.file-upload-content {
+    display: none;
+}
+.image-upload-wrap {
+    border: 4px dashed var(--fpi-contrast);
+    position: relative;
+    transition: all .3s ease;
+}
+    .image-upload-wrap:hover {
+        background-color: var(--fpi-accent);
+    }
+.file-upload-input {
+    position: absolute;
+    top:0; left:0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    opacity: 0;
+    cursor: pointer;
+}
+.drag-text {
+    text-align: center;
+}

@@ -1,4 +1,5 @@
 <?php
+//  ALL USES OF THIS ENGINE SHOULD GO THROUGH fpi!
 /*
 sample usage ($image being a php post file):
 
@@ -75,7 +76,7 @@ trait fundamentals {
 class fileengine {
   use fundamentals;
 
-  function __construct($user) {
+  function __construct(int $user) {
     $this->giveBasis();
     $this->user = $user;
     $this->outsideDir = "/priv/".$this->user."/";
@@ -107,24 +108,19 @@ class fileengine {
     if ($this->fileRequs[$mode]["likesImg"]){
       $check = getimagesize($file["tmp_name"]);
       if($check === false) {
-        echo "Not file";
         return false;
       }
     }
     if ($file["size"] > $this->fileRequs[$mode]["size"]) {
-      echo $file["size"];
-      echo "too large";
       return false;
     }
     if(!in_array($imageFileType, $this->fileRequs[$mode]["types"])){
-      echo "bad type";
       return false;
     }
     return true;
   }
   function delete($name, $code) {
     foreach (glob($this->userDir."MI22_".$code."_".$this->purate($name)."*") as $filename) {
-      echo $filename;
       unlink($filename);
     }
     return true;
