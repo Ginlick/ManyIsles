@@ -1,8 +1,9 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/blog/g/blogEngine.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/src/fileportal/fpi-engine.php");
 
 $blog = new blogEngine();
-$filing = $blog->fileEngine();
+$fpi = new fpi(301, true);
 
 if (!isset($_POST['profile'])){$_POST['profile']=0;}
 $ptitle = $blog->baseFiling->replaceSpecChar($_POST['title']);
@@ -12,20 +13,17 @@ $profile = substr(preg_replace("/[^0-9]/", "", $_POST['profile']), 0, 22);
 $ptext = substr($_POST['text'], 0, 10000);
 $pcomments = 0; if (isset($_POST['comments']) AND $_POST['comments'] == "on"){$pcomments = 1;}
 $pnotify = 0; if (isset($_POST['notify']) AND $_POST['notify'] == "on"){$pnotify = 1;}
-$banner = null;$placedI = null;
-if (isset($_FILES["banner"])) {
-  $banner = $_FILES["banner"];
-}
+$placedI = null;
+
 if (!$blog->hasProfile($profile)){
   $profile = $blog->buserId;
 }
 $postCode = $profile.time().$blog->user->generateRandomString(2);
 
-if ($banner != null) {
-  if ($realpath = $filing->new($banner, $postCode, "301")) {
-    if ($filing->check($banner, "mystimg")){
-      $placedI = $filing->add($banner["tmp_name"], $realpath);
-    }
+if (count($_FILES) > 0){
+  $r = $fpi->handle("upload", $_FILES);
+  if (!isset($r["error"])){
+    $placedI = $r["files"][0]["dir"];
   }
 }
 

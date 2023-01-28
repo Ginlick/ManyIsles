@@ -1,9 +1,10 @@
 ﻿<?php
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/transactions.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/src/community/engine.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/makeHuman.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
 $dl = new dlengine();
+$community = new communityEngine();
 
 $partner = false;
 if (!$dl->user->check(true)){$dl->go("Account", "p");}
@@ -316,6 +317,7 @@ EPICCOOL;
 
 $creditBar = "";
 $hasCredit = true;
+$moneyconn = $user->addConn("money");
 $userCredit = new transaction($moneyconn, $id);
 
 $query = "SELECT * FROM transfers_$userCredit->reference ORDER BY reg_date DESC LIMIT 0, 122";
@@ -363,6 +365,9 @@ if ($ordersExist){
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <link rel="stylesheet" type="text/css" href="g/acc.css">
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-tables.css">
+    <?php
+      echo $community->commStyles();
+    ?>
     <style>
     #region {
         width: 50%;
@@ -439,10 +444,11 @@ if ($ordersExist){
 
             <div id='Over' class='column'>
                 <h1><?php echo $user->fullName; ?></h1>
-                    <img src="<?php echo $dl->user->image(); ?>" alt="WorkingMage" class='bannerI' class='separator'>
+                <img src="<?php echo $dl->user->image(); ?>" alt="WorkingMage" class='bannerI' class='separator'>
+                <?php
+                  // echo $community->genUserSquare(); HOW WILL I IMPLEMENT THIS? ITS OWN PAGE?
+                ?>
                 <p>
-                    <span class=""><?php echo $user->usertag; ?></span>
-                    <br>
                     Your account unlocks many awesome features, such as making your own spell list, access to premium content in the digital library, and getting early and free access to some of our products via mail!<br>
                     If you have any questions, problems or complaints, feel free to contact us at <a href="mailto:pantheon@manyisles.ch" target="_blank">pantheon@manyisles.ch</a>.
                 </p>

@@ -1,31 +1,15 @@
 :root {
-  --fpi-bg: #9ab6bf;
-  --fpi-contrast: black;
-  --fpi-accent: #61b3dd;
+  --fpi-bg: var(--all-color-albord);
+  --fpi-contrast: var(--col-lgrey);
+  --fpi-mcontrast: #c2bdbd;
+  --fpi-accent: #c2bdbd;
 }
 
-.file-upload {
-    background-color: var(--fpi-bg);
-    width: 60%;
-    margin: 40px auto;
-    padding: 2vw;
-}
-.file-upload-content, .image-upload-wrap {
-  text-align: center;
-  padding: 10px;
-}
-.file-upload-content {
+/*universal*/
+.fpic-uploading {
     display: none;
 }
-.image-upload-wrap {
-    border: 4px dashed var(--fpi-contrast);
-    position: relative;
-    transition: all .3s ease;
-}
-    .image-upload-wrap:hover {
-        background-color: var(--fpi-accent);
-    }
-.file-upload-input {
+.fpi-file-upload-input {
     position: absolute;
     top:0; left:0;
     margin: 0;
@@ -36,6 +20,47 @@
     opacity: 0;
     cursor: pointer;
 }
-.drag-text {
-    text-align: center;
+
+/*broad*/
+.fpi-broad {
+    background-color: var(--fpi-bg);
+    margin: 40px auto;
+    padding: 2vw;
+}
+.fpi-broad .fpi-upload, .fpi-broad .fpi-uploading {
+  text-align: center;
+  padding: 10px;
+}
+.fpi-broad .fpi-upload {
+    border: 4px dashed var(--fpi-contrast);
+    position: relative;
+    transition: all .3s ease;
+}
+.fpi-broad .fpi-upload:hover {
+    background-color: var(--fpi-accent);
+}
+
+/*dashed*/
+.fpi-dashed-wide {
+  border: 1px dashed var(--fpi-mcontrast);
+}
+.fpi-dashed-bottomblock {
+  background-color: var(--fpi-bg);
+  border-top: 1px dashed var(--fpi-mcontrast);
+  transition: .2s ease;
+  padding: 20px 10px;
+  position: relative;
+}
+.fpi-dashed-bottomblock:hover {
+  background-color: var(--fpi-accent);
+}
+.fpi-dashed-topblock {
+  height: 100px; width: 100%;
+  overflow: hidden;
+}
+.fpi-dashed-topblock .fpi-intopblock {
+  display: none;
+  width: 100%;
+  object-fit: cover;
+  object-position: 100% 50%;
 }

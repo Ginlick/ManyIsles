@@ -40,6 +40,13 @@ BARRR;
     <?php echo $gen->giveFavicon(); ?>
     <title><?php echo $gen->domainName; ?></title>
 <style>
+#imgUploaderCont {
+  --fpi-bg: #9ab6bf;
+  --fpi-contrast: black;
+  --fpi-accent: #61b3dd;
+  width: 60%;
+  margin: auto;
+}
     .content {
         background-color: var(--doc-base-color);
     }
@@ -386,10 +393,14 @@ function fpi_launcher() {
 
 
 //images
+var namee;
 function deleteImage(name) {
-  fpiBuilder.deleteImage(name);
-  document.getElementById(name).remove();
-  imageCount(1);
+  let postDel = function (){
+    document.getElementById(namee).remove();
+    imageCount(1);
+  }
+  fpiBuilder.deleteImage(name, postDel);
+  namee = name;
 }
 
 function imageCount(n) {

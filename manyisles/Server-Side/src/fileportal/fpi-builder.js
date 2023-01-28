@@ -37,9 +37,9 @@ class fpi_builder{
     let input = e.target;
     let parentEl = input.parentEl;
     if (input.files && input.files.length > 0) {
-      thisClass.childVis(parentEl, "image-upload-wrap", "hide");
-      thisClass.childVis(parentEl, "file-upload-content", "show");
-      thisClass.childVis(parentEl, "uploaded-image-title", "change", input.files[0].name);
+      thisClass.childVis(parentEl, "fpic-upload-content", "hide");
+      thisClass.childVis(parentEl, "fpic-uploading", "show");
+      thisClass.childVis(parentEl, "fpic-uploading-image-title", "change", input.files[0].name);
 
       var formData = new FormData();
       formData.append("intent", "upload");
@@ -62,22 +62,22 @@ class fpi_builder{
     if (input.files && input.files[0]) {
       var reader = new FileReader();
       reader.onload = function(e) {
-        console.log(input.files[0].webkitRelativePath);
-        thisClass.childVis(parentEl, "imageShower", "src", input.files[0]);
+        thisClass.childVis(parentEl, "fpic-uploading-image-shower", "src", e.target.result);
+        thisClass.childVis(parentEl, "fpic-uploading-image-shower", "show");
       };
       reader.readAsDataURL(input.files[0]);
     }
   }
   removeUpload(input) {
-    this.childVis(input, "image-upload-wrap", "show");
-    this.childVis(input, "image-upload-content", "hide");
-    this.childVis(input, "file-upload-input", "clear");
+    this.childVis(input, "fpic-upload-content", "show");
+    this.childVis(input, "fpic-uploading", "hide");
+    this.childVis(input, "fpic-fileinput", "clear");
   }
-  deleteImage(name){
+  deleteImage(name, returnF = null){
     var formData = new FormData();
     formData.append("intent", "delete");
-    formData.append("file", name);
-    this.makeRequest(formData);
+    formData.append("file[]", name);
+    this.makeRequest(formData, returnF);
   }
   error(errorText = "An error occurred.") {
     createPopup("d:gen;txt:"+errorText);
@@ -118,7 +118,6 @@ class fpi_builder{
         child.value = "";
       }
       else if (action == "src"){
-        console.log(child);
         child.setAttribute("src", text);
       }
     }
@@ -145,27 +144,32 @@ class fpi_builder{
   }
   HTMLels = {
     "broad" : `
-      <div class="file-upload">
-        <div class="image-upload-wrap">
-          <input class="file-upload-input" type="file" name="file" id="file-upload-input" accept=".png, .jpg" multiple fpi-inputtype="uploader" />
+      <div class="fpi-broad">
+        <div class="fpic-upload-content fpi-upload">
+          <input class="fpi-file-upload-input fpic-fileinput" type="file" name="file" accept=".png, .jpg" multiple fpi-inputtype="uploader" />
           <div class="drag-text">
             <p><i class="fas fa-arrow-up"></i> Upload Image (max 2 mb)</p>
           </div>
         </div>
-        <div class="file-upload-content">
-          <p class="image-title"><i class="fas fa-spinner fa-spin"></i> Uploading <span class="uploaded-image-title">Uploaded Image</span></p>
+        <div class="fpic-uploading fpi-uploading">
+          <p><i class="fas fa-spinner fa-spin"></i> Uploading <span class="fpic-uploading-image-title">Uploaded Image</span></p>
         </div>
       </div>
     `,
     "wideDashed" : `
-      <div>
-        <div class="bannerBlock" >
-          <img alt="banner image" class="inBanner imageShower" src=""/>
+      <div class="fpi-dashed-wide">
+        <div class="fpi-dashed-topblock" display="block" >
+          <img alt="banner image" class="fpi-intopblock fpic-uploading-image-shower" src=""/>
         </div>
-        <div class="uploadable bannerUploadCont">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i>
-             Select Banner (optional, max 2mb)
-             <input type="file" class="fileInput" value="null" name = "banner" accept=".png, .jpg" multiple fpi-inputtype="uploader" />
+        <div class="fpi-dashed-bottomblock">
+          <div class="fpic-upload-content">
+            <p><i class="fa-solid fa-arrow-up-from-bracket"></i>
+            Select Banner (optional, max 2mb)</p>
+            <input type="file" class="fpi-file-upload-input fpic-fileinput" name = "file" accept=".png, .jpg" multiple fpi-inputtype="uploader" />
+           </div>
+           <div class="fpic-uploading">
+             <p><i class="fas fa-spinner fa-spin"></i> Uploading <span class="fpic-uploading-image-title">Uploaded Image</span></p>
+           </div>
         </div>
       </div>
     `

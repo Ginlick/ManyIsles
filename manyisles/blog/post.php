@@ -22,6 +22,8 @@ $buserInfo = $blog->fetchBuserInfo();
         padding-left:.4vw;
         display:none;
     }
+
+
     </style>
 </head>
 <body>
@@ -40,6 +42,7 @@ $buserInfo = $blog->fetchBuserInfo();
               <?php echo $blog->genProfileBlock(); ?>
 
               <div id="bannerInputCont"></div>
+              <div id="banner2InputCont"></div>
               <input type="text" placeholder="Title (Optional)" name="title"/>
               <datalist id="genreSugg" />
                 <option value="Lore" />
@@ -87,13 +90,13 @@ returnF = function (r){
 function fpi_launcher() {
   fpiBuilder = new fpi_builder(301);
   fpiBuilder.createPortal(document.getElementById("bannerInputCont"), "wideDashed", 1);
-  imageCount(0);
 };
 
 function readURL(input) {
   if (input.files && input.files[0]) {
     var reader = new FileReader();
     reader.onload = function(e) {
+      console.log(e.target.result);
       document.getElementById("bannerBlock").setAttribute("src", e.target.result);
       document.getElementById("bannerBlock").style.display = "block";
     };
