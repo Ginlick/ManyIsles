@@ -13,6 +13,7 @@ else if ($branch == "5eS") {
 }
 
 $name = ""; $shortName = ""; $wiki = 0;
+if (!isset($_POST['body'])){header("Location:$redirect");exit();}
 if (!isset($_POST['writeInfo'])){$_POST['writeInfo'] = true;} else {if (preg_match("/[^0-9]/", $_POST['writeInfo'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['id'])){$_POST['id'] = 1;} else {if (preg_match("/[^0-9]/", $_POST['id'])==1){header("Location:$redirect");exit();}}
 if (!isset($_POST['root'])){$_POST['root'] = 0;} else {if (preg_match("/[0-9]*/", $_POST['root'])!=1){header("Location:$redirect");exit();}}
@@ -30,6 +31,7 @@ if (!isset($_POST['sidetabTitle'])){$_POST['sidetabTitle'] = "";}
 if (!isset($_POST['sidetabImg'])){$_POST['sidetabImg'] = "";}
 if (!isset($_POST['sources'])){$_POST['sources'] ="";}
 if (!isset($_POST['sidetabText'])){$_POST['sidetabText'] = "";}
+if (!isset($_POST['description'])){$_POST['description'] = "";}
 if ($_POST['writeInfo'] == 0) {$writingNew = false;}else {$writingNew = true;}
 if (isset($_POST['wiki'])){$wiki = purate($_POST['wiki'], "posint");}
 
@@ -212,18 +214,26 @@ else {
   $name = substr($name, 0, 100);
   $shortName = substr($shortName, 0, 30);
 
-  $body = str_replace('"', '%double_quote%', $_POST['body']);
-  $sidetabText = str_replace('"', '%double_quote%', $_POST['sidetabText']);
-  $sidetabTitle = str_replace('"', '%double_quote%', $_POST['sidetabTitle']);
-  $sidetabImg = str_replace('"', '', $_POST['sidetabImg']);
+
+  $bodyArr = [];
+  $bodyArr["text"][0]["body"] = $gen->replaceSpecChar($_POST['body']);
+  if ($_POST['sidetabTitle'] != "" OR $_POST['sidetabImg'] != "" OR $_POST['sidetabText'] != ""){
+    $bodyArr["text"][0]["sidetab"]["title"] = $gen->replaceSpecChar($_POST['sidetabTitle']);
+    $bodyArr["text"][0]["sidetab"]["image"] =$gen->replaceSpecChar($_POST['sidetabImg']); //image of this specific sidetab
+    $bodyArr["text"][0]["sidetab"]["text"] = $gen->replaceSpecChar($_POST['sidetabText']);
+  }
+  $bodyArr["meta"]["description"] = $gen->replaceSpecChar($_POST['description']);
+  $bodyArr = json_encode($bodyArr, JSON_HEX_APOS);
+
+  $sidetabImg = str_replace('"', '', $_POST['sidetabImg']); //article image
   $sources = str_replace("'", '’', $_POST['sources']);
   $timeStart = str_replace('"', '', $_POST['timeStart']);
   $timeEnd = str_replace('"', '', $_POST['timeEnd']);
   if ($shortName == ""){$shortName = $name;}
   if ($importance > 99){$importance = 99;}
-  if ($sidetabImg != "" AND $sidetabTitle == ""){$sidetabTitle = "###".$shortName;}
+  //if ($sidetabImg != "" AND $sidetabTitle == ""){$sidetabTitle = "###".$shortName;}
 
-  $query = 'INSERT INTO '.$gen->database.' (id, v, name, shortName, cate, banner, body, authors, pop, canon, root, sidetabTitle, sidetabImg, sidetabText, sources, categories, timeStart, timeEnd, importance, queryTags, parseClear, NSFW, parentWiki) VALUES (artid, artv, "artname", "artshortName", "artgenre", "artbanner", "artbody", "artauthors", artpop, artcanon, artroot, "artsidetabTitle", "artsidetabImg", "artsidetabText", \'artsources\', \'artcategories\', "arttimeStart", "arttimeEnd", artimportance, "artqueryTags", artparseClear, artNSFW, artparentWiki)';
+  $query = 'INSERT INTO '.$gen->database.' (id, v, name, shortName, cate, banner, body, authors, pop, canon, root, sidetabImg, sources, categories, timeStart, timeEnd, importance, queryTags, parseClear, NSFW, parentWiki) VALUES (artid, artv, "artname", "artshortName", "artgenre", "artbanner", \'artbody\', "artauthors", artpop, artcanon, artroot, "artsidetabImg", \'artsources\', \'artcategories\', "arttimeStart", "arttimeEnd", artimportance, "artqueryTags", artparseClear, artNSFW, artparentWiki)';
 
   $query = str_replace("artid", $id, $query);
   $query = str_replace("artv", $version, $query);
@@ -231,14 +241,12 @@ else {
   $query = str_replace("artshortName", $shortName, $query);
   $query = str_replace("artgenre", $genre, $query);
   $query = str_replace("artbanner", $banner, $query);
-  $query = str_replace("artbody", $body, $query);
+  $query = str_replace("artbody", $bodyArr, $query);
   $query = str_replace("artauthors", $authors, $query);
   $query = str_replace("artpop", $gen->article->pop, $query);
   $query = str_replace("artcanon", $canon, $query);
   $query = str_replace("artroot", $root, $query);
-  $query = str_replace("artsidetabTitle", $sidetabTitle, $query);
   $query = str_replace("artsidetabImg", $sidetabImg, $query);
-  $query = str_replace("artsidetabText", $sidetabText, $query);
   $query = str_replace("artsources", $sources, $query);
   $query = str_replace("artcategories", $categories, $query);
   $query = str_replace("arttimeStart", $timeStart, $query);
@@ -252,7 +260,7 @@ else {
 //echo $query;exit();
 
 if ($gen->dbconn->query($query)){
-        header("Location:".$gen->artRootLink.$id."/".parse2Url($_POST['shortName']));
+    header("Location:".$gen->artRootLink.$id."/".$gen->purate($_POST['shortName']));
 }
 else {
     echo "Error.";

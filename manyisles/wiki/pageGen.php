@@ -520,12 +520,14 @@ class gen {
         ';
 
             if ($this->writingNew) {
-                $main .= " <p>You are creating a new $this->pagename in the $this->wikiName $this->groupName.<br> <a href='/fandom/21/Edit_and_Write' target='_blank'>more info</a></p>";
+                $main .= " <p>You are creating a new $this->pagename in the $this->wikiName $this->groupName.<br>"; // <a href='/fandom/21/Edit_and_Write' target='_blank'>more info</a></p>";
               if ($this->domainType == "spells"){
-                $main .= '
-';
+                $main .= '';
               }
               else {
+                if ($this->domainType == "fandom"){
+                  $main .= "<p><a href='/fandom/source?w=$this->parentWiki'>create new source instead</a></p>";
+                }
                 $main .= '
                  <div class="bottButtCon">
                     <div class="wikiButton" onclick="newWiki=true;switchSupport(0)">New '.ucwords($this->groupName).'</div>
@@ -701,6 +703,7 @@ MAIN;
         WHERE b.id IS NULL AND a.root = $this->page AND a.status != 'outstanding' ORDER BY reg_date ASC LIMIT 0, 999";
         if ($firstrow = $this->dbconn->query($query)) {
             while ($row = $firstrow->fetch_assoc()) {
+              if ($row["cate"]=="Source"){continue;}
                 $currentLink = str_replace("COOLTEXT", $row["id"], $rootChildLink);
                 $currentLink = str_replace("COOLWORDS2", parse2Url($row["shortName"]), $currentLink);
                 $currentLink = str_replace("COOLWORDS", $row["shortName"], $currentLink);
@@ -939,7 +942,8 @@ MAIN;
                 <textarea name="body" id="bodyFieldarea" rows = "32" placeholder="body in Many Isles markdown " onfocus="textareaToFill = this;" oninput="autoLinkage()" required>'.$this->placeSpecChar($this->article->body).'</textarea>
                 <img src="/Imgs/Bar2.png" class="separator"></img> ';
             if ($modifier > 0){
-                $main .= '                <div class="complete">
+                $main .= '
+                <div class="complete">
                     <h4>Sources (Footnotes)</h4>
                     <p>Put footnotes in your body text with the "[footnote:X]" syntax. Add sources here as references.</p>
                     <table id="gimmeBabes">
@@ -1098,9 +1102,13 @@ MAIN;
     }
     function giveREditSrc() {
       $main = '
-      <label for="description">Description<span class="roundInfo">Takes Markdown</span></h3>
-      <textarea name="description" id="bodyFieldarea" rows = "5" placeholder="Source Description" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->text["description"]).'</textarea>
-      (custom source input here)
+      <input name="cate" type="text" style="display:none;visibility:hidden;opacity:0" value="Source" />
+      <input type="number" name="importance" style="display:none;visibility:hidden;opacity:0" value="0" />
+      <h3>Source Details</h3>
+      <!--<label for="description">Description<span class="roundInfo">Takes Markdown</span></h3>-->
+      <textarea name="description" rows = "3" placeholder="Source Description" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->bodyInfo["meta"]["description"]).'</textarea>
+      <p>Note that we currently only support sources in <a href="/docs/24/Markdown" target="_blank">markdown table</a>/JSON format.</p>
+      <textarea name="body" rows = "10" placeholder="Source" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->body).'</textarea>
       ';
       return $main;
     }
@@ -1147,7 +1155,8 @@ MAIN;
             }
         }
         function titleBlock($gen) {
-            $main = '<h1>'.$gen->article->name.'<a href="/'.$gen->domain.'/search.php?g='.$gen->article->cate."&w=".$gen->parentWiki.'"><span class="'.$gen->typeTab.'">'.$gen->article->cate.'</span></a>';
+          $prefix = ""; if ($gen->article->type == "source"){$prefix = "Source: ";}
+            $main = '<h1>'.$prefix.$gen->article->name.'<a href="/'.$gen->domain.'/search.php?g='.$gen->article->cate."&w=".$gen->parentWiki.'"><span class="'.$gen->typeTab.'">'.$gen->article->cate.'</span></a>';
             if ($gen->article->status == "outstanding" OR $gen->article->status == "suspended"){
                 $main .=  '<span class="'.$gen->typeTab.' not">'.$gen->article->status.'</span>';
             }
@@ -1181,7 +1190,7 @@ MAIN;
                 $sidetab .="</i></p>";
             }
             if ($gen->article->sidetabImg != "") {$sidetab = $sidetab.'<a href="'.$gen->article->sidetabImg.'" target="_blank"><div class="sImage" load-image="'.$gen->article->sidetabImg.'"></div></a>';}
-            $sidetab = $sidetab.$gen->parse->bodyParser($gen->article->sidetabText, 1, $gen->database)."</div>";
+            $sidetab .= $gen->parse->bodyParser($gen->article->sidetabText, 1, $gen->database)."</div>";
 
             $main = '<div style="'; if ($gen->prude) { $main .= "visibility: hidden";} $main .= '" id="actualNeatCont" >';
                 if ($gen->sidetabEx){
@@ -1195,8 +1204,17 @@ MAIN;
                     $main .= '<p class="warning">This page is <b>outstanding</b>. Be the one to write the '.$gen->pagename.'! <a href="'.$gen->editLink.'">Edit</a></p>';
                 }
 
-            $main .= $gen->parse->bodyParser($gen->article->body, 2, $gen->database);
-            $main .='<div id="footnotes" style="display:none;">
+            $body = $gen->article->body;
+            if ($gen->article->type == "source"){
+              $body = $gen->srcParse($body);
+            }
+            else {
+              $body = $gen->parse->bodyParser($body, 2, $gen->database);
+            }
+            $main .= $body;
+
+            $main .='
+              <div id="footnotes" style="display:none;clear:both;">
                     <h2>Sources</h2>
                     <div id = "gimmeSources"></div>
                 </div>
@@ -1683,6 +1701,29 @@ MAIN;
         return $main;
     }
 
+    function srcParse($body) {
+      $fullText = "<p>From the Many Isles fandom wiki's free media repository.</p>";
+      //description
+      if ($this->article->bodyInfo["meta"]["description"]!=""){
+        $fullText .= "<h4>Description</h4>";
+        $fullText .= $this->parse->bodyParser($this->article->bodyInfo["meta"]["description"], 1);
+      }
+      //actual source
+      $fullText .= "<h4>Source</h4>";
+      //perhaps: add nice download button to download JSON/image
+      if (preg_match("/^\{.*\}$/", $body)){
+        //perhaps: parse json into table instead, or format it nicely
+        $body = $this->placeSpecChar($body);
+        $body = preg_replace("/,/", ",<br/>", $body);
+        $body = "<div class='code'>$body</div>";
+      }
+      else {
+        $body = $this->parse->bodyParser($body, 2, $this->database);
+      }
+      $fullText .= $body;
+      return $fullText;
+    }
+
     function redirect($url) {
       $url = str_replace("'", "", $url);
       echo "<script>window.location.replace('$url');</script>";
@@ -1833,23 +1874,25 @@ class spellGen {
 }
 
 class article {
+    use allBase;
+
     public $conn;
     public $page;
     public $root;
     public $writingNew;
     public $name = "";
     public $shortName = "";
+    public $type = "article";
     public $cate = "Lore";
     public $banner = "fandom.png";
     public $authors = "";
     public $body = "";
+    public $bodyInfo = ["text"=>[["body"=>""]], "meta"=>["description"=>""]];
     public $status = "active";
     public $incomplete = 0;
     public $canon = 0;
     public $categories = "";
-    public $sidetabTitle = "";
     public $sidetabImg = "";
-    public $sidetabText = "";
     public $sources = "";
     public $NSFW = 0;
     public $timeStart = "";
@@ -1866,7 +1909,9 @@ class article {
     public $banners = [];
     public $details = [];
     public $gen = null;
-    use allBase;
+    //discontinued
+    public $sidetabTitle = "";
+    public $sidetabText = "";
 
     function __construct($gen, $conn = null) {
       if (gettype($gen)=="array"){
@@ -1922,32 +1967,37 @@ class article {
                         $this->parseClear = $row["parseClear"];
                         $this->regdate = $row["reg_date"];
 
+                        if ($this->root != 0 AND $this->cate == "Source"){$this->type = "source";}
+
                         $body = $row["body"];
                         $this->bodyInfo = [];
-                        echo $body;
-                        if (json_decode($body, true)!=null){
+                        $body = preg_replace('/[\r]/', '\n', $body);
+                        $body = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body);
+                        $body = str_replace("u0027", "'", $body);
+                        if ($body = json_decode($body, true, 22, JSON_INVALID_UTF8_SUBSTITUTE) AND $body != null){
+                          if (!isset($body["text"])){
+                            $body["text"] = ["body" => ""];
+                          }
+                          if (!isset($body["meta"])){
+                            $body["meta"] = ["description" => ""];
+                          }
+
                           $text = $body["text"][0];
                           $this->body = $text["body"];
                           if (isset($text["sidetab"])){
                             $this->sidetabTitle = $text["sidetab"]["title"];
-                            $this->sidetabImg = $text["sidetab"]["img"];
+                            $this->sidetabImg = $text["sidetab"]["image"];
                             $this->sidetabText = $text["sidetab"]["text"];
                           }
-                          if (isset($text["meta"])){
-                            $this->bodyInfo["description"] = $text["meta"]["description"];
-                          }
 
+                          $this->bodyInfo = $body;
                         }
-                        else {
+                        else { //support non-JSON body (legacy version)
                           $this->body = $row["body"];
-                          $this->sidetabTitle = "";
+                          $this->sidetabTitle = $row["sidetabTitle"];
                           $this->sidetabImg = $row["sidetabImg"];
-                          $this->sidetabText = "";
+                          $this->sidetabText = $row["sidetabText"];
                         }
-
-                        // $this->body = $this->placeSpecChar($this->body);
-                        // $this->sidetabTitle = $this->placeSpecChar($this->sidetabTitle, 2);
-                        // $this->sidetabText = $this->placeSpecChar($this->sidetabText, 2);
 
                         $date_array = date_parse($this->regdate);
                         $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];

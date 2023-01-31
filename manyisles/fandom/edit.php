@@ -31,6 +31,9 @@ $gen = new gen("edit", $page, $parentWiki, $writingNew, $domain);
 $conn = $gen->conn;
 if (!$gen->writingNew AND $gen->article->name == ""){ echo "<script>window.location.replace('".$gen->artRootLink.$gen->article->page."/".parse2Url($gen->article->shortName)."');</script>";}
 
+if ($gen->article->type == "source"){
+  $gen->go("source?id=$page");
+}
 
 ?>
 

@@ -95,6 +95,9 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
                 if (!("thumbnail" in object)) { object["thumbnail"] = ""; }
                 if (!("NSFW" in object)) { object["NSFW"] = 0; }
                 if (!("date" in object)) { object["date"] = ""; }
+                if (action == "switchSupport"){
+                  if (object["genre"] == "Source"){continue;}
+                }
 
                 var listElement = document.createElement("LI");
                 if (action == "link") {
@@ -105,7 +108,7 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
                     var linkingCont = document.createElement("DIV");
                     if (action == "createLink") { linkingCont.setAttribute("onclick", 'createLink("' + object["id"] + '", "href", ' + pdomain + ');'); }
                     else if (action == "wikthumb") { linkingCont.setAttribute("onclick", 'createLink("' + object["id"] + '", "wikthumb", ' + pdomain + ');'); }
-                    else if (action == "switchSupport") { linkingCont.setAttribute("onclick", 'switchSupport("' + object["id"] + '")'); }
+                    else if (action == "switchSupport") {linkingCont.setAttribute("onclick", 'switchSupport("' + object["id"] + '")'); }
                     else if (action == "addCategory") { linkingCont.setAttribute("onclick", 'addCategory("' + object["id"] + '", "' + object["name"] + '")'); }
                 }
                 linkingCont.classList.add("linkingCont");
