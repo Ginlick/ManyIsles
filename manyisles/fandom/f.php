@@ -20,7 +20,6 @@ $conn = $gen->conn;
 
 $gen->doFandWork();
 
-
 ?>
 
 <!DOCTYPE html>
@@ -38,8 +37,10 @@ $gen->doFandWork();
                 echo $gen->giveLWikinfo();
                 echo $gen->giveLParwikinfo();
                 echo $gen->giveLAuthors(true);
-                echo $gen->giveLChildren();
-                echo $gen->giveLOutstanders();
+                if ($gen->article->type == "article"){
+                  echo $gen->giveLChildren();
+                  echo $gen->giveLOutstanders();
+                }
                 echo $gen->giveLShare();
             ?>
         </div>

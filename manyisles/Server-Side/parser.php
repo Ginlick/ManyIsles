@@ -6,15 +6,16 @@ if (!class_exists("parser")){
 
   class parser {
     use allBase;
-    private $Parsedown = null;
+    private $parseClear = false;
 
     function __construct($parseClear = false) {
-      $this->Parsedown = new Parsedown(!$parseClear);
+      $this->parseClear = $parseClear;
     }
 
     function parse($body, $extent = 0, $callback = null) {
+      $Parsedown = new Parsedown(!$this->parseClear);
       //extent: -1 pure markdown, 0 markdown and special characters, 1 full html (with images&divs)
-      $body = $this->Parsedown->parse($body, $extent, $callback);
+      $body = $Parsedown->parse($body, $extent, $callback);
       return $body;
     }
   }

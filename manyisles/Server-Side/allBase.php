@@ -50,6 +50,7 @@ if (!trait_exists("allBase")){
       return preg_replace($this->regArrayR[$regex], "", $input);
     }
     function replaceSpecChar($input, $level = 1) {
+      $input = str_replace("%", "%percentage%", $input);
       $input = str_replace("'", "%single_quote%", $input);
       if ($level > 0){
         $input = str_replace('"', "%double_quote%", $input);
@@ -69,27 +70,28 @@ if (!trait_exists("allBase")){
     }
     function placeSpecChar($input, $level = 1) {
       if ($input == ""){return "";}
+      
+      $input = str_replace("%percentage%", "%", $input);
       if ($level < 1){
         $input = str_replace('%double_quote%', '', $input);
         $input = str_replace("%single_quote%", "", $input);
       }
-      if ($level < 2){
+      else { //level >= 1
         $input = str_replace("%single_quote%", "'", $input);
         $input = str_replace("%double_quote%", '"', $input);
+        if ($level >= 2) {
+          $input = str_replace("%colon%", ':', $input);
+          $input = str_replace("%pcolon%", ';', $input);
+          $input = str_replace("%hyphon%", '-', $input);
+          $input = str_replace("%comma%", ',', $input);
+          $input = str_replace("%sqbrak_left%", '[', $input);
+          $input = str_replace("%sqbrak_right%", ']', $input);
+          $input = str_replace("%qbrak_left%", '{', $input);
+          $input = str_replace("%qbrak_right%", '}', $input);
+          $input = str_replace("%pipe%", '|', $input);
+        }
       }
-      else { //level >= 2
-        $input = str_replace("%single_quote%", "'", $input);
-        $input = str_replace("%double_quote%", '"', $input);
-        $input = str_replace("%colon%", ':', $input);
-        $input = str_replace("%pcolon%", ';', $input);
-        $input = str_replace("%hyphon%", '-', $input);
-        $input = str_replace("%comma%", ',', $input);
-        $input = str_replace("%sqbrak_left%", '[', $input);
-        $input = str_replace("%sqbrak_right%", ']', $input);
-        $input = str_replace("%qbrak_left%", '{', $input);
-        $input = str_replace("%qbrak_right%", '}', $input);
-        $input = str_replace("%pipe%", '|', $input);
-      }
+
       return $input;
     }
     function explodeA($str, $separator = ", ", $reg = null) {
