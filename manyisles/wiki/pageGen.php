@@ -1718,7 +1718,7 @@ MAIN;
         $body = "<div class='code'>$body</div>";
       }
       else {
-        $body = $this->parse->bodyParser($body, 2, $this->database);
+        $body = "[wide]".$this->parse->bodyParser($body, 2, $this->database)."[wide]";
       }
       $fullText .= $body;
       return $fullText;
