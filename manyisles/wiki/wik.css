@@ -265,6 +265,7 @@ body {
     }
     .contentsTable ul {
       padding: 0;
+      list-style-type: none;
     }
     .contentEl {
       margin-top: 3px;

@@ -525,9 +525,6 @@ class gen {
                 $main .= '';
               }
               else {
-                if ($this->domainType == "fandom"){
-                  $main .= "<p><a href='/fandom/source?w=$this->parentWiki'>create new source instead</a></p>";
-                }
                 $main .= '
                  <div class="bottButtCon">
                     <div class="wikiButton" onclick="newWiki=true;switchSupport(0)">New '.ucwords($this->groupName).'</div>
@@ -920,9 +917,9 @@ MAIN;
 
                     <h3  class="complete">Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
                     <p class="complete">This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
-                    <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabTitle.'</textarea>
+                    <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->placeSpecChar($this->article->sidetabTitle).'</textarea>
                     <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
-                    <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->article->sidetabText.'</textarea>
+                    <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->placeSpecChar($this->article->sidetabText).'</textarea>
                     <div><h4>Timeframe</h4>
                     <input name="timeStart" type="text" value ="'.$this->article->timeStart.'" placeholder="Starting Date" />
                     <input name="timeEnd" type="text" value ="'.$this->article->timeEnd.'" placeholder="Ending Date"  /></div>
@@ -945,7 +942,14 @@ MAIN;
                 $main .= '
                 <div class="complete">
                     <h4>Sources (Footnotes)</h4>
-                    <p>Put footnotes in your body text with the "[footnote:X]" syntax. Add sources here as references.</p>
+                    <p>Put footnotes in your body text with the "[footnote:X]" syntax. Add sources here as references.
+                    ';
+                if ($this->domainType == "fandom"){
+                  $main .= " <a href='/fandom/source?w=$this->parentWiki' target='_blank'>Create a new source</a>";
+                }
+
+                $main .= ' 
+                    </p>
                     <table id="gimmeBabes">
                         <tbody id="gimmeBabesTbody">
                         </tbody>
@@ -958,8 +962,8 @@ MAIN;
                     <div class="addSome" onclick="addSome(0);">
                         <i class="fas fa-minus"></i>
                     </div>
-                    <img src="/Imgs/Bar2.png" class="separator"></img>
-                    </div> ';
+                   <img src="/Imgs/Bar2.png" class="separator"></img>
+                </div> ';
             }
             if ($this->power > 1) {
                 $main .= '<div class="complete">
@@ -1972,9 +1976,9 @@ class article {
                         $body = $row["body"];
                         $this->bodyInfo = [];
                         $body = preg_replace('/[\r]/', '\n', $body);
-                        $body = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body);
+                        $body = preg_replace('/[\x00-\x1F]/', '', $body);
                         $body = str_replace("u0027", "'", $body);
-                        if ($body = json_decode($body, true, 22, JSON_INVALID_UTF8_SUBSTITUTE) AND $body != null){
+                        if ($body = json_decode($body, true, 22) AND $body != null){
                           if (!isset($body["text"])){
                             $body["text"] = ["body" => ""];
                           }

@@ -15,7 +15,12 @@ if (!class_exists("parser")){
     function parse($body, $extent = 0, $callback = null) {
       $Parsedown = new Parsedown(!$this->parseClear);
       //extent: -1 pure markdown, 0 markdown and special characters, 1 full html (with images&divs)
-      $body = $Parsedown->parse($body, $extent, $callback);
+      $body = $Parsedown->parse($body, $extent);
+
+      if ($callback != null){
+        $callback($body);
+      }
+
       return $body;
     }
   }
@@ -105,7 +110,7 @@ if (!class_exists("parser")){
       ],
       "link" => [
           "name" => "link",
-          "regex"=>"/\[([^\[\]\(\)]+)\]\(([A-Za-z0-9\.\/:\-\?\= ]+)\)/",
+          "regex"=>"/\[([^\[\]\(\)]+)\]\(([^\(\)]+)\)/",
           "syntax"=>'<a href="%2%">%1%</a>'
       ],
       "squote" => [
@@ -185,7 +190,6 @@ if (!class_exists("parser")){
     public $extent = 1;
     public $styles = "";
     public $idtracker = 0;
-    public $callback = null;
 
     function __construct($safeMode = true) {
       if (!$safeMode){$this->safeMode = false;}
@@ -199,11 +203,10 @@ if (!class_exists("parser")){
       $this->idtracker = 0;
     }
 
-    function parse($body, $extent = 1, $callback = null) {
+    function parse($body, $extent = 1) {
       //extent: -1 pure markdown, 0 markdown and special characters but no elements (not even boxes), 1 full html (with images&divs)
       $this->construct();
       $this->extent = $extent;
-      $this->callback = $callback;
 
       $bodyArr = explode(PHP_EOL, $body);
       foreach ($bodyArr as $i => $line){
@@ -307,8 +310,6 @@ if (!class_exists("parser")){
           }
         }
       }
-      $func = $this->callback;
-      if ($this->callback != null){$func($line);}
       if ($this->extent > -1){
         $line = $this->placeSpecChar($line, 2);
       }

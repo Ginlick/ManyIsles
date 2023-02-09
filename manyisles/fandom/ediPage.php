@@ -223,7 +223,7 @@ else {
     $bodyArr["text"][0]["sidetab"]["text"] = $gen->replaceSpecChar($_POST['sidetabText']);
   }
   $bodyArr["meta"]["description"] = $gen->replaceSpecChar($_POST['description']);
-  $bodyArr = json_encode($bodyArr, JSON_HEX_APOS);
+  $bodyArr = json_encode($bodyArr, JSON_HEX_APOS|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 
   $sidetabImg = str_replace('"', '', $_POST['sidetabImg']); //article image
   $sources = str_replace("'", '’', $_POST['sources']);

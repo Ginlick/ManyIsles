@@ -43,6 +43,7 @@ class parse {
                   $body = $this->addFullChildLine($body, $artId, "spec");
               }
               $this->idifyTitles($body);
+
               if (str_contains($body, "[wiki:new")){$body = $this->addRecents($body, "reg_date");}
               if (str_contains($body, "[wiki:rand")){$body = $this->addRecents($body, "RAND()");}
               if (str_contains($body, "[wiki:pop")){$body = $this->addRecents($body);}
