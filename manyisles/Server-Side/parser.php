@@ -54,7 +54,7 @@ if (!class_exists("parser")){
       "highlighted" => [
         "name" => "highlighted",
         "regex"=> ["o" => "/\[highlighted((?: note| left)*)\]/", "c" => "/\[\/highlighted\]/"],
-        "syntax"=>'<div class="highlighted%1%">%body%</div>',
+        "syntax"=>'<div class="quote highlited%1%">%body%</div>',
         "nesting"=>["level"=>2, "maxParent" => 1],
       ],
       "codeBlock" => [
