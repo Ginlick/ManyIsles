@@ -35,6 +35,7 @@ if (!trait_exists("allBase")){
       }
     }
     function giveServerInfo($key) {
+      $this->checkServerInfo();
       if (isset($this->serverInfo[$key])){
         return $this->serverInfo[$key];
       }

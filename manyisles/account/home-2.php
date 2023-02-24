@@ -230,7 +230,7 @@ $ordersBody = <<<NICENICE
             <div id="orders" class="column">
                 <h1>Orders</h1>
                 <img src="/IndexImgs/coins.png" alt="coins" style='width:30%;display:block;margin:auto;padding: 1vw 0;' class='separator'>
-                <p>Your entire order history in the <a href="/ds/home.php" target="_blank">digital store</a>.</p>
+                <p>Your entire order history in the <a href="/ds/store" target="_blank">digital store</a>.</p>
                 COOLTABLEHERE
             </div>
 

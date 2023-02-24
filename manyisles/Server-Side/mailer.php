@@ -4,7 +4,7 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 if (!class_exists("mailer")){
-  require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/Parsedown.php");
+  //require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
   require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/allBase.php");
   require($_SERVER['DOCUMENT_ROOT']."/Server-Side/PHPMailer/PHPMailer.php");
   require($_SERVER['DOCUMENT_ROOT']."/Server-Side/PHPMailer/Exception.php");
@@ -12,6 +12,7 @@ if (!class_exists("mailer")){
 
   class mailer {
     private $baseInfo;
+    use allBase;
 
     function __construct($mailInfo) {
       $this->baseInfo = $mailInfo;
@@ -61,6 +62,21 @@ if (!class_exists("mailer")){
       //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
       return ($mail->send());
+    }
+
+    function easyMail($subject, $message, $recipient = "", $sender = ""){
+      if ($recipient == ""){
+        $recipient = $this->giveServerInfo("admin_email");
+      }
+      $senderInfo = [];
+      if ($sender != ""){
+        $senderInfo = ["address" => $sender, "user" => ""];
+        if (isset($this->baseInfo["other_info"][$sender])){
+          $senderInfo = $this->baseInfo["other_info"][$sender];
+        }
+      }
+      $recipientInfo = [[$recipient]];
+      $this->sendMail($recipientInfo, $subject, $message, $senderInfo);
     }
 
   }

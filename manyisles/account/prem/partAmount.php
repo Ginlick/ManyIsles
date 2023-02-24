@@ -2,8 +2,9 @@
 
 
 function giveProdAmounts() {
-  require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
-  require($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_dl.php");
+  require($_SERVER['DOCUMENT_ROOT']."/Server-Side/allBase.php");
+  $useBase = new useBase();
+  $conn = $useBase->addConn("accounts"); $dlconn = $useBase->addConn("dl");
   $partnersArr = [];
   $query = "SELECT * FROM partners WHERE type > 0";
   if ($max = $conn->query($query)) {
