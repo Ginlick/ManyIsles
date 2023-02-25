@@ -169,7 +169,12 @@
         }
         else { document.getElementById(clicked).style.display = "block"; }
     }
-    clinnation("Sign");
+    if (getCookie("hasAccount")){
+      clinnation("Log");
+    }
+    else {
+      clinnation("Sign");
+    }
 
     var urlParams = new URLSearchParams(window.location.search);
     var error = urlParams.get('error');
@@ -193,9 +198,11 @@
       createPopup("d:acc;txt:Account deleted.");
     }
 
-
     /*acp*/
     returnFin = function (resultObject) {
+      if (getCookie("acceptCookies") && !getCookie("hasAccount")){
+        document.cookie = "hasAccount=1; path=/;";
+      }
       location.reload();
     }
     returnFcreate = function (resultObject) {
@@ -206,6 +213,9 @@
       }
       else {
         document.getElementById("signCreateBigCont").replaceChildren(this.giveHTMLel("successCreateHTML"));
+      }
+      if (getCookie("acceptCookies")){
+        document.cookie = "hasAccount=1; path=/;";
       }
     }
     function acp_launcher() {

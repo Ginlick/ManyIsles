@@ -1,4 +1,5 @@
 <?php
+//generates thumbnails ([wiki:X]), [contentsTable:X], [footnote:X]
 
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/engine.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
@@ -42,6 +43,7 @@ class parse {
                   $body = $this->addFullChildLine($body, $artId, "spec");
               }
               $this->idifyTitles($body);
+
               if (str_contains($body, "[wiki:new")){$body = $this->addRecents($body, "reg_date");}
               if (str_contains($body, "[wiki:rand")){$body = $this->addRecents($body, "RAND()");}
               if (str_contains($body, "[wiki:pop")){$body = $this->addRecents($body);}

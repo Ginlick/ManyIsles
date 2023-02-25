@@ -2,12 +2,11 @@
 if (isset($_GET["id"])){if (preg_match("/^[0-9]+$/", $_GET["id"])!=1){header("Location: /dl/home");exit();} else {$artId = $_GET["id"];} } else {header("Location: /dl/home");exit();}
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parseTxt.php");
-require_once($_SERVER['DOCUMENT_ROOT']."/wiki/Parsedown.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php");
 require_once("global/engine.php");
 $dl = new dlengine($conn);
 if (!$dl->user->check()){$dl->go("home", "dl");}
-$parse= new parseDown();
-$parse->setSafeMode(true);
+$parse= new parser();
 
 $digital = false;
 $query = "SELECT * FROM products WHERE id = $artId";
@@ -146,6 +145,7 @@ $dl->dlconn->query($query);
     }
     .details.full {
       max-height: none;
+      padding: 10px;
     }
     .details.full:after {
       display: none;
@@ -278,7 +278,7 @@ $dl->dlconn->query($query);
               <div  class="details" id="detailsBlock">
                 <div>
                         <?php if ($artGsystem != 0){echo "<p>Game System: ".$dl->gsystArr[$artGsystem]."</p>";}
-                        echo txtUnparse($parse->text($artDesc)); ?>
+                        echo txtUnparse($parse->parse($artDesc, 1)); ?>
                 </div>
               </div>
               <p class="viewMore fakelink" id="viewMore" onclick="toggleView()">

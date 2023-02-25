@@ -1,9 +1,12 @@
 ﻿<?php
 $todoid = substr(preg_replace("/[^0-9]/", "", $_GET['id']), 0, 222);
 
-require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
-$user = new adventurer($conn, $_COOKIE["loggedIn"]);
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/modMailer.php");
+$user = new adventurer(null, $_COOKIE["loggedIn"]);
+
+$conn = $user->conn;
+
 $id = $user->user;
 if (!$user->check(false)){
   header("Location: /account/home");exit();
@@ -25,7 +28,18 @@ if ($conn->query($query)){
   if ($partner->promote("High Merchant")){
     $query = "DELETE FROM requests WHERE domain = 'pub' AND request = 'prem' AND requestee = $todoid";
     $conn->query($query);
-    header("Location:/account/admin?i=activtd");
+
+    //email
+    $mailer = new modMailer();
+    $message = "Dear ".$partner->fullName."<br><br>
+      Your partnership's premium extension was activated! You can view your partnership here: <a href='https://".$user->giveServerInfo("servername")."/account/Publish'>https://".$user->giveServerInfo("servername")."/account/Publish</a> <br><br>
+      Cordially,<br>
+      The Many Isles Publishing Service
+    ";
+    echo "to ".$partner->email;
+    $mailer->send($partner->email, "Premium Partnership Activated", $message, "publishing");
+
+    header("Location:/account/admin.php?i=activtd");
   }
 }
 

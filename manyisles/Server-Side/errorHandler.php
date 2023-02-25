@@ -6,6 +6,7 @@ if (!class_exists("errorHandler")) {
   class errorHandler {
     use allBase;
     public $testMode = false;
+    private $mailer;
 
     function __construct() {
       $this->construct();
@@ -13,6 +14,8 @@ if (!class_exists("errorHandler")) {
       if (file_exists(dirname(dirname($_SERVER['DOCUMENT_ROOT']))."/test.txt")) {
         $this->testMode = true;
       }
+
+      $this->mailer = $this->addMailer();
     }
 
     function redirect($e) {
@@ -99,8 +102,9 @@ if (!class_exists("errorHandler")) {
         if (mysqli_affected_rows($this->conn)==0){
           $query = "INSERT INTO errors (type, message, severity) VALUES ('$type', '$message', '$severity')";
           $this->conn->query($query);
-          if ($severity > 1){
-            mail("pantheon@manyisles.ch", "Bug Report: Severity $severity", "$message");
+          if ($severity > 1 AND !$this->testMode){
+            $message .= "<br><br> https://".$this->giveServerInfo("servername")."/account/admin/errors";
+            $this->mailer->easyMail("Bug Report: Severity $severity", $message, "pantheon@manyisles.ch", "website");
           }
         }
       }

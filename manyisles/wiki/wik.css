@@ -122,8 +122,10 @@ p, .note, td, th, ul {
 
 
 .col-r ul {
-  list-style-type: none;
   padding-left: 10px;
+}
+.sidetab ul {
+  list-style-type: none;
 }
 li {
   font-size: var(--wiki-fonts-p);
@@ -196,6 +198,10 @@ body {
 .col-l p {
     line-height: 1.3;
 }
+.col-l ul {
+  list-style-type: none;
+  padding: 0;
+}
 
 .col-r {
     width: 99%;
@@ -259,6 +265,7 @@ body {
     }
     .contentsTable ul {
       padding: 0;
+      list-style-type: none;
     }
     .contentEl {
       margin-top: 3px;
@@ -713,6 +720,35 @@ a:hover .aHoverDiv, span:hover .aHoverDiv {
     width: 100%;
     max-width: 1200px;
 }
+.fullTable table {
+  max-width:none;
+  border: 1px solid var(--all-color-albord);
+  border-radius: 10px;
+}
+.fullTable thead tr {
+  background-color: var(--col-lightwite);
+}
+.fullTable thead tr td {
+  padding: 7px;
+}
+.sortable .arrow {
+  border: solid var(--doc-text-color);
+  border-width: 0 3px 3px 0;
+  margin: 0 4px;
+  display: inline-block;
+  padding: 3px;
+  transform: -45deg;
+  -webkit-transform: rotate(-45deg);
+}
+.sortable .arrow.down {
+  transform: 45deg;
+  -webkit-transform: rotate(45deg);
+}
+.sortable .arrow.up {
+  transform: -135deg;
+  -webkit-transform: rotate(-135deg);
+}
+
 .icon {
     display:none;
 }

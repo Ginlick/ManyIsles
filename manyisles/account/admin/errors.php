@@ -18,12 +18,14 @@ function giveErrorTable($which){
   else {
     $query .= " WHERE severity <= 1 AND type != 8192";
   }
-  $query .= " AND status = 1";
+  $query .= " AND status = 1 ORDER BY occurrences DESC";
   if ($result = $conn->query($query)){
-    $return .= "<table><thead><tr><td>id</td><td>message</td><td>occurences</td><td></td></thead><tbody>";
+    $return .= "<table><thead><tr><td>latest</td><td>message</td><td>occurences</td><td></td></thead><tbody>";
     while ($row = $result->fetch_assoc()) {
       $return .= "<tr>";
-      $return .= "<td>".$row["id"]."</td>";
+      //$return .= "<td>".$row["id"]."</td>";
+      $date = new DateTime($row["reg_date"]);
+      $return .= "<td>".$date->format("d.m.y")."</td>";
       $return .= "<td>".$user->placeSpecChar($row["message"])."</td>";
       $return .= "<td>".$row["occurrences"]."</td>";
       $return .= "<td><a href='deleteError.php?id=".$row["id"]."'>Fixed</a></td>";
@@ -46,6 +48,9 @@ function giveErrorTable($which){
     <style>
     table {
       border-collapse: collapse;
+    }
+    table thead td {
+      font-weight: bold;
     }
         table tbody tr:nth-child(odd) {
           background: var(--diltou-lines);

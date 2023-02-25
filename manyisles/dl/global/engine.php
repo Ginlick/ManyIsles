@@ -1,6 +1,8 @@
 <?php
 
+require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/allBase.php");
 class dlengine {
+    use allBase; //technically this class never uses it
     public $productTab = '
            <div class="container">
                 <a  href="SENDMETOTHEPRODUCT">
