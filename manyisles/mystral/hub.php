@@ -40,6 +40,13 @@ BARRR;
     <?php echo $gen->giveFavicon(); ?>
     <title><?php echo $gen->domainName; ?></title>
 <style>
+#imgUploaderCont {
+  --fpi-bg: #9ab6bf;
+  --fpi-contrast: black;
+  --fpi-accent: #61b3dd;
+  width: 60%;
+  margin: auto;
+}
     .content {
         background-color: var(--doc-base-color);
     }
@@ -120,44 +127,6 @@ h1 {
     padding: 30px 0 10px;
 }
 
-.file-upload {
-    background-color: var(--wiki-color-a);
-    width: 60%;
-    margin: 40px auto;
-    padding: 2vw;
-}
-.file-upload-content {
-    display: none;
-    text-align: center;
-}
-.file-upload-input {
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    outline: none;
-    opacity: 0;
-    cursor: pointer;
-}
-.image-upload-wrap {
-    border: 4px dashed black;
-    position: relative;
-    transition: all .3s ease;
-    padding: 10px;
-}
-    .image-dropping,
-    .image-upload-wrap:hover {
-        background-color: #61b3dd;
-        border: 4px dashed black;
-    }
-.image-title-wrap {
-    padding: 0 15px 15px 15px;
-    color: #222;
-}
-.drag-text {
-    text-align: center;
-}
 .remove-image {
     width: 40%;
     margin: 0 auto;
@@ -183,6 +152,7 @@ h1 {
         border: 0;
         transition: all .2s ease;
     }
+
 .allImages {
     max-width: 1700px;
     margin: auto;
@@ -316,18 +286,8 @@ h1 {
             <?php
 
                 echo '
-                <p id="imagesLeftP">You can upload another <span id="imagesLeft">22</span> images.
-                <div class="file-upload">
-                    <div class="image-upload-wrap">
-                    <input class="file-upload-input" type="file" onchange="readURL(this);" name="file" id="file-upload-input" accept=".png, .jpg" />
-                    <div class="drag-text">
-                        <p><i class="fas fa-arrow-up"></i> Upload Image (max 2 mb)</p>
-                    </div>
-                    </div>
-                    <div class="file-upload-content">
-                    <p class="image-title"><i class="fas fa-spinner fa-spin"></i> Uploading <span id="uploaded-image-title">Uploaded Image</span></p>
-                    </div>
-                </div>
+                <p id="imagesLeftP"></p>
+                <div id="imgUploaderCont"></div>
                 <input type="text" class="filterBar" placeholder="Filter images..." oninput="filter(this)"></input>
                 ';
 
@@ -366,11 +326,11 @@ h1 {
     </div>
 </body>
 </html>
-<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <?php
     echo $gen->giveScripts();
     echo $gen->giveDocScript();
 ?>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script>
     var imagesLeft = <?php $left = $gen->mystData["images"] - $gen->domainSpecs["totalImages"]; echo $left; ?>;
     if (!switched){switchDis("home");}
@@ -396,95 +356,72 @@ h1 {
         createPopup("d:poet;txt:Page not found.");
     }
 
-//images
-function readURL(input) {
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
+//anti-Cache (2.3.6)
+var urlParams = new URLSearchParams(window.location.search);
+var view = urlParams.get("view");
+if (view != null){
+    switchDis(view);
+}
+function switchDis(which) {
+    for (let cont of document.getElementsByClassName("colrTab")) {
+        cont.style.display = "none";
+    }
+    for (let cont of document.getElementsByClassName("navLink")) {
+        cont.classList.remove("selected");
+    }
+    var tab = document.getElementById(which);
+    var naver = document.getElementById("sid" + which);
+    if (tab != null){tab.style.display = "block";}
+    if (naver != null){naver.classList.add("selected");}
+}
 
-    reader.onload = function(e) {
-      $('.image-upload-wrap').hide();
+//fpi
+addCss("/Server-Side/src/fileportal/fpi-builder.js", "js");
 
-      $('.file-upload-content').show();
-
-      $('#uploaded-image-title').html(input.files[0].name);
-    };
-
-    reader.readAsDataURL(input.files[0]);
-
-    getFile = encodeURI("uploadImage.php");
-    var xhttp = new XMLHttpRequest();
-    var formData = new FormData();
-    formData.append("file", input.files[0]);
-    xhttp.onreadystatechange = async function () {
-        if (this.readyState == 4 && this.status == 200) {
-          console.log(this.responseText);
-            $('.allImages').prepend(this.responseText);
-            removeUpload();
-            createPopup("d:poet;txt:Image uploaded");
-            imageCount(-1);
-            getIndexImgs();
-        }
-        else if (this.readyState == 4) {
-            removeUpload();
-            createPopup("d:poet;txt:Error. Image could not be uploaded");
-        }
-    };
-    xhttp.open("POST", getFile, true);
-    xhttp.send(formData);
-  } else {
-    removeUpload();
+returnF = function (r){
+  for (let file of r["files"]) {
+    $('.allImages').prepend(file["galleryHTML"]); //somehow convert imgURL to the gallery image thing
   }
+  imageCount(-r["files"].length);
+  getIndexImgs();
 }
+function fpi_launcher() {
+  fpiBuilder = new fpi_builder(221, returnF);
+  fpiBuilder.createPortal(document.getElementById("imgUploaderCont"), "broad");
+  imageCount(0);
+};
 
-function removeUpload() {
-  $('.file-upload-input').replaceWith($('.file-upload-input').clone());
-  $('.file-upload-content').hide();
-  $('.image-upload-wrap').show();
-}
-$('.image-upload-wrap').bind('dragover', function () {
-        $('.image-upload-wrap').addClass('image-dropping');
-    });
-    $('.image-upload-wrap').bind('dragleave', function () {
-        $('.image-upload-wrap').removeClass('image-dropping');
-});
 
+//images
+var namee;
 function deleteImage(name) {
-    getFile = encodeURI("deleteImage.php");
-    var xhttp = new XMLHttpRequest();
-    var formData = new FormData();
-    formData.append("name", name);
-    xhttp.onreadystatechange = async function () {
-        if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-            createPopup("d:poet;txt:Image deleted");
-            document.getElementById(name).remove();
-            imageCount(1);
-        }
-        else if (this.readyState == 4) {
-            createPopup("d:poet;txt:Error. Image could not be deleted.");
-        }
-    };
-    xhttp.open("POST", getFile, true);
-    xhttp.send(formData);
+  let postDel = function (){
+    document.getElementById(namee).remove();
+    imageCount(1);
+  }
+  fpiBuilder.deleteImage(name, postDel);
+  namee = name;
 }
 
 function imageCount(n) {
     imagesLeft += n;
-    if (5 > imagesLeft && imagesLeft > 0){$("#imagesLeftP").show();$("#imagesLeft").html(imagesLeft);}
-    else if (imagesLeft < 0){$("#imagesLeftP").show();$("#imagesLeftP").html("You have too many images. Either delete some, or buy a better subscription.<br>If you fail to do so, we will arbitrarily delete some of your images.");document.getElementById("imagesLeftP").style.color = "var(--col-red)";}
-    else {$("#imagesLeftP").hide();}
+    $("#imagesLeftP").hide();
+    if (5 > imagesLeft && imagesLeft > 0){$("#imagesLeftP").show(); $("#imagesLeftP").html("You can upload another " + imagesLeft + " images.");$("#imagesLeftP").css("color", "");}
+    else if (imagesLeft < 0){$("#imagesLeftP").show();$("#imagesLeftP").html("You have "+ Math.abs(imagesLeft) +" too many images. Either delete some, or buy a better subscription.<br>If you fail to do so, we may arbitrarily delete some of your images.");$("#imagesLeftP").css("color", "var(--col-red)");}
 
     if (imagesLeft < 1){
-        $('.image-upload-wrap').hide();
-        $('.file-upload-content').show();
-        $('.image-title').html("Your image count is full. Buy a bigger subscription.");
+      $('.image-upload-wrap').hide();
+      $('.file-upload-content').show();
+      $('.image-title').html("Your image count is full. Buy a bigger subscription.");
     }
-    else {removeUpload();}
+    else if (imagesLeft + n > 0){
+      fpiBuilder.createPortal(document.getElementById("imgUploaderCont"), "broad");
+    }
+    //else {fpiBuilder.removeUpload($("#imgUploaderCont"));}
 
     if (document.getElementsByClassName("imageContainer").length > 1){$('.filterBar').show();}
     else {$('.filterBar').hide();}
 }
-imageCount(0);
 
 function copyLink(text) {
     navigator.clipboard.writeText(text);
@@ -533,24 +470,5 @@ function filter(input) {
             block.style.display = "none";
         }
     }
-}
-
-//anti-Cache (2.3.6)
-var urlParams = new URLSearchParams(window.location.search);
-var view = urlParams.get("view");
-if (view != null){
-    switchDis(view);
-}
-function switchDis(which) {
-    for (let cont of document.getElementsByClassName("colrTab")) {
-        cont.style.display = "none";
-    }
-    for (let cont of document.getElementsByClassName("navLink")) {
-        cont.classList.remove("selected");
-    }
-    var tab = document.getElementById(which);
-    var naver = document.getElementById("sid" + which);
-    if (tab != null){tab.style.display = "block";}
-    if (naver != null){naver.classList.add("selected");}
 }
 </script>

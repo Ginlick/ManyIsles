@@ -38,19 +38,7 @@ $flws = "<span id='followNum'>".$targetBuserInfo["followNum"]."</span> follower"
 .profileBlock {
   border-bottom: var(--blog-standardborder);
 }
-.topinfo {
-  display: flex;
-  flex-direction: row;
-}
-  .imageShower {
-    width: 30%;
-  }
-.rightsquare, .description {
-  padding: 20px;
-}
-.rightsquare .mainname {
-  font-size: var(--all-fonts-h2);
-}
+
 </style>
 <body>
     <?php echo $blog->giveTopnav(); ?>

@@ -6,11 +6,12 @@ $postId = 0;
 if (isset($_GET["p"])){$postId = $blog->baseFiling->purate($_GET['p']);}
 
 $blog->userCheck(); $isUser = false;
-$query = "SELECT buser FROM posts WHERE code = '$postId'";
+$query = "SELECT buser, banner FROM posts WHERE code = '$postId'";
 if ($toprow = $blog->blogconn->query($query)) {
   if (mysqli_num_rows($toprow) == 1) {
     while ($row = $toprow->fetch_assoc()) {
       if ($blog->hasProfile($row["buser"])) {$isUser = true;}
+      $banner = $row["banner"];
     }
   }
 }
@@ -19,6 +20,7 @@ if ($isUser) {
   if ($postId != 0){
     $query = "DELETE FROM posts WHERE code = '$postId'";
     if ($blog->blogconn->query($query)) {
+      $blog->baseFiling->deleteD($banner);
       $blog->go("feed?i=postDeleted");
     }
   }

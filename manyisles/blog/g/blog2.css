@@ -180,35 +180,6 @@ button:hover, .wikiButton:hover, .blogButton:hover {
     padding: 10px 0 15px;
     width: 100%;
   }
-  .uploadable {
-    background-color: var(--blog-lightgrey);
-    border: 1px dashed var(--blog-darkygray);
-    transition: .2s ease;
-    padding: 20px 10px;
-    position: relative;
-  }
-  .uploadable:hover {
-    background-color: var(--blog-darkygray);
-  }
-  .fileInput {
-    opacity: 0;
-    position: absolute;
-    top: 0; left: 0;
-    height: 100%;
-    width: 100%;
-  }
-  .bannerBlock {
-    height: 100px; width: 100%;
-    border: 1px dashed var(--blog-darkygray);
-    border-bottom: none;
-    overflow: hidden;
-  }
-  .inBanner {
-    display: none;
-    width: 100%;
-    object-fit: cover;
-    object-position: 100% 50%;
-  }
   input[type=checkbox] {
     width: auto;
     margin: 0px 5px;
@@ -500,6 +471,50 @@ button:hover, .wikiButton:hover, .blogButton:hover {
   }
   .profilesBlock.small .mainname {
     font-size: var(--all-fonts-med);
+  }
+
+  /*profile square */
+
+  .squareCont {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+  }
+
+      .squareCont:after {
+          content: "";
+          display: block;
+          padding-bottom: 100%;
+      }
+
+      .squareCont .square {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+  .square img {
+      height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      border-radius: 0px;
+  }
+
+  .topinfo {
+    display: flex;
+    flex-direction: row;
+  }
+    .imageShower {
+      width: 30%;
+    }
+  .rightsquare, .description {
+    padding: 20px;
+  }
+  .rightsquare .mainname {
+    font-size: var(--all-fonts-h2);
   }
 
   /*mobile*/
