@@ -36,7 +36,7 @@ $gen->pagename = "Source";
     <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta charset="UTF-8" />
     <?php echo $gen->giveFavicon(); ?>
-    <title><?php  if ($writingNew) { echo "Write new $gen->pagename"; } else { echo "Edit ".$gen->article->shortName." ".$gen->pagename; } ?> | Fandom</title>
+    <title><?php  if ($writingNew) { echo "Write new $gen->pagename"; } else { echo "Edit ".$gen->article->shortName." ".$gen->pagename; } ?> | Fandom</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -75,3 +75,29 @@ $gen->pagename = "Source";
     echo $gen->giveScripts();
     echo $gen->giveEditScript();
 ?>
+<script src="/Server-Side/src/fileportal/fpi-builder.js"></script>
+<script>
+var allSelectable = document.getElementsByClassName("selectable");
+for (let selectable of allSelectable){
+    if (!selectable.hasAttribute("shown")){
+        selectable.style.display = "none";
+    }
+}
+
+function changeSelectable(selectin){
+    let name = selectin.value;
+    console.log(name);
+    for (let selectable of allSelectable){
+        console.log(selectable.id);
+        selectable.style.display = "none";
+        if (selectable.id == name){
+            selectable.style.display = "block";
+        }
+    }
+}
+changeSelectable(document.getElementById("srcSelector"));
+var fpi = new fpi_builder(250);
+var srcInput = document.getElementById("fpi-srcuploader");
+fpi.createPortal(srcInput, "broad", 1);
+
+</script>

@@ -29,37 +29,37 @@ if (!class_exists("parser")){
     private $boxTypes = [
       "fullTable" => [
         "name" => "fullTable",
-        "regex"=> ["o" => "/^\[fullTable\]/", "c" => "/\[\/fullTable\]/"],
+        "regex"=> ["o" => "/^[\s]*\[fullTable\]/", "c" => "/\[\/fullTable\]/"],
         "syntax"=>'<div class="wide fullTable">%body%</div>',
         "nesting"=>["level"=>1, "maxParent" => 1],
       ],
       "wide" => [
         "name" => "wide",
-        "regex"=> ["o" => "/^\[wide\]/", "c" => "/\[\/wide\]/"],
+        "regex"=> ["o" => "/^[\s]*\[wide\]/", "c" => "/\[\/wide\]/"],
         "syntax"=>'<div class="wide">%body%</div>',
         "nesting"=>["level"=>1, "maxParent" => 1],
       ],
       "gallery" => [
         "name" => "gallery",
-        "regex"=> ["o" => "/^\[gallery\]/", "c" => "/\[\/gallery\]/"],
+        "regex"=> ["o" => "/^[\s]*\[gallery\]/", "c" => "/\[\/gallery\]/"],
         "syntax"=>'<div class="gallery">%body%</div>',
         "nesting"=>["level"=>1, "maxParent" => 1],
       ],
       "quote" => [
         "name" => "quote",
-        "regex"=> ["o" => "/\[quote((?: note| left)*)\]/", "c" => "/\[\/quote\]/"],
+        "regex"=> ["o" => "/[\s]*\[quote((?: note| left)*)\]/", "c" => "/\[\/quote\]/"],
         "syntax"=>'<div class="quote%1%">%body%</div>',
         "nesting"=>["level"=>2, "maxParent" => 1],
       ],
       "highlighted" => [
         "name" => "highlighted",
-        "regex"=> ["o" => "/\[highlighted((?: note| left)*)\]/", "c" => "/\[\/highlighted\]/"],
+        "regex"=> ["o" => "/[\s]*\[highlighted((?: note| left)*)\]/", "c" => "/\[\/highlighted\]/"],
         "syntax"=>'<div class="quote highlited%1%">%body%</div>',
         "nesting"=>["level"=>2, "maxParent" => 1],
       ],
       "codeBlock" => [
           "name" => "codeBlock",
-          "regex"=> ["o" => "/\[codeBlock\]/", "c" => "/\[\/codeBlock\]/"],
+          "regex"=> ["o" => "/[\s]*\[codeBlock\]/", "c" => "/\[\/codeBlock\]/"],
           "syntax"=>'<div class="code">%body%</div>',
           "nesting"=>["level"=>2, "maxParent" => 2]
       ],
@@ -219,13 +219,6 @@ if (!class_exists("parser")){
     //lines
     function newline(string $line) {
       $line = preg_replace("/[\r\n]/", "", $line);
-      if (preg_match("/{(?:.+\[.+\])+}/", $line)){//image
-        $this->openBox("image");
-        $line = $this->parseImage($line);
-        $this->currLine = ["text" => $line];
-        $this->endline();
-        return;
-      }
 
       //explicit boxes: parse tags
       $closeBoxes = [];
@@ -244,6 +237,15 @@ if (!class_exists("parser")){
           $closeBoxes[] = $boxType["name"];
           $line = preg_replace($boxType["regex"]["c"], "", $line);
         }
+      }
+
+      //images
+      if (preg_match("/{(?:.+\[.+\])+}/", $line)){//image
+        $this->openBox("image");
+        $line = $this->parseImage($line);
+        $this->currLine = ["text" => $line];
+        $this->endline();
+        return;
       }
 
       $this->currLine = ["text" => $line, "requiredBox" => "paragraph"];

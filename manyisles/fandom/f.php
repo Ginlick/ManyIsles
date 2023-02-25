@@ -27,7 +27,9 @@ $gen->doFandWork();
 <head>
     <meta charset="UTF-8" />
     <?php echo $gen->giveFavicon(); ?>
-    <title><?php echo $gen->article->name; ?> | Fandom</title>
+    <title><?php echo $gen->article->name; ?> | Fandom</title>
+    <style>
+    </style>
 </head>
 <body style="<?php echo $gen->giveWikStyle(); ?>">
     <?php echo $gen->giveTopBar(); ?>

@@ -1,9 +1,12 @@
 ﻿<?php
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/fandom/parseIWDate.php");
+require($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
+$wparse = new parse($conn, 0);
 
-$fullChildLine = "";
+$fullChildLine = ""; $bigChildLine = "";
 $seenArray = array();
 $query = "SELECT a.*
 FROM pages a
@@ -14,36 +17,66 @@ if ($firstrow = $conn->query($query)) {
     while ($row = $firstrow->fetch_assoc()) {
         //create imgCont
         $id = $row["id"];
-        $pageName = $row["shortName"];
-        $pageImg = $row["banner"];
-        $thumbImg = $row["sidetabImg"];
-        $pageStatus = $row["status"];
-        $root = $row["root"];
-        if (!in_array($id, $seenArray)){
-            array_push($seenArray, $id);
-            if ($root == 0){
-                if ($pageStatus != "suspended"){
-                  //check visibility
-                  $visible = true;
-                  $query = "SELECT visibility FROM wiki_settings WHERE id = $id";
-                  if ($firstrow2 = $conn->query($query)) {
-                    if (mysqli_num_rows($firstrow2) > 0){
-                      while ($row2 = $firstrow2->fetch_assoc()) {
-                        if ($row2["visibility"]=="hidden"){
-                          $visible = false;
-                        }
-                      }
-                    }
-                  }
-
-                  if ($visible){
-                    //add entry
-                    if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg);}
-                    $fullChildLine = $fullChildLine." <div class='domCont'><a href='/fandom/wiki/".$id."/article'><img src='".$pageImg."' /> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
-                  }
+        $article = new article(["id"=>$id], $conn);
+        if ($article->status != "suspended"){
+          //check visibility
+          $visible = true;
+          $query = "SELECT visibility FROM wiki_settings WHERE id = $id";
+          if ($firstrow2 = $conn->query($query)) {
+            if (mysqli_num_rows($firstrow2) > 0){
+              while ($row2 = $firstrow2->fetch_assoc()) {
+                if ($row2["visibility"]=="hidden"){
+                  $visible = false;
                 }
+              }
             }
+          }
+          if ($visible){
+            $wikiThumbnail = $wparse->bodyParser("[wiki:art$id]", 2);
+            if (isset($article->bodyInfo["meta"]["description"]) AND $article->bodyInfo["meta"]["description"] != ""){
+                $toAdd = "<div class='wikiThumbCont'><div class='wikiThumbContLeft'>".$wikiThumbnail."</div><div class='wikiThumbContRight'>";
+                $toAdd .= "<h3>".$article->name." Wiki</h3>";
+                $toAdd .= $wparse->bodyParser($article->bodyInfo["meta"]["description"]);
+                $toAdd .= "</div></div>";
+                $bigChildLine .= $toAdd;
+            }
+            else {
+                $fullChildLine .= $wikiThumbnail;
+            }
+
+          }
         }
+
+        // $pageName = $article->shortName;
+        // $pageImg = $row["banner"];
+        // $thumbImg = $row["sidetabImg"];
+        // $pageStatus = $row["status"];
+        // $root = $row["root"];
+        // if (!in_array($id, $seenArray)){
+        //     array_push($seenArray, $id);
+        //     if ($root == 0){
+        //         if ($pageStatus != "suspended"){
+        //           //check visibility
+        //           $visible = true;
+        //           $query = "SELECT visibility FROM wiki_settings WHERE id = $id";
+        //           if ($firstrow2 = $conn->query($query)) {
+        //             if (mysqli_num_rows($firstrow2) > 0){
+        //               while ($row2 = $firstrow2->fetch_assoc()) {
+        //                 if ($row2["visibility"]=="hidden"){
+        //                   $visible = false;
+        //                 }
+        //               }
+        //             }
+        //           }
+
+        //           if ($visible){
+        //             //add entry
+        //             if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg);}
+        //             $fullChildLine .= " <div class='domCont'><a href='/fandom/wiki/".$id."/article'><img src='".$pageImg."' /> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
+        //           }
+        //         }
+        //     }
+        // }
     }
 }
 
@@ -78,11 +111,25 @@ if (isset($_COOKIE["loggedIn"])) {
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/Imgs/FaviconWiki.png">
-    <title> Home | Fandom</title>
+    <title> Home | Fandom</title>
     <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
     <link rel="stylesheet" type="text/css" href="/wiki/wik.css">
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <style>
+        .wikiThumbCont {
+            padding: 15px;
+            display: flex;
+        }
+        .wikiThumbCont .wikiThumbContLeft, .wikiThumbContRight {
+            padding: 10px;
+            min-width: 222px;
+        }
+        .wikiThumbContLeft .domCont {
+            width: 100%;
+        }
+        .nop p {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -128,7 +175,8 @@ if (isset($_COOKIE["loggedIn"])) {
             <h2>Explore Wikis</h2>
             <p>
 
-                <?php echo $fullChildLine; ?>
+
+                <?php echo $bigChildLine; echo "<div class='nop'>".$fullChildLine."</div>"; ?>
 
 
         </div>

@@ -854,7 +854,7 @@ MAIN;
             $main .= '<span class="'.$this->typeTab.'">'.$this->wikiName." ".$this->groupName;
         if ($this->article->root == 0) {$main .= " homepage";}
             $main .= '</span></h1>
-            <form action="/fandom/ediPage.php" method="POST" class="pageForm">
+            <form action="/fandom/ediPage.php" method="POST" class="pageForm" enctype="multipart/form-data">
             <input type="text" name="id" value="'.$this->article->page.'"style="display:none;" required></input>
             ';
 
@@ -1105,16 +1105,45 @@ MAIN;
       return $fullblock;
     }
     function giveREditSrc() {
-      $main = '
-      <input name="cate" type="text" style="display:none;visibility:hidden;opacity:0" value="Source" />
-      <input type="number" name="importance" style="display:none;visibility:hidden;opacity:0" value="0" />
-      <h3>Source Details</h3>
-      <!--<label for="description">Description<span class="roundInfo">Takes Markdown</span></h3>-->
-      <textarea name="description" rows = "3" placeholder="Source Description" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->bodyInfo["meta"]["description"]).'</textarea>
-      <p>Note that we currently only support sources in <a href="/docs/24/Markdown" target="_blank">markdown table</a>/JSON format.</p>
-      <textarea name="body" rows = "10" placeholder="Source" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->body).'</textarea>
-      ';
-      return $main;
+        $srcType = "text"; $srcBod = $this->placeSpecChar($this->article->body); $srcInfo = ["name" => "Unknown File"];
+        if (isset($this->article->bodyInfo["source"])){
+            $srcType = $this->article->bodyInfo["source"]["type"];
+            if ($this->article->bodyInfo["source"]["text"] != "") {
+                $srcBod = $this->placeSpecChar($this->article->bodyInfo["source"]["text"]);
+                if (isset($this->article->bodyInfo["source"]["fileInfo"])){
+                    $srcInfo = $this->article->bodyInfo["source"]["fileInfo"];
+                } 
+           }
+        }
+        $main = '
+        <input name="cate" type="text" style="display:none;visibility:hidden;opacity:0" value="Source" />
+        <input type="number" name="importance" style="display:none;visibility:hidden;opacity:0" value="0" />
+        <h3>Source Details</h3>
+        <!--<label for="description">Description<span class="roundInfo">Takes Markdown</span></h3>-->
+        <textarea name="description" rows = "3" placeholder="Source Description" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->bodyInfo["meta"]["description"]).'</textarea>
+
+        <h4>Source Data</h4>
+        <label for="srcSelector">Source Format:</label>
+        <select name="srcSelector" onchange="changeSelectable(this)" id="srcSelector">
+            <option value="srcItemText" '; if ($srcType == "text") {$main .= "selected";} $main .= '>Text Data</option>
+            <option value="srcItemUpFile" '; if ($srcType == "file") {$main .= "selected";} $main .= '>Upload File</option>
+            <option value="srcItemExFile" '; if ($srcType == "link") { $main .= "selected";} $main .= '>External File</option>
+        </select>
+        <div class="selectable" id="srcItemText" shown>
+          <p>Paste text data in <a href="/docs/24/Markdown" target="_blank">markdown table</a>/JSON format.</p>
+          <textarea name="body" rows = "10" placeholder="Source" onfocus="textareaToFill = this;">'; if ($srcType == "text"){$main .= $srcBod; } $main .= '</textarea>
+        </div>
+        <div class="selectable" id="srcItemUpFile">
+          <p>Upload a PDF, JPEG, or PNG-format file.</p>
+          <div id="fpi-srcuploader"></div>';
+          if ($srcType == "file"){$main .= "<p>Currently uploaded: ".$srcInfo["name"]; if ($srcBod == ""){$main .= "</p>";}else { $main .= " (<a href='".$srcBod."' target='_blank'>view</a>)</p>";}}
+        $main .= '</div>
+        <div class="selectable" id="srcItemExFile">
+          <p>Paste a direct link to a source hosted on the web. PDF, JPEG, or PNG-format recommended.</p>
+          <input name="srcLink" type="text" placeholder="Direct link" value="'; if ($srcType == "link"){$main .= $srcBod; } $main .= '" />
+        </div>
+        ';
+        return $main;
     }
     function giveRArticle($parts = []){
         $this->sidetabEx = true;
@@ -1708,22 +1737,52 @@ MAIN;
     function srcParse($body) {
       $fullText = "<p>From the Many Isles fandom wiki's free media repository.</p>";
       //description
-      if ($this->article->bodyInfo["meta"]["description"]!=""){
+      if (isset($this->article->bodyInfo["meta"]["description"]) AND $this->article->bodyInfo["meta"]["description"]!=""){
         $fullText .= "<h4>Description</h4>";
         $fullText .= $this->parse->bodyParser($this->article->bodyInfo["meta"]["description"], 1);
       }
+      $srcType = "text"; $srcInfo = false;
+      if (isset($this->article->bodyInfo["source"])){$srcInfo = $this->article->bodyInfo["source"]; $srcType = $srcInfo["type"];}
       //actual source
-      $fullText .= "<h4>Source</h4>";
-      //perhaps: add nice download button to download JSON/image
-      if (preg_match("/^\{.*\}$/", $body)){
-        //perhaps: parse json into table instead, or format it nicely
-        $body = $this->placeSpecChar($body);
-        $body = preg_replace("/,/", ",<br/>", $body);
-        $body = "<div class='code'>$body</div>";
+      $fullText .= "<h2>Source</h2>";
+      if ($srcInfo){
+          if ($srcType == "link"){
+            if (preg_match("/\.png$/", $srcInfo["text"]) OR preg_match("/\.jp[e]{0,1}g$/", $srcInfo["text"])){ //image link
+                $fullText .= $this->parse->bodyParser("[gallery]{class[sideimg landscape]src[".$this->replaceSpecChar($srcInfo["text"], 2)."]}[/gallery]", 1);
+            }
+            else if (preg_match("/\.pdf$/", $srcInfo["text"])) { //PDF link
+                $fullText .= "<p>The source pdf can be viewed at <a href=\"".addslashes($srcInfo["text"])."\" target='_blank'>".$srcInfo["text"]."</p>";
+            }
+            else { //default (treats link as website)
+                $fullText .= "<p>The source can be visited at <a href=\"".addslashes($srcInfo["text"])."\" target='_blank'>".$srcInfo["text"]."</p>";
+                $fullText .= '
+                    <h4>Preview</h4>
+                    <p>A preview of the link above. Note that some sites may refuse this connection.</p>
+                    <div class="iframecont"><iframe src="'.addslashes($srcInfo["text"]).'" title="source preview"></iframe></div>
+                ';
+            }
+          }
+          else if ($srcType == "file"){
+            $fullText .= "<p>The source file can be viewed at <a href=\"".addslashes($srcInfo["text"])."\" target='_blank'>".$srcInfo["text"]."</p>";
+            $fullText .= "<a href=\"".addslashes($srcInfo["text"])."\" download><div class='dlbutton'><i class='fa-solid fa-download'></i> Download File</div></a>";
+            if (preg_match("/\.png$/", $srcInfo["text"]) OR preg_match("/\.jp[e]{0,1}g$/", $srcInfo["text"]) OR preg_match("/\.svg$/", $srcInfo["text"])){ //image file
+                $fullText .= $this->parse->bodyParser("####Preview
+                    [gallery]{class[sideimg landscape]src[".$this->replaceSpecChar($srcInfo["text"], 2)."]}[/gallery]", 1);
+            }
+          }
+          else { //$srcType == "text"
+              if (preg_match("/^\{.*\}$/", $body)){
+                //perhaps: parse json into table instead, or format it nicely
+                $body = $this->placeSpecChar($body);
+                $body = preg_replace("/,/", ",<br/>", $body);
+                $body = "<div class='code'>$body</div>";
+              }
+              else {
+                $body = $this->parse->bodyParser("[wide]".$body."[/wide]", 2, $this->database);
+              }
+          }
       }
-      else {
-        $body = $this->parse->bodyParser("[wide]".$body."[/wide]", 2, $this->database);
-      }
+
       $fullText .= $body;
       return $fullText;
     }

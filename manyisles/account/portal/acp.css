@@ -39,7 +39,7 @@
 .acp-form.line input {
   margin: 0 0 10px;
 }
-select {
+.acp-form select {
     font-size: calc(10px + .4vw);
 }
 .grecaptcha-badge { visibility: hidden; }

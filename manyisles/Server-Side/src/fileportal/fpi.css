@@ -6,7 +6,7 @@
 }
 
 /*universal*/
-.fpic-uploading {
+.fpic-uploading, .fpic-uploaded {
     display: none;
 }
 .fpi-file-upload-input {

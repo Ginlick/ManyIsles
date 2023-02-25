@@ -135,6 +135,7 @@ else {
       $categories =  $_POST['categories'];
       $version = $gen->article->version + 1;
       $authors = $gen->article->authors;
+      $oldBodyInfo = $gen->article->bodyInfo;
       if ($authors == ""){$authors = $uname;}
       else if (strpos($authors, $uname) === false) {$authors = $authors.", ".$uname;}
 
@@ -200,6 +201,33 @@ else {
       }
   }
 
+  //source 
+  if ($genre == "Source"){
+    if (!isset($_POST['srcSelector'])){$_POST['srcSelector'] = "srcItemText";}
+    $srcExplType = $_POST['srcSelector']; $srcType = "text";
+    $srcArr = ["type"=>"text","text"=>""]; if (isset($oldBodyInfo["source"])){$srcArr = $oldBodyInfo["source"];}
+    if ($srcExplType == "srcItemExFile"){
+      $srcType = "link";
+      if (!isset($_POST['srcLink']) OR !checkRegger("cleanText2", $_POST["srcLink"])){$_POST['srcLink'] = "";}
+      $srcArr = ["type"=>$srcType, "text"=>$_POST['srcLink']];
+    }
+    else if ($srcExplType == "srcItemUpFile"){
+      $srcType = "file"; $dir = ""; $meta = [];
+      require($_SERVER['DOCUMENT_ROOT']."/Server-Side/src/fileportal/fpi-engine.php");
+      $fpi = new fpi(250, true);
+      if ($uploadedFile = $fpi->handle("upload", $_FILES) AND $uploadedFile != null){
+        if (!isset($uploadedFile["error"])){
+          $dir = $uploadedFile["files"][0]["url"];
+          $meta = $uploadedFile["files"][0];
+          $srcArr = ["type"=>$srcType, "text"=>$dir, "fileInfo"=>$meta];
+        } 
+      }
+    }
+    else { //text
+      $bod = $gen->replaceSpecChar($_POST['body']);
+      $srcArr = ["type"=>$srcType, "text"=>$bod];
+    }
+  }
 
   //super stuff
   if ($gen->power > 1) {
@@ -221,6 +249,9 @@ else {
     $bodyArr["text"][0]["sidetab"]["title"] = $gen->replaceSpecChar($_POST['sidetabTitle']);
     $bodyArr["text"][0]["sidetab"]["image"] =$gen->replaceSpecChar($_POST['sidetabImg']); //image of this specific sidetab
     $bodyArr["text"][0]["sidetab"]["text"] = $gen->replaceSpecChar($_POST['sidetabText']);
+  }
+  if (isset($srcArr) AND count($srcArr) > 0){
+    $bodyArr["source"] = $srcArr;
   }
   $bodyArr["meta"]["description"] = $gen->replaceSpecChar($_POST['description']);
   $bodyArr = json_encode($bodyArr, JSON_HEX_APOS|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);

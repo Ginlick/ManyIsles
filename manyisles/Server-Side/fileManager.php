@@ -28,6 +28,7 @@ if (!trait_exists("fundamentals")){
       "standImg" => ["size"=>500000, "types"=>["jpg", "png", "jpeg"], "likesImg"=>true],
       "mystimg" => ["size"=>2200000, "types"=>["jpg", "png", "jpeg", "gif"], "likesImg"=>true],
       "dlPdf" => ["size"=>35000000, "types"=>["pdf"], "likesImg"=>false],
+      "wikiSrc" => ["size"=>22000000, "types"=>["jpg", "png", "jpeg", "svg", "pdf"], "likesImg"=>false],
       "dlArt" => ["size"=>12000000, "types"=>["jpg", "png", "jpeg", "gif"], "likesImg"=>true],
       "dl3d" => ["size"=>22000000, "types"=>["stl", "fbx", "obj", "usd", "usdz"], "likesImg"=>false],
       "bigAudio" => ["size"=>1200000, "types"=>["wav", "mp3", "pcm"], "likesImg"=>false]

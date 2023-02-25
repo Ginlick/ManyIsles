@@ -64,6 +64,8 @@ class fpi_builder{
       reader.onload = function(e) {
         thisClass.childVis(parentEl, "fpic-uploading-image-shower", "src", e.target.result);
         thisClass.childVis(parentEl, "fpic-uploading-image-shower", "show");
+        thisClass.childVis(parentEl, "fpic-uploaded", "show");
+        thisClass.childVis(parentEl, "fpic-uploading-image-title", "change", input.files[0].name);
       };
       reader.readAsDataURL(input.files[0]);
     }
@@ -146,13 +148,16 @@ class fpi_builder{
     "broad" : `
       <div class="fpi-broad">
         <div class="fpic-upload-content fpi-upload">
-          <input class="fpi-file-upload-input fpic-fileinput" type="file" name="file" accept=".png, .jpg" multiple fpi-inputtype="uploader" />
+          <input class="fpi-file-upload-input fpic-fileinput" type="file" name="file" multiple fpi-inputtype="uploader" />
           <div class="drag-text">
-            <p><i class="fas fa-arrow-up"></i> Upload Image (max 2 mb)</p>
+            <p><i class="fas fa-arrow-up"></i> Upload File</p>
           </div>
         </div>
         <div class="fpic-uploading fpi-uploading">
-          <p><i class="fas fa-spinner fa-spin"></i> Uploading <span class="fpic-uploading-image-title">Uploaded Image</span></p>
+          <p><i class="fas fa-spinner fa-spin"></i> Uploading <span class="fpic-uploading-image-title">File</span></p>
+        </div>
+        <div class="fpic-uploaded fpi-uploading">
+          <p><span class="fpic-uploading-image-title">File</span> selected</p>
         </div>
       </div>
     `,

@@ -257,7 +257,6 @@ if ($proStatus=="deleted"){$dl->go("Publish", "p");}
               <label for="external">External File</label>
           </div>
 
-          <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
           <div class="file-upload">
             <div class="image-upload-wrap">
               <input type="hidden" name="MAX_FILE_SIZE" value="35000000" />
@@ -316,6 +315,7 @@ echo $dl->giveFooter();
   echo $dl->scripts("p");
   echo markdownScript();
  ?>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script>
 var genre = 1;
 var subgenre = "";

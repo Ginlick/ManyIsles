@@ -18,6 +18,7 @@ class fpi {
   NABSDAI;
   public $codes = [
     221 => ["name" => "mystralImage", "filetype" => "mystimg", "max" => 11],
+    250 => ["name" => "fandomSource", "filetype" => "wikiSrc", "max" => 1],
     301 => ["name" => "blogBanner", "filetype" => "mystimg", "max" => 1]
   ];
   private $code;
