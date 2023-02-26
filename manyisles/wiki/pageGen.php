@@ -970,8 +970,12 @@ MAIN;
                     <h2>Additional Details<span class="roundInfo green">Optional</span></h2>';
                 $main .= "<h4>Search Details</h4>";
                 $main .= "<input type='text' name='queryTags' placeholder='Tree,Brate'  value='".$this->article->queryTags."' pattern=\"".jsReg("basicList")."\" />";
-                $main .= "<input type='number' name='importance' placeholder='Importance'  value='".$this->article->importance."'/>
-                    <img src='/Imgs/Bar2.png' class='separator'></img></div>";
+                $main .= "<input type='number' name='importance' placeholder='Importance'  value='".$this->article->importance."'/>";
+                if ($this->power > 3 and $this->article->root == 0){
+                    $main .= "<h4>Description</h4>
+                    <textarea rows='2' name='description' placeholder='This is the epic fandom wiki of my fantasy setting.'>".$this->article->bodyInfo["meta"]["description"]."</textarea>";
+                }
+                $main .= "<img src='/Imgs/Bar2.png' class='separator'></img></div>";
             }
           }
         }
@@ -1120,7 +1124,7 @@ MAIN;
         <input type="number" name="importance" style="display:none;visibility:hidden;opacity:0" value="0" />
         <h3>Source Details</h3>
         <!--<label for="description">Description<span class="roundInfo">Takes Markdown</span></h3>-->
-        <textarea name="description" rows = "3" placeholder="Source Description" onfocus="textareaToFill = this;" required>'.$this->placeSpecChar($this->article->bodyInfo["meta"]["description"]).'</textarea>
+        <textarea name="description" rows = "3" placeholder="Source Description" onfocus="textareaToFill = this;" >'.$this->placeSpecChar($this->article->bodyInfo["meta"]["description"]).'</textarea>
 
         <h4>Source Data</h4>
         <label for="srcSelector">Source Format:</label>
