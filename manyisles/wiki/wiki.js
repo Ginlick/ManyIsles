@@ -112,7 +112,7 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
                     else if (action == "switchSupport") {linkingCont.setAttribute("onclick", 'switchSupport("' + object["id"] + '")'); }
                     else if (action == "addCategory") { linkingCont.setAttribute("onclick", 'addCategory("' + object["id"] + '", "' + object["name"] + '")'); }
                     else if (action == "addSrc"){
-                        let href = object["wiki"]["name"]+"/"+object["id"]+"/"+object["name"];
+                        let href = "/fandom/" + object["wiki"]["name"]+"/"+object["id"]+"/"+object["name"];
                         let name = object["wiki"]["name"] + " Wiki. *[Source: "+object["name"]+"]("+href+").* (Many Isles Fandom, "+object["year"]+")";
                         linkingCont.sourceText = name;
                         linkingCont.addEventListener("click", writeSrc);

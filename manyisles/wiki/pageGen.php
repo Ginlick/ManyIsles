@@ -1793,6 +1793,7 @@ MAIN;
               else {
                 $body = $this->parse->bodyParser("[wide]".$body."[/wide]", 2, $this->database);
               }
+            $fullText .= $body;
           }
       }
       return $fullText;
