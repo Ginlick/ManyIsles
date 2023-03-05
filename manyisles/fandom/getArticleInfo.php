@@ -41,6 +41,11 @@ if ($max = $info->dbconn->query($query)){
         $itemArray["genre"] = $row["cate"];
         $itemArray["NSFW"] = $row["NSFW"];
         $itemArray["date"] = parseIWDate($row["timeStart"], $row["timeEnd"], $dateArray);
+
+        $itemParWik = getWiki($row["id"], $info->database, $info->dbconn);
+        $itemParWikName = getWikiname($itemParWik, $info->database, $info->dbconn);
+        $itemArray["cleanlink"] = $info->baseLink.parse2Url($itemParWikName)."/".$row["id"]."/".parse2Url($row["shortName"]);
+
         if ($row["incomplete"]==1 AND $row["status"] != "suspended"){$itemArray["status"] = "incomplete";}
         else {$itemArray["status"] =  $row["status"];}
 

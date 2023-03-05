@@ -77,7 +77,7 @@ function fancyLinkage() {
                             var aHoverDiv = document.createElement("DIV");
                             aHoverDiv.classList.add("aHoverDiv");
                             var linkingCont = document.createElement("A");
-                            linkingCont.setAttribute("href", baseURL + object["id"] + "/" + object["name"]);
+                            linkingCont.setAttribute("href", object["cleanlink"]);
                             linkingCont.classList.add("linkingCont");
                             var thumbnail = document.createElement("DIV");
                             thumbnail.setAttribute("class", "thumbnail imgCont");
@@ -119,6 +119,7 @@ function fancyLinkage() {
                             aHoverDiv.appendChild(linkingCont);
                             coollink.appendChild(aHoverDiv);
                             getIndexImgs();
+                            coollink.setAttribute("href", object["cleanlink"]);
                         }
                     }
                 }

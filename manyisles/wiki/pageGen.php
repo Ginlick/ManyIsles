@@ -121,7 +121,7 @@ class gen {
                   while ($row = $result->fetch_assoc()){
                       if ($row["defaultBanner"]!= null){
                           $this->defaultBanner = $row["defaultBanner"];
-                          if($this->writingNew OR $this->article->banner == "default"){
+                          if($this->writingNew OR $this->article->banner == "default" OR $this->article->cate == "Source"){
                               $this->article->banner = $this->defaultBanner;
                           }
                       }
@@ -262,7 +262,7 @@ class gen {
         }
 
         //miscellaneous
-        $this->editLink = $this->baseLink.'edit?id='.$this->page.'&v='.$this->article->version."&u=".$this->user;
+        $this->editLink = $this->baseLink.'edit?id='.$this->page."&u=".$this->user;
         $this->writeLink = $this->baseLink.'edit?w='.$this->parentWiki."&u=".$this->user;
         $this->wsettLink = "";$this->wsettCogLink = "";
         if ($this->article->root == 0 && $this->power > 2) {
@@ -312,7 +312,7 @@ class gen {
 
     function doFandWork() {
         if ($this->domain == "fandom"){
-            $this->artRootLink = "/fandom/".parse2Url($this->wikiName)."/";
+            $this->artRootLink = "/fandom/".parse2Url(getWikiName($this->parentWiki, $this->database, $this->dbconn))."/";
         }
 
         if ($this->article->NSFW == 2 AND !isset($_COOKIE["clearNSFW"])){
@@ -496,7 +496,7 @@ class gen {
           else {
             if ($this->power >= $this->minPower AND $this->domain != "mystral") {
                 $main .= $this->revButtons;
-                $main .= '<a href="/docs/edit.php?v='.$this->article->version.'&id='.$this->page.'&domain='.$this->domain.'" target="_self">Edit</a>';
+                $main .= '<a href="/docs/edit.php?id='.$this->page.'&domain='.$this->domain.'" target="_self">Edit</a>';
                 $main .= '<a href="/docs/edit.php?w='.$this->parentWiki.'&domain='.$this->domain.'" target="_self">Write</a>';
             }
           }
@@ -1120,6 +1120,7 @@ MAIN;
            }
         }
         $main = '
+        <input name="banner" type="text" style="display:none;visibility:hidden;opacity:0" value="'.$this->article->banner.'" />
         <input name="cate" type="text" style="display:none;visibility:hidden;opacity:0" value="Source" />
         <input type="number" name="importance" style="display:none;visibility:hidden;opacity:0" value="0" />
         <h3>Source Details</h3>
@@ -1156,8 +1157,14 @@ MAIN;
         }
 
         $main = '        <div class="col-r" style="margin-bottom:50px;">
-            <input type="text" class="wikisearchbar" placeholder="Search '.$this->wikiName.' '.$this->groupName.'..." id="viewRoot1"  oninput="offerSuggestions(this, \'findSuggestions\', 1);" onfocus="offerSuggestions(this, \'findSuggestions\', 1);" autocomplete="off"></input>
-            <div class="suggestions" style="transform: translate(0, 35px);"></div>
+            <div class="wikisearchbarCont">
+                <input type="text" class="wikisearchbar" placeholder="Search '.$this->wikiName.' '.$this->groupName.'..." id="viewRoot1"  oninput="offerSuggestions(this, \'findSuggestions\', 1);" onfocus="offerSuggestions(this, \'findSuggestions\', 1);" autocomplete="off"></input>
+                <div class="suggestions" style="transform: translate(0, 35px);"></div>
+                <div class="wikisearchlucky ">
+                    <a href="/fandom/findSuggestions.php?w='.$this->parentWiki.'&todo=lucky&domain=0"><span></span></a>
+                    <i class="fa-solid fa-dice-d20"></i> 
+                </div>
+            </div>
 
             <img src="'.banner($this->article->banner).'" alt="banner" class="topBanner" />
             ';
@@ -1767,8 +1774,10 @@ MAIN;
             }
           }
           else if ($srcType == "file"){
+            //print_r($srcInfo);
             $fullText .= "<p>The source file can be viewed at <a href=\"".addslashes($srcInfo["text"])."\" target='_blank'>".$srcInfo["text"]."</p>";
-            $fullText .= "<a href=\"".addslashes($srcInfo["text"])."\" download><div class='dlbutton'><i class='fa-solid fa-download'></i> Download File</div></a>";
+            $downLink = "/Server-Side/downStuff.php?name=".parse2URL($this->article->shortName)."&dl=".$srcInfo["fileInfo"]["dir"];
+            $fullText .= "<a href=\"".$downLink."\" download><div class='dlbutton'><i class='fa-solid fa-download'></i> Download File</div></a>";
             if (preg_match("/\.png$/", $srcInfo["text"]) OR preg_match("/\.jp[e]{0,1}g$/", $srcInfo["text"]) OR preg_match("/\.svg$/", $srcInfo["text"])){ //image file
                 $fullText .= $this->parse->bodyParser("####Preview
                     [gallery]{class[sideimg landscape]src[".$this->replaceSpecChar($srcInfo["text"], 2)."]}[/gallery]", 1);
@@ -1786,8 +1795,6 @@ MAIN;
               }
           }
       }
-
-      $fullText .= $body;
       return $fullText;
     }
 
@@ -2037,27 +2044,18 @@ class article {
                         if ($this->root != 0 AND $this->cate == "Source"){$this->type = "source";}
 
                         $body = $row["body"];
-                        $this->bodyInfo = [];
+                        $bodyInfo = $this->bodyInfo;
                         $body = preg_replace('/[\r]/', '\n', $body);
                         $body = preg_replace('/[\x00-\x1F]/', '', $body);
                         $body = str_replace("u0027", "'", $body);
-                        if ($body = json_decode($body, true, 22) AND $body != null){
-                          if (!isset($body["text"])){
-                            $body["text"] = ["body" => ""];
-                          }
-                          if (!isset($body["meta"])){
-                            $body["meta"] = ["description" => ""];
-                          }
-
-                          $text = $body["text"][0];
+                        if ($bodyInfo = json_decode($body, true, 22) AND $body != null){
+                          $text = $bodyInfo["text"][0];
                           $this->body = $text["body"];
                           if (isset($text["sidetab"])){
                             $this->sidetabTitle = $text["sidetab"]["title"];
                             $this->sidetabImg = $text["sidetab"]["image"];
                             $this->sidetabText = $text["sidetab"]["text"];
                           }
-
-                          $this->bodyInfo = $body;
                         }
                         else { //support non-JSON body (legacy version)
                           $this->body = $row["body"];
@@ -2065,6 +2063,7 @@ class article {
                           $this->sidetabImg = $row["sidetabImg"];
                           $this->sidetabText = $row["sidetabText"];
                         }
+                        $this->bodyInfo = $bodyInfo;
 
                         $date_array = date_parse($this->regdate);
                         $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];

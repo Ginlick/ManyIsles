@@ -36,7 +36,7 @@ $conn = $gen->conn;
 <head>
     <meta charset="UTF-8" />
     <?php echo $gen->giveFavicon(); ?>
-    <title>Search <?php echo $gen->wikiName; ?> wiki | Fandom</title>
+    <title>Search <?php echo $gen->wikiName; ?> wiki | Fandom</title>
     <link rel="stylesheet" href="/wiki/res/timeline.css">
     <style>
 #resultDIV p {
@@ -68,7 +68,9 @@ $conn = $gen->conn;
                         <?php
                     foreach ($gen->cateoptions as $option){
                         echo '<option value="'.$option["value"].'">'.$option["name"].'</option>';
-                    }   ?>
+                    } 
+                    echo "<option value='Source'>Source</option>"
+                    ?>
                         </select>
                     </div>
                     <div style="display:inline-block;padding:9px;"

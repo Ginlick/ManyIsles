@@ -157,12 +157,14 @@ else {
 
   if($_POST['banner']=="current"){
       if ($writingNew){
-          $banner = "default";
+          $banner = $gen->defaultBanner;
       }
       else {
           $banner = $gen->article->banner;
-          if ($banner = $gen->defaultBanner){$banner = "default";}
       }
+  }
+  else if ($_POST['banner']=="default"){
+    $banner = $gen->defaultBanner;
   }
   else {$banner = $_POST['banner'];}
 
@@ -241,7 +243,7 @@ else {
 
   $name = substr($name, 0, 100);
   $shortName = substr($shortName, 0, 30);
-
+  $parentWikiName = getWikiName($gen->parentWiki, $gen->database, $gen->dbconn);
 
   $bodyArr = [];
   $bodyArr["text"][0]["body"] = $gen->replaceSpecChar($_POST['body']);
@@ -291,7 +293,7 @@ else {
 //echo $query;exit();
 
 if ($gen->dbconn->query($query)){
-    header("Location:".$gen->artRootLink.$id."/".$gen->purate($_POST['shortName']));
+    header("Location:".$gen->baseLink.parse2URL($parentWikiName)."/".$id."/".$gen->purate($_POST['shortName']));
 }
 else {
     echo "Error.";

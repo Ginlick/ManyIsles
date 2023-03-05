@@ -32,6 +32,7 @@ $resultArray[0] = $q;
 $resultArray = array_merge($resultArray, getWiki($q, $info->database, $info->dbconn, [], $specs));
 
 $resultArray = array_reverse($resultArray);
+if ($wikiName == "wiki" AND isset($resultArray[1])){$wikiName = getWikiName($resultArray[1], $info->database, $info->dbconn);}
 
 /*print_r($resultArray);
 echo count($resultArray);
@@ -57,6 +58,7 @@ else {
     $fullLine = "<a href='/fandom/home'>Fandom</a>";
 }
 $ongoingName = "";
+$info->artRootLink = str_replace("/wiki/", "/".parse2URL($wikiName)."/", $info->artRootLink);
 foreach ($resultArray as $pageId){
     if ($pageId == 0){continue;}
     $query = 'SELECT name, shortName, root FROM '.$info->database.' WHERE id = '.$pageId." ORDER BY v DESC LIMIT 0, 1";

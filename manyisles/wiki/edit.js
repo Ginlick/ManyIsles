@@ -13,8 +13,13 @@ function addSome(how) {
         var cell2Input = document.createElement("input");
         cell2Input.setAttribute("type", "text");
         cell2Input.setAttribute("placeholder", "Author. *Source Name*. (Publisher, Year)");
+        cell2Input.addEventListener("input", addedOfferSugg);
         cell2Input.setAttribute("onchange", "newSource(" + currentnum + ")");
         cell2.appendChild(cell2Input);
+
+        cell2Suggestions = document.createElement("div");
+        cell2Suggestions.setAttribute("class", "suggestions");
+        cell2.appendChild(cell2Suggestions);
 
         fullrow.appendChild(cell1);
         fullrow.appendChild(cell2);
@@ -26,6 +31,11 @@ function addSome(how) {
         document.getElementById("sources").value = JSON.stringify(sourceJSON);
         babes.removeChild(babes.lastChild);
     }
+}
+var srcTargetField = null;
+function addedOfferSugg(e){
+    offerSuggestions(e.target, "findSuggestions", 0, "addSrc");
+    srcTargetField = e.target;
 }
 function newSource(which) {
     let sourceName = document.getElementById("gimmeBabesTbody").children[which - 1].children[1].children[0].value;
@@ -139,6 +149,11 @@ function removeCateg(link) {
     document.getElementById("removableCateg" + link).remove();
     document.getElementById("categs").value = articleCategArray.join();
     if (document.getElementById("currentCategs").children.length > 0) {document.getElementById("currentCategs").children[0].innerHTML = document.getElementById("currentCategs").children[0].innerHTML.replace(", ", "");}
+}
+function writeSrc(e) {
+    var text = e.currentTarget.sourceText;
+    srcTargetField.value = text;
+    srcTargetField.onchange();
 }
 function createLink(link, what, pdomain = domain) {
     var myField = textareaToFill;

@@ -28,6 +28,7 @@ else {
 
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 $gen = new gen("edit", $page, $parentWiki, $writingNew, $domain);
+$gen->killCache();
 $conn = $gen->conn;
 if (!$gen->writingNew AND $gen->article->name == ""){ echo "<script>window.location.replace('".$gen->artRootLink.$gen->article->page."/".parse2Url($gen->article->shortName)."');</script>";}
 

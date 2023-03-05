@@ -80,6 +80,7 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
     }
     else {
         getFile = "/fandom/findSuggestions.php?q=" + query + "&w=" + parentWiki + "&ig=" + ignore + "&domain=" + pdomain + "&u=" + user;
+        if (action == "addSrc"){getFile += "&src=1&mode=1";}
     }
     console.log(getFile);
     parent = searcher.nextElementSibling;
@@ -110,6 +111,12 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
                     else if (action == "wikthumb") { linkingCont.setAttribute("onclick", 'createLink("' + object["id"] + '", "wikthumb", ' + pdomain + ');'); }
                     else if (action == "switchSupport") {linkingCont.setAttribute("onclick", 'switchSupport("' + object["id"] + '")'); }
                     else if (action == "addCategory") { linkingCont.setAttribute("onclick", 'addCategory("' + object["id"] + '", "' + object["name"] + '")'); }
+                    else if (action == "addSrc"){
+                        let href = object["wiki"]["name"]+"/"+object["id"]+"/"+object["name"];
+                        let name = object["wiki"]["name"] + " Wiki. *[Source: "+object["name"]+"]("+href+").* (Many Isles Fandom, "+object["year"]+")";
+                        linkingCont.sourceText = name;
+                        linkingCont.addEventListener("click", writeSrc);
+                    }
                 }
                 linkingCont.classList.add("linkingCont");
                 if (extent > 0) {
@@ -151,7 +158,7 @@ function offerSuggestions(searcher, target = "findSuggestions", extent = 0, acti
             }
             if (!unordered.hasChildNodes()) {
                 var node = document.createElement("SPAN");
-                var textnode = document.createTextNode("No fitting titles");
+                var textnode = document.createTextNode("No fitting suggestions");
                 var listElement = document.createElement("LI");
                 listElement.classList.add("smol");
                 node.appendChild(textnode);

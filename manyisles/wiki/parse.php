@@ -85,11 +85,13 @@ class parse {
                 $pageImg = $row["banner"];
                 $thumbImg = $row["sidetabImg"];
                 $childPage = $row["id"];
+                $wikiName = getWikiName(getWiki($childPage, $this->database, $this->dbconn), $this->database, $this->dbconn);
+
                 if ($pageShortName != ""){
                     $pageName = $pageShortName;
                 }
                 if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                $fullChildLine .= " <div class='domCont'><a href='".artUrl($this->artRootLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
+                $fullChildLine .= " <div class='domCont'><a href='".artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
             }
         }
         if ($mode == "full"){
@@ -123,7 +125,8 @@ class parse {
                 }
                 if ($pageStatus != "suspended"){
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                    $toInsertThumb = " <div class='domCont'><a href='".artUrl($this->artRootLink, $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
+                    $wikiName = getWikiName(getWiki($childPage, $this->database, $this->dbconn), $this->database, $this->dbconn);
+                    $toInsertThumb = " <div class='domCont'><a href='".artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
                     $body = substr_replace($body, $toInsertThumb, strpos($body, "[wiki:art".$childPage."]"), 0);
                 }
             }
@@ -156,7 +159,10 @@ class parse {
                 $counter = 1;
                 while ($row = $firstrow->fetch_assoc()) {
                     $childPage = $row["id"];
-                    if (getWiki($childPage, $this->database, $this->dbconn) != $this->parentWiki OR $row["status"] != "active") {continue;}
+                    if (!($wiki = getWiki($childPage, $this->database, $this->dbconn)) OR $wiki != $this->parentWiki OR $row["status"] != "active") {continue;}
+                    $wikiName = getWikiName($wiki, $this->database, $this->dbconn);
+                    $artRootLink = $this->baseLink.parse2URL($wikiName)."/";
+
                     if ($age > 0) {
                       if ($sortName == "rand"){
                         if ($age >= $counter) {
@@ -164,7 +170,7 @@ class parse {
                           $pageImg = $row["banner"];
                           $thumbImg = $row["sidetabImg"];
                           if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                          $fullRow .= $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                          $fullRow .= $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName);
                           $counter++;
 
                         }
@@ -178,7 +184,7 @@ class parse {
                           $pageImg = $row["banner"];
                           $thumbImg = $row["sidetabImg"];
                           if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                          $toInsertThumb = $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                          $toInsertThumb = $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName);
                           $body = str_replace("[wiki:$sortName".$age."]", $toInsertThumb, $body);
                           if (str_contains($body, "[wiki:$sortName")){return $this->addRecents($body, $sort);}
                           else { return $body;}
@@ -193,7 +199,7 @@ class parse {
                         $pageImg = $row["banner"];
                         $thumbImg = $row["sidetabImg"];
                         if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                        $fullRow.= $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                        $fullRow.= $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName);
                         $counter++;
                     }
                 }
@@ -235,7 +241,8 @@ class parse {
                     $pageImg = $row["banner"];
                     $thumbImg = $row["sidetabImg"];
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                    $fullLine .= $this->createThumbTab(artUrl($this->artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                    $wikiName = getWikiName(getWiki($childPage, $this->database, $this->dbconn), $this->database, $this->dbconn);
+                    $fullLine .= $this->createThumbTab(artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName), $pageImg, $pageName);
 
                     $counter++;
                     if ($counter > 8){break;}

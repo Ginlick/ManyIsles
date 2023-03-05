@@ -38,6 +38,17 @@ if (!function_exists("getWiki")){
       }
       return $returnDefault;
   }
+  function getWikiName($id, $database, $conn){
+    $wikiName = "wiki";
+    $id = getWiki($id, $database, $conn);
+    $bquery = "SELECT shortName FROM $database WHERE id = ".$id." ORDER BY v DESC LIMIT 1";
+    if ($max = $conn->query($bquery)){
+      while ($gay = $max->fetch_row()){
+        $wikiName = $gay[0];
+      }
+    }
+    return $wikiName;
+  }
 }
 
 

@@ -29,6 +29,7 @@ $gen->doFandWork();
     <?php echo $gen->giveFavicon(); ?>
     <title><?php echo $gen->article->name; ?> | Fandom</title>
     <style>
+
     </style>
 </head>
 <body style="<?php echo $gen->giveWikStyle(); ?>">
