@@ -1,4 +1,5 @@
-﻿<?php
+<?php
+
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/transactions.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/src/community/engine.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/ds/g/makeHuman.php");
@@ -367,7 +368,7 @@ if ($ordersExist){
     <link rel="stylesheet" type="text/css" href="g/acc.css">
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-tables.css">
     <?php
-      echo $community->commStyles();
+      //echo $community->commStyles();
     ?>
     <style>
     #region {

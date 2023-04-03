@@ -38,7 +38,7 @@ if (!class_exists("errorHandler")) {
           case E_DEPRECATED:
           case E_USER_DEPRECATED:
           case E_ALL:
-            $this->log_error($e['type'], $message, 1);
+            $this->log_error($e, $message, 1);
             break;
           /* Redirect to "oops" page on the following errors. */
           case 0: /* Exceptions return zero for type */
@@ -47,7 +47,7 @@ if (!class_exists("errorHandler")) {
           case E_CORE_ERROR:
           case E_COMPILE_ERROR:
           case E_USER_ERROR:
-            $this->log_error($e['type'], $message, 3);
+            $this->log_error($e, $message, 3);
             if (!$this->testMode){
               echo "<script>window.location.replace('/Code/error');</script>";
             }
@@ -93,21 +93,36 @@ if (!class_exists("errorHandler")) {
         return $type;
     }
 
-    function log_error($type, $message, int $severity = 1) {
-      if ($this->testMode){echo $message;}
-      $message = $this->replaceSpecChar($message, 0);
-      $type = $this->replaceSpecChar($type, 0);
-      $query = "UPDATE errors SET occurrences = occurrences + 1, status = 1 WHERE message = '$message'";
-      if ($result = $this->conn->query($query)){
-        if (mysqli_affected_rows($this->conn)==0){
-          $query = "INSERT INTO errors (type, message, severity) VALUES ('$type', '$message', '$severity')";
-          $this->conn->query($query);
-          if ($severity > 1 AND !$this->testMode){
-            $message .= "<br><br> https://".$this->giveServerInfo("servername")."/account/admin/errors";
-            $this->mailer->easyMail("Bug Report: Severity $severity", $message, "pantheon@manyisles.ch", "website");
-          }
+    function log_error($e, $message, int $severity = 1) {
+        $type = $e["type"];
+
+        if ($this->testMode){echo $message;}
+
+        $trace = debug_backtrace(); $strTrace = "";
+        if (count($trace) <= 3){$trace = []; $strTrace = "No stack trace";}
+        else {
+            for ($i = 3; $i < count($trace); $i++){
+                $item = $trace[$i];
+                $strTrace .= '  ' . (isset($item['file']) ? $item['file'] : '<unknown file>') . ' on line ' . (isset($item['line']) ? $item['line'] : '<unknown>') . ' calling ' . $item['function'] . '()' . "<br>";
+            }
         }
-      }
+
+
+        $message = str_replace($_SERVER["DOCUMENT_ROOT"], "", $message);
+        $message = $this->replaceSpecChar($message, 0);
+        $trace = $this->replaceSpecChar($strTrace, 0);
+        $type = $this->replaceSpecChar($type, 0);
+        $query = "UPDATE errors SET occurrences = occurrences + 1, status = 1 WHERE message = '$message'";
+        if ($result = $this->conn->query($query)){
+            if (mysqli_affected_rows($this->conn)==0){
+              $query = "INSERT INTO errors (type, message, trace, severity) VALUES ('$type', '$message', '$trace', '$severity')";
+              $this->conn->query($query);
+              if ($severity > 1 AND !$this->testMode){
+                $message .= "<br><br> https://".$this->giveServerInfo("servername")."/account/admin/errors";
+                $this->mailer->easyMail("Bug Report: Severity $severity", $message, "pantheon@manyisles.ch", "website");
+              }
+            }
+        }
     }
   }
 

@@ -1,4 +1,5 @@
-﻿<?php
+<?php
+
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
 $user = new adventurer();
 $user->killCache();

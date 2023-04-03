@@ -22,11 +22,12 @@ function giveErrorTable($which){
   if ($result = $conn->query($query)){
     $return .= "<table><thead><tr><td>latest</td><td>message</td><td>occurences</td><td></td></thead><tbody>";
     while ($row = $result->fetch_assoc()) {
+      $traceDiv = "<div class='traceDiv'><div>".$row["trace"]."</div></div>";
+
       $return .= "<tr>";
-      //$return .= "<td>".$row["id"]."</td>";
       $date = new DateTime($row["reg_date"]);
       $return .= "<td>".$date->format("d.m.y")."</td>";
-      $return .= "<td>".$user->placeSpecChar($row["message"])."</td>";
+      $return .= "<td>".$user->placeSpecChar($row["message"]).$traceDiv."</td>";
       $return .= "<td>".$row["occurrences"]."</td>";
       $return .= "<td><a href='deleteError.php?id=".$row["id"]."'>Fixed</a></td>";
     }
@@ -56,7 +57,23 @@ function giveErrorTable($which){
           background: var(--diltou-lines);
         }
         td {
+          position: relative;
           padding: 0.3em;
+        }
+        .traceDiv {
+          width: 100%;
+          opacity: 0;
+          padding: 5px 15px;
+          position: absolute; left: 10px; top: 102%;
+          z-index: 5;
+          transition: .2s ease;
+          background-color: var(--diltou-basec);
+          border: 1px solid var(--diltou-lines);
+          pointer-events: none;
+        }
+
+        td:hover .traceDiv {
+          opacity: 1;
         }
     </style>
 </head>

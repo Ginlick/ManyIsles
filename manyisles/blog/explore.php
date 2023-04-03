@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once("g/blogEngine.php");
 $blog = new blogEngine("Explore");

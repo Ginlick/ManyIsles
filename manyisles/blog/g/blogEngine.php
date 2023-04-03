@@ -5,6 +5,7 @@ class blogEngine extends communityEngine {
     public $curPage;
 
     function __construct($curPage = "Feed"){
+      parent::__construct();
       $this->curPage = $curPage;
 
       //for embedded links
@@ -16,8 +17,6 @@ class blogEngine extends communityEngine {
         //escape improper updates
         $this->user->killCache();
       }
-
-      parent::__construct();
     }
 
     //element generating
