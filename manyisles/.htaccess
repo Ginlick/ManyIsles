@@ -1,5 +1,7 @@
 RewriteEngine on
 
+DirectoryIndex home.html
+
 RewriteRule  ^fandom/.*/([0-9]+)/.*   fandom/f.php?id=$1&%{QUERY_STRING} [NC,L]
 RewriteRule  ^([^/]*)/wsettings  fandom/wsettings.php?domain=$1&%{QUERY_STRING} [L]
 RewriteRule  ^([^/]*)/edit$ fandom/edit.php?domain=$1&%{QUERY_STRING} [L]
