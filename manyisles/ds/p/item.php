@@ -1,4 +1,5 @@
 ﻿<?php
+
 if (isset($_GET["id"])) {if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:hub.php");exit();} else $artId =  $_GET["id"];} else { $artId = 0; }
 
 $redirect = "../home.php";
@@ -38,6 +39,7 @@ if ($artId != 0) {
         $artPrice = $priceArray[0];
     }
     $artSpecsArray = json_decode($artSpecs, true);
+    if ($artSpecsArray == null){$artSpecsArray = [];}
 }
 else {
 //set all defaults

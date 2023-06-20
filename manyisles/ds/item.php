@@ -248,7 +248,7 @@ else {
 // all specifications
 echo '<div class="overtail iOvertails">';
 
-if (sizeof($artSpecsArray) != 0) {
+if ($artSpecsArray != null AND sizeof($artSpecsArray) != 0) {
     foreach ($artSpecsArray as $specArray){
         echo "<h5>".$ds->placeSpecChar($specArray['name'], 0);
         if (isset($specArray['tooltip']) AND $specArray['tooltip'] != ""){

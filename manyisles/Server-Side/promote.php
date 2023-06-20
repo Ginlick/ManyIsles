@@ -159,7 +159,7 @@ if (!class_exists("adventurer")){
               $skip = true;
             }
           }
-          if ((isset($_COOKIE["loggedIn"]) AND isset($_COOKIE["loggedCode"])) OR !$skip){
+          if ((isset($_COOKIE["loggedIn"])  OR !$skip) AND isset($_COOKIE["loggedCode"])){
             $code = $_COOKIE["loggedCode"];
             $query = "SELECT * FROM signCodes WHERE user = $this->user";
             if ($result = $this->conn->query($query)) {

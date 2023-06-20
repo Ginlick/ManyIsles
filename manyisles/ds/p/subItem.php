@@ -1,4 +1,9 @@
 ﻿<?php
+$redirect = "/account/BePartner";
+require_once("security.php");
+
+$artSeller = $pId;
+
 if (isset($_POST["artId"])) {if (preg_match("/^[0-9]*$/", $_POST["artId"])!=1){header("Location:hub.php");exit();} else $artId =  $_POST["artId"];} else { header("Location:hub.php");exit(); }
 
 $redirect = "";
@@ -29,37 +34,39 @@ $artDescSpecs = str_replace('"', '%double_quote%', $artDescSpecs);
 $artSpecsArray = json_decode($artSpecifications, true);
 //echo $artSpecifications;
 
-$counter = 0;
-foreach ($artSpecsArray as $key => $specArray){
-    $counter++;
-    if (!isset($specArray["name"]) OR !isset($specArray["options"])){
-        unset($artSpecsArray[$key]);continue;
-    }
-    else if ($specArray["name"] == "" OR $specArray["options"] == ""){
-        unset($artSpecsArray[$key]);continue;
-    }
-    if ($specArray["name"] == "") {
-        $specArray["name"] = "Select $counter";
-    }
-    if (!isset($specArray["smartstock"])){$specArray["smartstock"] = 0;}
-    $oCounter = 0;
-    foreach ($specArray["options"] as $key2 => $optionArray){
-        $oCounter++;
-        if ($optionArray["name"] == "") {
-            $optionArray["name"] ="Option $oCounter";
+if ($artSpecsArray != null) {
+    $counter = 0;
+    foreach ($artSpecsArray as $key => $specArray){
+        $counter++;
+        if (!isset($specArray["name"]) OR !isset($specArray["options"])){
+            unset($artSpecsArray[$key]);continue;
         }
-        if ($optionArray["price"] == "") {
-            $optionArray["price"] = 0;
+        else if ($specArray["name"] == "" OR $specArray["options"] == ""){
+            unset($artSpecsArray[$key]);continue;
         }
-        if (!isset($optionArray["shipping"]) OR $optionArray["shipping"] == "") {
-            $optionArray["shipping"] = 0;
+        if ($specArray["name"] == "") {
+            $specArray["name"] = "Select $counter";
         }
-        if (!isset($optionArray["stock"]) OR $optionArray["stock"] == "") {
-            $optionArray["stock"] = 0;
+        if (!isset($specArray["smartstock"])){$specArray["smartstock"] = 0;}
+        $oCounter = 0;
+        foreach ($specArray["options"] as $key2 => $optionArray){
+            $oCounter++;
+            if ($optionArray["name"] == "") {
+                $optionArray["name"] ="Option $oCounter";
+            }
+            if ($optionArray["price"] == "") {
+                $optionArray["price"] = 0;
+            }
+            if (!isset($optionArray["shipping"]) OR $optionArray["shipping"] == "") {
+                $optionArray["shipping"] = 0;
+            }
+            if (!isset($optionArray["stock"]) OR $optionArray["stock"] == "") {
+                $optionArray["stock"] = 0;
+            }
+            $specArray["options"][$key2] = $optionArray;
         }
-        $specArray["options"][$key2] = $optionArray;
+        $artSpecsArray[$key] = $specArray;
     }
-    $artSpecsArray[$key] = $specArray;
 }
 
 
@@ -108,14 +115,14 @@ $query = str_replace("artMinPrice", $artMinPrice, $query);
 
 if ($result = $conn->query($query)){
     if ($artId != 0){
-        header("Location:item.php?why=upSub&id=".$artId);exit();
+        $dl->go("item.php?why=upSub&id=".$artId, "ds");
         $error = "Could not redirect";
     }
     else {
         $query = "SELECT id FROM dsprods ORDER BY id DESC LIMIT 0, 1";
         if ($firstrow = $conn->query($query)) {
             while ($row = $firstrow->fetch_assoc()) {
-                header("Location:item.php?why=fullSub&id=".$row["id"]);exit();
+                $dl->go("item.php?why=fullSub&id=".$row["id"], "ds");exit();
             }
         }
     }

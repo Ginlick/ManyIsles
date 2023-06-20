@@ -110,12 +110,13 @@ if (!class_exists("errorHandler")) {
 
         $message = str_replace($_SERVER["DOCUMENT_ROOT"], "", $message);
         $message = $this->replaceSpecChar($message, 0);
-        $trace = $this->replaceSpecChar($strTrace, 0);
+        $strTrace = str_replace($_SERVER["DOCUMENT_ROOT"], "", $strTrace);
+        $strTrace = $this->replaceSpecChar($strTrace, 0);
         $type = $this->replaceSpecChar($type, 0);
         $query = "UPDATE errors SET occurrences = occurrences + 1, status = 1 WHERE message = '$message'";
         if ($result = $this->conn->query($query)){
             if (mysqli_affected_rows($this->conn)==0){
-              $query = "INSERT INTO errors (type, message, trace, severity) VALUES ('$type', '$message', '$trace', '$severity')";
+              $query = "INSERT INTO errors (type, message, trace, severity) VALUES ('$type', '$message', '$strTrace', '$severity')";
               $this->conn->query($query);
               if ($severity > 1 AND !$this->testMode){
                 $message .= "<br><br> https://".$this->giveServerInfo("servername")."/account/admin/errors";

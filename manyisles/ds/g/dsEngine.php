@@ -401,6 +401,7 @@ class dsEngine {
   }
   function hasAnyStock($specs, $baseStock){
     if (gettype($specs)=="string"){$specs = json_decode($specs, true);}
+    if ($specs == null){$specs = [];}
     $smartstock = false;
     $totalStock = 0;
     foreach ($specs as $spec){

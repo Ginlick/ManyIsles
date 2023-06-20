@@ -1,4 +1,5 @@
 ﻿<?php
+
 if (isset($_COOKIE["admin"])){$admin = true;}else {$admin = false;}
 $redirect = "/account/BePartner";
 require_once("security.php");
@@ -6,6 +7,7 @@ require_once("security.php");
 require_once("../g/ordStatus.php");
 require_once("../g/makeHuman.php");
 require_once("../g/alertStock.php");
+
 ?>
 <!DOCTYPE html>
 <html>
