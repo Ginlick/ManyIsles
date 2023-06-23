@@ -362,12 +362,14 @@ echo '<p class="warning red" id="warningNone" style="display: none">out of stock
 if ($artDescSpecs != ""){
     echo "<h2>Specifications</h2>";
     $chunks = array_chunk(preg_split('/(:|,)/', $artDescSpecs), 2);
-    $assocDescSpecs = array_combine(array_column($chunks, 0), array_column($chunks, 1));
-    echo "<ul class='specs'>";
-    foreach ($assocDescSpecs as $key => $value) {
-        echo "<li><b>$key:</b> $value</li>";
+    if (gettype($chunks) == "array"){
+        $assocDescSpecs = array_combine(array_column($chunks, 0), array_column($chunks, 1));
+        echo "<ul class='specs'>";
+        foreach ($assocDescSpecs as $key => $value) {
+            echo "<li><b>$key:</b> $value</li>";
+        }
+        echo "</ul>";
     }
-    echo "</ul>";
 }
 ?>
                 </div>

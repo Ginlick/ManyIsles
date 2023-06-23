@@ -290,7 +290,7 @@ else {
                 </div>
                 <div class="inputCont complete">
                     <label for="descSpecs">Technical Details</label>
-                    <input type="text" name="descSpecs" value="<?php echo $artDescSpecs; ?>" placeholder="Format:A4,Type:Softcover" autocomplete="off"   onchange="checkSyntax(this, '[ ]', 1)" />
+                    <input type="text" name="descSpecs" value="<?php echo $artDescSpecs; ?>" placeholder="Format:A4,Type:Softcover" autocomplete="off"  />
                     <p class="inputErr info" default="A list of technical specifications."></p>
                 </div>
                 <div class="complete"><h2>Specifications</h2>
