@@ -48,7 +48,7 @@ $ds = new dsEngine;
 
 <?php
 $latestid = "whelp";
-    $query = "SELECT * FROM dsprods";
+    $query = "SELECT * FROM dsprods ORDER BY id DESC";
         if ($toprow = $ds->conn->query($query)) {
         $counter = 0;
             while ($row = $toprow->fetch_assoc()) {
