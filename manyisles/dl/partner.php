@@ -1,13 +1,13 @@
 <?php
+
 if (preg_match("/^[0-9]*$/", $_GET["id"])!=1){header("Location:/dl/partner?id=1");}
 $pId = $_GET["id"];
-
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once("global/engine.php");
+
 $dl = new dlengine($conn);
+
 if (!$dl->partInfo($pId)) {$dl->go();}
-
-
 
 ?>
 <!DOCTYPE html>

@@ -132,8 +132,10 @@ class dlengine {
       if ($max = $this->conn->query($query)) {
         while ($row = $max->fetch_assoc()){
           $this->equipPart($row);
+          return true;
         }
       }
+      return false;
     }
 
     //page generating
