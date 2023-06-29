@@ -13,7 +13,7 @@ if ($page == ""){$page = 1;}
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 $gen = new gen("view", $page);
 if ($gen->article->name == "" OR $gen->power < 0){
-    header("Location:/fandom/home?i=nexist");exit();
+    $gen->go("/fandom/home?i=nexist");exit();
 }
 
 $conn = $gen->conn;

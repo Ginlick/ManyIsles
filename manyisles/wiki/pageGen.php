@@ -323,9 +323,9 @@ class gen {
 
         if ($this->article->status == "suspended" && !isset($_GET["clear"])){
             if ($this->page != $this->parentWiki){
-                $this->redirect("Location:$newArtRoot".$this->parentWiki."/home?i=susp");
+                $this->redirect("$newArtRoot".$this->parentWiki."/home?i=susp");
             }
-            else {$this->redirect("Location:/fandom/home?i=susp");}
+            else {$this->redirect("/fandom/home?i=susp");}
         }
 
         $settingsId = $this->parentWiki; if ($this->domain == "mystral"){$settingsId = $this->user."_".$this->parentWiki;}
@@ -1800,8 +1800,7 @@ MAIN;
     }
 
     function redirect($url) {
-      $url = str_replace("'", "", $url);
-      echo "<script>window.location.replace('$url');</script>";
+      $this->go($url);
       exit();
     }
     function generateRandomString($length = 10) {

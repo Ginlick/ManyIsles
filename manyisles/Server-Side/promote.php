@@ -61,10 +61,15 @@ if (!class_exists("adventurer")){
                     $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
                     $this->uname = $row["uname"];
                     $this->email = $row["email"];
-                    $this->discname = $row["discname"];
                     $this->cpsw = $row["password"];
                     $this->power = $row["power"];
                     $this->region = $row["region"];
+                    
+                    $persInfo = json_decode($row["persInfo"], true);
+                    if ($persInfo == null){$persInfo = ["fName" => "", "lName" => "", "references" => ["discName"=>""]];}
+                    $this->persInfo = $persInfo;
+                    $this->discname = $persInfo["references"]["discName"];
+
                     $this->usertag = "u#".$this->user;
                     if ($row["emailConfirmed"]==1){$this->emailConfirmed = true;}
                     if ($this->power > 3){$this->moderator = true;}

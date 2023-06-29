@@ -1,5 +1,5 @@
 <?php
-class communityEngine {
+class communityEngine { //for all the extra user info: blog profile, partner
     public $conn;
     public $blogconn;
     public $user;

@@ -50,7 +50,7 @@ span.roundInfo.gold {
 }
 
 input, textarea, select {
-    padding: .5vw 1%;
+    padding: 7px 10px;
     margin: 4px 0;
     font-size: var(--all-fonts-base);
     font-family: "Open sans", sans-serif;

@@ -367,13 +367,43 @@ if ($ordersExist){
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <link rel="stylesheet" type="text/css" href="g/acc.css">
     <link rel="stylesheet" type="text/css" href="/ds/g/ds-tables.css">
+    <link rel="stylesheet" type="text/css" href="/ds/p/form.css">
     <?php
       //echo $community->commStyles();
     ?>
     <style>
-    #region {
+    /*personal info table*/
+    .persInfoForm {
+        padding: 20px 10px;
+        text-align: left;
+        display: flex;
+        flex-wrap: wrap;
+        width: max(700px, 80%);
+        margin: auto;
+    }
+    .inputCont {
+        width: 100%;
+        padding: 5px 10px;
+        margin: 5px 0;
+    }
+    .inputCont.persInfo.half {
         width: 50%;
     }
+    .inputCont.persInfo .blocked {
+        background-color: var(--all-color-albord);
+        color: var(--col-lgrey);
+        pointer-events: none;
+    }
+    .inputCont.persInfo .blocked::placeholder {
+        color: var(--col-lgrey);
+        opacity : 1;
+    }
+    .inputCont label {
+        color: var(--col-dgrey);
+    }
+
+
+        /*credit table*/
         .credTable.orders {width: 80%;}
         .theTable {
             border-collapse: collapse;
@@ -448,38 +478,63 @@ if ($ordersExist){
                 <h1><?php echo $user->fullName; ?></h1>
                 <img src="<?php echo $dl->user->image(); ?>" alt="WorkingMage" class='bannerI' class='separator'>
                 <?php
-                  // echo $community->genUserSquare(); HOW WILL I IMPLEMENT THIS? ITS OWN PAGE?
+                   //echo $community->genUserSquare(); 
                 ?>
                 <p>
                     Your account unlocks many awesome features, such as making your own spell list, access to premium content in the digital library, and getting early and free access to some of our products via mail!<br>
                     If you have any questions, problems or complaints, feel free to contact us at <a href="mailto:pantheon@manyisles.ch" target="_blank">pantheon@manyisles.ch</a>.
                 </p>
+                <div style="width:20%;margin:auto;">
+                    <div class="popupButton" style="margin-top:3vw;" onclick="signOut('friendly')"><i class="fa-solid fa-arrow-right"></i> Sign Out</div>
+                </div>
+
+                <h2>Personal Information</h2>
+                <p>View and edit your personal information.</p>
+
+                <form class="persInfoForm" action="updateInfo.php" method="POST">
+                    <div class="inputCont persInfo half">
+                        <label for="firstName">First Name</label>
+                        <input type="text" name="firstName" placeholder="Hans" value="<?php echo $user->persInfo["fName"]; ?>"></input>
+                    </div>
+                    <div class="inputCont persInfo half">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" name="lastName" placeholder ="Drache" value="<?php echo $user->persInfo["lName"]; ?>"></input>
+                    </div>
+                    <div class="inputCont persInfo half">
+                        <label for="title">Title</label>
+                        <a href="/ds/tiers.php" target="_blank"><input class="blocked" name="title" type="text" placeholder ="Adventurer" value="<?php echo $user->title; ?>"></input></a>
+                    </div>
+                    <div class="inputCont persInfo half">
+                        <label for="discordName">Discord Username</label>
+                        <input type="text" name="discordName" placeholder ="hansDrag123" value="<?php echo $user->persInfo["references"]["discName"]; ?>"></input>
+                    </div>
+                    <div class="inputCont persInfo"  onclick="pop('email')">
+                        <label for="email">Email</label>
+                        <input class="blocked" type="text" placeholder="pantheon@manyisles.ch" value="<?php echo $user->email; ?>"></input>
+                    </div>
+                    <div class="inputCont persInfo half">
+                        <label for="region">Region</label>
+                        <select name="region" id="region" required>
+                            <option value="1" <?php if ($user->region == 1){echo "selected";} ?>>1 (UTC)</option>
+                            <option value="2" <?php if ($user->region == 2){echo "selected";} ?>>2 (UTC + 7)</option>
+                            <option value="3" <?php if ($user->region == 3){echo "selected";} ?>>3 (UTC - 7)</option>
+                        </select>
+                    </div>
+                    <div class="inputCont persInfo" style="margin-top:30px;">
+                        <button class="popupButton">Update Information</button>
+                    </div>
+                </form>
+
+                <h2>Change Login Details</h2>
+                <p>Change your email address or password.</p>
+
                 <div class="infoContain">
                     <p>Email: <span style="color:var(--gen-color-link); font-weight: bold"><?php echo $user->email; ?></span></p><button class="popupButton" onclick="pop('email')">Change</button>
                 </div>
                 <div class="infoContain">
                     <p>Password</p><button class="popupButton" onclick="pop('psw-b')">Change</button>
                 </div>
-                <div class="infoContain" style="margin:5vw 37.5% auto;width:25%">
-                        <form action="changeRegion.php" method="POST" >
-                        <td> <label for="region"><b>Region</b></label></td>
-                        <td> <select name="region" id="region" required>
-                                <option value="1" <?php if ($user->region == 1){echo "selected";} ?>>1 (UTC)</option>
-                                <option value="2" <?php if ($user->region == 2){echo "selected";} ?>>2 (UTC + 7)</option>
-                                <option value="3" <?php if ($user->region == 3){echo "selected";} ?>>3 (UTC - 7)</option>
-                            </select>
-                        </td>
-                        <div style="width:40%;margin:auto"><button class="popupButton" type="submit">Change</button></div>
-                        </form>
-                </div>
-                <div>
-                    <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
-                </div>
-                <h2>Sign Out</h2>
-                <p>Sign out of your account.</p>
-                <div style="width:20%;margin:auto;">
-                    <div class="popupButton" style="margin-top:3vw;" onclick="signOut('friendly')">Sign Out</div>
-                </div>
+
             </div>
 
             <?php
@@ -723,6 +778,9 @@ if ($ordersExist){
     else if (show == "resent") {
         clinnation("Conf");
         createPopup("d:acc;txt:A new confirmation mail was sent");
+    }
+    else if (show == "persInfo") {
+        createPopup("d:acc;txt:Personal information updated");
     }
     else if (show == "parSub") {
         document.getElementById('backPatD').style.display = 'block';
