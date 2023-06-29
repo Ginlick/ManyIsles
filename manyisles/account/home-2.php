@@ -21,10 +21,6 @@ $id = $dl->user->user;
 
 $user = $dl->user;
 $emailConfirmed = $user->emailConfirmed;
-$discname = $user->discname;
-
-$disctitle = "Connect Discord";
-if ($discname != null){$disctitle = "Discord";}
 
 $poetadmin = false;
 $query="SELECT * FROM poets WHERE id = ".$id;
@@ -38,56 +34,6 @@ if ($result != false){
 }
 
 //bodies
-
-$discConMailBody = <<<MESSAGE
-                <div style="margin:auto;">
-                    <img src="/Imgs/disc.png" alt="discord" style='width:20%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                </div>
-                <p>
-                    Please <span class="fakelink" onclick="clinnation('Conf');">confirm your email</span> first.
-                </p>
-
-MESSAGE;
-
-$discConnBody = <<<MESSAGE
-                <div style="margin:auto;">
-                    <img src="/Imgs/disc.png" alt="discord" style='width:20%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                </div>
-                <p>
-                    The <a href="https://discord.gg/XTQnR7mS3D" target="_blank">Many Isles discord server</a> is a great place for the community to come together and share their brews.<br />
-                    If you've already joined the server, please submit your discord username, which will connect your accounts. Your discord nickname will be updated with your Many Isles title, tier and username in a second!
-                </p>
-                <form action="DiscConn.php" method="post">
-                    <div class="container">
-                        <input class="mainInput" type="text" name="discSubmit" id="discSubmit" placeholder="Ginlic#6643" autocomplete="off" oninput="discGramm(this)" required />
-                        <p id="discInputErr" class="inputErr">Incorrect input!</p>
-                        <p id="discDuplicateErr" style="display:none;color:red">Username already in use.</p>
-                    </div>
-                    <button class="popupButton" type="submit" style="margin-top:3vw;">Submit</button>
-                </form>
-MESSAGE;
-
-$discBody = <<<MESSAGE
-                <div style="margin:auto;">
-                    <img src="/Imgs/disc.png" alt="discord" style='width:20%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                </div>
-                <p>
-                    The <a href="https://discord.gg/XTQnR7mS3D" target="_blank">Many Isles discord server</a> is a great place for the community to come together and share their brews.<br />
-                    Your discord username is <b>aSDADA</b>.
-                    To get your discord nickname and tier updated, please dm an admin until we set up a bot to do the work.
-                </p>
-                <form action="DiscConn.php" method="post">
-                    <div class="container">
-                        <input class="mainInput" type="text" name="discSubmit" id="discSubmit" placeholder="New Username" autocomplete="off" oninput="discGramm(this)" required />
-                        <p id="discInputErr" class="inputErr">Incorrect input!</p>
-                        <p id="discDuplicateErr" style="display:none;color:red">Username already in use.</p>
-                    </div>
-                    <button class="popupButton" type="submit" style="margin-top:3vw;">Submit</button>
-                </form>
-
-MESSAGE;
-$discBody = str_replace("aSDADA", $discname, $discBody);
-
 
 $confMailBar = <<<message
 <li onclick='clinnation("Conf")'> <p id='ConfBar' class="Bar">Confirm Email</p></li>
@@ -463,7 +409,6 @@ if ($ordersExist){
                 <ul id="myMenu">
                     <li onclick='clinnation("Over")'><p id='OverBar' class="Bar">Overview</p></li>
                     <?php if ($emailConfirmed != 1) {echo $confMailBar; } ?>
-                    <li onclick='clinnation("Disc")'> <p id='DiscBar' class="Bar"><?php echo $disctitle; ?></p></li>
                     <li> <a class="Bar line" href="/ds/tiers.php" target="_blank">Purchase Tier</a></li>
                     <?php echo $partBar; ?>
                     <?php echo $adminBar; ?>
@@ -542,15 +487,6 @@ if ($ordersExist){
                  echo $confMailBody;
             }
             ?>
-
-            <div id='Disc' class='column'>
-                <h1><?php echo $disctitle; ?></h1>
-                <?php
-                if ($emailConfirmed == null) { echo $discConMailBody; }
-                else if ($discname == null) { echo $discConnBody; }
-                else {echo $discBody; }
-                ?>
-            </div>
 
             <?php echo $partBody; /*'*/ ?>
 
