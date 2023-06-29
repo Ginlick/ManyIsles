@@ -16,7 +16,7 @@ $persInfo["lName"] = $lName;
 $persInfo["references"]["discName"] = $discName;
 $jPersInfo = json_encode($persInfo);
 
-$query = "UPDATE accountsTable SET region = '$region', persInfo = '$jPersInfo'";
+$query = "UPDATE accountsTable SET region = '$region', persInfo = '$jPersInfo' WHERE id = $user->user";
 
 if ($conn->query($query)) {
     $user->go("home?show=persInfo");
