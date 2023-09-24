@@ -1,10 +1,15 @@
 RewriteEngine on
 
-DirectoryIndex home.html
+Require all granted
+DirectoryIndex home.php
+
+ErrorDocument 404 /global/notFound.html
+ErrorDocument 500 /global/error.html
+
 
 RewriteRule  ^fandom/.*/([0-9]+)/.*   fandom/f.php?id=$1&%{QUERY_STRING} [NC,L]
-RewriteRule  ^([^/]*)/wsettings  fandom/wsettings.php?domain=$1&%{QUERY_STRING} [L]
-RewriteRule  ^([^/]*)/edit$ fandom/edit.php?domain=$1&%{QUERY_STRING} [L]
+RewriteRule  ^([^/]*)/wsettings  wiki/wsettings.php?domain=$1&%{QUERY_STRING} [L]
+RewriteRule  ^([^/]*)/edit$ wiki/edit.php?domain=$1&%{QUERY_STRING} [L]
 RewriteRule  ^docs/([0-9]+)/.*   docs/doc.php?id=$1 [NC,L]
 RewriteRule  ^5eS/([0-9]+)/.*   5eS/rule.php?id=$1 [NC,L]
 RewriteRule  ^mystral/([0-9]+)/([0-9]+)/.*$  mystral/note.php?id=$2&%{QUERY_STRING} [L]
@@ -22,7 +27,7 @@ RewriteRule  ^blog/post/(.+)/.*   blog/posted.php?p=$1 [NC,L]
 RewriteRule  ^dic/([0-9]+)$ dic/dic.php?dicd=$1 [L]
 RewriteRule  ^dic/word/([0-9]+).*$ dic/word.php?dicw=$1 [L]
 
-RewriteRule ^events/$ events/home.php [L]
+RewriteRule ^events/$ events/events.php [L]
 
 RewriteRule  ^([^/]*)/([0-9]+)/.*   $1/page.php?id=$2&%{QUERY_STRING} [NC,L]
 

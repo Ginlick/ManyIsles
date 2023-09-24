@@ -162,6 +162,110 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="/account/BePartner"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="https://i.pinimg.com/564x/bb/d7/01/bbd701b1595bb76dca41254aeec6565c.jpg"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Become Publisher</h3>
+                  <p>
+                    Create a partnership and start publishing your fantasy work.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h1>Community</h1>
+          <div class="im-ccontainer">
+            <div class="im-box">
+              <a class="im-wrapA" href="/account/home"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/account.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Account</h3>
+                  <p>
+                    Your Many Isles account.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="/blog/explore"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/blogs.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Blogs</h3>
+                  <p>
+                    View and publish posts about fantasy.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="/events"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/dragon.jpg"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Events</h3>
+                  <p>
+                    Participate in our awesome roleplaying, worldbuilding, and social events!
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="im-box">
+              <a class="im-wrapA" href="https://discord.gg/XTQnR7mS3D"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/discord.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Discord</h3>
+                  <p>
+                    Join our discord server and become part of our growing community.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Join</span>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <h1>Worldbuilding</h1>
@@ -206,72 +310,6 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
-          </div>
-          <h1>Community</h1>
-          <div class="im-ccontainer">
-            <div class="im-box">
-              <a class="im-wrapA" href="/account/home"></a>
-              <div class="im-topcontainer">
-                <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/slides/account.png"></div>
-                  <div class="im-overlay"></div>
-                </div>
-              </div>
-              <div class="im-botcontainer">
-                <div class="im-text">
-                  <h3>Account</h3>
-                  <p>
-                    Your Many Isles account.
-                  </p>
-                  <p class="explorelink">
-                    <span class="fakelink">Explore</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="im-box">
-              <a class="im-wrapA" href="/blog/explore"></a>
-              <div class="im-topcontainer">
-                <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/slides/blogs.png"></div>
-                  <div class="im-overlay"></div>
-                </div>
-              </div>
-              <div class="im-botcontainer">
-                <div class="im-text">
-                  <h3>Blogs</h3>
-                  <p>
-                    View and publish posts about fantasy.
-                  </p>
-                  <p class="explorelink">
-                    <span class="fakelink">Explore</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="im-box">
-              <a class="im-wrapA" href="https://discord.gg/XTQnR7mS3D"></a>
-              <div class="im-topcontainer">
-                <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/slides/discord.png"></div>
-                  <div class="im-overlay"></div>
-                </div>
-              </div>
-              <div class="im-botcontainer">
-                <div class="im-text">
-                  <h3>Discord</h3>
-                  <p>
-                    Join our discord server and become part of our growing community.
-                  </p>
-                  <p class="explorelink">
-                    <span class="fakelink">Join</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h1>Tools</h1>
-          <div class="im-ccontainer">
             <div class="im-box">
               <a class="im-wrapA" href="/spells/index"></a>
               <div class="im-topcontainer">
@@ -292,26 +330,11 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
-            <div class="im-box">
-              <a class="im-wrapA" href="/5eS/home"></a>
-              <div class="im-topcontainer">
-                <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/slides/5eS.png"></div>
-                  <div class="im-overlay"></div>
-                </div>
-              </div>
-              <div class="im-botcontainer">
-                <div class="im-text">
-                  <h3>5eS System</h3>
-                  <p>
-                    The rules for 5eS, a D&D variant.
-                  </p>
-                  <p>
-                    <span class="fakelink">Explore</span>
-                  </p>
-                </div>
-              </div>
-            </div>
+          </div>
+
+
+          <h1>Tools</h1>
+          <div class="im-ccontainer">
             <div class="im-box">
               <a class="im-wrapA" href="/tools/tools"></a>
               <div class="im-topcontainer">

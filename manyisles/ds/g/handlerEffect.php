@@ -303,7 +303,7 @@ foreach ($sellerPayment as $partner => $partnerArray) {
     $paid = $partnerArray["paid"];
     $shippingPaid = $partnerArray["shipping"];
     if ($partner == "Royalty"){
-        $pTran = new transaction($moneyconn, 14);
+        $pTran = new transaction($moneyconn, 14); 
         $pTran->new($paid, $custProm->fullName, "Royalty on #$clid");
     }
     else {
