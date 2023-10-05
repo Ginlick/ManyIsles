@@ -39,6 +39,7 @@ $downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsL
             font-weight: bold;
             padding: 5px 0;
         }
+
     </style>
 </head>
 <body>
@@ -62,11 +63,18 @@ $downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsL
                 <a href="https://discord.gg/XTQnR7mS3D" target="_blank"><button class="eventButton">Discord</button></a>
                 <p>Alternatively, <a href="mailto:events@manyisles.org" target="_blank">write us an email</a>.</p>
             </div>
+            <!--
+            <div class="inColumnLeft">
+                <img class="inColumnFiller" src="imgs/ToH_inverse.jpg" alt="Tournament of Heroes" />
+                <p>Find the leaderboard of our Tournament of Heroes one-shots!</p>
+                <a href="tournamentofheroes"><button class="eventButton">Check it Out</button></a>
+            </div> 
+             -->
             <div class="inColumnLeft">
                 <h2>Downloads</h2>
                 <div id="downloadsContainer"></div>
             </div>
-        </section>
+       </section>
         <section class="column-main">
             <h1>Our Events</h1>
             <section id="eventsContainer"></section>

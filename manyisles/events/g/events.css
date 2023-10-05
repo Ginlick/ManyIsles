@@ -36,8 +36,10 @@ h2 {
     background: none;
 }
 
-.column-left .eventButton {
-
+.inColumnFiller {
+    width: 100%;
+    display: block;
+    object-fit: contain;
 }
 
 /*utils*/
