@@ -419,12 +419,13 @@ if (!class_exists("parser")){
     function parseImage(string $body){
       if (preg_match("/{(.*)}/", $body, $allmatches)){
         $stringDico = $allmatches[1];
-        $chunks = array_chunk(preg_split('/(\[|\])/', $stringDico), 2);
+        preg_match_all("/([a-zA-Z]+)\[([^\[\]]*(\[(?:[^\[\]]+|(?R))*+\])*[^\[\]]*)\]/", $stringDico, $chunked);
+
         $img = [];
-        if (count(array_column($chunks, 0)) > 0){
-          foreach ($chunks as $chunk){
-            if (isset($chunk[1])){
-              $img[$chunk[0]]=$chunk[1];
+        if ((count($chunked) > 0) && (count($chunked[1]) == count($chunked[2]))) {
+          foreach ($chunked as $chunk){
+            for ($i = 0; $i < count($chunked[1]); $i++){
+              $img[$chunked[1][$i]] = $chunked[2][$i];
             }
           }
         }

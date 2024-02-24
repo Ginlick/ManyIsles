@@ -50,6 +50,7 @@ if (!class_exists("adventurer")){
         else if ($this->user != 0){
           $this->constructUInfo();
         }
+
       }
       function constructUInfo(){
         $query = "SELECT * FROM accountsTable WHERE id = '$this->user'";
