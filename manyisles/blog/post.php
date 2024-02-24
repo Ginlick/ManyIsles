@@ -40,6 +40,7 @@ $buserInfo = $blog->fetchBuserInfo();
 
             <form action="makePost.php" method="POST" enctype="multipart/form-data" class="blogForm">
               <?php echo $blog->genProfileBlock(); ?>
+              <?php echo $blog->genSeriesBlock(); ?>
 
               <div id="bannerInputCont"></div>
               <div id="banner2InputCont"></div>

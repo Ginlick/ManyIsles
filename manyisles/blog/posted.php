@@ -15,6 +15,7 @@ if ($toprow = $blog->blogconn->query($query)) {
       $pShortName = $blog->giveBlogTitle($row["title"])["title"];
       $pCode = $row["code"];
       $pOwner = $row["buser"];
+      $pBody = $blog->genLargePost($row);
     }
   }
 }
@@ -53,17 +54,9 @@ if ($blog->hasProfile($pOwner)){
 
         <div class='column'>
           <div class="columnCont">
-            <?php echo $blog->giveSignPrompt("/blog/post/$postId/"); ?>
-            <section class="feed">
-              <?php echo $pParsed; ?>
-              <?php if ($isTargetBuser) {
-                echo '
-                      <div class="submitBlocc">
-                        <a href="/blog/g/delPost?p='.$postId.'"><button type="button" class="blogButton independent grey">Delete Post</button></a>
-                      </div>';
-              }
-              ?>
-            </section>
+
+            <?php echo $pBody; ?>
+
             <section class="<?php if (!$blog->arrAllows($pRow["settings"], "comments")){echo "hidden"; } ?>">
               <div class="<?php if (!$blog->user->signedIn){echo "hidden"; } ?>">
                 <h2 id="commentSectionHeader">Write Comment</h2>

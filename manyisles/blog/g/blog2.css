@@ -417,6 +417,31 @@ button:hover, .wikiButton:hover, .blogButton:hover {
     display: none;
   }
 
+  /*posted*/
+  .postBanner {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+  }
+  .postTitleSection {
+    margin: 30px 0;
+  }
+  .postTitleSection h1 {
+    margin: 5px 0;
+  }
+  .post-content {
+    margin: 2em 0 4em;
+  }
+  .post-content p {
+    margin: 0.5em 0;
+    text-indent: 1em;
+    line-height: 1.5;
+  }
+  .post-content .main-post.embedded {
+    margin-top: 2em;
+  }
+
   /*profile selection*/
   .buser-pp.small {
     width: 60px;

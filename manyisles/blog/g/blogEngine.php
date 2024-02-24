@@ -8,6 +8,7 @@ class blogEngine extends communityEngine {
       parent::__construct();
       $this->curPage = $curPage;
 
+
       //for embedded links
       include($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
       include($_SERVER['DOCUMENT_ROOT']."/dl/global/engine.php");
@@ -254,29 +255,27 @@ class blogEngine extends communityEngine {
       }
     }
     function genPost($prow, $extent = 0, $public = false){
-      $row = $prow;
       $post = $this->postStencil;
+      $post = $this->genPostParts($post, $prow, $extent, $public);
+      return $post;
+    }
+    function genPostParts($stencil, $row, $extent = 0, $public = false){
+      $post = $stencil;
       $postBuser = $row["buser"];
       $postBuserInfo = $this->fetchBuserInfo($postBuser);
       $postAge = $this->givePostAge($row["reg_date"]);
       $postText = $this->parse->parse($row["text"], 1);
       $postTitleInf = $this->giveBlogTitle($row["title"], $postBuserInfo["info"]["uname"]); $postTitle = $postTitleInf["title"];
       if ($public AND $postBuserInfo["info"]["setPublic"]==0){return false;}
-      $tags = $this->getArray($row["genre"]); $tagList = "";
-      foreach ($tags as $tag){
-        if ($tag == ""){continue;}
-        $tagList .= "<a href='/blog/search?t=$tag'><span class='tag-element fakelink'>#$tag</span></a>";
-      }
-      $post = str_replace("post-imagge%%", $this->genPP($postBuserInfo["info"]["pp"], $postBuserInfo["info"]["pptype"]), $post);
+      $tagList = $this->genTagList($row["genre"]);
+      $post = str_replace("%%postBottom", $this->postBottomStencil, $post);
+      $post = str_replace("%%posterBlock", $this->genBuserInfo($postBuserInfo, $postAge), $post);
       $post = str_replace("post-title-url", urlencode($postTitle), $post);
       $post = str_replace("post-buser-buname-url", urlencode($postBuserInfo["info"]["uname"]), $post);
       $post = str_replace("post-link", "blog/post/".$row["code"]."/".urlencode(substr(str_replace(" ", "_", $this->baseFiling->purate($postTitle)),0,22)), $post);
       $post = str_replace("post-code", $row["code"], $post);
       $post = str_replace("post-banner%%", $this->baseFiling->clearmage($row["banner"]), $post);
-      $post = str_replace("post-buser-buname", $postBuserInfo["info"]["uname"], $post);
       $post = str_replace("post-buser-id", $postBuserInfo["id"], $post);
-      $post = str_replace("post-buser-fullName", $postBuserInfo["username"], $post);
-      $post = str_replace("post-age", $postAge, $post);
       if ($postTitleInf["hasTitle"]){$post = str_replace("%post-title", $postTitle, $post);} else {$post = str_replace("%post-title", "", $post);}
       $post = str_replace("%post-genre", $tagList, $post);
       $post = str_replace("post-likes", $row["likes"], $post);
@@ -291,9 +290,64 @@ class blogEngine extends communityEngine {
       $post = str_replace("ADDEMBEDS*", $this->giveEmbeds($postText), $post);
       //references
       $this->giveReferences($postText);
-
       $post = str_replace("post-text", $postText, $post);
       return $post;
+    }
+    function genLargePost($row) {
+      $postBuserInfo = $this->fetchBuserInfo($row["buser"]);
+      $pBuserInfo = $this->genBuserInfo($postBuserInfo, $this->givePostAge($row["reg_date"]));
+      $pTagList = $this->genTagList($row["genre"]);
+      $post = $this->largePostStencil;
+      $pBanner = $row["banner"];
+      if ($pBanner != "" ){
+        $pBanner = $this->baseFiling->clearmage($row["banner"]);
+        $pBanner = '<img class = "postBanner" src="'.$pBanner.'" alt="post banner" />';
+      }
+      $postTitleInf = $this->giveBlogTitle($row["title"], $postBuserInfo["info"]["uname"]); $postTitle = $postTitleInf["title"];
+      $isTargetBuser = false;
+      if ($this->hasProfile($row["buser"])){
+        $this->userCheck();
+        $isTargetBuser = true;
+      }
+      if ($isTargetBuser) {
+        $editPrompt = '
+              <div class="submitBlocc">
+                <a href="/blog/g/delPost?p='.$row["id"].'"><button type="button" class="blogButton independent grey">Delete Post</button></a>
+              </div>';
+      } else {$editPrompt = "";}
+      $postText = $this->parse->parse($row["text"], 1);
+      //likes etc.
+      $postText .= $this->genPostParts($this->postBottomStencil, $row);
+      //embedded links
+      $postText .= $this->giveEmbeds($postText);
+      //references
+      $this->giveReferences($postText);
+
+      $post = str_replace("%%pBanner", $pBanner, $post);
+      $post = str_replace("%%pBuserInfo", $pBuserInfo, $post);
+      $post = str_replace("%%pTitle", $postTitle, $post);
+      $post = str_replace("%%pTagList", $pTagList, $post);
+      $post = str_replace("%%pBodyText", $postText, $post);
+      $post = str_replace("%%editPrompt", $editPrompt, $post);
+
+      return $post;
+    }
+    function genBuserInfo($postBuserInfo, $postAge){
+      $post = $this->posterInfoNormalStencil;
+      $post = str_replace("post-imagge%%", $this->genPP($postBuserInfo["info"]["pp"], $postBuserInfo["info"]["pptype"]), $post);
+      $post = str_replace("post-buser-id", $postBuserInfo["id"], $post);
+      $post = str_replace("post-buser-buname", $postBuserInfo["info"]["uname"], $post);
+      $post = str_replace("post-buser-fullName", $postBuserInfo["username"], $post);
+      $post = str_replace("post-age", $postAge, $post);
+      return $post;
+    }
+    function genTagList($tags){
+      $tags = $this->getArray($tags); $tagList = "";
+      foreach ($tags as $tag){
+        if ($tag == ""){continue;}
+        $tagList .= "<a href='/blog/search?t=$tag'><span class='tag-element fakelink'>#$tag</span></a>";
+      }          
+      return '<div class="genreList">'.$tagList.'</div>';
     }
     function genComment($row) {
       $post = $this->commentStencil;
@@ -349,6 +403,58 @@ class blogEngine extends communityEngine {
         }
       }
       return ["title"=>$title, "hasTitle"=>$hasTitle];
+    }
+    //user selection blocks
+    function genSeriesBlock() {
+      $sBlock = $this->seriesRectangleStencil;
+      $seriesResults = "";$selSeriesResults = "";$firstOption = true;
+      $query = "SELECT * FROM series WHERE user = ".$this->user->user;
+      //TODO: do query and generate seriesblock
+
+      if ($seriesResults == ""){
+        //make "create series" button
+      }
+      else {
+        $sBlock .= "<p><a href='/blog/createSeries'>Create new series</a>";
+      }
+
+    }
+    function genProfileBlock($size = 0) {
+      $pBlock = <<<PROFILEBLOCK
+      <div class="profilesBlock rectangle" profile-selector="" id="pSelect">
+        gimmeUserBlocks
+        <div class="profileSuggs">
+          gimmePSUGS
+        </div>
+        <input name="profile" style="display:none;" value="firstOptionBuser" id="pSelectinput" />
+      </div>
+      PROFILEBLOCK;
+      $userBlock = <<<HI
+      <div class="inside me" profile-inside="%%buid">
+        gimmeIAFMEFIFFK
+        <p class="mainname">gimmeMYNAME <i class="fa-regular fa-square-chevron-down"></i></p>
+      </div>
+      HI;
+      if ($size == 1) {$pBlock = str_replace("profilesBlock", "profilesBlock small", $pBlock);}
+
+      $profileResults = "";$selProfileResults = "";$firstOption = true;
+      foreach ($this->profiles as $profile) {
+        $block2 = $userBlock;
+        if ($firstOption) {
+          $pBlock = str_replace("firstOptionBuser", $profile["id"], $pBlock);
+          $block2 = str_replace("inside me", "inside visible", $block2);
+          $firstOption = false;
+        }
+        $block2 = str_replace("gimmeIAFMEFIFFK", $this->genPP($profile["info"]["pp"], $profile["info"]["pptype"], "small"), $block2);
+        $block2 = str_replace("gimmeMYNAME", $profile["info"]["uname"], $block2);
+        $block2 = str_replace("%%buid", $profile["id"], $block2);
+        $profileResults .= $block2;
+        $selProfileResults .= '<p class="mainname" profile-option="'.$profile["id"].'" profile-t-selector="pSelect">'.$profile["info"]["uname"].' ('.$profile["userFullid"].')</p>';
+      }
+
+      $pBlock = str_replace("gimmeUserBlocks", $profileResults, $pBlock);
+      $pBlock = str_replace("gimmePSUGS", $selProfileResults, $pBlock);
+      return $pBlock;
     }
 
     //actions
@@ -467,8 +573,27 @@ class blogEngine extends communityEngine {
       return new fileEngine($this->user->user);
     }
 
-    public $postStencil =  <<<MACss
-    <div class="post" id="post-code">
+    public $largePostStencil = <<<LARGEPOST
+      <section class="largePost">
+        <div class="header">
+          %%pBanner
+        </div>
+        <div class="postTitleSection">
+          <h1>%%pTitle</h1>
+          %%pTagList
+        </div>
+        %%pBuserInfo
+      </section>
+      <section class="feed">
+        <div class="post-content">
+          %%pBodyText
+        </div>
+        %%editPrompt
+
+
+      </section>
+    LARGEPOST;
+    public $posterInfoNormalStencil = <<<EMACS
       <div class="buser-info">
         post-imagge%%
         <div class="buser-info-names">
@@ -476,14 +601,16 @@ class blogEngine extends communityEngine {
           <p><span class="secondname">post-age</span></p>
         </div>
       </div>
+    EMACS;
+    public $postStencil =  <<<MACss
+    <div class="post" id="post-code">
+      %%posterBlock
       <div class="main-post ADDMAINPOSTCLASS">
         <div class="main-post-banner" load-image="post-banner%%">
         </div>
         <div class="main-post-content">
           <h3 class="main-post-title">%post-title</h3>
-          <div class="genreList">
-            %post-genre
-          </div>
+          %post-genre
           <div>
             post-text
           </div>
@@ -491,6 +618,10 @@ class blogEngine extends communityEngine {
         <a class="main-post-overlay" href="/post-link"></a>
       </div>
       ADDEMBEDS*
+      %%postBottom
+    </div>
+    MACss;
+    public $postBottomStencil = <<<MACSSS
       <div class="bottom-infos">
         <div class="bottom-infos-left">
           <div class="smolinfo">
@@ -508,8 +639,7 @@ class blogEngine extends communityEngine {
           <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://manyisles.ch/post-link');createPopup('d:gen;txt:Link copied!');"></a>
         </div>
       </div>
-    </div>
-    MACss;
+    MACSSS;
     public $commentStencil =  <<<MACss
     <div class="comment" id="%post-code">
       <div class="buser-info small">
@@ -563,6 +693,15 @@ class blogEngine extends communityEngine {
         <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://manyisles.ch/blog/profile?u=%%BUSERID');createPopup('d:gen;txt:Link copied!');"></a>
       </div>
     HEREDOC;
+    public $seriesRectangleStencil = <<<SERIESBLOCk
+      <div class="profilesBlock rectangle" profile-selector="" id="sSelect">
+        gimmeUserBlocks
+        <div class="profileSuggs">
+          gimmePSUGS
+        </div>
+        <input name="series" style="display:none;" value="firstOptionSeries" id="sSelectinput" />
+      </div>
+    SERIESBLOCk;
     //emails
     public $emailPostNotif = <<<MYGREATMAIL
     <!DOCTYPE html>

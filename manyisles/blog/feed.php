@@ -2,10 +2,10 @@
 
 require_once("g/blogEngine.php");
 $blog = new blogEngine("Feed");
+
 $blog->userCheck();
 $userInfo = $blog->fetchBuserInfo();
 $following = json_encode($userInfo["following"]);
-
 ?>
 <!DOCTYPE html>
 <html>

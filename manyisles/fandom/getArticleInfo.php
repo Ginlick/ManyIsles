@@ -26,7 +26,7 @@ $dateArray = getDateArray($gen->conn, $gen->parentWiki);
 
 $itemArray["id"] = $gen->page;
 $itemArray["name"] = $gen->article->name;
-$itemArray["thumbnail"] = $gen->article->articleImg;
+$itemArray["thumbnail"] = getArtImage($gen->article->articleImg, $gen->article->banner, $gen->article->NSFW, $info);
 $itemArray["genre"] = $gen->article->cate;
 $itemArray["NSFW"] = $gen->pageInfo->NSFW;
 $itemArray["date"] = parseIWDate($gen->article->timeStart, $gen->article->timeEnd, $dateArray);

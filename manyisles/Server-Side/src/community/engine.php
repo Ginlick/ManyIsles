@@ -212,52 +212,6 @@ class communityEngine { //for all the extra user info: blog profile, partner
       $pp = str_replace("specclasses", $classes, $pp);
       return $pp;
     }
-    function genProfileBlock($size = 0) {
-      $pBlock = <<<PROFILEBLOCK
-      <div class="profilesBlock rectangle" profile-selector="" id="pSelect">
-        gimmeUserBlocks
-        <div class="profileSuggs">
-          gimmePSUGS
-        </div>
-        <input name="profile" style="display:none;" value="firstOptionBuser" id="pSelectinput" />
-      </div>
-      PROFILEBLOCK;
-      $userBlock = <<<HI
-      <div class="inside me" profile-inside="%%buid">
-        gimmeIAFMEFIFFK
-        <p class="mainname">gimmeMYNAME <i class="fa-regular fa-square-chevron-down"></i></p>
-      </div>
-      HI;
-      if ($size == 1) {$pBlock = str_replace("profilesBlock", "profilesBlock small", $pBlock);}
-
-      $profileResults = "";$selProfileResults = "";$firstOption = true;
-      foreach ($this->profiles as $profile) {
-        $block2 = $userBlock;
-        if ($firstOption) {
-          $pBlock = str_replace("firstOptionBuser", $profile["id"], $pBlock);
-          $block2 = str_replace("inside me", "inside visible", $block2);
-          $firstOption = false;
-        }
-        $block2 = str_replace("gimmeIAFMEFIFFK", $this->genPP($profile["info"]["pp"], $profile["info"]["pptype"], "small"), $block2);
-        $block2 = str_replace("gimmeMYNAME", $profile["info"]["uname"], $block2);
-        $block2 = str_replace("%%buid", $profile["id"], $block2);
-        $profileResults .= $block2;
-        $selProfileResults .= '<p class="mainname" profile-option="'.$profile["id"].'" profile-t-selector="pSelect">'.$profile["info"]["uname"].' ('.$profile["userFullid"].')</p>';
-      }
-
-      $pBlock = str_replace("gimmeUserBlocks", $profileResults, $pBlock);
-      $pBlock = str_replace("gimmePSUGS", $selProfileResults, $pBlock);
-      return $pBlock;
-    }
-    function genUserSquare(int $targetBuser = 0) {
-      if ($targetBuser == 0){$targetBuser = $this->buserId;}
-      $targetBuserInfo = $this->fetchBuserInfo($targetBuser);
-      $text = $this->buserSquare;
-      $text = str_replace("%%EXTRAREFS", "", $text);
-      $text = str_replace("%%EXTRACONT", "", $text);
-      $text = $this->processElement($text, $targetBuserInfo);
-      return $text;
-    }
 
     //miscellaneous tools
     function giveTimeDiff($regdate){
@@ -265,7 +219,7 @@ class communityEngine { //for all the extra user info: blog profile, partner
       $ago = new DateTime($regdate);
       //see if just give date
       $absdiff = $now->diff($ago)->format("%a");
-      if ($absdiff > 7) {return $ago->format("dS F Y");}
+      if ($absdiff > 7) {return $ago->format("jS F Y");}
 
       //fancy days
       $diff = $now->diff($ago);
