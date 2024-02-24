@@ -917,9 +917,17 @@ MAIN;
 
                     <h3  class="complete">Sidetab<span class="roundInfo green">Optional</span><span class="roundInfo">Takes Markdown</span></h3>
                     <p class="complete">This is optional. If you leave all fields blank, the page will not have a sidetab.</p>
-                    <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->placeSpecChar($this->article->sidetabTitle).'</textarea>
-                    <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'"></input>
-                    <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->placeSpecChar($this->article->sidetabText).'</textarea>
+                    <div class="sidetabEditorParent">
+                        <div class="sidetabEditorLeft">
+                            <textarea class="complete" name="sidetabTitle" rows = "3" placeholder="Titling" onfocus="textareaToFill = this;" oninput="autoLinkage()">'.$this->placeSpecChar($this->article->sidetabTitle).'</textarea>
+                            <input type="text" name="sidetabImg" placeholder="Article Image (direct link)"  value="'.$this->article->sidetabImg.'" onchange="newSidetabImagePreview(this.value)"></input>
+                            <textarea class="complete" name="sidetabText" rows = "5" placeholder="Sidetab  body text" onfocus="textareaToFill = this;" oninput="autoLinkage()" style="margin-bottom:4px">'.$this->placeSpecChar($this->article->sidetabText).'</textarea>
+                        </div>
+                        <div class="sidetabEditorRight">
+                            <p>Your sidetab image will appear here.</p>
+                            <img class="sidetabImagePreview" id="sidetabImagePreview" src="'.$this->article->sidetabImg.'" onerror="hideSidetabImagePreview()"/>
+                        </div>
+                    </div>
                     <div><h4>Timeframe</h4>
                     <input name="timeStart" type="text" value ="'.$this->article->timeStart.'" placeholder="Starting Date" />
                     <input name="timeEnd" type="text" value ="'.$this->article->timeEnd.'" placeholder="Ending Date"  /></div>
@@ -1549,7 +1557,13 @@ MAIN;
                 if (newImg == "current"){newImg = "'.$this->article->banner.'"};
                 $(".topBanner").attr("src", newImg);
               }
-
+            function newSidetabImagePreview(url) {
+                document.getElementById("sidetabImagePreview").src = url;
+                document.getElementById("sidetabImagePreview").style.display = "block";
+            }
+            function hideSidetabImagePreview() {
+                document.getElementById("sidetabImagePreview").style.display = "hidden";
+            }
 
             function doOnIncludeLoad(file) {
                 if (file =="cateoptions.html"){
@@ -2065,6 +2079,7 @@ class article {
                         }
                         $this->bodyInfo = $bodyInfo;
 
+                        //Dates
                         $date_array = date_parse($this->regdate);
                         $this->nicedate = $date_array["day"].".".$date_array["month"].".".$date_array["year"];
                       }

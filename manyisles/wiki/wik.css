@@ -158,6 +158,42 @@ blockquote {
         color: #8e1e1e;
     }
 
+.sidetabEditorParent {
+    display:flex;
+    width: 100%;
+}
+.sidetabEditorLeft {
+    flex-grow: 1;
+}
+.sidetabEditorRight {
+    background-color: var(--all-color-albord);
+    margin-left: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: min(25%, 350px);
+    position: relative;
+    overflow: hidden;
+}
+.sidetabEditorRight p {
+    display: block;
+    padding: 10px;
+    text-align: center;
+    color: var(--col-lgrey);
+}
+.sidetabImagePreview {
+    height: 100%;
+    width: 100%;
+    position: absolute; top: 0; left: 0;
+    object-fit: cover;
+}
+@media only screen and (max-width:1145px) {
+    .sidetabEditorRight {
+        display: none;
+    }
+}
+
 /*actual structure*/
 
 body {
