@@ -1,5 +1,6 @@
 addCss("/account/portal/acp.css", "css");
 addCss("https://www.google.com/recaptcha/api.js?render=6LeFhjkjAAAAANXrjzjnSCGlhHg9qYYkkqx2bD3A", "js"); //somehow get the key (another api?)
+addCss("")
 
 class acp_builder{
   constructor(returnF = null, options = []) {
@@ -17,6 +18,9 @@ class acp_builder{
         if (ele.getAttribute("acp-formtype") == "signIn") {
           ele.addEventListener("submit", thisClass.signIn.bind(thisClass));
         }
+        else if (ele.getAttribute("acp-formtype") == "directSignIn") {
+          ele.addEventListener("submit", thisClass.directSignIn.bind(thisClass));
+        }
       }
       if (ele.hasAttribute("acp-eltype")){
         if (ele.getAttribute("acp-eltype")=="switchCreate"){
@@ -29,23 +33,15 @@ class acp_builder{
     }
     parentEl.replaceChildren(el);
   }
-  signIn(e){
-    e.preventDefault();
+  directSignIn(e) {
+    //initial stuff, deal with captcha
+    e.preventDefault(); 
     var el = e.target;
-    let thisClass = this;
-    grecaptcha.ready(function() {
-      grecaptcha.execute('6LeFhjkjAAAAANXrjzjnSCGlhHg9qYYkkqx2bD3A', {action: 'submit'}).then(function(token) {
-        thisClass.actSignIn(el, token);
-      });
-    });
-    return false;
-  }
-  actSignIn(el, token) {
+    //make request to acp-api (log in)
     var file = "/account/portal/acp-api.php";
     var xhttp = new XMLHttpRequest();
     var formData = new FormData(el);
     var r = false;
-    formData.set("recaptcha-token", token);
     xhttp.addEventListener("load", (event) => {
       r = JSON.parse(event.target.responseText);
       if (!r.signedIn){
@@ -54,11 +50,8 @@ class acp_builder{
             if (r.issues.madeReturn == "captcha"){ //replace this with captcha
               return this.formError(el, "Our spam block interrupted you. Please try again later.", true);
             }
-            else if (r.issues.madeReturn == "UnameTaken"){
-              return this.formError(el, "", {"uname": {"errorLabel" : "Username already taken"}});
-            }
-            else if (r.issues.madeReturn == "EmailTaken"){
-              return this.formError(el, "", {"email": {"errorLabel" : "Email already taken"}});
+            else if (r.issues.madeReturn == "userinput"){
+              return this.formError(el, "", {"uname": {"errorLabel" : "Incorrect username or password."}});
             }
           }
         }
@@ -74,8 +67,23 @@ class acp_builder{
     xhttp.open("POST", file, true);
     xhttp.send(formData);
   }
+  signIn(e){
+    e.preventDefault();
+    var el = e.target;
+    let thisClass = this;
+    grecaptcha.ready(function() {
+      grecaptcha.execute('6LeFhjkjAAAAANXrjzjnSCGlhHg9qYYkkqx2bD3A', {action: 'submit'}).then(function(token) {
+        thisClass.actSignIn(el, token);
+      });
+    });
+    return false;
+  }
+  signIn(e) {
+    e.preventDefault();
+    window.location.href = "/account/api/login";
+  }
 
-  formError(el, errorMessage = null, resetForm = true) {
+  formError(el, errorMessage = "An error occured.", resetForm = true) {
     console.log(errorMessage);
     for (let element of el.getElementsByTagName("*")){
       if (element.tagName == "INPUT"){
@@ -128,24 +136,6 @@ class acp_builder{
     `,
     "signInBasic" : `
       <form acp-formtype="signIn" class="acp-form">
-        <table>
-            <tr>
-                <td><label for="loguname">Username</label></td>
-                <td style="width:1000%"><input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" oninput="inputGramm(this, 'u')" autocomplete="nickname" required></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td id="logunameInputErr" class="inputErr" default="Incorrect input!"><</td>
-            </tr>
-            <tr>
-                <td><label for="logpassword">Password</label></td>
-                <td><input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" oninput="inputGramm(this, 'p')" autocomplete="current-password" required><br></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td id="logpasswordInputErr" class="inputErr" default="Incorrect input!"><</td>
-            </tr>
-        </table>
         <p style="color:red;display:none;" acp-eltype="errorTaker">Sign in failed.</p>
         <button class="acp-button" type="submit">Log In</button>
     </form>
@@ -155,7 +145,7 @@ class acp_builder{
       <p>Don't have an account yet? <span class="fakelink" acp-eltype="switchCreate">Join us now!</span></p>
     `,
     "signInLine" : `
-      <form acp-formtype="signIn" class="acp-form line">
+      <form acp-formtype="directSignIn" class="acp-form line">
         <label for="loguname">Username</label>
         <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" oninput="inputGramm(this, 'u')" autocomplete="nickname" required>
         <div id="logunameInputErr" class="inputErr" default="Incorrect input!"></div>
@@ -175,41 +165,9 @@ class acp_builder{
     `,
     "signCreateBasic" : `
       <form acp-formtype="signIn" class="acp-form">
-          <table>
-              <tr>
-                  <td> <label for="uname">Username</label></td>
-                  <td style="width:1000%">  <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="uname" oninput="inputGramm(this, 'u')" onfocusout="inputLength(this, 2)" autocomplete="nickname" required></td>
-              </tr>
-              <tr>
-                  <td></td>
-                  <td id="unameInputErr" class="inputErr" default="Incorrect input!"><</td>
-              </tr>
-              <tr>
-                  <td> <label for="email">Email</label></td>
-                  <td> <input type="email" placeholder="pantheon@manyisles.ch" name="email" id="email" onfocusout="inputGramm(this, 'e')" autocomplete="email" required></td>
-              </tr>
-              <tr>
-                  <td></td>
-                  <td id="emailInputErr" class="inputErr" default="Incorrect input!"><</td>
-              </tr>
-              <tr>
-                  <td> <label for="psw">Password</label></td>
-                  <td> <input type="password" placeholder="uniquePassword22" pattern="[A-Za-z0-9!.\-_ ]{6,}$" name="psw" autocomplete="new-password" required></td>
-              </tr>
-              <tr>
-                  <td> <label for="region">Region</label></td>
-                  <td>
-                      <select name="region" id="region" required>
-                          <option value="1">1 (UTC)</option>
-                          <option value="2">2 (UTC + 7)</option>
-                          <option value="3">3 (UTC - 7)</option>
-                      </select>
-                  </td>
-              </tr>
-          </table>
-          <p>By creating an account, you agree with the community's <a href="/docs/44/Conditions_and_Terms" target="_blank">Terms and Conditions</a>.</p>
+          <p>Sign in or create an account to join our marvelous community!</p>
           <p style="color:red;display:none;" acp-eltype="errorTaker">Account creation failed.</p>
-          <button class="acp-button" type="submit">Sign Up</button>
+          <button class="acp-button" type="submit">Sign In</button>
       </form>
     `,
     "successCreateHTML" : `

@@ -26,8 +26,7 @@
 
             <div class='left-col'>
                 <ul id="myMenu">
-                    <li onclick='clinnation("Sign")'><p id='SignBar' class="Bar">Sign Up</p></li>
-                    <li onclick='clinnation("Log")'><p id='LogBar' class="Bar">Log In</p></li>
+                    <li onclick='clinnation("Sign")'><p id='SignBar' class="Bar">Log In</p></li>
                     <li onclick='clinnation("Pol")'><p id='PolBar' class="Bar">Terms of Service</p></li>
                 </ul>
             </div>
@@ -37,11 +36,9 @@
                 <h1 id="SignUp-title"> Join the Many Isles! </h1>
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 <div id="signCreateBigCont">
-                  <p id="createAccountP">Only normal letters are allowed throughout the form. You may use numbers in the password, and special characters in the email.</p>
 
                   <div id="signCreateFormCont"></div>
 
-                  <p>Already have an account? <span onclick="clinnation('Log')" class="fakelink">Log in</span></p>
                 </div>
 
                 <div style="margin-top:7vw;">
@@ -169,12 +166,7 @@
         }
         else { document.getElementById(clicked).style.display = "block"; }
     }
-    if (getCookie("hasAccount")){
-      clinnation("Log");
-    }
-    else {
-      clinnation("Sign");
-    }
+    clinnation("Sign");
 
     var urlParams = new URLSearchParams(window.location.search);
     var error = urlParams.get('error');
@@ -184,12 +176,8 @@
         clinnation(display);
     }
     if (error == "notSignedIn") {
-        clinnation('Log');
         document.getElementById("signTitle").innerHTML = "Sign In First";
         document.getElementById("signExpl").innerHTML = "You need to sign in to use this feature.";
-    }
-    else if (error == "signIn") {
-        clinnation('Log');
     }
     else if (error == "wannaPublish") {
         document.getElementById("SignUp-title").innerHTML = "Make an Account to start Publishing!";
@@ -197,7 +185,9 @@
     else if (error == "deleted") {
       createPopup("d:acc;txt:Account deleted.");
     }
-
+    else if (error == "loginError") {
+      createPopup("d:acc;txt:Failed to log in.");
+    }
     /*acp*/
     returnFin = function (resultObject) {
       if (getCookie("acceptCookies") && !getCookie("hasAccount")){

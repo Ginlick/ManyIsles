@@ -6,9 +6,9 @@ if (!class_exists("adventurer")){
       public $conn;
       public $user;
       public $usertag = "u#0";
-      public $title = "Adventurer";
-      public $uname = "Hansfried";
-      public $fullName = "Adventurer Hansfried";
+      public $title = "";
+      public $uname = "";
+      public $fullName = "";
       public $email = "";
       public $discname = "";
       public $cpsw = "";
@@ -18,6 +18,7 @@ if (!class_exists("adventurer")){
       public $signedIn = false;
       public $emailConfirmed = false;
       public $moderator = false;
+      public $keycloakInitialized = false;
 
       public $titleArr = [
               "Adventurer" => 0, "Poet" => 0, "Trader" => 0, "Journeyman" => 0,
@@ -53,6 +54,7 @@ if (!class_exists("adventurer")){
 
       }
       function constructUInfo(){
+        //TODO: replace with keycloak thing
         $query = "SELECT * FROM accountsTable WHERE id = '$this->user'";
         if ($result = $this->conn->query($query)) {
             if (mysqli_num_rows($result) > 0) {
@@ -81,6 +83,7 @@ if (!class_exists("adventurer")){
       }
 
       function createAccount($uname, $email, $psw, $region) {
+        //TODO: delete
         $redirect = false;
         //check input
         if ($this->signedIn){$redirect = "accountExists";} //will auto-redirect to SignedIn after anyway
@@ -125,33 +128,108 @@ if (!class_exists("adventurer")){
         if ($redirect){return $redirect;}
         return true;
       }
-      function signIn($subUname, $subPsw) {
-        $subUname = str_replace("'", "", $subUname);
-        $query = "SELECT id, password FROM accountsTable WHERE uname = '".$subUname."'";
+      //new
+      function keycloakInitialize() {
+        if ($this->keycloakInitialized){return true;}
+        $keyInfo = $this->giveServerInfo("login");
+        $config = file_get_contents($keyInfo["keycloak-config-info"]);
+        $config = json_decode($config, true);
+        $this->keycloakConfig = $config;
+        return true;
+      }
+      function loginURL() {
+        $state = $this->generateRandomString(12);
+        setcookie("loginState", $state);
+        $keyInfo = $this->giveServerInfo("login");
+        $this->keycloakInitialize();
+        $url = $this->keycloakConfig["authorization_endpoint"] . "?";
+        $url .= "response_type=code&";
+        $url .= "client_id=".$keyInfo["client"]."&";
+        $url .= "redirect_uri=".$this->giveServerInfo("servername_explicit")."/account/api/loginReturn.php&";
+        $url .= "state=$state";
+        return $url;
+      }
+      function loginConfirm($code, $state) {
+        //Check state
+        if (!isset($_COOKIE["loginState"]) OR $_COOKIE["loginState"]!=$state){
+          return false;
+        }
+        //Get access token
+        $this->keycloakInitialize();
+        $url = $this->keycloakConfig["token_endpoint"];
+        $data = [
+          "grant_type" => "authorization_code",
+          "code" => urlencode($code),
+          "redirect_uri" => $this->giveServerInfo("servername_explicit")."/account/api/loginReturn.php",
+          "client_id" => $this->giveServerInfo("login")["client"],
+          "client_secret" => $this->giveServerInfo("login")["client_secret"]
+        ];
+        return $this->loginKeycloak($url, $data);
+      }
+      function loginDirect($username, $psw) { //used by the sign in hover boy (direct sign in)
+        $this->keycloakInitialize();
+        $url = $this->keycloakConfig["token_endpoint"];
+        $data = [
+          "grant_type" => "password",
+          "username" => $username,
+          "password" => $psw,
+          "client_id" => $this->giveServerInfo("login")["client"],
+          "client_secret" => $this->giveServerInfo("login")["client_secret"]
+        ];
+        return $this->loginKeycloak($url, $data);
+      }
+      function loginKeycloak($url, $data) {
+        //builds query to keycloak
+        $options = ["http"=>[
+          'header' => "Content-type: application/x-www-form-urlencoded",
+          "method" => "POST",
+          "content" => http_build_query($data)
+        ]];
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        if ($result === false){return false;}
+        $result = json_decode($result, true);
+        if (isset($result["error"])){return false;}
+        $token = $result["access_token"];
+        $tokenD = json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $token)[1]))), true); //JWT decoder
+        $sub = $tokenD["sub"];
+        //now sign in
+        $query = "SELECT id FROM accountsTable WHERE sub = '$sub'";
         if ($userrow = $this->conn->query($query)){
-          if ($userrow->num_rows == 1) {
-            if ($row = $userrow->fetch_assoc()){
-              if (!password_verify($subPsw, $row["password"])){return false;}
-
-              $this->user = $row["id"];
-              $code = $this->generateRandomString(22);
-              $query = "DELETE FROM signCodes WHERE (reg_date < now() - interval 22 DAY) AND user = ".$this->user; $this->conn->query($query);
-              $query = "INSERT INTO signCodes (user, code) VALUES ('$this->user', '$code')"; $this->conn->query($query);
-              setcookie("loggedIn", $this->user, time()+1900800, "/");
-              setcookie("loggedCode", $code, time()+1900800, "/");
-              $this->constructUInfo();
-              return true;
+          if ($userrow->num_rows > 1) { return false; }
+          else {
+            if ($userrow->num_rows == 1) {
+              if ($row = $userrow->fetch_assoc()){
+                $this->user = $row["id"];
+              }
             }
+            else { //IsleID user not yet in database
+              $query = "INSERT INTO accountsTable (sub) VALUES ('$sub')";
+              $this->conn->query($query);
+              $this->user = $this->conn->insert_id;
+            }
+            $code = $this->generateRandomString(22);
+            $query = "DELETE FROM signCodes WHERE (reg_date < now() - interval 22 DAY) AND user = ".$this->user; $this->conn->query($query);
+            $query = "INSERT INTO signCodes (user, code) VALUES ('$this->user', '$code')"; $this->conn->query($query);
+            setcookie("loggedIn", $this->user, time()+1900800, "/");
+            setcookie("loggedCode", $code, time()+1900800, "/");
+            $this->signedIn = true;
           }
         }
-        return false;
+        return true;
+        //TODO: deal with refresh need
       }
+      function logout() {
+        //TODO: logout on keycloak
+        $this->keycloakInitialize();
+        $url = $this->keycloakConfig["end_session_endpoint"];
+        //website logout
+        $this->signOut();
+      }
+
+      //old
       function signOut() {
         $query = "DELETE FROM signCodes WHERE user = ".$this->user;
-        if (isset($_COOKIE["loggedCode"])){
-          $loggedCode = $this->purify($_COOKIE["loggedCode"], "quotes");
-          $query.= " AND code = '$loggedCode'";
-        }
         $this->conn->query($query);
         setcookie("loggedIn", "", time()-222222, "/");
         setcookie("loggedCode", "", time()-222222, "/");
@@ -176,7 +254,7 @@ if (!class_exists("adventurer")){
               }
             }
           }
-          $this->signOut();
+          $this->logout();
           if ($deadly) {
             $this->go("/account/home?error=notSignedIn");
           }
@@ -233,7 +311,7 @@ if (!class_exists("adventurer")){
         if (!$this->signedIn){
           $signPrompt = '<h3>Sign In</h3>
           <div id="signMeUpHere">Loading...</div>
-          <p>Don\'t have an account? <a href="/account/home" target="_blank">Join us!</a></p>
+          <p>Don\'t have an account? <a href="/account/api/login" target="_blank">Join us!</a></p>
           ';
           $signPrompt .= '
                     <script>
