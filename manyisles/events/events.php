@@ -71,6 +71,19 @@ $downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsL
                     <p>Many Isles Programme 2024</p>
                 </div>
             </div>
+            <h1>Tournament of Heroes</h1>
+            <p>
+                The «Tournament of Heroes» is a season-based D&D game series in which the seasons encompass around five games, and most sessions can be used as a one shot. It is filled with action, seasonal events, and role play initiating situations. <br>
+                The Tournament of Heroes takes place in the Rownor Kingdom, where the King has put a sword in a stone before he died, and the winner of the tournament can try to pull out the sword. <br>
+                In each season the players have to fight various unique monsters and bosses that we created just for this series. The seasonal events are one-shots meant to entertain your players, like the winter one-shot that is a snowball fight with random events.<br>
+                All of our stories and material can be adjusted to your needs or even adapted in your own games.
+            </p>
+            <h2>Playing a Game</h2>
+            <p>
+                We regularly run the newest chapter of the newest season at ETH Zentrum. Feel free to join any of these games using a pre-made or your own level 7 character!<br>
+                As soon as they are completed, written modules of our games are published here for free use.<br>
+                If you'd like, you can ask us to host a game of any past chapter - maybe one your regular group missed, or an old game you'd like to experience yourself. 
+            </p>
         </section>
     </section>
 </section>
