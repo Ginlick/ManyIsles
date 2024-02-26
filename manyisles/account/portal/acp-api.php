@@ -8,7 +8,8 @@ if (isset($_POST) AND count($_POST) > 0){
   if (isset($_POST['uname']) AND isset($_POST['psw'])){
     $subUname = str_replace("'", "", $_POST['uname']);
     $subPsw = $_POST['psw'];
-    if ($user->loginDirect($subUname, $subPsw)) {
+    if (!$user->loginDirect($subUname, $subPsw)) {
+      $issuesObj = ["madeReturn" => "userinput"];
     }
   }
 }

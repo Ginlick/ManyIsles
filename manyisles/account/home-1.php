@@ -188,6 +188,9 @@
     else if (error == "loginError") {
       createPopup("d:acc;txt:Failed to log in.");
     }
+    else if (error == "signedOut") {
+      createPopup("d:acc;txt:Successfully logged out.");
+    }
     /*acp*/
     returnFin = function (resultObject) {
       if (getCookie("acceptCookies") && !getCookie("hasAccount")){
@@ -209,8 +212,6 @@
       }
     }
     function acp_launcher() {
-      acpBuilder1 = new acp_builder(returnFin);
-      acpBuilder1.createPortal(document.getElementById("signFormCont"), "signInBasic");
       acpBuilder2 = new acp_builder(returnFcreate);
       acpBuilder2.createPortal(document.getElementById("signCreateFormCont"), "signCreateBasic");
     };

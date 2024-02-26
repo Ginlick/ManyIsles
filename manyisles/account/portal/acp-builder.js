@@ -51,7 +51,7 @@ class acp_builder{
               return this.formError(el, "Our spam block interrupted you. Please try again later.", true);
             }
             else if (r.issues.madeReturn == "userinput"){
-              return this.formError(el, "", {"uname": {"errorLabel" : "Incorrect username or password."}});
+              return this.formError(el, "Incorrect username or password.", true);
             }
           }
         }

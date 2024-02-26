@@ -14,7 +14,6 @@ if (!class_exists("adventurer")){
       public $discname = "";
       public $cpsw = "";
       public $tier = 0;
-      public $region = 1;
       public $power = 1;
       public $signedIn = false;
       public $emailConfirmed = false;
@@ -55,21 +54,19 @@ if (!class_exists("adventurer")){
 
       }
       function constructUInfo(){
-        //grab user info      
         $query = "SELECT * FROM accountsTable WHERE id = '$this->user'";
         if ($result = $this->conn->query($query)) {
           if (mysqli_num_rows($result) > 0) {
             while ($row = $result->fetch_assoc()) {
                 $this->sub = $row["sub"];
-               // $this->signedIn = true; ?why's this?
+                $this->signedIn = true;
                 $this->title = $row["title"];
                 $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
                 $this->uname = $row["uname"];
                 $this->email = $row["email"];
                 $this->cpsw = $row["password"];
                 $this->power = $row["power"];
-                $this->region = $row["region"];
-                
+
                 $persInfo = json_decode($row["persInfo"], true);
                 if ($persInfo == null){$persInfo = ["fName" => "", "lName" => "", "references" => ["discName"=>""]];}
                 $this->persInfo = $persInfo;
@@ -143,23 +140,13 @@ if (!class_exists("adventurer")){
           "content" => http_build_query($data)
         ]];
         $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
+        $result = @file_get_contents($url, false, $context);
         if ($result === false){return false;}
         $result = json_decode($result, true);
         if (isset($result["error"])){return false;}
         $token = $result["access_token"];
         $tokenD = json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $token)[1]))), true); //JWT decoder
         $sub = $tokenD["sub"];
-        //get info from IsleID
-        $url = "http://localhost:8081/v1/user/".$sub; //TODO: make flexible
-        $options = ["http"=>[
-          "header" => "Authorization: Bearer $token",
-          "method" => "GET"
-        ]];
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        print_r($result);
-
         //now sign in
         $query = "SELECT id FROM accountsTable WHERE sub = '$sub'";
         if ($userrow = $this->conn->query($query)){
@@ -171,10 +158,11 @@ if (!class_exists("adventurer")){
               }
             }
             else { //IsleID user not yet in database
-              $query = "INSERT INTO accountsTable (sub) VALUES ('$sub')";
+              $query = "INSERT INTO accountsTable (uname, email, title, sub) VALUES ('', '', 'Adventurer', '$sub')";
               $this->conn->query($query);
               $this->user = $this->conn->insert_id;
             }
+            $this->setUInfo($tokenD);
             $code = $this->generateRandomString(22);
             $query = "DELETE FROM signCodes WHERE (reg_date < now() - interval 22 DAY) AND user = ".$this->user; $this->conn->query($query);
             $query = "INSERT INTO signCodes (user, code) VALUES ('$this->user', '$code')"; $this->conn->query($query);
@@ -184,15 +172,44 @@ if (!class_exists("adventurer")){
           }
         }
         return true;
-        //TODO: deal with refresh need
-        //TODO: update table information based on what keycloak knows
       }
-      function logout() {
-        //TODO: logout on keycloak
+      function logoutURL($return = "") {
+        $retUrl = $this->giveServerInfo("servername_explicit")."/account/api/logoutReturn.php";
+        if (filter_var($return, FILTER_VALIDATE_URL) !== FALSE) {
+          $retUrl .= "?return_address=".urlencode($return);
+        }
         $this->keycloakInitialize();
         $url = $this->keycloakConfig["end_session_endpoint"];
-        //website logout
+        $url .= "?post_logout_redirect_uri=".$retUrl;
+        $url .= "&client_id=".$this->giveServerInfo("login")["client"];
+        return $url;
+      }
+      function logoutLocal() {
         $this->signOut();
+      }
+
+      function setUInfo($jwt){ //TODO: replace JWT-drawn info with IsleID-drawn info
+        $uname = $this->conn->real_escape_string($jwt["preferred_username"]);
+        $title = "Adventurer";
+        $tier = 0;
+        $email = $this->conn->real_escape_string($jwt["email"]);
+        $emailConfirmed = 0;
+        $persInfo = array();
+        $persInfo["fName"] = $this->conn->real_escape_string($jwt["given_name"]);
+        $persInfo["lName"] = $this->conn->real_escape_string($jwt["family_name"]);
+        $persInfo["references"]["discName"] = "";
+        $persInfo = json_encode($persInfo);
+        $query = sprintf("UPDATE accountsTable SET uname = '%s', title = '%s', tier = '%s', email = '%s', emailConfirmed = '%s', persInfo = '%s' WHERE id = $this->user",
+          $uname, $title, $tier, $email, $emailConfirmed, $persInfo);
+        $this->conn->query($query);
+        // $url = "http://localhost:8081/v1/user/".$sub; //TODO: make flexible
+        // $options = ["http"=>[
+        //   "header" => "Authorization: Bearer $token",
+        //   "method" => "GET"
+        // ]];
+        // $context = stream_context_create($options);
+        // $result = file_get_contents($url, false, $context);
+        // print_r($result);        echo "madeISLEID";
       }
 
       //old

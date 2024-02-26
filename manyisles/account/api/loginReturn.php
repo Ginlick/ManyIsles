@@ -11,9 +11,7 @@ if (!isset($_GET["state"]) OR !isset($_GET["code"])){
 
 $user->loginConfirm($_GET["code"], $_GET["state"]);
 
-echo "done";
-//print_r($user);
 
-//header("Location:/account/home");
+header("Location:/account/home");
 
 ?>

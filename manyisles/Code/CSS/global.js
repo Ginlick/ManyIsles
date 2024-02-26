@@ -384,21 +384,7 @@ function getCookie(cname) {
 
 //account
 function signOut(yeah = null) {
-    document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "loggedCode=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    let newpath = removeParam("i", window.location.href);
-
-    if (yeah == "friendly") { window.location.href = "/account/home?error=signIn"; }
-    else if (yeah == "baddie") { window.location.href = "/account/home?error=notSignedIn";}
-    else {
-      if (window.location.href != newpath){
-        window.location.href = newpath;
-      }
-      else {
-        window.location.reload();
-      }
-    }
-
+    window.location.href = "/account/api/logout?return_address=" + window.location.href;
 }
 function seekMaker(returner) {
   if (returner == "dl"){returner = "/dl/home";}

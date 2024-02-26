@@ -46,9 +46,8 @@ $confMailBody = <<<MESSAGE
                     <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 </div>
                 <p>
-                    Make sure you confirm your email as soon as possible to profit fully of your Many Isles account.
+                    Make sure you confirm your email as soon as possible to profit fully of your Many Isles account.<br>
                 </p>
-                 <button class="popupButton" type="submit" style="width:auto;margin-top:4vw"><a href="resendConfirm.php?mail=
 MESSAGE;
     $confMailBody = $confMailBody.$user->email."&id=".$id.'" style="color:white;text-decoration:none">Resend Email</a></button></div>';
 
@@ -408,7 +407,6 @@ if ($ordersExist){
             <div class='left-col'>
                 <ul id="myMenu">
                     <li onclick='clinnation("Over")'><p id='OverBar' class="Bar">Overview</p></li>
-                    <?php if ($emailConfirmed != 1) {echo $confMailBar; } ?>
                     <li> <a class="Bar line" href="/ds/tiers.php" target="_blank">Purchase Tier</a></li>
                     <?php echo $partBar; ?>
                     <?php echo $adminBar; ?>
@@ -439,11 +437,11 @@ if ($ordersExist){
                 <form class="persInfoForm" action="updateInfo.php" method="POST">
                     <div class="inputCont persInfo half">
                         <label for="firstName">First Name</label>
-                        <input type="text" name="firstName" placeholder="Hans" value="<?php echo $user->persInfo["fName"]; ?>"></input>
+                        <input class="blocked" type="text" name="firstName" placeholder="Hans" value="<?php echo $user->persInfo["fName"]; ?>"></input>
                     </div>
                     <div class="inputCont persInfo half">
                         <label for="lastName">Last Name</label>
-                        <input type="text" name="lastName" placeholder ="Drache" value="<?php echo $user->persInfo["lName"]; ?>"></input>
+                        <input  class="blocked" type="text" name="lastName" placeholder ="Drache" value="<?php echo $user->persInfo["lName"]; ?>"></input>
                     </div>
                     <div class="inputCont persInfo half">
                         <label for="title">Title</label>
@@ -451,35 +449,16 @@ if ($ordersExist){
                     </div>
                     <div class="inputCont persInfo half">
                         <label for="discordName">Discord Username</label>
-                        <input type="text" name="discordName" placeholder ="hansDrag123" value="<?php echo $user->persInfo["references"]["discName"]; ?>"></input>
+                        <input class="blocked" type="text" name="discordName" placeholder ="" value="<?php echo $user->persInfo["references"]["discName"]; ?>"></input>
                     </div>
-                    <div class="inputCont persInfo"  onclick="pop('email')">
+                    <div class="inputCont persInfo" >
                         <label for="email">Email</label>
                         <input class="blocked" type="text" placeholder="pantheon@manyisles.ch" value="<?php echo $user->email; ?>"></input>
                     </div>
-                    <div class="inputCont persInfo half">
-                        <label for="region">Region</label>
-                        <select name="region" id="region" required>
-                            <option value="1" <?php if ($user->region == 1){echo "selected";} ?>>1 (UTC)</option>
-                            <option value="2" <?php if ($user->region == 2){echo "selected";} ?>>2 (UTC + 7)</option>
-                            <option value="3" <?php if ($user->region == 3){echo "selected";} ?>>3 (UTC - 7)</option>
-                        </select>
-                    </div>
                     <div class="inputCont persInfo" style="margin-top:30px;">
-                        <button class="popupButton">Update Information</button>
+                        <p>You can update your personal information and login details on the new website.</p>
                     </div>
                 </form>
-
-                <h2>Change Login Details</h2>
-                <p>Change your email address or password.</p>
-
-                <div class="infoContain">
-                    <p>Email: <span style="color:var(--gen-color-link); font-weight: bold"><?php echo $user->email; ?></span></p><button class="popupButton" onclick="pop('email')">Change</button>
-                </div>
-                <div class="infoContain">
-                    <p>Password</p><button class="popupButton" onclick="pop('psw-b')">Change</button>
-                </div>
-
             </div>
 
             <?php
@@ -563,39 +542,6 @@ if ($ordersExist){
     <div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>
 
     <div id="modal" class="modal" onclick="pop('ded')">
-    </div>
-
-    <div id="email" class="modCol">
-        <div class="modContent smol">
-            <h1>Change Email</h1>
-            <p>
-                Your current email is <span style="color:var(--gen-color-link)"><?php echo $user->email; ?></span><br /><br />
-                All information we send you will go to your new email. Please be aware that if you enter a wrong address, you will not get anything from us, be it free goodies or important updates.
-            </p>
-            <form style="padding:0 10% 0 10%" action="ChangeMail.php" autocomplete="off" method="POST">
-                <input type="password" id="psw" name="psw" placeholder="CurrentUniquePassword22" autocomplete="password" required />
-                <input type="email" id="newmail" name="newmail" placeholder="newemail@gmail.com" autocomplete="new-email" required />
-                <p id="emailWrongPsw" style="color:red;display:none">Incorrect Password.</p>
-                <p id="emailAccomplished" style="color:green;display:none">Confirm new email to complete change</p>
-                <button class="popupButton" style="margin-bottom:2%;padding:10px 20px 10px 20px;" type="submit">OK</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="psw-b" class="modCol">
-        <div class="modContent smol">
-            <h1>Change Password</h1>
-            <p>
-                Changing your password regularly is a good security measure. Keep it up!
-            </p>
-            <form style="padding:0 10% 0 10%" action="ChangePsw.php" autocomplete="off" method="POST">
-                <input type="password" id="oldpsw" name="oldpsw" placeholder="currentUniquePassword22" required />
-                <input type="password" id="newpsw" name="newpsw" placeholder="newUniquePassword22" pattern="[A-Za-z0-9]{1,}" required />
-                <p id="pswWrongPsw" style="color:red;display:none">Incorrect Password.</p>
-                <p id="pswAccomplished" style="color:green;display:none">Password successfully changed.</p>
-                <button class="popupButton" style="margin-bottom:2%;padding:10px 20px 10px 20px;" type="submit">OK</button>
-            </form>
-        </div>
     </div>
 
     <div id="del" class="modCol">
@@ -687,30 +633,6 @@ if ($ordersExist){
         clinnation("Pat");
         $("#patSucc").show();
     }
-    else if (show == "emailWrongPassword") {
-      createPopup("d:acc;txt:There was an error.");
-    }
-    else if (show == "emailAccomplished") {
-        pop("email");
-        document.getElementById('emailAccomplished').style.display = 'block';
-    }
-    else if (show == "emailChangConf") {
-      createPopup("d:acc;txt:Email successfully confirmed.");
-    }
-    else if (show == "emailDoubleMail") {
-        pop("email");
-        document.getElementById('emailWrongPsw').style.display = 'block';
-        document.getElementById('emailWrongPsw').innerHTML = 'Email already used';
-    }
-    else if (show == "pswWrongPsw") {
-      createPopup("d:acc;txt:Error. Your password could not be updated.")
-    }
-    else if (show == "pswAccomplished") {
-      createPopup("d:acc;txt:Password successfully updated.")
-    }
-    else if (show == "wrongPassword") {
-      createPopup("d:acc;txt:Error. Incorrect password.")
-    }
     else if (show == "resent") {
         clinnation("Conf");
         createPopup("d:acc;txt:A new confirmation mail was sent");
@@ -724,18 +646,6 @@ if ($ordersExist){
     }
     else if (show == "notConfirmed") {
         clinnation("Conf");
-    }
-    else if (show == "discDuplicate") {
-        clinnation("Disc");
-        document.getElementById("discDuplicateErr").style.display = "block";
-    }
-    else if (show == "discWrong") {
-        clinnation("Disc");
-        document.getElementById("discInputErr").style.display = "block";
-        document.getElementById("discSubmit").style.backgroundColor = "#f46e6e";
-    }
-    else if (show == "discSucc") {
-        clinnation("Disc");
     }
     else if (show=="credentials"){
       createPopup("d:acc;txt:Improper credentials.");
