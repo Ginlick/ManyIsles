@@ -381,9 +381,9 @@ $slogan = $homer->giveSlogan();
       xhttp.open("GET", "/Server-Side/src/homer/slogan-api.php", true);
       xhttp.send();
 
-      setTimeout(function () {
-        document.getElementById("firstTitle").scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 2200);
+      // setTimeout(function () {
+      //   document.getElementById("firstTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+      // }, 2200);
     }
 
 </script>
