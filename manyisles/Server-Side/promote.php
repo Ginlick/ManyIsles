@@ -5,6 +5,7 @@ if (!class_exists("adventurer")){
       use allBase;
       public $conn;
       public $user;
+      public $sub; //keycloak id
       public $usertag = "u#0";
       public $title = "";
       public $uname = "";
@@ -54,81 +55,37 @@ if (!class_exists("adventurer")){
 
       }
       function constructUInfo(){
-        //TODO: replace with keycloak thing
+        //grab user info      
         $query = "SELECT * FROM accountsTable WHERE id = '$this->user'";
         if ($result = $this->conn->query($query)) {
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $this->signedIn = true;
-                    $this->title = $row["title"];
-                    $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
-                    $this->uname = $row["uname"];
-                    $this->email = $row["email"];
-                    $this->cpsw = $row["password"];
-                    $this->power = $row["power"];
-                    $this->region = $row["region"];
-                    
-                    $persInfo = json_decode($row["persInfo"], true);
-                    if ($persInfo == null){$persInfo = ["fName" => "", "lName" => "", "references" => ["discName"=>""]];}
-                    $this->persInfo = $persInfo;
-                    $this->discname = $persInfo["references"]["discName"];
+          if (mysqli_num_rows($result) > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $this->sub = $row["sub"];
+               // $this->signedIn = true; ?why's this?
+                $this->title = $row["title"];
+                $this->tier = $row["tier"]; if ($row["tier"]=="g"){$this->tier = 0;}
+                $this->uname = $row["uname"];
+                $this->email = $row["email"];
+                $this->cpsw = $row["password"];
+                $this->power = $row["power"];
+                $this->region = $row["region"];
+                
+                $persInfo = json_decode($row["persInfo"], true);
+                if ($persInfo == null){$persInfo = ["fName" => "", "lName" => "", "references" => ["discName"=>""]];}
+                $this->persInfo = $persInfo;
+                $this->discname = $persInfo["references"]["discName"];
 
-                    $this->usertag = "u#".$this->user;
-                    if ($row["emailConfirmed"]==1){$this->emailConfirmed = true;}
-                    if ($this->power > 3){$this->moderator = true;}
-                }
-            }
-        }
-        $this->fullName = $this->title." ".$this->uname;
-      }
-
-      function createAccount($uname, $email, $psw, $region) {
-        //TODO: delete
-        $redirect = false;
-        //check input
-        if ($this->signedIn){$redirect = "accountExists";} //will auto-redirect to SignedIn after anyway
-        else if (preg_match($this->regArrayR["account"], $uname)!=1){$redirect = "uname";}
-        else if (preg_match("/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)!=1){$redirect = "email";}
-        else if (preg_match("/[A-Za-z0-9!.\-_ ]{1,}/", $psw)!=1){$redirect = "psw";}
-        else if (preg_match("/[1-3]/", $region)!=1){$redirect = "reg";}
-        if (!$redirect){
-          if (!$redirect){
-            //check for duplicates
-            if ($result = $this->conn->query(sprintf("SELECT email FROM accountsTable WHERE email='%s';", $email))) {
-               if ($result->num_rows > 0) {
-                 $redirect = "EmailTaken";
-               }
-            }
-            if ($result = $this->conn->query(sprintf("SELECT uname FROM accountsTable WHERE uname='%s';", $uname))) {
-               if ($result->num_rows > 0) {
-                 $redirect = "UnameTaken";
-               }
-            }
-            if (!$redirect){
-              //dew it
-              $hashedPsw = password_hash($psw, PASSWORD_DEFAULT);
-              $sql = sprintf(
-                "INSERT INTO accountsTable (uname, title, email, region, password) VALUES ('%s', 'Adventurer', '%s', %s, '%s');",
-                $uname,
-                $email,
-                $region,
-                $hashedPsw);
-              $this->conn->query($sql);
-              if ($this->signIn($uname, $psw)){
-                $this->sendConfirmer(1);
-              }
-              else {
-                $query = "DELETE FROM accountsTable WHERE uname = '".$uname."'";
-                $this->conn->query($query);
-                $redirect = "dataPlacing";
-              }
+                $this->usertag = "u#".$this->user;
+                if ($row["emailConfirmed"]==1){$this->emailConfirmed = true;}
+                if ($this->power > 3){$this->moderator = true;}
             }
           }
         }
-        if ($redirect){return $redirect;}
-        return true;
+        //finalize
+        $this->fullName = $this->title." ".$this->uname;
       }
-      //new
+
+      //new TODO: check ds that stuff fine
       function keycloakInitialize() {
         if ($this->keycloakInitialized){return true;}
         $keyInfo = $this->giveServerInfo("login");
@@ -193,6 +150,16 @@ if (!class_exists("adventurer")){
         $token = $result["access_token"];
         $tokenD = json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $token)[1]))), true); //JWT decoder
         $sub = $tokenD["sub"];
+        //get info from IsleID
+        $url = "http://localhost:8081/v1/user/".$sub; //TODO: make flexible
+        $options = ["http"=>[
+          "header" => "Authorization: Bearer $token",
+          "method" => "GET"
+        ]];
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        print_r($result);
+
         //now sign in
         $query = "SELECT id FROM accountsTable WHERE sub = '$sub'";
         if ($userrow = $this->conn->query($query)){
@@ -218,6 +185,7 @@ if (!class_exists("adventurer")){
         }
         return true;
         //TODO: deal with refresh need
+        //TODO: update table information based on what keycloak knows
       }
       function logout() {
         //TODO: logout on keycloak
