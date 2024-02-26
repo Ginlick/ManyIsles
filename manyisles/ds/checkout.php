@@ -124,7 +124,6 @@ if ($ds->user->signedIn){$ds->go("checkout1");}
         <div class="acp-portal-cont">
           <h2>Successfully signed in</h2>
           <i class="acp-successor fa-regular fa-circle-check"></i>
-          <p>Signed in as  Adventurer Hansfried<br>
           <a href="/account/home" target="_blank">Visit account</a>
           </p>
         </div>
@@ -143,7 +142,7 @@ if ($ds->user->signedIn){$ds->go("checkout1");}
     }
     function acp_launcher() {
       let acpBuilder = new acp_builder(returnF);
-      acpBuilder.createPortal(document.getElementById("makeIt"), "signCreate");
+      acpBuilder.createPortal(document.getElementById("makeIt"), "newLoginDirect");
     }
 
 </script>

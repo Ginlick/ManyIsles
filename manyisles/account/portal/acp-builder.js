@@ -140,21 +140,36 @@ class acp_builder{
         <button class="acp-button" type="submit">Log In</button>
     </form>
     `,
+    "newLoginDirect" : `
+        <div class="acp-portal-cont">
+          <h2>Sign In</h2>
+          [insert:signInBlock]
+          <p>Don't have an account yet? <a href="/account/api/login">Create account</span></p>
+        </div>
+    `,
     "signInSmall" : `
       [insert:signInBasic]
       <p>Don't have an account yet? <span class="fakelink" acp-eltype="switchCreate">Join us now!</span></p>
     `,
     "signInLine" : `
       <form acp-formtype="directSignIn" class="acp-form line">
-        <label for="loguname">Username</label>
-        <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" oninput="inputGramm(this, 'u')" autocomplete="nickname" required>
-        <div id="logunameInputErr" class="inputErr" default="Incorrect input!"></div>
-        <label for="logpassword">Password</label>
-        <input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" oninput="inputGramm(this, 'p')" autocomplete="current-password" required>
-        <div id="logpasswordInputErr" class="inputErr" default="Incorrect input!"></div>
-        <p style="color:red;display:none;" acp-eltype="errorTaker">Sign in failed.</p>
-        <button class="acp-button" type="submit">Log In</button>
-    </form>
+        [insert:signInFormContent]
+      </form>
+    `,
+    "signInBlock" : `
+      <form acp-formtype="directSignIn" class="acp-form">
+        [insert:signInFormContent]
+      </form>
+    `,
+    "signInFormContent" : `
+      <label for="loguname">Username</label>
+      <input type="text" placeholder="Hansfried Dragonslayer" name="uname" id="loguname" oninput="inputGramm(this, 'u')" autocomplete="nickname" required>
+      <div id="logunameInputErr" class="inputErr" default="Incorrect input!"></div>
+      <label for="logpassword">Password</label>
+      <input type="password" placeholder="uniquePassword22" name="psw" id="logpassword" oninput="inputGramm(this, 'p')" autocomplete="current-password" required>
+      <div id="logpasswordInputErr" class="inputErr" default="Incorrect input!"></div>
+      <p style="color:red;display:none;" acp-eltype="errorTaker">Sign in failed.</p>
+      <button class="acp-button" type="submit">Log In</button>
     `,
     "signCreate": `
     <div class="acp-portal-cont">

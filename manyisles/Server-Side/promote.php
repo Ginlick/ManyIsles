@@ -239,7 +239,7 @@ if (!class_exists("adventurer")){
               }
             }
           }
-          $this->logout();
+          $this->logoutLocal();
           if ($deadly) {
             $this->go("/account/home?error=notSignedIn");
           }
