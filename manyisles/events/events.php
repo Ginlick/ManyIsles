@@ -48,6 +48,17 @@ $downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsL
             font-weight: bold;
             align-items: center;
         }
+        :root {
+            --wiki-color-quote: #d0952f;
+        --wiki-color-quotebody: #f0dab4;
+        }
+        .quote {
+            margin: 10px 0;
+            border-left: 5px solid var(--wiki-color-quote);
+            padding: 10px 10px 10px 15px;
+            background-color: var(--wiki-color-quotebody);
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -72,17 +83,28 @@ $downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsL
                 </div>
             </div>
             <h1>Tournament of Heroes</h1>
-            <p>
-                The «Tournament of Heroes» is a season-based D&D game series in which the seasons encompass around five games, and most sessions can be used as a one shot. It is filled with action, seasonal events, and role play initiating situations. <br>
-                The Tournament of Heroes takes place in the Rownor Kingdom, where the King has put a sword in a stone before he died, and the winner of the tournament can try to pull out the sword. <br>
-                In each season the players have to fight various unique monsters and bosses that we created just for this series. The seasonal events are one-shots meant to entertain your players, like the winter one-shot that is a snowball fight with random events.<br>
-                All of our stories and material can be adjusted to your needs or even adapted in your own games.
-            </p>
+            <div class="quote">
+                <p>
+                Welcome, Adventurer!<br>
+                I hope you are ready for the adventure of your lifetime. Take on the challenges and defeat numerous Monsters to find and kill the boss of each season.<br>
+                Do you have what it takes to win the “Tournament of Heroes”?<br>
+                Show your skills and engage in 1 v 1’s at the end of each session to test your strength against other combatants. Win to get a chance to try to pull out the legendary sword of the king of Rownor.<br>
+                Pull out the sword to rule the Rownor kingdom and be remembered in history books forever.<br>
+                Can’t wait to see you fight thrilling battles in the Arena!
+                </p>
+            </div>
             <h2>Playing a Game</h2>
             <p>
                 We regularly run the newest chapter of the newest season at ETH Zentrum. Feel free to join any of these games using a pre-made or your own level 7 character!<br>
                 As soon as they are completed, written modules of our games are published here for free use.<br>
                 If you'd like, you can ask us to host a game of any past chapter - maybe one your regular group missed, or an old game you'd like to experience yourself. 
+            </p>
+            <h2>For GMs</h2>
+            <p>
+                The «Tournament of Heroes» is a season-based D&D game series in which the seasons encompass around five games, and most sessions can be used as a one shot. It is filled with action, seasonal events, and role play initiating situations. <br>
+                The Tournament of Heroes takes place in the Rownor Kingdom, where the King has put a sword in a stone before he died, and the winner of the tournament can try to pull out the sword. <br>
+                In each season the players have to fight various unique monsters and bosses that we created just for this series. The seasonal events are one-shots meant to entertain your players, like the winter one-shot that is a snowball fight with random events.<br>
+                All of our stories and material can be adjusted to your needs or even adapted in your own games.
             </p>
         </section>
     </section>
