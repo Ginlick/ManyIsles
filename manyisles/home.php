@@ -118,7 +118,7 @@ $slogan = $homer->giveSlogan();
       </section>
       <section class="cont-cont" style="padding-bottom: 200px;">
         <div class="contcol-wrapper">
-          <p class="homep" id="firstTitle">Explore the awesome lore, RPG content, and tools of the fantasy community.</p>
+          <p class="homep" id="firstTitle">Explore the awesome lore, RPG content, and tools of the Many Isles Project.</p>
 
           <h1>Publications</h1>
           <div class="im-ccontainer">
@@ -186,6 +186,26 @@ $slogan = $homer->giveSlogan();
 
           <h1>Community</h1>
           <div class="im-ccontainer">
+              <div class="im-box">
+                  <a class="im-wrapA" href="https://manyisles.org"></a>
+                  <div class="im-topcontainer">
+                      <div class="im-intopcontainer">
+                          <div class="im-imgCont" load-image="/Imgs/slides/slide_griffin.png"></div>
+                          <div class="im-overlay"></div>
+                      </div>
+                  </div>
+                  <div class="im-botcontainer">
+                      <div class="im-text">
+                          <h3>Many Isles - Student Fantasy Association</h3>
+                          <p>
+                              Check out the students' association based in Zurich, Switzerland.
+                          </p>
+                          <p class="explorelink">
+                              <span class="fakelink">Explore</span>
+                          </p>
+                      </div>
+                  </div>
+              </div>
             <div class="im-box">
               <a class="im-wrapA" href="/account/home"></a>
               <div class="im-topcontainer">

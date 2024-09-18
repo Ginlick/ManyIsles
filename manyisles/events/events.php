@@ -67,45 +67,14 @@ $downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsL
     <section class="contcol-wrapper eContCol">
         <section class="column-main">
             <h1>Many Isles Events</h1>
-                <p>We host many fantastic events throughout the semester! We're currently working on an events platform, which will be available at <a href="https://manyisles.org" target="_blank">manyisles.org</a>.</p>
-                <p>In the meantime, you can download the <b>semester programme</b> below, and sign up to events via our <a href="https://discord.gg/XTQnR7mS3D" target="_blank">discord</a>.
-                <div class="fileDownloaderCont">
-                <div class="fileDownloader">
-                    <a href="files/24_1_Semester_Programme.pdf" target="_blank"></a>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1667px-PDF_file_icon.svg.png" alt="pdf" />
-                    <p>Many Isles Semester Programme 24_1</p>
-                </div>
+                <p>We host many fantastic events throughout the semester! Find an up-to-date list on the association website, <a href="https://manyisles.org/events" target="_blank">manyisles.org</a>.</p>
 
                 <div class="fileDownloader">
-                    <a href="files/2024_Programme.pdf" target="_blank"></a>
+                    <a href="files/24_2_Poster.pdf" target="_blank"></a>
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1667px-PDF_file_icon.svg.png" alt="pdf" />
-                    <p>Many Isles Programme 2024</p>
+                    <p>Many Isles Social Dates</p>
                 </div>
             </div>
-            <h1>Tournament of Heroes</h1>
-            <div class="quote">
-                <p>
-                Welcome, Adventurer!<br>
-                I hope you are ready for the adventure of your lifetime. Take on the challenges and defeat numerous Monsters to find and kill the boss of each season.<br>
-                Do you have what it takes to win the “Tournament of Heroes”?<br>
-                Show your skills and engage in 1 v 1’s at the end of each session to test your strength against other combatants. Win to get a chance to try to pull out the legendary sword of the king of Rownor.<br>
-                Pull out the sword to rule the Rownor kingdom and be remembered in history books forever.<br>
-                Can’t wait to see you fight thrilling battles in the Arena!
-                </p>
-            </div>
-            <h2>Playing a Game</h2>
-            <p>
-                We regularly run the newest chapter of the newest season at ETH Zentrum. Feel free to join any of these games using a pre-made or your own level 7 character!<br>
-                As soon as they are completed, written modules of our games are published here for free use.<br>
-                If you'd like, you can ask us to host a game of any past chapter - maybe one your regular group missed, or an old game you'd like to experience yourself. 
-            </p>
-            <h2>For GMs</h2>
-            <p>
-                The «Tournament of Heroes» is a season-based D&D game series in which the seasons encompass around five games, and most sessions can be used as a one shot. It is filled with action, seasonal events, and role play initiating situations. <br>
-                The Tournament of Heroes takes place in the Rownor Kingdom, where the King has put a sword in a stone before he died, and the winner of the tournament can try to pull out the sword. <br>
-                In each season the players have to fight various unique monsters and bosses that we created just for this series. The seasonal events are one-shots meant to entertain your players, like the winter one-shot that is a snowball fight with random events.<br>
-                All of our stories and material can be adjusted to your needs or even adapted in your own games.
-            </p>
         </section>
     </section>
 </section>
