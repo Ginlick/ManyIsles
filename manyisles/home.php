@@ -382,6 +382,41 @@ $slogan = $homer->giveSlogan();
     </section>
 
 <div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>
+<div class="modCol" id="many-isles-info">
+    <div class="modContent">
+        <img class="nmodImg" src="/Imgs/players.jpg" />
+        <div class="nmodBody">
+            <p>Welcome to the Many Isles!</p>
+            <h2>Looking for the Student Association?</h2>
+            <p>
+                This is the Many Isles Project website, a daughter project of the association.<br>
+                For events and information, you want <a href="https://manyisles.org">manyisles.org</a>.
+                <a href="https://manyisles.org"><button>
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Student Association</span>
+                    </button></a>
+            </p>
+            <h2>Looking for RPG modules, fandom lore, and more?</h2>
+            <p>
+                Then you've landed in the right place!
+            </p>
+            <ul style="list-style-type:disc; text-align: left; padding-left: 40px;">
+                <li>
+                    <a href="/docs/32/Welcome">Take a tour</a> to learn more about this website.
+                </li>
+                <li>
+                    Find RPG adventure modules, lore documents, and more in the <a href="/dl/home">digital library</a>.
+                </li>
+                <li>
+                    Check out some awesome lore about Karte-Caedras (the Many Isles Setting) in the <a href="/fandom/home">fandom</a>.
+                </li>
+            </ul>
+            <button onclick="alertGotIt()">Got it</button>
+        </div>
+
+    </div>
+</div>
+<div id="modal" class="modal" onclick="pop('ded')"></div>
 </body>
 </html>
 <script src="/Code/CSS/global.js"></script>
@@ -390,8 +425,8 @@ $slogan = $homer->giveSlogan();
     var show = urlParams.get('show');
 
     if (!localStorage["alertdisplayed"]) {
-        createPopup("d:gen;txt:Welcome to the Many Isles!;b:1;bTxt:take a tour;bHref:/docs/32/Welcome;dur:22000");
-        localStorage["alertdisplayed"] = true;
+        newpop(document.getElementById("many-isles-info"));
+        //createPopup("d:gen;txt:Welcome to the Many Isles!;b:1;bTxt:take a tour;bHref:/docs/32/Welcome;dur:22000");
     }
     else {
       xhttp = new XMLHttpRequest();
@@ -404,6 +439,10 @@ $slogan = $homer->giveSlogan();
       // setTimeout(function () {
       //   document.getElementById("firstTitle").scrollIntoView({ behavior: "smooth", block: "start" });
       // }, 2200);
+    }
+    function alertGotIt() {
+        localStorage["alertdisplayed"] = true;
+        newpop();
     }
 
 </script>

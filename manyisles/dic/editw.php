@@ -227,7 +227,7 @@ function addAddables(looping = false) {
                             <i class="fas fa-minus"></i>
                         </div>
                       </div>`;
-    if (writingNew || looping){
+    if (writingNew || looping){
       addSome(1, parent.firstElementChild.firstElementChild);
     }
   }
