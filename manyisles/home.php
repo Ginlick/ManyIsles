@@ -391,11 +391,11 @@ $slogan = $homer->giveSlogan();
             <p>
                 This is the Many Isles Project website, a daughter project of the association.<br>
                 For events and information, you want <a href="https://manyisles.org">manyisles.org</a>.
-                <a href="https://manyisles.org"><button>
-                        <i class="fas fa-arrow-right"></i>
-                        <span>Student Association</span>
-                    </button></a>
             </p>
+            <a href="https://manyisles.org"><button>
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Student Association</span>
+                </button></a>
             <h2>Looking for RPG modules, fandom lore, and more?</h2>
             <p>
                 Then you've landed in the right place!
