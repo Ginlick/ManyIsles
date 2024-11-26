@@ -1,6 +1,5 @@
 addCss("/account/portal/acp.css", "css");
 addCss("https://www.google.com/recaptcha/api.js?render=6LeFhjkjAAAAANXrjzjnSCGlhHg9qYYkkqx2bD3A", "js"); //somehow get the key (another api?)
-addCss("")
 
 class acp_builder{
   constructor(returnF = null, options = []) {

@@ -5,11 +5,12 @@ $user = new adventurer();
 $user->killCache();
 
 if ($user->check()) {
-    $url = $user->loginURL();
-    header("Location:$url");
-    echo $url;
+    if ($url = $user->loginURL()){
+        header("Location:$url");
+        exit;
+    }
 }
-else {echo "user";}
-//header("Location:/account/home");
+
+header("Location:/account/home?error=loginError");
 
 ?>

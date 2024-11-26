@@ -26,47 +26,16 @@
 
             <div class='left-col'>
                 <ul id="myMenu">
-                    <li onclick='clinnation("Sign")'><p id='SignBar' class="Bar">Log In</p></li>
+                    <li onclick='clinnation("Log")'><p id='LogBar' class="Bar">Log In</p></li>
                     <li onclick='clinnation("Pol")'><p id='PolBar' class="Bar">Terms of Service</p></li>
                 </ul>
             </div>
 
-            <div id='Sign' class='column'>
-
-                <h1 id="SignUp-title"> Join the Many Isles! </h1>
-                <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
-                <div id="signCreateBigCont">
-
-                  <div id="signCreateFormCont"></div>
-
-                </div>
-
-                <div style="margin-top:7vw;">
-                    <img src="/Imgs/Bar2.png" alt="GreyBar" class='separator'>
-                </div>
-                <h2>Why an Account?</h2>
-                <p>
-                    With an account, you unlock many awesome features in the Many Isles website and beyond.<br />
-                    You can create custom spell lists, help in the creation of new products, join our awesome discord community, and download products directly from the <a href="/Code/Goods.php">digital library</a>, with tons more options to come!<br />
-                    Additionally, you encourage us to go beyond and continue working to make this into something great. Show your support now!<br />
-                    For more information, check out the <a href="/docs/7/Create_Account" target="_blank">documentation</a>.
-                </p>
-                <h2>Your Data and Privacy</h2>
-                <p>
-                    You might voice concerns as to the security of your data. After all, we might be evil phishers hailing from the darkest of realms where only aboleths and illithids venture.<br />
-                    For that reason, be as safe as possible. Use a truly unique password, even though we encrypt them, because you can never know. Use the name of your latest D&D character. However, please use an email you check on at least occasionally, so we can contact you in case of need.<br />
-                    For more information on our security policy, see the <a href="/docs/6/Accounts" target="_blank">account doc</a>.
-                </p>
-
-            </div>
-
             <div id="Log" class="column">
-
-                <h1 id="signTitle"> Sign In </h1>
+                <h1 id="signTitle"> Sign In or Create Account</h1>
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 <p id="signExpl">Sign in to access the entirety of the Many Isles!</p>
-                <div id="signFormCont"></div>
-                <p>Don't have an account yet? <span onclick="clinnation('Sign')" class="fakelink">Join us now!</span></p>
+                <div id="signCreateFormCont"></div>
 
             </div>
 
@@ -152,9 +121,9 @@
         }
     }
 
-    var tab = "Sign";
+    var tab = "Log";
     function clinnation(clicked) {
-        if (document.getElementById(clicked) == null) { clicked = "Sign"; }
+        if (document.getElementById(clicked) == null) { clicked = "Log"; }
         tab = clicked;
         $(".Bar").removeAttr("style");
         document.getElementById(clicked.concat("Bar")).style.color = "#9f9f9f";
@@ -166,7 +135,7 @@
         }
         else { document.getElementById(clicked).style.display = "block"; }
     }
-    clinnation("Sign");
+    clinnation("Log");
 
     var urlParams = new URLSearchParams(window.location.search);
     var error = urlParams.get('error');
@@ -213,6 +182,6 @@
     }
     function acp_launcher() {
       acpBuilder2 = new acp_builder(returnFcreate);
-      acpBuilder2.createPortal(document.getElementById("signCreateFormCont"), "signCreateBasic");
+      acpBuilder2.createPortal(document.getElementById("signCreateFormCont"), "signInBasic");
     };
   </script>

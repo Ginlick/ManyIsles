@@ -83,25 +83,32 @@ if (!class_exists("adventurer")){
       }
 
       //new TODO: check ds that stuff fine
-      function keycloakInitialize() {
+      function keycloakInitialize() : bool
+      {
         if ($this->keycloakInitialized){return true;}
         $keyInfo = $this->giveServerInfo("login");
-        $config = file_get_contents($keyInfo["keycloak-config-info"]);
-        $config = json_decode($config, true);
-        $this->keycloakConfig = $config;
-        return true;
+        if ($config = file_get_contents($keyInfo["keycloak-config-info"])) {
+            $config = json_decode($config, true);
+            $this->keycloakConfig = $config;
+            return true;
+        }
+        return false;
       }
-      function loginURL() {
+      function loginURL(): string
+      {
         $state = $this->generateRandomString(12);
         setcookie("loginState", $state);
         $keyInfo = $this->giveServerInfo("login");
-        $this->keycloakInitialize();
-        $url = $this->keycloakConfig["authorization_endpoint"] . "?";
-        $url .= "response_type=code&";
-        $url .= "client_id=".$keyInfo["client"]."&";
-        $url .= "redirect_uri=".$this->giveServerInfo("servername_explicit")."/account/api/loginReturn.php&";
-        $url .= "state=$state";
-        return $url;
+        if ($this->keycloakInitialize()) {
+            $url = $this->keycloakConfig["authorization_endpoint"] . "?";
+            $url .= "response_type=code&";
+            $url .= "client_id=".$keyInfo["client"]."&";
+            $url .= "redirect_uri=".$this->giveServerInfo("servername_explicit")."/account/api/loginReturn.php&";
+            $url .= "state=$state";
+            echo $url; exit;
+            return $url;
+        }
+        return "";
       }
       function loginConfirm($code, $state) {
         //Check state
