@@ -118,7 +118,8 @@ $slogan = $homer->giveSlogan();
       </section>
       <section class="cont-cont" style="padding-bottom: 200px;">
         <div class="contcol-wrapper">
-          <p class="homep" id="firstTitle">Explore the awesome lore, RPG content, and tools of the Many Isles Project.</p>
+          <p class="homep" id="firstTitle">This is the website of the Many Isles Project, which explores <b>Karte-Caedras</b> (the Many Isles Setting) and the worldbuilding hobby.<br>
+              For the separate Zurich students' fantasy group, see <a target="_self" href="https://manyisles.org">manyisles.org</a>.</p>
 
           <h1>Publications</h1>
           <div class="im-ccontainer">
@@ -425,7 +426,7 @@ $slogan = $homer->giveSlogan();
     var show = urlParams.get('show');
 
     if (!localStorage["alertdisplayed"]) {
-        newpop(document.getElementById("many-isles-info"));
+        //newpop(document.getElementById("many-isles-info"));
         //createPopup("d:gen;txt:Welcome to the Many Isles!;b:1;bTxt:take a tour;bHref:/docs/32/Welcome;dur:22000");
     }
     else {
