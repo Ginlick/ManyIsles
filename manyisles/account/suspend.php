@@ -34,7 +34,7 @@ if ($conn->query($query)) {
     if ($status == "suspended"){
       $subject = "Partnership Suspended";
       $message = 'Your partnership has been suspended. All your products are temporarily taken down from the digital library.<br />
-      This action usually results only when a trader severely breaks Many Isles <a href="https://www.manyisles.ch/docs/60/Publishing_Terms">publishing rules</a>, such as through vulgar or highly sexual content, or breaking publication guidelines.<br />
+      This action usually results only when a trader severely breaks Many Isles <a href="https://www.kartecaedras.ch/docs/60/Publishing_Terms">publishing rules</a>, such as through vulgar or highly sexual content, or breaking publication guidelines.<br />
       The administrator will contact you personally via mail. If you receive no further information, feel free to contact <a href="mailto:godsofmanyisles@gmail.com">godsofmanyisles@gmail.com</a> for further information.';
     }
     else {

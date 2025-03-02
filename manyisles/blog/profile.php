@@ -63,10 +63,10 @@ $flws = "<span id='followNum'>".$targetBuserInfo["followNum"]."</span> follower"
                     <p class="secondname"><?php echo $targetBuserInfo["username"];?> (<?php echo $targetBuserInfo["userFullid"];?>)</p>
                     <?php if ($targetBuserInfo["type"]=="adventurer" AND $targetBuserInfo["info"]["setShowDiscord"]==1 AND $targetBuserInfo["userDiscname"]!="") {echo '<p class="secondname">Discord: '.$targetBuserInfo["userDiscname"].'</p>'; }?>
                     <div class="blogSharerCont">
-                      <a href="http://www.reddit.com/submit?title=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!&url=https://manyisles.ch/blog/profile%3Fu%3D<?php echo $targetBuser; ?>" target="_blank" class="fa fa-reddit"></a>
-                      <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!%0A&url=https://manyisles.ch/blog/profile?u=<?php echo $targetBuser; ?>&hashtags=manyisles" target="_blank" class="fa fa-twitter"></a>
-                      <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/blog/profile?u=<?php echo $targetBuser; ?>&media=<?php echo "https://manyisles.ch".$targetBuserInfo["info"]["pp"]; ?>&description=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
-                      <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://manyisles.ch/blog/profile?u=<?php echo $targetBuser; ?>');createPopup('d:gen;txt:Link copied!');"></a>
+                      <a href="http://www.reddit.com/submit?title=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!&url=https://kartecaedras.ch/blog/profile%3Fu%3D<?php echo $targetBuser; ?>" target="_blank" class="fa fa-reddit"></a>
+                      <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!%0A&url=https://kartecaedras.ch/blog/profile?u=<?php echo $targetBuser; ?>&hashtags=manyisles" target="_blank" class="fa fa-twitter"></a>
+                      <a href="http://pinterest.com/pin/create/button/?url=https://kartecaedras.ch/blog/profile?u=<?php echo $targetBuser; ?>&media=<?php echo "https://kartecaedras.ch".$targetBuserInfo["info"]["pp"]; ?>&description=Check out <?php echo $targetBuserInfo["info"]["uname"]; ?>'s posts on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
+                      <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://kartecaedras.ch/blog/profile?u=<?php echo $targetBuser; ?>');createPopup('d:gen;txt:Link copied!');"></a>
                     </div>
                   </div>
                   <div class="followsquare">

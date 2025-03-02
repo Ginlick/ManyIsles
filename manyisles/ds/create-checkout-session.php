@@ -32,7 +32,7 @@ $line_items = [];
 foreach ($basketed->itemArray as $item){
     if ($basketed->type == "subs"){
         $prodName = $item["name"];
-        $prodImage = "https://manyisles.ch/IndexImgs/goldenMyst.png";
+        $prodImage = "https://kartecaedras.ch/IndexImgs/goldenMyst.png";
         $priceRef = $item["row"]["datas"]["stripeId"];
         $itemId = $item["id"];
     }
@@ -43,7 +43,7 @@ foreach ($basketed->itemArray as $item){
 }
 if ($basketed->prodNum>1){
     $prodName = "Multiple Products";
-    $prodImage = "https://manyisles.ch/Imgs/FaviconDS.png";
+    $prodImage = "https://kartecaedras.ch/Imgs/FaviconDS.png";
 }
 
 $price_dataCont = [

@@ -265,9 +265,9 @@ $dl->dlconn->query($query);
                     </div>
 
                     <div>
-                      <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch<?php echo $dl->url($artId, $artShortName); ?>" target="_blank" class="fa fa-facebook"></a>
-                      <a href="http://www.reddit.com/submit?title=Check out the <?php echo $artName; ?> on the Many Isles!&url=https://manyisles.ch<?php echo $dl->url($artId, $artShortName); ?>" target="_blank" class="fa fa-reddit"></a>
-                      <a href="https://twitter.com/intent/tweet?text=Check out the awesome <?php echo $artName; ?> on the Many Isles!%0A&url=https://manyisles.ch<?php echo $dl->url($artId, $artShortName); ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
+                      <a href="https://www.facebook.com/sharer/sharer.php?u=https://kartecaedras.ch<?php echo $dl->url($artId, $artShortName); ?>" target="_blank" class="fa fa-facebook"></a>
+                      <a href="http://www.reddit.com/submit?title=Check out the <?php echo $artName; ?> on the Many Isles!&url=https://kartecaedras.ch<?php echo $dl->url($artId, $artShortName); ?>" target="_blank" class="fa fa-reddit"></a>
+                      <a href="https://twitter.com/intent/tweet?text=Check out the awesome <?php echo $artName; ?> on the Many Isles!%0A&url=https://kartecaedras.ch<?php echo $dl->url($artId, $artShortName); ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
                       <a href="http://pinterest.com/pin/create/button/?url=https://<?php echo $_SERVER["HTTP_HOST"].$dl->url($artId, $artShortName); ?>&media=<?php echo $artImage; ?>&description=Check out the awesome <?php echo $artName; ?> on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
                       <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://<?php echo $_SERVER["HTTP_HOST"].$dl->url($artId, $artShortName); ?>');createPopup('d:gen;txt:Link copied!');"></a>
                     </div>

@@ -63,7 +63,7 @@ if (include($_SERVER['DOCUMENT_ROOT']."/Server-Side/modMailer.php")) {
         }
     }
     $mailer = new modMailer;
-    $mailer->send($email, "You were Promoted", "A wiki made you $title. Congratulations! <br> <a href='https://manyisles.ch/fandom/wiki/$parentWiki/home'>view wiki</a>", "community", "You're now $title");
+    $mailer->send($email, "You were Promoted", "A wiki made you $title. Congratulations! <br> <a href='https://kartecaedras.ch/fandom/wiki/$parentWiki/home'>view wiki</a>", "community", "You're now $title");
 }
 
 if ($conn->query($myquery)){

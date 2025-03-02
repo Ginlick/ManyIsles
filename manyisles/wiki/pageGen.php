@@ -748,10 +748,10 @@ MAIN;
         $main = '<div class="col-l">
             <h2>Share</h2>
             <div class="sharerCont">
-                <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch'.$this->artLink.'" target="_blank" class="linkfa fa-brands fa-facebook"></a>
-                <a href="http://www.reddit.com/submit?title=Read up on '.$this->article->shortName.' lore on the Many Isles!&url=https://manyisles.ch'.$this->artLink.'" target="_blank" class="linkfa fa-brands fa-reddit"></a>
-                <a href="https://twitter.com/intent/tweet?text=Read up on '.$this->article->shortName.' lore on the Many Isles!%0A&url=https://manyisles.ch'. $this->artLink.'&hashtags=manyisles,lore" target="_blank" class="linkfa fa-brands fa-twitter"></a>';
-                if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="linkfa fa-brands fa-pinterest"></a> '; }
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://kartecaedras.ch'.$this->artLink.'" target="_blank" class="linkfa fa-brands fa-facebook"></a>
+                <a href="http://www.reddit.com/submit?title=Read up on '.$this->article->shortName.' lore on the Many Isles!&url=https://kartecaedras.ch'.$this->artLink.'" target="_blank" class="linkfa fa-brands fa-reddit"></a>
+                <a href="https://twitter.com/intent/tweet?text=Read up on '.$this->article->shortName.' lore on the Many Isles!%0A&url=https://kartecaedras.ch'. $this->artLink.'&hashtags=manyisles,lore" target="_blank" class="linkfa fa-brands fa-twitter"></a>';
+                if ($this->article->sidetabImg != "") {$main .= '<a href="http://pinterest.com/pin/create/button/?url=https://kartecaedras.ch'.$this->artLink.'&media='.$this->article->sidetabImg.'&description=Read up on '.$this->article->shortName.' lore on the Many Isles!" target="_blank" class="linkfa fa-brands fa-pinterest"></a> '; }
                $main .= ' <a class="linkfa fa fa-link fancyjump" onclick="navigator.clipboard.writeText(\'https://'.$_SERVER["HTTP_HOST"].$this->artLink.'\');createPopup(\'d:poet;txt:Link copied!\');"></a>
             </div>
         </div>';

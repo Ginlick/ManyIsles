@@ -2,8 +2,8 @@
 require_once "g/eventEngine.php";
 $eventE = new eventEngine;
 
-$eventsList = file_get_contents("https://media.manyisles.ch/events/eventsList.json");
-$downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsList.json");
+$eventsList = file_get_contents("https://media.kartecaedras.ch/events/eventsList.json");
+$downloadsList = file_get_contents("https://media.kartecaedras.ch/events/downloadsList.json");
 
 ?>
 

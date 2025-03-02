@@ -77,10 +77,10 @@ if (!$dl->partInfo($pId)) {$dl->go();}
                             <?php echo $dl->partDesc;  ?>
                         </p>
                     </div>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-facebook"></a>
-                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-reddit"></a>
-                    <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!%0A&url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
-                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/dl/partner?id=<?php echo $pId; ?>&media=<?php echo $image; ?>&description=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://kartecaedras.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-facebook"></a>
+                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!&url=https://kartecaedras.ch/dl/partner?id=<?php echo $pId; ?>" target="_blank" class="fa fa-reddit"></a>
+                    <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!%0A&url=https://kartecaedras.ch/dl/partner?id=<?php echo $pId; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
+                    <a href="http://pinterest.com/pin/create/button/?url=https://kartecaedras.ch/dl/partner?id=<?php echo $pId; ?>&media=<?php echo $image; ?>&description=Check out <?php echo $dl->partName; ?>'s stuff on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
                 </section>
 
 

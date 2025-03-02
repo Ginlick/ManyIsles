@@ -265,7 +265,7 @@ else {
                 </div>
                 <h2>Illustrations</h2>
                 <div class="formContentBlock">
-                    <p>Images must be <a href="https://manyisles.ch/docs/28/Hosting_Images" target="_blank">hosted on an external service</a>. Insert only direct links, and make sure they work by pasting them in your search bar.</p>
+                    <p>Images must be <a href="https://kartecaedras.ch/docs/28/Hosting_Images" target="_blank">hosted on an external service</a>. Insert only direct links, and make sure they work by pasting them in your search bar.</p>
                     <div class="inputCont">
                         <label for="thumbnail">Thumbnail <span>*</span></label>
                         <input type="text" name="thumbnail" value="<?php echo $artThumbnail; ?>" placeholder="https://i.imgur.com/VcMvMPc.png" autocomplete="off" required />
@@ -285,7 +285,7 @@ else {
                 <h2>Descriptive</h2>
                 <div class="inputCont">
                     <label for="description">Description <span>*</span> <a href="/docs/24/Markdown" target="_blank"><span class="roundInfo">Takes Markdown</span></a></label>
-                    <textarea markdownable rows="6" name="description"  placeholder="The *Rise of Humankind* is a history book covering the first half of human history in the [Many Isles](https://manyisles.ch) setting, with lore for all readers that enjoy fantasy and worldbuilding." autocomplete="off" required><?php echo $artDescription; ?></textarea>
+                    <textarea markdownable rows="6" name="description"  placeholder="The *Rise of Humankind* is a history book covering the first half of human history in the [Many Isles](https://kartecaedras.ch) setting, with lore for all readers that enjoy fantasy and worldbuilding." autocomplete="off" required><?php echo $artDescription; ?></textarea>
                     <p class="inputErr info" default=" A detailed description of your item, so customers know exactly what they're buying."></p>
                 </div>
                 <div class="inputCont complete">

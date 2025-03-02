@@ -4,10 +4,10 @@ class modMailer {
     use allBase;
     public $headers;
     public $domArr = [
-      "website" => ["img"=>"https://manyisles.ch/Imgs/branding/s/website.png"],
-      "publishing" => ["img"=>"https://manyisles.ch/Imgs/branding/s/publishing.png"],
-      "community" => ["img"=>"https://manyisles.ch/Imgs/branding/s/community.png"],
-      "pantheon" => ["img"=>"https://manyisles.ch/Imgs/branding/s/pantheon.png"],
+      "website" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/website.png"],
+      "publishing" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/publishing.png"],
+      "community" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/community.png"],
+      "pantheon" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/pantheon.png"],
     ];
     public $baseMail = <<<MYGREATMAIL
     <!DOCTYPE html>
@@ -20,7 +20,7 @@ class modMailer {
         </style>
     </head>
     <body style="padding:0;margin:0;">
-      <section style="max-width: 900px; margin: auto;background-image:url(https://manyisles.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
+      <section style="max-width: 900px; margin: auto;background-image:url(https://kartecaedras.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
         <div style="width: 100%;
         height: 200px;
         background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5));"></div>
@@ -32,8 +32,8 @@ class modMailer {
             </p>
           </div>
           <div style="border-top: 3px solid #61b3dd;text-align:center;margin:200px 0">
-            <img src="https://manyisles.ch/Imgs/branding/s/website.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
-            <a href="https://manyisles.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">manyisles.ch</a>
+            <img src="https://kartecaedras.ch/Imgs/branding/s/website.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+            <a href="https://kartecaedras.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">kartecaedras.ch</a>
           </div>
         </div>
       </section>
@@ -49,7 +49,7 @@ MYGREATMAIL;
       $body = $this->baseMail;
       
       if (!isset($this->domArr[$domain])){$domain = "website";}
-      $body = str_replace("https://manyisles.ch/Imgs/branding/s/website.png", $this->domArr[$domain]["img"], $body);
+      $body = str_replace("https://kartecaedras.ch/Imgs/branding/s/website.png", $this->domArr[$domain]["img"], $body);
 
       if ($txtSubj) {$body = str_replace("Subject", $txtSubj, $body);}
       else {$body = str_replace("Subject", $subject, $body);}

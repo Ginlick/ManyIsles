@@ -18,7 +18,7 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_money.php");
 $subject1 = "Partnership Dissolution"; $textSubj1 = false;
 $message1 = "
         Your account was just deleted. According to §3.7.1, block (2), of the Trader's Agreement, this allows the Many Isles Pantheon to begin a salvation period on your partnership. A week after initialization of this period, the Many Isles may dissolve your partnership, taking partial or complete ownership of your partnership's product assortment and deleting the partnership. Meanwhile, your partnership is suspended, as per §3.7.2 and §3.6 of the Trader's Agreement.<br />
-        Do you wish to stop this procedure? Please contact the Pantheon immediately and create a new account. This will halt the salvation period and allow you to restore ownership over your partnership and its product assortment. Feel free to contact <a href='mailto:pantheon@manyisles.ch'>pantheon@manyisles.ch</a> if you have any questions.";
+        Do you wish to stop this procedure? Please contact the Pantheon immediately and create a new account. This will halt the salvation period and allow you to restore ownership over your partnership and its product assortment. Feel free to contact <a href='mailto:pantheonmanyisles.ch'>pantheonmanyisles.ch</a> if you have any questions.";
 
 $subject2 = "Goodbye, ".$user->fullName; $textSubj2 = "Account Deleted";
 $message2 = <<<MYGREATMAIL
@@ -53,7 +53,7 @@ if ($result=$conn->query($query)) {
       $panthCredit->new($userCredit->total_credit, $uname, "Account $id Deleted");
     }
 
-    $mailer->send("pantheon@manyisles.ch", "Account Deleted", "yep, it's sad to say, ".$uname);
+    $mailer->send("pantheonmanyisles.ch", "Account Deleted", "yep, it's sad to say, ".$uname);
     $mailer->send($user->email, $subject2, $message2, "community", $textSubj2);
 
     setcookie("loggedIn", "", time() -3600, "/");

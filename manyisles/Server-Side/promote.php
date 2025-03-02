@@ -289,7 +289,7 @@ if (!class_exists("adventurer")){
               <title></title>
           </head>
           <body style="padding:0;margin:0;">
-            <section style="max-width: 900px; margin: auto;background-image:url(https://manyisles.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
+            <section style="max-width: 900px; margin: auto;background-image:url(https://kartecaedras.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
               <div style="width: 100%;
               height: 200px;
               background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5));"></div>
@@ -311,46 +311,46 @@ if (!class_exists("adventurer")){
                       <tbody style="vertical-align:top">
                         <tr style="padding-bottom:10px">
                           <td>
-                            <img src="https://manyisles.ch/IndexImgs/Pen.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                            <img src="https://kartecaedras.ch/IndexImgs/Pen.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
                           </td>
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">The Fandom Wiki</h2>
                             <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                                We host a cool <a style="color:#61b3dd" href="https://manyisles.ch/fandom/home">fandom wiki</a>, accessible to all. Once you've confirmed your email, you can participate your own articles and even write a whole wiki about your own world!
+                                We host a cool <a style="color:#61b3dd" href="https://kartecaedras.ch/fandom/home">fandom wiki</a>, accessible to all. Once you've confirmed your email, you can participate your own articles and even write a whole wiki about your own world!
                             </p>
                           </td>
                         </tr>
                         <tr style="padding-bottom:10px">
                           <td>
-                            <img src="https://manyisles.ch/Imgs/Prods.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                            <img src="https://kartecaedras.ch/Imgs/Prods.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
                           </td>
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">An awesome Digital Library</h2>
                             <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                                Our main goal is to promote small creators that want to get their awesome free stuff out there. Check out our <a style="color:#61b3dd" href="https://manyisles.ch/dl/home">digital library</a> today, and start publishing from your <a style="color:#61b3dd" href="https://manyisles.ch/account/home">account page</a>!
+                                Our main goal is to promote small creators that want to get their awesome free stuff out there. Check out our <a style="color:#61b3dd" href="https://kartecaedras.ch/dl/home">digital library</a> today, and start publishing from your <a style="color:#61b3dd" href="https://kartecaedras.ch/account/home">account page</a>!
                             </p>
                           </td>
                         </tr>
                         <tr style="padding-bottom:10px">
                           <td>
-                            <img src="https://media.manyisles.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                            <img src="https://media.kartecaedras.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
                           </td>
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Handbook of Dark Secrets</h2>
                             <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
                               A guide to possession, exorcism, the afterlife, demon forging, and fiends. It includes special feats, exclusive spells, unique magic items, and more infernal secrets.<br>
-                              <a style="color:#61b3dd" href="https://manyisles.ch/dl/item/8/Handbook_of_Dark_Secrets">Check it out!</a>
+                              <a style="color:#61b3dd" href="https://kartecaedras.ch/dl/item/8/Handbook_of_Dark_Secrets">Check it out!</a>
                             </p>
                           </td>
                         </tr>
                         <tr style="padding-bottom:10px">
                           <td>
-                            <img src="https://manyisles.ch/Imgs/slides/blogs.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                            <img src="https://kartecaedras.ch/Imgs/slides/blogs.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
                           </td>
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Many Isles Blogs</h2>
                             <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                                View and publish awesome posts about fantasy with our <a style="color:#61b3dd" href="https://manyisles.ch/blog/explore">blog tool</a>.
+                                View and publish awesome posts about fantasy with our <a style="color:#61b3dd" href="https://kartecaedras.ch/blog/explore">blog tool</a>.
                             </p>
                           </td>
                         </tr>
@@ -365,14 +365,14 @@ if (!class_exists("adventurer")){
                     <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
                       By clicking the button below, you'll confirm your email unlock the many features of the Many Isles!
                     </p>
-                    <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
-                    <p style="color: #7d7d7d; padding:10px;font-size: 14px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="color:#61b3dd">https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
+                    <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
+                    <p style="color: #7d7d7d; padding:10px;font-size: 14px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="color:#61b3dd">https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
                   </div>
                 </div>
                 <!-- footer -->
                 <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
-                  <img src="https://manyisles.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
-                  <a href="https://manyisles.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">manyisles.ch</a>
+                  <img src="https://kartecaedras.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+                  <a href="https://kartecaedras.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">kartecaedras.ch</a>
                 </div>
               </div>
             </section>
@@ -390,7 +390,7 @@ if (!class_exists("adventurer")){
               <title></title>
           </head>
           <body style="padding:0;margin:0;">
-            <section style="max-width: 900px; margin: auto;background-image:url(https://manyisles.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
+            <section style="max-width: 900px; margin: auto;background-image:url(https://kartecaedras.ch/Imgs/OshBacc.png);background-color: #8dceff;background-attachment: fixed; background-size: contain;padding-top: 1px;">
               <div style="width: 100%;
               height: 200px;
               background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5));"></div>
@@ -401,13 +401,13 @@ if (!class_exists("adventurer")){
                       Click the button below to confirm your Many Isles email, %%UNAME%%.
                       <br>You may receive this message due to having changed your account's email address, or having requested a new code from your account page.
                   </p>
-                  <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
-                  <p style="color: #7d7d7d; padding:10px;font-size: 14px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="color:#61b3dd">https://manyisles.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
+                  <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
+                  <p style="color: #7d7d7d; padding:10px;font-size: 14px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="color:#61b3dd">https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
                 </div>
                 <!-- footer -->
                 <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
-                  <img src="https://manyisles.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
-                  <a href="https://manyisles.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">manyisles.ch</a>
+                  <img src="https://kartecaedras.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+                  <a href="https://kartecaedras.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">kartecaedras.ch</a>
                 </div>
               </div>
             </section>
@@ -417,8 +417,8 @@ if (!class_exists("adventurer")){
         }
         $message = str_replace("%%UNAME%%", $this->uname, $message);
         $message =  str_replace("massiveTreeofLife", urlencode($conCode), $message);
-        $message = str_replace("https://media.manyisles.ch", $this->giveServerInfo("servername_media"), $message);
-        $message = str_replace("manyisles.ch", $this->giveServerInfo("servername"), $message); //this can do bugs: should have better regex, not just all "manyisles.ch"
+        $message = str_replace("https://media.kartecaedras.ch", $this->giveServerInfo("servername_media"), $message);
+        $message = str_replace("kartecaedras.ch", $this->giveServerInfo("servername"), $message); //this can do bugs: should have better regex, not just all "kartecaedras.ch"
 
         $mailer = $this->addMailer();
         if ($mailer->sendMail([[$this->email, $this->fullName]], $subject, $message)){

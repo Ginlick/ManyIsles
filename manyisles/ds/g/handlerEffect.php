@@ -33,12 +33,12 @@ $purchase = explode(",", $purchase);
 $basketed = new loopBasket;
 $basketed->loopBasket($conn, $purchase, false, false, true, "items", true);
 
-$partnerMsg = 'Someone just placed an order. You can handle it from your <a href="https://manyisles.ch/ds/p/hub">digital store hub</a>.';
+$partnerMsg = 'Someone just placed an order. You can handle it from your <a href="https://kartecaedras.ch/ds/p/hub">digital store hub</a>.';
 
 $bigMail = <<<'BIGMAIL'
 <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
     Thank you for shopping with the Many Isles digital store. Payment for your order (id #%%CLID) was received and your order has been placed.<br>
-    %%COOLINFOTEXT You can view your <a href="https://manyisles.ch/account/home?display=orders" style="color:#61b3dd">order status online</a>.
+    %%COOLINFOTEXT You can view your <a href="https://kartecaedras.ch/account/home?display=orders" style="color:#61b3dd">order status online</a>.
 </p>
 </div>
 <!-- payment info -->
@@ -293,7 +293,7 @@ $bigMail = str_replace("%%PAYMENTMETHOD", $paymentInfo, $bigMail);
 
 $txtSubject = "Order #$clid Placed";
 $subject = "Your Many Isles digital store order #$clid confirmation";
-$mailer->send("publishing@manyisles.ch", $txtSubject, $bigMail, "publishing", $txtSubject);
+$mailer->send("publishingmanyisles.ch", $txtSubject, $bigMail, "publishing", $txtSubject);
 $mailer->send($custProm->email, $subject, $bigMail, "publishing", $txtSubject);
 
 //pay partners

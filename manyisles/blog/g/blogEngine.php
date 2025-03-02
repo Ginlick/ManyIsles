@@ -368,9 +368,9 @@ class blogEngine extends communityEngine {
       $email = str_replace("%%POSTTITLE", $postTitle, $email);
       $email = str_replace("%%POSTTEXT", $postText, $email);
       $email = str_replace("%%POSTAUTHOR", $postBuser["info"]["uname"], $email);
-      $email = str_replace("%%POSTAUTHLINK", "https://manyisles.ch/blog/profile?u=".$postBuserId, $email);
-      $email = str_replace("%%POSTLINK", "https://manyisles.ch/blog/post/".$postCode."/".$this->baseFiling->purate($postTitle), $email);
-      $headers = "From: pantheon@manyisles.ch" . "\r\n";
+      $email = str_replace("%%POSTAUTHLINK", "https://kartecaedras.ch/blog/profile?u=".$postBuserId, $email);
+      $email = str_replace("%%POSTLINK", "https://kartecaedras.ch/blog/post/".$postCode."/".$this->baseFiling->purate($postTitle), $email);
+      $headers = "From: pantheonmanyisles.ch" . "\r\n";
       $headers .= "MIME-Version: 1.0" . "\r\n";
       $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
       if ($concerns == "mention"){
@@ -503,9 +503,9 @@ class blogEngine extends communityEngine {
           </div>
         </div>
         <div class="bottom-infos-sharer">
-          <a href="http://www.reddit.com/submit?title=post-buser-buname-url posted post-title-url on the Many Isles!&url=https://manyisles.ch/post-link" target="_blank" class="fa fa-reddit"></a>
-          <a href="https://twitter.com/intent/tweet?text=post-buser-buname-url posted post-title-url on the Many Isles!&url=https://manyisles.ch/post-link&hashtags=manyisles" target="_blank" class="fa fa-twitter"></a>
-          <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://manyisles.ch/post-link');createPopup('d:gen;txt:Link copied!');"></a>
+          <a href="http://www.reddit.com/submit?title=post-buser-buname-url posted post-title-url on the Many Isles!&url=https://kartecaedras.ch/post-link" target="_blank" class="fa fa-reddit"></a>
+          <a href="https://twitter.com/intent/tweet?text=post-buser-buname-url posted post-title-url on the Many Isles!&url=https://kartecaedras.ch/post-link&hashtags=manyisles" target="_blank" class="fa fa-twitter"></a>
+          <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://kartecaedras.ch/post-link');createPopup('d:gen;txt:Link copied!');"></a>
         </div>
       </div>
     </div>
@@ -557,10 +557,10 @@ class blogEngine extends communityEngine {
     //buser
     public $userShares = <<<HEREDOC
       <div class="blogSharerCont">
-        <a href="http://www.reddit.com/submit?title=Check out %%BUSERNAME's posts on the Many Isles!&url=https://manyisles.ch/blog/profile%3Fu%3D%%BUSERID" target="_blank" class="fa fa-reddit"></a>
-        <a href="https://twitter.com/intent/tweet?text=Check out %%BUSERNAME's posts on the Many Isles!%0A&url=https://manyisles.ch/blog/profile?u=%%BUSERID&hashtags=manyisles" target="_blank" class="fa fa-twitter"></a>
-        <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/blog/profile?u=%%BUSERID&media=%%BUSERIMG&description=Check out %%BUSERNAME's posts on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
-        <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://manyisles.ch/blog/profile?u=%%BUSERID');createPopup('d:gen;txt:Link copied!');"></a>
+        <a href="http://www.reddit.com/submit?title=Check out %%BUSERNAME's posts on the Many Isles!&url=https://kartecaedras.ch/blog/profile%3Fu%3D%%BUSERID" target="_blank" class="fa fa-reddit"></a>
+        <a href="https://twitter.com/intent/tweet?text=Check out %%BUSERNAME's posts on the Many Isles!%0A&url=https://kartecaedras.ch/blog/profile?u=%%BUSERID&hashtags=manyisles" target="_blank" class="fa fa-twitter"></a>
+        <a href="http://pinterest.com/pin/create/button/?url=https://kartecaedras.ch/blog/profile?u=%%BUSERID&media=%%BUSERIMG&description=Check out %%BUSERNAME's posts on the Many Isles!" target="_blank" class="fa fa-pinterest"></a>
+        <a class="fa fa-link fancyjump" onclick="navigator.clipboard.writeText('https://kartecaedras.ch/blog/profile?u=%%BUSERID');createPopup('d:gen;txt:Link copied!');"></a>
       </div>
     HEREDOC;
     //emails
@@ -590,7 +590,7 @@ class blogEngine extends communityEngine {
               <a href="%%POSTLINK">read more</a>
             </div>
           </div>
-          <p>You can turn these notifications off from your Many Isles blogs <a href="https://manyisles.ch/blog/profile">profile</a>.
+          <p>You can turn these notifications off from your Many Isles blogs <a href="https://kartecaedras.ch/blog/profile">profile</a>.
       </section>
     </body>
     </html>

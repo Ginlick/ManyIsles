@@ -139,7 +139,7 @@ $partBody =<<<MESSAGE
                     <img src="/Imgs/Ranks/Trader.png" alt="trade" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 </div>
                 <p>
-                    Your partnership gay is currently suspended, and none of its content is visible on the digital library. Feel free to contact <a href="mailto:pantheon@manyisles.ch" target="_blank">pantheon@manyisles.ch</a> for more information.<br>
+                    Your partnership gay is currently suspended, and none of its content is visible on the digital library. Feel free to contact <a href="mailto:pantheonmanyisles.ch" target="_blank">pantheonmanyisles.ch</a> for more information.<br>
                     Please make sure you understand the circumstances given in our <span class="fakelink" onclick="clinnation('Pol')">Trade Policy</span> and in the <a href="https://docs.google.com/document/d/1Q1CqPuaHVOM2Bz9GsZQ9S9QvrRZmyMFVo6_Iu7fq2K8/edit?usp=sharing" target="_blank">Trader's Agreement</a>.<br>
                     You may lose possession of some of your partnership if the suspension is not resolved, in accordance with the Trader's Agreement.
                 </p>
@@ -427,7 +427,7 @@ if ($ordersExist){
                 ?>
                 <p>
                     Your account unlocks many awesome features, such as making your own spell list, access to premium content in the digital library, and getting early and free access to some of our products via mail!<br>
-                    If you have any questions, problems or complaints, feel free to contact us at <a href="mailto:pantheon@manyisles.ch" target="_blank">pantheon@manyisles.ch</a>.
+                    If you have any questions, problems or complaints, feel free to contact us at <a href="mailto:pantheonmanyisles.ch" target="_blank">pantheonmanyisles.ch</a>.
                 </p>
                 <div style="width:20%;margin:auto;">
                     <div class="popupButton" style="margin-top:3vw;" onclick="signOut('friendly')"><i class="fa-solid fa-arrow-right"></i> Sign Out</div>
@@ -455,7 +455,7 @@ if ($ordersExist){
                     </div>
                     <div class="inputCont persInfo"  onclick="pop('email')">
                         <label for="email">Email</label>
-                        <input class="blocked" type="text" placeholder="pantheon@manyisles.ch" value="<?php echo $user->email; ?>"></input>
+                        <input class="blocked" type="text" placeholder="pantheonmanyisles.ch" value="<?php echo $user->email; ?>"></input>
                     </div>
                     <div class="inputCont persInfo half">
                         <label for="region">Region</label>

@@ -186,7 +186,7 @@ class acp_builder{
               </tr>
               <tr>
                   <td> <label for="email">Email</label></td>
-                  <td> <input type="email" placeholder="pantheon@manyisles.ch" name="email" id="email" onfocusout="inputGramm(this, 'e')" autocomplete="email" required></td>
+                  <td> <input type="email" placeholder="pantheonmanyisles.ch" name="email" id="email" onfocusout="inputGramm(this, 'e')" autocomplete="email" required></td>
               </tr>
               <tr>
                   <td></td>

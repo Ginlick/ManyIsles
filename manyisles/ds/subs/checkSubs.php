@@ -9,7 +9,7 @@ $message = <<<MYGREATMAIL
     <title></title>
 </head>
 <body>
-    <img src="http://manyisles.ch/Imgs/PopTrade.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;" />
+    <img src="http://kartecaedras.ch/Imgs/PopTrade.png" alt="Hello There!" style="width:100%;margin-top:0;margin-bottom:0;display:block;" />
     <h1 style="text-align:center;font-size:calc(12px + 3vw);color:#911414;">Insufficient Credit</h1>
     <p style="
             text-align: center;
@@ -17,15 +17,15 @@ $message = <<<MYGREATMAIL
             color: black;
             padding:10px;
     ">
-        Your AWESOMECOOL subscription will run out in three days, and you do not have enough credit on your account to renew it. <a href="https://manyisles.ch/ds/credit">Purchase more</a> so you don't lose your subscription's features!<br />
-        View your subscription on your <a href="https://manyisles.ch/ds/subs/hub">hub</a>.
+        Your AWESOMECOOL subscription will run out in three days, and you do not have enough credit on your account to renew it. <a href="https://kartecaedras.ch/ds/credit">Purchase more</a> so you don't lose your subscription's features!<br />
+        View your subscription on your <a href="https://kartecaedras.ch/ds/subs/hub">hub</a>.
 
     </p>
 </body>
 </html>
 MYGREATMAIL;
 
-$headers = "From: pantheon@manyisles.ch" . "\r\n";
+$headers = "From: pantheonmanyisles.ch" . "\r\n";
 $headers .= "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 

@@ -128,10 +128,10 @@ require_once("../g/sideBasket.php");
                     </div>';
                 }
                 ?>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://manyisles.ch/ds/p/partner.php?id=<?php echo $pId; ?>" target="_blank" class="fa fa-facebook"></a>
-                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $name; ?>'s Awesome Content!&url=https://manyisles.ch/ds/p/partner.php%3Fid%3D<?php echo $pId; ?>" target="_blank" class="fa fa-reddit"></a>
-                    <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $name; ?>'s Awesome Content!%0A&url=https://manyisles.ch/ds/p/partner.php%3Fid%3D<?php echo $pId; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
-                    <a href="http://pinterest.com/pin/create/button/?url=https://manyisles.ch/ds/p/partner.php%3Fid%3D<?php echo $pId; ?>&media=https://manyisles.ch/dl/PartIm/<?php echo $image; ?>&description=Check out <?php echo $name; ?>'s Awesome Content!" target="_blank" class="fa fa-pinterest"></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://kartecaedras.ch/ds/p/partner.php?id=<?php echo $pId; ?>" target="_blank" class="fa fa-facebook"></a>
+                    <a href="http://www.reddit.com/submit?title=Check out <?php echo $name; ?>'s Awesome Content!&url=https://kartecaedras.ch/ds/p/partner.php%3Fid%3D<?php echo $pId; ?>" target="_blank" class="fa fa-reddit"></a>
+                    <a href="https://twitter.com/intent/tweet?text=Check out <?php echo $name; ?>'s Awesome Content!%0A&url=https://kartecaedras.ch/ds/p/partner.php%3Fid%3D<?php echo $pId; ?>&hashtags=manyisles,dnd" target="_blank" class="fa fa-twitter"></a>
+                    <a href="http://pinterest.com/pin/create/button/?url=https://kartecaedras.ch/ds/p/partner.php%3Fid%3D<?php echo $pId; ?>&media=https://kartecaedras.ch/dl/PartIm/<?php echo $image; ?>&description=Check out <?php echo $name; ?>'s Awesome Content!" target="_blank" class="fa fa-pinterest"></a>
                 </section>
 
 

@@ -16,7 +16,7 @@ $subject = "Confirm New Email";
 $message = <<<MYGREATMAIL
       Please confirm your new email to set it as your account email. Ignore this message if you do not wish to do so.
     </p>
-    <button style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://manyisles.ch/account/checkMail.php?code=XOXOXOXO" style="text-decoration:none;color:white;">Confirm</a></button>
+    <button style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://kartecaedras.ch/account/checkMail.php?code=XOXOXOXO" style="text-decoration:none;color:white;">Confirm</a></button>
 MYGREATMAIL;
 
 $query = "DELETE FROM newmails WHERE id = ".$id;
