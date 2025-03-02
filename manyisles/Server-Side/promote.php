@@ -333,7 +333,7 @@ if (!class_exists("adventurer")){
                         </tr>
                         <tr style="padding-bottom:10px">
                           <td>
-                            <img src="https://media.kartecaedras.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                            <img src="https://media.manyisles.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
                           </td>
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Handbook of Dark Secrets</h2>
@@ -417,7 +417,7 @@ if (!class_exists("adventurer")){
         }
         $message = str_replace("%%UNAME%%", $this->uname, $message);
         $message =  str_replace("massiveTreeofLife", urlencode($conCode), $message);
-        $message = str_replace("https://media.kartecaedras.ch", $this->giveServerInfo("servername_media"), $message);
+        $message = str_replace("https://media.manyisles.ch", $this->giveServerInfo("servername_media"), $message);
         $message = str_replace("kartecaedras.ch", $this->giveServerInfo("servername"), $message); //this can do bugs: should have better regex, not just all "kartecaedras.ch"
 
         $mailer = $this->addMailer();
