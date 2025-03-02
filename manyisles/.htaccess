@@ -6,6 +6,8 @@ DirectoryIndex home.php
 ErrorDocument 404 /global/notFound.html
 ErrorDocument 500 /global/error.html
 
+RewriteCond %{HTTP_HOST} ^(www\.)?manyisles\.ch [NC]
+RewriteRule ^/$ https://manyisles.org [R=301]
 
 RewriteRule  ^fandom/.*/([0-9]+)/.*   fandom/f.php?id=$1&%{QUERY_STRING} [NC,L]
 RewriteRule  ^([^/]*)/wsettings  fandom/wsettings.php?domain=$1&%{QUERY_STRING} [L]
