@@ -7,7 +7,11 @@ ErrorDocument 404 /global/notFound.html
 ErrorDocument 500 /global/error.html
 
 RewriteCond %{HTTP_HOST} ^(www\.)?manyisles\.ch [NC]
-RewriteRule ^/$ https://manyisles.org [R=301]
+RewriteRule ^$ https://manyisles.org/ [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^(www\.)?manyisles\.ch [NC]
+RewriteRule ^(.*)$ https://kartecaedras.ch/$1 [R=301,L]
+
 
 RewriteRule  ^fandom/.*/([0-9]+)/.*   fandom/f.php?id=$1&%{QUERY_STRING} [NC,L]
 RewriteRule  ^([^/]*)/wsettings  fandom/wsettings.php?domain=$1&%{QUERY_STRING} [L]
