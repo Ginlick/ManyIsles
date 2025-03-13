@@ -3,11 +3,8 @@ RewriteEngine on
 Require all granted
 DirectoryIndex home.php
 
-ErrorDocument 404 /global/notFound.html
-ErrorDocument 500 /global/error.html
-
-RewriteCond %{HTTP_HOST} ^(www\.)?manyisles\.ch [NC]
-RewriteRule ^$ https://manyisles.org/ [R=301,L]
+ErrorDocument 404 /Code/notFound.html
+ErrorDocument 500 /Code/error.html
 
 RewriteCond %{HTTP_HOST} ^(www\.)?manyisles\.ch [NC]
 RewriteRule ^(.*)$ https://kartecaedras.ch/$1 [R=301,L]

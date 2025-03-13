@@ -67,13 +67,7 @@ $downloadsList = file_get_contents("https://media.manyisles.ch/events/downloadsL
     <section class="contcol-wrapper eContCol">
         <section class="column-main">
             <h1>Many Isles Events</h1>
-                <p>We host many fantastic events throughout the semester! Find an up-to-date list on the association website, <a href="https://manyisles.org/events" target="_blank">manyisles.org</a>.</p>
-
-                <div class="fileDownloader">
-                    <a href="files/24_2_Poster.pdf" target="_blank"></a>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1667px-PDF_file_icon.svg.png" alt="pdf" />
-                    <p>Many Isles Social Dates</p>
-                </div>
+                <p>The <a href="https://manyisles.org" target="_blank">Zurich student fantasy association</a> hosts events throughout the semester! Find an up-to-date list on the association website, <a href="https://manyisles.org/events" target="_blank">manyisles.org</a>.</p>
             </div>
         </section>
     </section>

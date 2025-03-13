@@ -9,7 +9,7 @@ $slogan = $homer->giveSlogan();
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="Imgs/Favicon.png">
-    <title>Many Isles</title>
+    <title>Many Isles Project</title>
     <link rel="stylesheet" type="text/css" href="/Code/CSS/Main.css">
     <link rel="stylesheet" type="text/css" href="/Code/CSS/pop.css">
     <style>
@@ -118,8 +118,8 @@ $slogan = $homer->giveSlogan();
       </section>
       <section class="cont-cont" style="padding-bottom: 200px;">
         <div class="contcol-wrapper">
-          <p class="homep" id="firstTitle">This is the website of the Many Isles Project, which explores <b>Karte-Caedras</b> (the Many Isles Setting) and the worldbuilding hobby.<br>
-              For the separate Zurich students' fantasy group, see <a target="_self" href="https://manyisles.org">manyisles.org</a>.</p>
+          <p class="homep" id="firstTitle">This is the website of the Many Isles Project, a hub for the worldbuilding hobby and the world of <b>Karte-Caedras</b> (the Many Isles Setting).<br>
+              For the Zurich students' fantasy group, see <a target="_self" href="https://manyisles.org">manyisles.org</a>.</p>
 
           <h1>Publications</h1>
           <div class="im-ccontainer">
@@ -240,26 +240,6 @@ $slogan = $homer->giveSlogan();
                   <h3>Blogs</h3>
                   <p>
                     View and publish posts about fantasy.
-                  </p>
-                  <p class="explorelink">
-                    <span class="fakelink">Explore</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="im-box">
-              <a class="im-wrapA" href="/events"></a>
-              <div class="im-topcontainer">
-                <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/slides/dragon.jpg"></div>
-                  <div class="im-overlay"></div>
-                </div>
-              </div>
-              <div class="im-botcontainer">
-                <div class="im-text">
-                  <h3>Events</h3>
-                  <p>
-                    Participate in our awesome roleplaying, worldbuilding, and social events!
                   </p>
                   <p class="explorelink">
                     <span class="fakelink">Explore</span>
