@@ -1,6 +1,10 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
+// http_response_code(204);
+// exit();
+
+
 $user = new adventurer();
 $user->killCache();
 

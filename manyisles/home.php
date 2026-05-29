@@ -118,11 +118,34 @@ $slogan = $homer->giveSlogan();
       </section>
       <section class="cont-cont" style="padding-bottom: 200px;">
         <div class="contcol-wrapper">
-          <p class="homep" id="firstTitle">This is the website of the Many Isles Project, a hub for the worldbuilding hobby and the world of <b>Karte-Caedras</b> (the Many Isles Setting).<br>
-              For the Zurich students' fantasy group, see <a target="_self" href="https://manyisles.org">manyisles.org</a>.</p>
+          <p class="homep" id="firstTitle">This is the website of the Many Isles Setting, an awesome worldbuilding project. It is also known as the world of Karte-Caedras.<br>
+          Note that this website was a passion project and is to a large part deprecated.<br>  
+          For the Zurich students' fantasy group, see <a target="_self" href="https://manyisles.org">manyisles.org</a>.</p>
 
-          <h1>Publications</h1>
+          <h1>Explore the Setting</h1>
+          <p class="homep">Resources for exploring the Many Isles Setting.</p>
           <div class="im-ccontainer">
+            <div class="im-box">
+              <a class="im-wrapA" href="/fandom/home"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/fandom.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Fandom Wiki</h3>
+                  <p>
+                    Tons of lore about the setting.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div class="im-box">
               <a class="im-wrapA" href="/dl/home"></a>
               <div class="im-topcontainer">
@@ -135,7 +158,7 @@ $slogan = $homer->giveSlogan();
                 <div class="im-text">
                   <h3>Digital Library</h3>
                   <p>
-                    A gallery full of jewels from the Many Isles. What we're all about!
+                    A repository of downloadable resources, primarily for RPGs.
                   </p>
                   <p class="explorelink">
                     <span class="fakelink">Explore</span>
@@ -143,7 +166,7 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
-            <div class="im-box">
+            <!-- <div class="im-box">
               <a class="im-wrapA" href="/ds/store"></a>
               <div class="im-topcontainer">
                 <div class="im-intopcontainer">
@@ -162,8 +185,8 @@ $slogan = $homer->giveSlogan();
                   </p>
                 </div>
               </div>
-            </div>
-            <div class="im-box">
+            </div> -->
+            <!-- <div class="im-box">
               <a class="im-wrapA" href="/account/BePartner"></a>
               <div class="im-topcontainer">
                 <div class="im-intopcontainer">
@@ -182,10 +205,10 @@ $slogan = $homer->giveSlogan();
                   </p>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
 
-          <h1>Community</h1>
+          <!-- <h1>Community</h1>
           <div class="im-ccontainer">
               <div class="im-box">
                   <a class="im-wrapA" href="https://manyisles.org"></a>
@@ -267,30 +290,13 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <h1>Worldbuilding</h1>
+          <h1>Tools</h1>
+          <p class="homep">A handful of cool worldbuilding tools.</p>
+
           <div class="im-ccontainer">
-            <div class="im-box">
-              <a class="im-wrapA" href="/fandom/home"></a>
-              <div class="im-topcontainer">
-                <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/slides/fandom.png"></div>
-                  <div class="im-overlay"></div>
-                </div>
-              </div>
-              <div class="im-botcontainer">
-                <div class="im-text">
-                  <h3>Fandom Wiki</h3>
-                  <p>
-                    Awesome community-created wikis.
-                  </p>
-                  <p class="explorelink">
-                    <span class="fakelink">Explore</span>
-                  </p>
-                </div>
-              </div>
-            </div>
+
             <div class="im-box">
               <a class="im-wrapA" href="/mystral/hub"></a>
               <div class="im-topcontainer">
@@ -331,11 +337,6 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
-          </div>
-
-
-          <h1>Tools</h1>
-          <div class="im-ccontainer">
             <div class="im-box">
               <a class="im-wrapA" href="/tools/tools"></a>
               <div class="im-topcontainer">

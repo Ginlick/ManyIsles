@@ -81,6 +81,7 @@ if (!class_exists("adventurer")){
       }
 
       function createAccount($uname, $email, $psw, $region) {
+        return false; // account creation disabled
         $redirect = false;
         //check input
         if ($this->signedIn){$redirect = "accountExists";} //will auto-redirect to SignedIn after anyway
