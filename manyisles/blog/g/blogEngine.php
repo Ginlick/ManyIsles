@@ -370,7 +370,7 @@ class blogEngine extends communityEngine {
       $email = str_replace("%%POSTAUTHOR", $postBuser["info"]["uname"], $email);
       $email = str_replace("%%POSTAUTHLINK", "https://kartecaedras.ch/blog/profile?u=".$postBuserId, $email);
       $email = str_replace("%%POSTLINK", "https://kartecaedras.ch/blog/post/".$postCode."/".$this->baseFiling->purate($postTitle), $email);
-      $headers = "From: pantheonmanyisles.ch" . "\r\n";
+      $headers = "From: support@kartecaedras.ch" . "\r\n";
       $headers .= "MIME-Version: 1.0" . "\r\n";
       $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
       if ($concerns == "mention"){

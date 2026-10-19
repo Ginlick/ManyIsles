@@ -293,7 +293,7 @@ $bigMail = str_replace("%%PAYMENTMETHOD", $paymentInfo, $bigMail);
 
 $txtSubject = "Order #$clid Placed";
 $subject = "Your Many Isles digital store order #$clid confirmation";
-$mailer->send("publishingmanyisles.ch", $txtSubject, $bigMail, "publishing", $txtSubject);
+$mailer->send("support@kartecaedras.ch", $txtSubject, $bigMail, "publishing", $txtSubject);
 $mailer->send($custProm->email, $subject, $bigMail, "publishing", $txtSubject);
 
 //pay partners

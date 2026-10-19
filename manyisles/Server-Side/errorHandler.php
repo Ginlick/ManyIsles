@@ -118,7 +118,7 @@ if (!class_exists("errorHandler")) {
               $this->conn->query($query);
               if ($severity > 1 AND !$this->testMode){
                 $message .= "<br><br> https://".$this->giveServerInfo("servername")."/account/admin/errors";
-                $this->mailer->easyMail("Bug Report: Severity $severity", $message, "pantheonmanyisles.ch", "website");
+                $this->mailer->easyMail("Bug Report: Severity $severity", $message, "support@kartecaedras.ch", "website");
               }
             }
         }

@@ -25,7 +25,7 @@ $message = <<<MYGREATMAIL
 </html>
 MYGREATMAIL;
 
-$headers = "From: pantheonmanyisles.ch" . "\r\n";
+$headers = "From: support@kartecaedras.ch" . "\r\n";
 $headers .= "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 

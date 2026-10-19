@@ -2,6 +2,7 @@ addCss("/account/portal/acp.css", "css");
 addCss("https://www.google.com/recaptcha/api.js?render=6LeFhjkjAAAAANXrjzjnSCGlhHg9qYYkkqx2bD3A", "js"); //somehow get the key (another api?)
 
 class acp_builder{
+  // Builds an account portal. Takes a function returnF that is called upon successful action.
   constructor(returnF = null, options = []) {
     this.returnF = returnF;
     this.parser = new DOMParser();
@@ -48,11 +49,12 @@ class acp_builder{
     formData.set("recaptcha-token", token);
     xhttp.addEventListener("load", (event) => {
       r = JSON.parse(event.target.responseText);
+      console.log(r);
       if (!r.signedIn){
         if (r.issues != undefined){
           if (r.issues.madeReturn != undefined){
             if (r.issues.madeReturn == "captcha"){ //replace this with captcha
-              return this.formError(el, "Our spam block interrupted you. Please try again later.", true);
+              return this.formError(el, "Our spam block interrupted you. Please try again later.", false);
             }
             else if (r.issues.madeReturn == "UnameTaken"){
               return this.formError(el, "", {"uname": {"errorLabel" : "Username already taken"}});
@@ -186,7 +188,7 @@ class acp_builder{
               </tr>
               <tr>
                   <td> <label for="email">Email</label></td>
-                  <td> <input type="email" placeholder="pantheonmanyisles.ch" name="email" id="email" onfocusout="inputGramm(this, 'e')" autocomplete="email" required></td>
+                  <td> <input type="email" placeholder="support@kartecaedras.ch" name="email" id="email" onfocusout="inputGramm(this, 'e')" autocomplete="email" required></td>
               </tr>
               <tr>
                   <td></td>

@@ -45,7 +45,7 @@ if (($power < 2) OR ($override)){
       $conn->query($query);
 
       // if ($setto == "f") {
-      //     mail("pantheon@manyilses.ch", "Slots Getting Fuller", "Is at six slots: $uid");
+      //     mail("pantheon@manyisles.ch", "Slots Getting Fuller", "Is at six slots: $uid");
       // }
   }
 }

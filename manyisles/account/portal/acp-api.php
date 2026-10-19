@@ -5,8 +5,14 @@ require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/promote.php");
 // exit();
 
 
+
+
+
+
+
 $user = new adventurer();
 $user->killCache();
+
 
 if (isset($_POST) AND count($_POST) > 0){
   if (!isset($_POST["recaptcha-token"])){
@@ -29,6 +35,7 @@ if (isset($_POST) AND count($_POST) > 0){
     //act
     if (!$result["success"] OR !isset($result["score"]) OR $result["score"] < 0.5){
       $issuesObj = ["madeReturn" => "captcha"];
+      $issuesObj["captchaInfo"] = $result;
     }
     else {
       if (isset($_POST["email"])) { //signCreate

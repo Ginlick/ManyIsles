@@ -37,9 +37,9 @@
                 <h1 id="SignUp-title"> Create Account </h1>
                 <img src="/Imgs/Recruit.png" alt="WorkingMage" style='width:80%;display:block;margin:auto;padding: 2vw 0;' class='separator'>
                 <div id="signCreateBigCont">
-                  <p id="createAccountP">Account creation is disabled for generic users. Contact us if you would like to delve deeper into the setting, or purchase something.</p>
+                  <p id="createAccountP">Create an account here.</p>
 
-                  <!-- <div id="signCreateFormCont"></div> -->
+                   <div id="signCreateFormCont"></div>
                     <br>
                   <p>Already have an account? <span onclick="clinnation('Log')" class="fakelink">Log in</span></p>
                 </div>

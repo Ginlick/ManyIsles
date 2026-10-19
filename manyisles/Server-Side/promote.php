@@ -66,7 +66,7 @@ if (!class_exists("adventurer")){
                     $this->power = $row["power"];
                     $this->region = $row["region"];
                     
-                    $persInfo = json_decode($row["persInfo"], true);
+                    $persInfo = json_decode($row["persInfo"]??"{}", true);
                     if ($persInfo == null){$persInfo = ["fName" => "", "lName" => "", "references" => ["discName"=>""]];}
                     $this->persInfo = $persInfo;
                     $this->discname = $persInfo["references"]["discName"];
@@ -81,11 +81,10 @@ if (!class_exists("adventurer")){
       }
 
       function createAccount($uname, $email, $psw, $region) {
-        return false; // account creation disabled
         $redirect = false;
         //check input
         if ($this->signedIn){$redirect = "accountExists";} //will auto-redirect to SignedIn after anyway
-        else if (preg_match($this->regArrayR["account"], $uname)!=1){$redirect = "uname";}
+        else if (preg_match("/[A-Za-z0-9 ]{2,}/", $uname)!=1){$redirect = "uname";}
         else if (preg_match("/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)!=1){$redirect = "email";}
         else if (preg_match("/[A-Za-z0-9!.\-_ ]{1,}/", $psw)!=1){$redirect = "psw";}
         else if (preg_match("/[1-3]/", $region)!=1){$redirect = "reg";}
@@ -334,7 +333,7 @@ if (!class_exists("adventurer")){
                         </tr>
                         <tr style="padding-bottom:10px">
                           <td>
-                            <img src="https://media.manyisles.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                            <img src="https://media.kartecaedras.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
                           </td>
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Handbook of Dark Secrets</h2>

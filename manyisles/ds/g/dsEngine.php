@@ -111,6 +111,9 @@ class dsEngine {
     //redirect
     if (isset($_POST["goTo"])) {
         if ($_POST["goTo"] != "nope" AND $_POST["goTo"] != "" ){
+
+            echo "wants to go to ".$_POST["goTo"];
+            exit();
             $this->go($_POST["goTo"]);
         }
     }
@@ -232,7 +235,7 @@ class dsEngine {
     $totalShipping = 0;
     if ($this->basketed->type == "items") {
       $this->fetchAddress();
-      $country = $this->address["country"];
+      $country = $this->address["country"] ?? null;
 
       foreach ($this->basketed->itemArray as $item){
         $totalShipping += $this->itemShipping($item, $country);
@@ -595,7 +598,7 @@ class loopBasket {
                         $itemMinPrice = intval($row["minPrice"]);
                         $coolProdSpecs = [];
                         $quantOption = 1;
-                        if (stripos($value, "[")) {
+                        if (stripos($value, "[") AND $row["specifications"]) {
                             $specsArray = json_decode($row["specifications"], true);
 
                             if (stripos($row["price"], ",")) {
@@ -881,7 +884,8 @@ trait allDStools {
 
   //find the cost associated with a specific country code
   function fetchShippingCost($artShipping, $country) {
-    if (gettype($artShipping)=="int") {return $artShipping;}
+    if ($artShipping == null) {return 0;}
+    else if (gettype($artShipping)=="int") {return $artShipping;}
     else if (preg_match("/^[0-9]+$/", $artShipping)) {return intval($artShipping);}
     else if ($artShipping == ""){return 0;}
 

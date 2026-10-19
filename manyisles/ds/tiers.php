@@ -24,6 +24,7 @@ require_once("g/sideBasket.php");
     border-radius:5px;
     text-align:left;
     display:inline-block;
+    padding: 5px;
 }
 .tierblock h1, .tierblock h2 {
   text-align: center;
@@ -79,7 +80,7 @@ require_once("g/sideBasket.php");
             <div id='content' class='column'>
 
                 <h1>Purchase Tier</h1>
-                <p>click to select</p>
+                <p>Support the Many Isles Setting with a generous donation!</p>
             <div class="tierCont">
                 <div class="tierblock" id="0" onclick="selectTier(0);">
                     <h2>Tier 1</h2>
@@ -89,7 +90,6 @@ require_once("g/sideBasket.php");
                     <ul>
                         <li>Tier 1 access to the <a href="/dl/Goods.php" target="_blank">digital library</a></li>
                         <li>Imperial Soldier title</li>
-                        <li>Access to the <b>#shattered-sun</b> Discord channel</li>
                         <li>Support the Many Isles! :)</li>
 
                     </ul>
@@ -113,8 +113,6 @@ require_once("g/sideBasket.php");
                     <ul>
                         <li>Tier 3 access to the <a href="/dl/Goods.php" target="_blank">digital library</a></li>
                         <li>Legendar title</li>
-                        <li>Easy access to the Pantheon</li>
-                        <li>Access to the <b>#awake-lion</b> Discord channel</li>
                         <li>Be an excellent supporter! :)</li>
                     </ul>
                 </div>
@@ -127,11 +125,11 @@ require_once("g/sideBasket.php");
                     <input style="display:none" name="orderDetails" id="orderDetails" value="[price:1]" />
                     <input style="display:none" name="goTo" id="goTo" value="nope" />
                     <div class="checkoutBox spec">
-                        <button class="checkout" onclick="submitSpecial(1);">
+                        <button class="checkout" onclick="submitSpecial(1);" type="button">
                               <i class="fas fa-shopping-basket"></i>
                              <span>Basket</span>
                         </button>
-                        <button class="checkout" onclick="submitSpecial(0);">
+                        <button class="checkout" onclick="submitSpecial(0);" type="button">
                               <i class="fas fa-arrow-right"></i>
                              <span>Basket</span>
                         </button>
@@ -175,7 +173,6 @@ function submitSpecial(x) {
     let subArray = [];
     subArray.push("tier:" + selectedTier);
     document.getElementById("orderDetails").value = subArray.join();
-
     document.getElementById("basket").submit();
 }
 </script>
