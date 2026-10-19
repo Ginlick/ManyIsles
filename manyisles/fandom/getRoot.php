@@ -55,7 +55,7 @@ else if ($info->domain == "mystral"){
     $fullLine = "<a href='/mystral/hub'>$title $uname</a>";
 }
 else {
-    $fullLine = "<a href='/fandom/home'>Fandom</a>";
+    $fullLine = ""; # used to be <a>Fandom</a>, but don't want to support parallel fandoms
 }
 $ongoingName = "";
 $info->artRootLink = str_replace("/wiki/", "/".parse2URL($wikiName)."/", $info->artRootLink);
@@ -73,16 +73,11 @@ foreach ($resultArray as $pageId){
         }
     }
     if (!isset($currentName)){continue;}
-    if ($info->domain != "fandom"){
-        if (($info->domain == "docs" OR $info->domain == "5eS") AND $root == 0) {
-            $currentLine = str_replace("-", "", $rootLine);
-        }
-        else {$currentLine = $rootLine;}
-        $currentLine = str_replace("COOLLINK", artUrl($info->artRootLink, $pageId, $currentName), $currentLine);
+    if (($info->domain == "docs" OR $info->domain == "5eS" OR $info->domain == "fandom") AND $root == 0) {
+        $currentLine = str_replace("-", "", $rootLine);
     }
-    else {
-        $currentLine = str_replace("COOLLINK", artUrl($info->artRootLink, $pageId, $currentName), $rootLine);
-    }
+    else {$currentLine = $rootLine;}
+    $currentLine = str_replace("COOLLINK", artUrl($info->artRootLink, $pageId, $currentName), $currentLine);
     $currentLine = str_replace("COOLNAME", $currentName, $currentLine);
     $fullLine .= $currentLine;
 }

@@ -67,8 +67,13 @@ class parse {
 
 
 
-    function createThumbTab($link, $img, $name) {
-       return " <div class='domCont'><a href='".$link."' load-image='".$img."'><h3>".$name."</h3><div class='overlay'></div></a></div>";
+    function createThumbTab($link, $img, $name, $blur = false) {
+        if ($blur){
+            return " <div class='domCont'><a href='".$link."' load-image='".$img."'><h3>".$name."</h3><div class='overlay'></div><div class='blur'></div></a></div>";
+        }
+        else {
+            return " <div class='domCont'><a href='".$link."' load-image='".$img."'><h3>".$name."</h3><div class='overlay'></div></a></div>";
+        }
     }
 
     function addFullChildLine($body, $page, $mode) {
@@ -159,18 +164,23 @@ class parse {
                 $counter = 1;
                 while ($row = $firstrow->fetch_assoc()) {
                     $childPage = $row["id"];
-                    if (!($wiki = getWiki($childPage, $this->database, $this->dbconn)) OR $wiki != $this->parentWiki OR $row["status"] != "active") {continue;}
+                    if (!($wiki = getWiki($childPage, $this->database, $this->dbconn)) OR $wiki != $this->parentWiki OR $row["status"] != "active" OR $row["cate"] == "Source") {continue;}
                     $wikiName = getWikiName($wiki, $this->database, $this->dbconn);
                     $artRootLink = $this->baseLink.parse2URL($wikiName)."/";
-
+                    # set the basic vars
+                    $pageName = $row["shortName"];
+                    $pageImg = $row["banner"];
+                    $thumbImg = $row["sidetabImg"];
+                    $blur = false;
+                    if ($row["NSFW"] >= 2){
+                        $blur = true;
+                    }
+                    # generate the thumbnails
                     if ($age > 0) {
                       if ($sortName == "rand"){
                         if ($age >= $counter) {
-                          $pageName = $row["shortName"];
-                          $pageImg = $row["banner"];
-                          $thumbImg = $row["sidetabImg"];
                           if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                          $fullRow .= $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                          $fullRow .= $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName, $blur);
                           $counter++;
 
                         }
@@ -180,11 +190,8 @@ class parse {
                       }
                       else {
                         if ($age == $counter) {
-                          $pageName = $row["shortName"];
-                          $pageImg = $row["banner"];
-                          $thumbImg = $row["sidetabImg"];
                           if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                          $toInsertThumb = $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                          $toInsertThumb = $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName, $blur);
                           $body = str_replace("[wiki:$sortName".$age."]", $toInsertThumb, $body);
                           if (str_contains($body, "[wiki:$sortName")){return $this->addRecents($body, $sort);}
                           else { return $body;}
@@ -195,11 +202,8 @@ class parse {
                     }
                     else {
                         if ($counter > 8) {break;}
-                        $pageName = $row["shortName"];
-                        $pageImg = $row["banner"];
-                        $thumbImg = $row["sidetabImg"];
                         if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                        $fullRow.= $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName);
+                        $fullRow.= $this->createThumbTab(artUrl($artRootLink, $childPage, $pageName), $pageImg, $pageName, $blur);
                         $counter++;
                     }
                 }
@@ -240,9 +244,14 @@ class parse {
                     $pageName = $row["shortName"];
                     $pageImg = $row["banner"];
                     $thumbImg = $row["sidetabImg"];
+                    $blur = false;
+                    if ($row["NSFW"] >= 0){
+                        $blur = true;
+                    }
+
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
                     $wikiName = getWikiName(getWiki($childPage, $this->database, $this->dbconn), $this->database, $this->dbconn);
-                    $fullLine .= $this->createThumbTab(artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName), $pageImg, $pageName);
+                    $fullLine .= $this->createThumbTab(artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName), $pageImg, $pageName, $blur);
 
                     $counter++;
                     if ($counter > 8){break;}

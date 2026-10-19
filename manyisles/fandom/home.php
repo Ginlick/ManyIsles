@@ -1,5 +1,10 @@
 ﻿<?php
 
+if (!isset($_GET["stay"])){
+    header("Location: /fandom/Karte-Caedras/2/Karte-Caedras");
+}
+
+
 require_once($_SERVER['DOCUMENT_ROOT']."/Server-Side/db_accounts.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/wiki/pageGen.php");
 require_once($_SERVER['DOCUMENT_ROOT']."/fandom/parseIWDate.php");

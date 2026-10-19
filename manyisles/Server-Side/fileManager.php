@@ -84,7 +84,7 @@ if (!trait_exists("fundamentals")){
       $this->outsideDir = "/priv/".$this->user."/";
       $this->userDir = $this->root."/media".$this->outsideDir;
 
-      if (!is_dir($this->userDir)){
+      if (!is_dir($this->userDir) &&is_writable($this->root."/media")) {
         mkdir($this->userDir, 0777, true);
       }
     }

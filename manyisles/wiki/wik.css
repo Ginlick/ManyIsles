@@ -440,6 +440,7 @@ p.side3 {
     padding-bottom: 100%;
 }
 
+
 @keyframes imgCont {
     0% {
         background-color: #a9b0ba;
@@ -483,9 +484,19 @@ p.side3 {
     background-color: #000000;
     z-index: 1;
 }
-
 .domCont:hover .overlay {
     opacity: 0.55;
+}
+.domCont .blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.1;
+    height: 100%;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    opacity: 1;
+    z-index: 1;
 }
 
 .domCont h3 {

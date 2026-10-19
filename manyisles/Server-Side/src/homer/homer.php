@@ -3,6 +3,8 @@ require $_SERVER['DOCUMENT_ROOT']."/Server-Side/parser.php";
 
 class homer {
   public $sloganArr = ["A world of creation."];
+  public $parser;
+
   function __construct() {
     $json = file_get_contents($_SERVER['DOCUMENT_ROOT']."/Server-Side/src/homer/slogans.json");
     $newSlogs = json_decode($json, true);

@@ -17,9 +17,9 @@ function getAccStat($conn, $id, $wiki = null, $explicit = false, $wsetdb = "wiki
         $query = "SELECT * FROM $wsetdb WHERE id = $wiki";
         if ($max = $conn->query($query)) {
             while ($row = $max->fetch_assoc()){
-                $banned = explode(",", $row["banned"]);
-                $mods = explode(",", $row["mods"]);
-                $auths = explode(",", $row["auths"]);
+                $banned = explode(",", $row["banned"] ?? "");
+                $mods = explode(",", $row["mods"] ?? "");
+                $auths = explode(",", $row["auths"] ?? "");
                 if (in_array($id, $banned)){$astat = 0;}
                 else if (in_array($id, $mods)){$astat = 3;}
                 else if (in_array($id, $auths)){$astat = 2;}

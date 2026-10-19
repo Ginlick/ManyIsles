@@ -1,7 +1,5 @@
 ﻿<?php
-require("Server-Side/src/homer/homer.php");
-$homer = new homer();
-$slogan = $homer->giveSlogan();
+# echo "PHP Version: ".PHP_VERSION."<br>";
 
  ?>
 <!DOCTYPE html>
@@ -119,11 +117,9 @@ $slogan = $homer->giveSlogan();
       <section class="cont-cont" style="padding-bottom: 200px;">
         <div class="contcol-wrapper">
           <p class="homep" id="firstTitle">This is the website of the Many Isles Setting, an awesome worldbuilding project. It is also known as the world of Karte-Caedras.<br>
-          Note that this website was a passion project and is to a large part deprecated.<br>  
-          For the Zurich students' fantasy group, see <a target="_self" href="https://manyisles.org">manyisles.org</a>.</p>
 
-          <h1>Explore the Setting</h1>
-          <p class="homep">Resources for exploring the Many Isles Setting.</p>
+          <div style="height: 3vh;"></div>
+
           <div class="im-ccontainer">
             <div class="im-box">
               <a class="im-wrapA" href="/fandom/home"></a>
@@ -135,9 +131,9 @@ $slogan = $homer->giveSlogan();
               </div>
               <div class="im-botcontainer">
                 <div class="im-text">
-                  <h3>Fandom Wiki</h3>
+                  <h3>Wiki</h3>
                   <p>
-                    Tons of lore about the setting.
+                    An amazing source of lore about the setting.
                   </p>
                   <p class="explorelink">
                     <span class="fakelink">Explore</span>
@@ -145,7 +141,26 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
-
+            <div class="im-box">
+              <a class="im-wrapA" href="/ds/store"></a>
+              <div class="im-topcontainer">
+                <div class="im-intopcontainer">
+                  <div class="im-imgCont" load-image="/Imgs/slides/ds.png"></div>
+                  <div class="im-overlay"></div>
+                </div>
+              </div>
+              <div class="im-botcontainer">
+                <div class="im-text">
+                  <h3>Digital Store</h3>
+                  <p>
+                    Physical products like history books.
+                  </p>
+                  <p class="explorelink">
+                    <span class="fakelink">Explore</span>
+                  </p>
+                </div>
+              </div>
+            </div>
             <div class="im-box">
               <a class="im-wrapA" href="/dl/home"></a>
               <div class="im-topcontainer">
@@ -158,7 +173,7 @@ $slogan = $homer->giveSlogan();
                 <div class="im-text">
                   <h3>Digital Library</h3>
                   <p>
-                    A repository of downloadable resources, primarily for RPGs.
+                    Downloadable lore documents and RPG modules.
                   </p>
                   <p class="explorelink">
                     <span class="fakelink">Explore</span>
@@ -166,26 +181,7 @@ $slogan = $homer->giveSlogan();
                 </div>
               </div>
             </div>
-            <!-- <div class="im-box">
-              <a class="im-wrapA" href="/ds/store"></a>
-              <div class="im-topcontainer">
-                <div class="im-intopcontainer">
-                  <div class="im-imgCont" load-image="/Imgs/slides/ds.png"></div>
-                  <div class="im-overlay"></div>
-                </div>
-              </div>
-              <div class="im-botcontainer">
-                <div class="im-text">
-                  <h3>Digital Store</h3>
-                  <p>
-                    A selection of physical products you can buy.
-                  </p>
-                  <p class="explorelink">
-                    <span class="fakelink">Explore</span>
-                  </p>
-                </div>
-              </div>
-            </div> -->
+
             <!-- <div class="im-box">
               <a class="im-wrapA" href="/account/BePartner"></a>
               <div class="im-topcontainer">
@@ -292,7 +288,7 @@ $slogan = $homer->giveSlogan();
             </div>
           </div> -->
 
-          <h1>Tools</h1>
+          <!-- <h1>Tools</h1>
           <p class="homep">A handful of cool worldbuilding tools.</p>
 
           <div class="im-ccontainer">
@@ -358,46 +354,12 @@ $slogan = $homer->giveSlogan();
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
       </section>
     </section>
 
 <div w3-include-html="/Code/CSS/genericFooter.html" w3-create-newEl="true"></div>
-<div class="modCol" id="many-isles-info">
-    <div class="modContent">
-        <img class="nmodImg" src="/Imgs/players.jpg" />
-        <div class="nmodBody">
-            <p>Welcome to the Many Isles!</p>
-            <h2>Looking for the Student Association?</h2>
-            <p>
-                This is the Many Isles Project website, a daughter project of the association.<br>
-                For events and information, you want <a href="https://manyisles.org">manyisles.org</a>.
-            </p>
-            <a href="https://manyisles.org"><button>
-                    <i class="fas fa-arrow-right"></i>
-                    <span>Student Association</span>
-                </button></a>
-            <h2>Looking for RPG modules, fandom lore, and more?</h2>
-            <p>
-                Then you've landed in the right place!
-            </p>
-            <ul style="list-style-type:disc; text-align: left; padding-left: 40px;">
-                <li>
-                    <a href="/docs/32/Welcome">Take a tour</a> to learn more about this website.
-                </li>
-                <li>
-                    Find RPG adventure modules, lore documents, and more in the <a href="/dl/home">digital library</a>.
-                </li>
-                <li>
-                    Check out some awesome lore about Karte-Caedras (the Many Isles Setting) in the <a href="/fandom/home">fandom</a>.
-                </li>
-            </ul>
-            <button onclick="alertGotIt()">Got it</button>
-        </div>
-
-    </div>
-</div>
 <div id="modal" class="modal" onclick="pop('ded')"></div>
 </body>
 </html>
@@ -406,25 +368,15 @@ $slogan = $homer->giveSlogan();
     var urlParams = new URLSearchParams(window.location.search);
     var show = urlParams.get('show');
 
-    if (!localStorage["alertdisplayed"]) {
-        //newpop(document.getElementById("many-isles-info"));
-        //createPopup("d:gen;txt:Welcome to the Many Isles!;b:1;bTxt:take a tour;bHref:/docs/32/Welcome;dur:22000");
-    }
-    else {
+    if (localStorage["alertdisplayed"]) {
       xhttp = new XMLHttpRequest();
       xhttp.addEventListener("load", (e) => {
         document.getElementById("gimmeSlogan").innerHTML = e.target.responseText;
       });
       xhttp.open("GET", "/Server-Side/src/homer/slogan-api.php", true);
       xhttp.send();
+    }
 
-      // setTimeout(function () {
-      //   document.getElementById("firstTitle").scrollIntoView({ behavior: "smooth", block: "start" });
-      // }, 2200);
-    }
-    function alertGotIt() {
-        localStorage["alertdisplayed"] = true;
-        newpop();
-    }
+    localStorage["alertdisplayed"] = true;
 
 </script>
