@@ -359,7 +359,7 @@ class gen {
     function prepareParse() {
         require($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
         $NSFWallowed = false;
-        if (isset($_COOKIE["clearNSFW"])) $NSFWallowed = true;
+        if (isset($_COOKIE["clearNSFW"])) { $NSFWallowed = true; }
         $this->parse = new parse($this->dbconn, $this->page, $this->article->parseClear, $this->domain, $NSFWallowed);
     }
 
