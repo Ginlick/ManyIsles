@@ -358,7 +358,9 @@ class gen {
     }
     function prepareParse() {
         require($_SERVER['DOCUMENT_ROOT']."/wiki/parse.php");
-        $this->parse = new parse($this->dbconn, $this->page, $this->article->parseClear, $this->domain);
+        $NSFWallowed = false;
+        if (isset($_COOKIE["clearNSFW"])) $NSFWallowed = true;
+        $this->parse = new parse($this->dbconn, $this->page, $this->article->parseClear, $this->domain, $NSFWallowed);
     }
 
     function giveFavicon() {

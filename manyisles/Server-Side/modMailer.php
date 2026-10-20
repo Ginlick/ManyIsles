@@ -4,9 +4,10 @@ class modMailer {
     use allBase;
     public $headers;
     public $domArr = [
+      "generic" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/generic.png"],
       "website" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/website.png"],
       "publishing" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/publishing.png"],
-      "community" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/community.png"],
+      # "community" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/community.png"], #  send generic logo instead of Community 
       "pantheon" => ["img"=>"https://kartecaedras.ch/Imgs/branding/s/pantheon.png"],
     ];
     public $baseMail = <<<MYGREATMAIL
@@ -45,10 +46,10 @@ MYGREATMAIL;
       $this->mailer =  $this->addMailer();
     }
 
-    function send($to, $subject, $message, $domain = "website", $txtSubj = false){
+    function send($to, $subject, $message, $domain = "generic", $txtSubj = false){
       $body = $this->baseMail;
       
-      if (!isset($this->domArr[$domain])){$domain = "website";}
+      if (!isset($this->domArr[$domain])){$domain = "generic";}
       $body = str_replace("https://kartecaedras.ch/Imgs/branding/s/website.png", $this->domArr[$domain]["img"], $body);
 
       if ($txtSubj) {$body = str_replace("Subject", $txtSubj, $body);}

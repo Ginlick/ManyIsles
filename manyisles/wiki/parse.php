@@ -11,6 +11,7 @@ class parse {
     public $conn = null;
     protected $page = "";
     protected $parseClear = false;
+    protected $showNSFW = false;
 
     public $keyTracker = 0;
     public $database = "pages";
@@ -18,9 +19,10 @@ class parse {
 
     protected $titleArray = [];
 
-    function __construct($conn, $page, $parseClear = 0, $domain = "fandom") {
+    function __construct($conn, $page, $parseClear = 0, $domain = "fandom", $showNSFW = false) {
         $this->page = $page;
         if ($parseClear == 1){$this->parseClear = true;}
+        $this->showNSFW = $showNSFW; # TODO: supports not blurring image if NSFW enabled, but not implemented
         equipDom($this, $domain);
         $this->parentWiki = getWiki($page, $this->database, $this->dbconn);
 
@@ -67,8 +69,8 @@ class parse {
 
 
 
-    function createThumbTab($link, $img, $name, $blur = false) {
-        if ($blur){
+    function createThumbTab($link, $img, $name, $NSFWlevel = 0) {
+        if ($NSFWlevel >= 2 and !$this->showNSFW){
             return " <div class='domCont'><a href='".$link."' load-image='".$img."'><h3>".$name."</h3><div class='overlay'></div><div class='blur'></div></a></div>";
         }
         else {
@@ -96,7 +98,7 @@ class parse {
                     $pageName = $pageShortName;
                 }
                 if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
-                $fullChildLine .= " <div class='domCont'><a href='".artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
+                $fullChildLine .= $this->createThumbTab(artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName), $pageImg, $pageName, $row["NSFW"]);
             }
         }
         if ($mode == "full"){
@@ -124,6 +126,7 @@ class parse {
                     $pageImg = $row["banner"];
                     $thumbImg = $row["sidetabImg"];
                     $pageStatus = $row["status"];
+                    $nsfw = $row["NSFW"];
                 }
                 if ($pageShortName != ""){
                     $pageName = $pageShortName;
@@ -131,7 +134,7 @@ class parse {
                 if ($pageStatus != "suspended"){
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
                     $wikiName = getWikiName(getWiki($childPage, $this->database, $this->dbconn), $this->database, $this->dbconn);
-                    $toInsertThumb = " <div class='domCont'><a href='".artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName)."' load-image='".$pageImg."'> <h3>".$pageName."</h3><div class='overlay'></div></a></div>";
+                    $toInsertThumb = $this->createThumbTab(artUrl($this->baseLink.parse2URL($wikiName)."/", $childPage, $pageName), $pageImg, $pageName, $nsfw);
                     $body = substr_replace($body, $toInsertThumb, strpos($body, "[wiki:art".$childPage."]"), 0);
                 }
             }
@@ -171,10 +174,7 @@ class parse {
                     $pageName = $row["shortName"];
                     $pageImg = $row["banner"];
                     $thumbImg = $row["sidetabImg"];
-                    $blur = false;
-                    if ($row["NSFW"] >= 2){
-                        $blur = true;
-                    }
+                    $blur = $row["NSFW"];
                     # generate the thumbnails
                     if ($age > 0) {
                       if ($sortName == "rand"){
@@ -244,10 +244,7 @@ class parse {
                     $pageName = $row["shortName"];
                     $pageImg = $row["banner"];
                     $thumbImg = $row["sidetabImg"];
-                    $blur = false;
-                    if ($row["NSFW"] >= 0){
-                        $blur = true;
-                    }
+                    $blur = $row["NSFW"];
 
                     if ($thumbImg != null){$pageImg = $thumbImg;}else{$pageImg = banner($pageImg, $this);}
                     $wikiName = getWikiName(getWiki($childPage, $this->database, $this->dbconn), $this->database, $this->dbconn);

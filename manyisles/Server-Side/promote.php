@@ -297,7 +297,7 @@ if (!class_exists("adventurer")){
                 <div style="width: 85%; margin:auto;">
                   <h1 style="font-size: 30px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;">Welcome to the Many Isles, %%UNAME%%!</h1>
                   <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                      We're happy you've decided to join us. You'll get free premium products, as well as access to our great community! We love worldbuilding and homebrewing, and you'll fit right in.
+                      Get ready to explore an awesome fantasy setting.
                   </p>
                 </div>
                 <!-- offer -->
@@ -316,7 +316,19 @@ if (!class_exists("adventurer")){
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">The Fandom Wiki</h2>
                             <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                                We host a cool <a style="color:#61b3dd" href="https://kartecaedras.ch/fandom/home">fandom wiki</a>, accessible to all. Once you've confirmed your email, you can participate your own articles and even write a whole wiki about your own world!
+                                The <a style="color:#61b3dd" href="https://kartecaedras.ch/fandom/home">wiki</a> is home to a thick trove of lore about the setting, and a great place to start. If you like the tool, you could try out <a style="color:#61b3dd" href="https://kartecaedras.ch/mystral/hub">Mystral</a> and write a private wiki about your own world, or the <a style="color:#61b3dd" href="https://kartecaedras.ch/fandom/home?stay">public fandom wiki</a>. 
+                            </p>
+                          </td>
+                        </tr>
+                        <tr style="padding-bottom:10px">
+                          <td>
+                            <img src="https://media.kartecaedras.ch/priv/14/MI22_221_Qxqv9nMkphgmhT1Ss3VLUx.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
+                          </td>
+                          <td style="padding-left: 10px">
+                            <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Rise of Humankind</h2>
+                            <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
+                              Simon Belt has written several printed books about the Many Isles Setting. One place to start, in case you want to delve deep, is with this survey of the first half of human history, presented in history textbook form.<br>
+                              <a style="color:#61b3dd" href="https://kartecaedras.ch/ds/6/Rise_of_Humankind">Check it out!</a>
                             </p>
                           </td>
                         </tr>
@@ -327,30 +339,7 @@ if (!class_exists("adventurer")){
                           <td style="padding-left: 10px">
                             <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">An awesome Digital Library</h2>
                             <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                                Our main goal is to promote small creators that want to get their awesome free stuff out there. Check out our <a style="color:#61b3dd" href="https://kartecaedras.ch/dl/home">digital library</a> today, and start publishing from your <a style="color:#61b3dd" href="https://kartecaedras.ch/account/home">account page</a>!
-                            </p>
-                          </td>
-                        </tr>
-                        <tr style="padding-bottom:10px">
-                          <td>
-                            <img src="https://media.kartecaedras.ch/IndexImgs/Dark.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
-                          </td>
-                          <td style="padding-left: 10px">
-                            <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Handbook of Dark Secrets</h2>
-                            <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                              A guide to possession, exorcism, the afterlife, demon forging, and fiends. It includes special feats, exclusive spells, unique magic items, and more infernal secrets.<br>
-                              <a style="color:#61b3dd" href="https://kartecaedras.ch/dl/item/8/Handbook_of_Dark_Secrets">Check it out!</a>
-                            </p>
-                          </td>
-                        </tr>
-                        <tr style="padding-bottom:10px">
-                          <td>
-                            <img src="https://kartecaedras.ch/Imgs/slides/blogs.png" alt="Hello There!" style="height:200px;width:200px;object-fit:cover;display:block;border-radius:15px;" />
-                          </td>
-                          <td style="padding-left: 10px">
-                            <h3 style="font-size: 20px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:0;">Many Isles Blogs</h2>
-                            <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                                View and publish awesome posts about fantasy with our <a style="color:#61b3dd" href="https://kartecaedras.ch/blog/explore">blog tool</a>.
+                                The <a style="color:#61b3dd" href="https://kartecaedras.ch/dl/home">digital library</a> contains many downloadable modules for D&D, and some Karte-Caedras lore documents.
                             </p>
                           </td>
                         </tr>
@@ -363,7 +352,7 @@ if (!class_exists("adventurer")){
                   <div style="width: 85%; margin:auto;">
                     <h2 style="font-size: 25px;font-family:'Trebuchet MS', 'Roboto', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; color:black; padding: 30px 10px 10px;margin:20px 0 0;">Confirm Email</h2>
                     <p style="padding:10px;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">
-                      By clicking the button below, you'll confirm your email unlock the many features of the Many Isles!
+                      By clicking the button below, you'll confirm your email and unlock the many features of the Many Isles!
                     </p>
                     <button class="popupButton" style="margin:2vw auto 2vw;padding:10px;display:block;background-color:#61b3dd;border:0px;border-radius:4px;font-weight:bold;color:white;font-size:20px;"><a href="https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="text-decoration:none;color:white;">Confirm and Join</a></button>
                     <p style="color: #7d7d7d; padding:10px;font-size: 14px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">If the button does not work, try moving the email out of your spam folder, or paste this link into your browser: <a href="https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife" style="color:#61b3dd">https://kartecaedras.ch/account/ConfirmMail.php?id=massiveTreeofLife</a> </p>
@@ -371,7 +360,7 @@ if (!class_exists("adventurer")){
                 </div>
                 <!-- footer -->
                 <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
-                  <img src="https://kartecaedras.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+                  <img src="https://kartecaedras.ch/Imgs/branding/s/generic.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
                   <a href="https://kartecaedras.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">kartecaedras.ch</a>
                 </div>
               </div>
@@ -406,7 +395,7 @@ if (!class_exists("adventurer")){
                 </div>
                 <!-- footer -->
                 <div style="border-top: 3px solid #61b3dd;text-align:center;margin-top:200px">
-                  <img src="https://kartecaedras.ch/Imgs/branding/s/community.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
+                  <img src="https://kartecaedras.ch/Imgs/branding/s/generic.png" alt="Many Isles logo" style="width:250px;margin:30px auto; display:block;" />
                   <a href="https://kartecaedras.ch" style="color:#61b3dd;font-size: 16px;line-height:1.4;font-family:'Lato', Arial, Helvetica, sans-serif;">kartecaedras.ch</a>
                 </div>
               </div>
@@ -417,7 +406,7 @@ if (!class_exists("adventurer")){
         }
         $message = str_replace("%%UNAME%%", $this->uname, $message);
         $message =  str_replace("massiveTreeofLife", urlencode($conCode), $message);
-        $message = str_replace("https://media.manyisles.ch", $this->giveServerInfo("servername_media"), $message);
+        $message = str_replace("https://media.kartecaedras.ch", $this->giveServerInfo("servername_media"), $message);
         $message = str_replace("kartecaedras.ch", $this->giveServerInfo("servername"), $message); //this can do bugs: should have better regex, not just all "kartecaedras.ch"
 
         $mailer = $this->addMailer();
