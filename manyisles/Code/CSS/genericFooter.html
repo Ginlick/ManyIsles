@@ -5,5 +5,10 @@
     The Many Isles are open to everyone. The Pantheon holds no guarantee against inappropriate or offensive content. <br>
     Any content you publicize is shared to the community, and may accordingly be used non-commercially by the community.<br>
   </p>
-  <p>© Many Isles 2022</p>
+  <p>© Many Isles 2022 <span id="datecont"></span></p>
 </footer>
+<script>
+const d = new Date();
+let year = d.getFullYear();
+document.getElementById("datecont").innerHTML = " - " + year;
+</script>
