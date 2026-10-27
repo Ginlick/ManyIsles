@@ -4,7 +4,10 @@ Require all granted
 DirectoryIndex home.php
 
 ErrorDocument 404 /Code/notFound.html
+ErrorDocument 403 /Code/notFound?c=403
+ErrorDocument 400 /Code/notFound?c=400
 ErrorDocument 500 /Code/error.html
+ErrorDocument 503 /Code/error.html
 
 RewriteCond %{HTTP_HOST} ^(www\.)?manyisles\.ch [NC]
 RewriteRule ^(.*)$ https://kartecaedras.ch/$1 [R=301,L]
