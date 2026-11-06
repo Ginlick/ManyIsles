@@ -60,7 +60,7 @@ function totalTable($method) {
       $stripeTax = $ds->calcStripeTax($calcTotal);
         $calcTotal = $calcTotal + $stripeTax;
         $stripeTax = $ds->makeHuman($stripeTax);
-        $table .= "<tr><td>payment Fee</td><td>".$stripeTax."</td></tr>";
+        $table .= "<tr><td>Payment Fee</td><td>".$stripeTax."</td></tr>";
         $stripeTotal = $calcTotal;
     }
     else {
