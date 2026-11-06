@@ -265,7 +265,7 @@ else {
 }
 
 if (isset($paidInfo["extraFee"]) AND $paidInfo["extraFee"] > 0){
-  $extraLine = str_replace("%%COOLTEXT", "Transfer Fee (".$paidInfo["method"].")", $pseudoItemLine);
+  $extraLine = str_replace("%%COOLTEXT", "Payment Fee (".$paidInfo["method"].")", $pseudoItemLine);
   $extraLine = str_replace("%%COOLPRICE", $ds->makeHuman($paidInfo["extraFee"]), $extraLine);
   $extraLine = str_replace("%%COOLSHIPPING", "-", $extraLine);
   $extraLine = str_replace("%%COOLTOTAL", $ds->makeHuman($paidInfo["extraFee"]), $extraLine);

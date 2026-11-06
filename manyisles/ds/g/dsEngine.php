@@ -111,9 +111,6 @@ class dsEngine {
     //redirect
     if (isset($_POST["goTo"])) {
         if ($_POST["goTo"] != "nope" AND $_POST["goTo"] != "" ){
-
-            echo "wants to go to ".$_POST["goTo"];
-            exit();
             $this->go($_POST["goTo"]);
         }
     }
