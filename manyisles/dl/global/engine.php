@@ -372,8 +372,8 @@ class dlengine {
       MAGDA;
     }
 
-    function checkOwner(int $prodId, int $partId = null) {
-      if ($partId==null){$partId = $this->partId;}
+    function checkOwner(int $prodId, int $partId = 0) {
+      if ($partId==0){$partId = $this->partId;}
       $query = "SELECT partner FROM products WHERE id = $prodId";
       if ($toprow = $this->dlconn->query($query)) {
           while ($row = $toprow->fetch_assoc()) {

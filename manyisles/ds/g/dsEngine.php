@@ -285,11 +285,14 @@ class dsEngine {
                 if ($row["specifications"] == ""){if ($row["minPrice"] > $price) { $price = $row["minPrice"];}$humPrice = $this->makeHuman($price);}
                 else {
                     $specsArray = json_decode($row["specifications"], true);
+                    $hasspecs = false;
                     foreach ($specsArray as $specArray){
+                        $hasspecs = true;
                         $price += intval($specArray["options"][0]["price"]);
                     }
                     if ($row["minPrice"] > $price) { $price = $row["minPrice"];}
-                    $humPrice = $this->makeHuman($price)." +";
+                    $humPrice = $this->makeHuman($price);
+                    if ($hasspecs) {$humPrice .= " +";}
                 }
             }
 
